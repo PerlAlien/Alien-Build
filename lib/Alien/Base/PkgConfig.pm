@@ -3,11 +3,12 @@ package Alien::Base::PkgConfig;
 use strict;
 use warnings;
 
-our $VERSION = '0.001_002';
+our $VERSION = '0.001_003';
 $VERSION = eval $VERSION;
 
 use Carp;
 use File::Basename qw/fileparse/;
+use File::Spec;
 
 sub new {
   my $class   = shift;
@@ -20,11 +21,15 @@ sub new {
   my ($path) = @_;
   croak "Must specify a file" unless defined $path;
 
-  my $name = fileparse $path, '.pc';
+  $path = File::Spec->rel2abs( $path );
+
+  my ($name, $dir) = fileparse $path, '.pc';
+
+  $dir = File::Spec->catdir( $dir );  # remove trailing slash
 
   my $self = {
     package  => $name,
-    vars     => {},
+    vars     => { pcfiledir => $dir },
     keywords => {},
   };
 
@@ -64,36 +69,22 @@ sub var {
 # abstract keywords and other vars in terms of "pure" vars
 sub make_abstract {
   my $self = shift;
-  my ($top_var, $top_val) = @_;
+  die "make_abstract needs a key (and possibly a value)" unless @_;
+  my ($var, $value) = @_;
 
-  my @vars = 
-    sort { length $self->{vars}{$b} <=> length $self->{vars}{$a} }
-    grep { $self->{vars}{$_} !~ /\$\{.*?\}/ } # skip vars which contain vars
-    grep { defined $self->{vars}{$_} && length $self->{vars}{$_} } # skip vars which are empty
-    keys %{ $self->{vars} };
-
-  if ($top_var) {
-    @vars = grep { $_ ne $top_var } @vars;
-    unshift @vars, $top_var;
-
-    $self->{vars}{$top_var} = $top_val if defined $top_val;
-  }
-
-  foreach my $var (@vars) {
-    my $value = $self->{vars}{$var};
-    next if $value =~ /\$\{.*?\}/; # skip vars which contain vars
+  $value = defined $value ? $value : $self->{vars}{$var};
     
-    # convert other vars
-    foreach my $key (keys %{ $self->{vars} }) {
-      next if $key eq $var; # don't overwrite the current var
-      $self->{vars}{$key} =~ s/$value/\$\{$var\}/g;
-    }
-
-    # convert keywords
-    foreach my $key (keys %{ $self->{keywords} }) {
-      $self->{keywords}{$key} =~ s/$value/\$\{$var\}/g;
-    }
+  # convert other vars
+  foreach my $key (keys %{ $self->{vars} }) {
+    next if $key eq $var; # don't overwrite the current var
+    $self->{vars}{$key} =~ s/\Q$value\E/\$\{$var\}/g;
   }
+
+  # convert keywords
+  foreach my $key (keys %{ $self->{keywords} }) {
+    $self->{keywords}{$key} =~ s/\Q$value\E/\$\{$var\}/g;
+  }
+
 }
 
 sub _interpolate_vars {
