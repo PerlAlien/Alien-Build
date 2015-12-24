@@ -2,16 +2,23 @@ use strict;
 use warnings;
 use Test::Stream qw( -V1 -Tester Subtest );
 use File::Which ();
+our $which;
+our $system;
 BEGIN {
-  our $which = \&File::Which::which;
+  $which = \&File::Which::which;
   no warnings;
   *File::Which::which = sub {
     $which->(@_);
   };
+  
+  $system = sub {
+    CORE::system(@_);
+  };
+  *CORE::GLOBAL::system = sub { $system->(@_) };
 };
 use Test::Alien;
 
-plan 3;
+plan 5;
 
 subtest 'run with exit 0' => sub {
 
@@ -37,7 +44,7 @@ subtest 'run with exit 0' => sub {
       };
       end;
     },
-    "run_ok with normal exit",
+    "run_ok",
   );
 
   is $run->out, 'this is some output', 'output';
@@ -72,7 +79,7 @@ subtest 'run with exit 22' => sub {
       };
       end;
     },
-    "run_ok with normal exit",
+    "run_ok",
   );
 
   is $run->out, '2x', 'output';
@@ -109,13 +116,77 @@ subtest 'run with kill 9' => sub {
       };
       end;
     },
-    "run_ok with not found",
+    "run_ok",
   );
 
   is $run->out, '', 'output';
   is $run->err, '', 'error';
   is $run->exit, 0, 'exit';
   is $run->signal, 9, 'signal';
+
+};
+
+subtest 'run with not found' => sub {
+
+  local $which = sub { undef() };
+
+  plan 5;
+
+  my $run;
+
+  is(
+    intercept { $run = run_ok [ qw( foo bar baz ) ] },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => 'run foo bar baz';
+      };
+      event Diag => sub {
+        call message => "  command not found";
+      };
+      end;
+    },
+    "run_ok",
+  );
+
+  is $run->out, '', 'output';
+  is $run->err, '', 'error';
+  is $run->exit, 0, 'exit';
+  is $run->signal, 0, 'signal';
+
+};
+
+subtest 'run -1' => sub {
+
+  local $which = sub { '/baz/bar/foo' };
+  local $system = sub { $? = -1; $! = 2; };
+
+  plan 5;
+
+  my $run;
+
+  is(
+    intercept { $run = run_ok [ qw( foo bar baz ) ] },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => 'run foo bar baz';
+      };
+      event Diag => sub {
+        call message => "  using /baz/bar/foo";
+      };
+      event Diag => sub {
+        call message => validator(sub{/^  failed to execute:/ });
+      };
+      end;
+    },
+    "run_ok",
+  );
+
+  is $run->out, '', 'output';
+  is $run->err, '', 'error';
+  is $run->exit, 0, 'exit';
+  is $run->signal, 0, 'signal';
 
 };
 
