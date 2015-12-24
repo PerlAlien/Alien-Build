@@ -96,6 +96,7 @@ sub run_ok
     if($exit == -1)
     {
       $ok = 0;
+      $run->{fail} = "failed to execute: $errno";
       push @diag, "  failed to execute: $errno";
     }
     elsif($exit & 127)
@@ -120,6 +121,7 @@ sub run_ok
   {
     $ctx->ok(0, $message);
     $ctx->diag("  command not found");
+    $run->{fail} = 'command not found';
   }
   
   $ctx->release;

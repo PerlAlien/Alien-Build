@@ -22,7 +22,7 @@ plan 5;
 
 subtest 'run with exit 0' => sub {
 
-  plan 5;
+  plan 6;
 
   my $run;
   my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
@@ -52,11 +52,23 @@ subtest 'run with exit 0' => sub {
   is $run->exit, 0, 'exit';
   is $run->signal, 0, 'signal';
 
+  is(
+    intercept { $run->success },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => "command succeeded"
+      };
+      end;
+    },
+    "run.success",
+  );
+
 };
 
 subtest 'run with exit 22' => sub {
 
-  plan 5;
+  plan 6;
 
   my $run;
   my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
@@ -87,6 +99,21 @@ subtest 'run with exit 22' => sub {
   is $run->exit, 22, 'exit';
   is $run->signal, 0, 'signal';
 
+  is(
+    intercept { $run->success },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => "command succeeded"
+      };
+      event Diag => sub {
+        call message => '  command exited with 22';
+      };
+      end;
+    },
+    "run.success",
+  );
+
 };
 
 subtest 'run with kill 9' => sub {
@@ -97,7 +124,7 @@ subtest 'run with kill 9' => sub {
     kill 9, $$;
   };
 
-  plan 5;
+  plan 6;
 
   my $run;
 
@@ -124,13 +151,28 @@ subtest 'run with kill 9' => sub {
   is $run->exit, 0, 'exit';
   is $run->signal, 9, 'signal';
 
+  is(
+    intercept { $run->success },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => "command succeeded"
+      };
+      event Diag => sub {
+        call message => '  command killed with 9';
+      };
+      end;
+    },
+    "run.success",
+  );
+
 };
 
 subtest 'run with not found' => sub {
 
   local $which = sub { undef() };
 
-  plan 5;
+  plan 6;
 
   my $run;
 
@@ -154,6 +196,21 @@ subtest 'run with not found' => sub {
   is $run->exit, 0, 'exit';
   is $run->signal, 0, 'signal';
 
+  is(
+    intercept { $run->success },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => "command succeeded"
+      };
+      event Diag => sub {
+        call message => '  command not found';
+      };
+      end;
+    },
+    "run.success",
+  );
+
 };
 
 subtest 'run -1' => sub {
@@ -161,7 +218,7 @@ subtest 'run -1' => sub {
   local $which = sub { '/baz/bar/foo' };
   local $system = sub { $? = -1; $! = 2; };
 
-  plan 5;
+  plan 6;
 
   my $run;
 
@@ -187,6 +244,21 @@ subtest 'run -1' => sub {
   is $run->err, '', 'error';
   is $run->exit, 0, 'exit';
   is $run->signal, 0, 'signal';
+
+  is(
+    intercept { $run->success },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => "command succeeded"
+      };
+      event Diag => sub {
+        call message => validator(sub{/^  failed to execute:/ });
+      };
+      end;
+    },
+    "run.success",
+  );
 
 };
 
