@@ -5,11 +5,11 @@ use Test::Alien;
 
 plan 2;
 
-load_alien 'Alien::Foo';
+alien_ok 'Alien::Foo';
 
 my $obj = Alien::Foo->new;
 
-load_alien $obj;
+alien_ok $obj;
 
 package
   Alien::Foo;

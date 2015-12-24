@@ -6,7 +6,7 @@ use Test::Alien;
 plan 3;
 
 is(
-  intercept { load_alien 'Alien::Foo' },
+  intercept { alien_ok 'Alien::Foo' },
   array {
     event Ok => sub {
       call pass => T();
@@ -14,11 +14,11 @@ is(
     };
     end;
   },
-  "load_alien with class"
+  "alien_ok with class"
 );
 
 is(
-  intercept { load_alien(Alien::Foo->new) },
+  intercept { alien_ok(Alien::Foo->new) },
   array {
     event Ok => sub {
       call pass => T();
@@ -26,11 +26,11 @@ is(
     };
     end;
   },
-  "load_alien with instance"
+  "alien_ok with instance"
 );
 
 is(
-  intercept { load_alien 'Alien::Bogus' },
+  intercept { alien_ok 'Alien::Bogus' },
   array {
     event Ok => sub {
       call pass => F();
@@ -41,7 +41,7 @@ is(
     } for qw( dist_dir cflags libs install_type config dynamic_libs bin_dir alien_helper );
     end;
   },
-  "load_alien with bad class",
+  "alien_ok with bad class",
 );
 
 package

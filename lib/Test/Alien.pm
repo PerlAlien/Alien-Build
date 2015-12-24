@@ -5,7 +5,7 @@ use warnings;
 use 5.008001;
 use Test::Stream::Context qw( context );
 use Test::Stream::Exporter;
-default_exports qw( load_alien );
+default_exports qw( alien_ok );
 no Test::Stream::Exporter;
 
 # ABSTRACT: Testing tools for Alien modules
@@ -13,10 +13,10 @@ no Test::Stream::Exporter;
 
 =head1 FUNCTIONS
 
-=head2 load_alien
+=head2 alien_ok
 
- load_alien $alien, $message;
- load_alien $alien;
+ alien_ok $alien, $message;
+ alien_ok $alien;
 
 Load the given L<Alien> instance or class.  Checks that the instance or class conforms to the same
 interface as L<Alien::Base>.  Will be used by subsequent tests.
@@ -25,7 +25,7 @@ interface as L<Alien::Base>.  Will be used by subsequent tests.
 
 my @aliens;
 
-sub load_alien ($;$)
+sub alien_ok ($;$)
 {
   my($alien, $message) = @_;
 
