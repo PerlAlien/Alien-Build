@@ -67,8 +67,9 @@ is(
 
 my $xs = do { local $/; <DATA> };
 xs_ok { xs => $xs, verbose => 1 }, with_subtest {
+  my($module) = @_;
   plan 1;
-  is Foo::Bar::baz(), 42, 'call Foo::Bar::baz()';
+  is $module->baz(), 42, "call $module->baz()";
 };
 
 __DATA__
@@ -77,12 +78,13 @@ __DATA__
 #include "perl.h"
 #include "XSUB.h"
 
-int baz()
+int baz(const char *class)
 {
   return 42;
 }
 
 MODULE = Foo::Bar PACKAGE = Foo::Bar
 
-int baz();
+int baz(class);
+    const char *class;
   

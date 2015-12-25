@@ -343,7 +343,7 @@ sub xs_ok
     $cb = sub {
       Test::Stream::Plugin::Core::skip_all("subtest requires xs success");
     } unless $ok;
-    @_ = ("$message subtest", $cb);
+    @_ = ("$message subtest", $cb, $module);
     goto \&Test::Stream::Plugin::Subtest::subtest_buffered;
   }
   
