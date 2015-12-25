@@ -434,6 +434,22 @@ sub with_subtest (&) { $_[0]; }
 
 1;
 
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Test::Stream>
+
+=item L<Test::Alien::Run>
+
+=item L<Test::Alien::CanCompile>
+
+=item L<Test::Alien::CanPlatypus>
+
+=item L<Test::Alien::Synthetic>
+
+=back
+
 =head1 CAVEATS
 
 This module uses L<Test::Stream> instead of L<Test::More>.

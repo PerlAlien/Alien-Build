@@ -7,6 +7,21 @@ use Test::Stream::Context qw( context );
 # ABSTRACT: Run object
 # VERSION
 
+=head1 SYNOPSIS
+
+ use Test::Stream -V1;
+ use Test::Alien;
+ 
+ run_ok([ $^X, -e => 'print "some output"; exit 22'])
+   ->status_is(22)
+   ->out_like(qr{some});
+
+=head1 DESCRIPTION
+
+This class stores information about a process run as performed by
+L<Test::Alien#run_ok>.  That function is the I<ONLY> way to create
+an instance of this class.
+
 =head1 ATTRIBUTES
 
 =head2 out
@@ -257,3 +272,13 @@ sub diag
 }
 
 1;
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Test::Alien>
+
+=back
+
+=cut

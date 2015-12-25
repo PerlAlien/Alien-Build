@@ -8,6 +8,17 @@ use Test::Stream::Plugin;
 # ABSTRACT: Skip a test file unless a C compiler is available
 # VERSION
 
+=head1
+
+ use Test::Alien::CanCompile;
+
+=head1 DESCRIPTION
+
+This is just a L<Test::Stream> plugin that requires that a compiler
+be available.  Otherwise the test will be skipped.
+
+=cut
+
 sub load_ts_plugin
 {
   require ExtUtils::CBuilder;
@@ -22,3 +33,13 @@ sub load_ts_plugin
 }
 
 1;
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Test::Alien>
+
+=back
+
+=cut
