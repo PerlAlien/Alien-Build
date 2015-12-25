@@ -170,4 +170,36 @@ sub out_unlike
   $self->_like($regex, 'out', 1, $message);
 }
 
+=head2 err_like
+
+ $run->err_like($regex);
+ $run->err_like($regex, $message);
+
+Passes if the standard error of the run matches the given pattern.
+
+=cut
+
+sub err_like
+{
+  my($self, $regex, $message) = @_;
+  $message ||= "standard error matches $regex";
+  $self->_like($regex, 'err', 0, $message);
+}
+
+=head2 err_unlike
+
+ $run->err_unlike($regex);
+ $run->err_unlike($regex, $message);
+
+Passes if the standard error of the run does not match the given pattern.
+
+=cut
+
+sub err_unlike
+{
+  my($self, $regex, $message) = @_;
+  $message ||= "standard error does not match $regex";
+  $self->_like($regex, 'err', 1, $message);
+}
+
 1;

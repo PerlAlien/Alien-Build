@@ -22,7 +22,7 @@ plan 5;
 
 subtest 'run with exit 0' => sub {
 
-  plan 14;
+  plan 16;
 
   my $run;
   my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
@@ -125,6 +125,7 @@ subtest 'run with exit 0' => sub {
         call pass => T();
         call name => validator(sub{/^output matches/ });
       };
+      end;
     },
     "run.out_like(is some out)",
   );
@@ -172,6 +173,7 @@ subtest 'run with exit 0' => sub {
       event Diag => sub {
         call message => validator(sub{/^    /});
       };
+      end;
     },
     "run.out_unlike(is some out)",
   );
@@ -186,6 +188,30 @@ subtest 'run with exit 0' => sub {
       end;
     },
     "run.out_unlike(bogus)",
+  );
+
+  is(
+    intercept { $run->err_like(qr{is some err}) },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => validator(sub{/^standard error matches/ });
+      };
+      end;
+    },
+    "run.err_like(is some err)",
+  );
+
+  is(
+    intercept { $run->err_unlike(qr{bogus}) },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => validator(sub{/^standard error does not match/ });
+      };
+      end;
+    },
+    "run.err_unlike(bogus)",
   );
 
 };
