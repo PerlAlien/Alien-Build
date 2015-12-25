@@ -218,7 +218,8 @@ sub xs_ok
     $ctx->note("parse xs $xs_filename => $c_filename") if $verbose;
     $ctx->note($out) if $verbose;
     $ctx->note("error: $err") if $verbose && $err;
-  
+
+    $DB::single = 1;  
     unless($pxs->report_error_count == 0)
     {
       $ok = 0;

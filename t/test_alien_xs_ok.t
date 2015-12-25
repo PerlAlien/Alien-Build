@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Test::Alien::CanCompile;
 use Test::Stream qw( -V1 -Tester Subtest );
 use Test::Alien;
 
@@ -44,3 +45,4 @@ __DATA__
 #include "XSUB.h"
 
 MODULE = Foo::Bar PACKAGE = Foo::Bar
+
