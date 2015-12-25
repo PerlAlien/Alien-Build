@@ -145,6 +145,12 @@ sub run_ok
 
 Compiles, links the given C<XS> code and attaches to Perl.
 
+If you use the special module name C<TA_MODULE> in your C<XS>
+code, it will be replaced by an automatically generated
+package name.  This can be useful if you want to pass the same
+C<XS> code to multiple calls to C<xs_ok> without subsequent
+calls replacing previous ones.
+
 C<$xs> may be either a string containing the C<XS> code,
 or a hash reference with these keys:
 
@@ -171,9 +177,14 @@ skipped.  Example:
 
  xs_ok $xs, with_subtest {
    # skipped if $xs fails for some reason
+   my($module) = @_;
    plan 1;
-   ok 1;
+   is $module->foo, 1;
  };
+
+The module name detected during the XS parsing phase will
+be passed in to the subtest.  This is helpful when you are
+using a generated module name.
 
 =cut
 
@@ -209,6 +220,16 @@ sub xs_ok
   
   my $ctx = context();
   my $module;
+
+  if($xs->{xs} =~ /\bTA_MODULE\b/)
+  {
+    our $count;
+    $count = 0 unless defined $count;
+    my $name = sprintf "Test::Alien::XS::Mod%s", $count++;
+    my $code = $xs->{xs};
+    $code =~ s{\bTA_MODULE\b}{$name}g;
+    $xs->{xs} = $code;
+  }
 
   # this regex copied shamefully from ExtUtils::ParseXS
   # in part because we need the module name to do the bootstrap
@@ -301,7 +322,7 @@ sub xs_ok
       
       if($lib)
       {
-        $ctx->note("created lib $lib");
+        $ctx->note("created lib $lib") if $xs->{verbose};
       }
       else
       {

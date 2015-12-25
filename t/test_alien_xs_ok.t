@@ -4,7 +4,7 @@ use Test::Alien::CanCompile;
 use Test::Stream qw( -V1 -Tester Subtest );
 use Test::Alien;
 
-plan 5;
+plan 7;
 
 is(
   intercept { xs_ok '' },
@@ -72,6 +72,15 @@ xs_ok { xs => $xs, verbose => 1 }, with_subtest {
   is $module->baz(), 42, "call $module->baz()";
 };
 
+$xs =~ s{\bTA_MODULE\b}{Foo::Bar}g;
+xs_ok $xs, 'xs without parameterized name', with_subtest {
+  my($module) = @_;
+  plan 2;
+  is $module, 'Foo::Bar';
+  is $module->baz(), 42, "call $module->baz()";
+};
+
+
 __DATA__
 
 #include "EXTERN.h"
@@ -83,7 +92,7 @@ int baz(const char *class)
   return 42;
 }
 
-MODULE = Foo::Bar PACKAGE = Foo::Bar
+MODULE = TA_MODULE PACKAGE = TA_MODULE
 
 int baz(class);
     const char *class;
