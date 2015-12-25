@@ -66,7 +66,7 @@ is(
 # TODO: test that link error should fail
 
 my $xs = do { local $/; <DATA> };
-xs_ok { xs => $xs, verbose => 1 }, sub {
+xs_ok { xs => $xs, verbose => 1 }, with_subtest {
   plan 1;
   is Foo::Bar::baz(), 42, 'call Foo::Bar::baz()';
 };

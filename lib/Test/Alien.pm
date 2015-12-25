@@ -13,7 +13,7 @@ use Text::ParseWords qw( shellwords );
 use Test::Stream::Plugin::Subtest ();
 use Test::Stream::Context qw( context );
 use Test::Stream::Exporter;
-default_exports qw( alien_ok run_ok xs_ok );
+default_exports qw( alien_ok run_ok xs_ok with_subtest );
 no Test::Stream::Exporter;
 
 # ABSTRACT: Testing tools for Alien modules
@@ -142,13 +142,8 @@ sub run_ok
 
  xs_ok $xs;
  xs_ok $xs, $message;
- xs_ok $xs, \&cb;
- xs_ok $xs, $message, \&cb;
 
 Compiles, links the given C<XS> code and attaches to Perl.
-If a callback (C<\&cb>) is provided then it will be run as
-a subtest if the C<xs_ok> test succeeds, and if so, this will
-count as two tests.
 
 C<$xs> may be either a string containing the C<XS> code,
 or a hash reference with these keys:
@@ -168,6 +163,17 @@ The L<ExtUtils::ParseXS> arguments passes as a hash reference.
 Spew copious debug information via test note.
 
 =back
+
+You can use the C<with_subtest> keyword to conditionally
+run a subtest if the C<xs_ok> call succeeds.  If C<xs_ok>
+does not work, then the subtest will automatically be
+skipped.  Example:
+
+ xs_ok $xs, with_subtest {
+   # skipped if $xs fails for some reason
+   plan 1;
+   ok 1;
+ };
 
 =cut
 
@@ -343,5 +349,7 @@ sub xs_ok
   
   $ok;
 }
+
+sub with_subtest (&) { $_[0]; }
 
 1;
