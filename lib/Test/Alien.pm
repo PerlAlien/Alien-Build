@@ -19,6 +19,65 @@ no Test::Stream::Exporter;
 # ABSTRACT: Testing tools for Alien modules
 # VERSION
 
+=head1 SYNOPSIS
+
+Test commands that come with your Alien:
+
+ use Test::Stream -V1;
+ use Test::Alien;
+ use Alien::patch;
+ 
+ plan 4;
+ 
+ alien_ok 'Alien::patch';
+ run_ok([ 'patch', '--version' ])
+   ->success
+   # we only accept the version written
+   # by Larry ...
+   ->out_like(qr{Larry Wall}); 
+
+Test that your library works with C<XS>:
+
+ use Test::Stream -V1;
+ use Test::Alien;
+ use Alien::Editline;
+ 
+ alien_ok 'Alien::Editline';
+ my $xs = do { local $/; <DATA> };
+ xs_ok $xs, with_subtest {
+ };
+ 
+ __DATA__
+ 
+ #include "EXTERN.h"
+ #include "perl.h"
+ #include "XSUB.h"
+ #include <editline/readline.h>
+ 
+ const char *
+ version(const char *class)
+ {
+   return rl_library_version;
+ }
+ 
+ MODULE = TA_MODULE PACKAGE = TA_MODULE
+ 
+ const char *version(class);
+     const char *class;
+
+=head1 DESCRIPTION
+
+This module provides tools for testing L<Alien> modules.  It has hooks
+to work easily with L<Alien::Base> based modules, but can also be used
+via the synthetic interface to test non L<Alien::Base> based L<Alien>
+modules.  It has very modest prerequisites.
+
+B<NOTE>: This module uses L<Test::Stream> instead of the classic L<Test::More>.
+As of this writing that makes it incompatible with the vast majority of
+testing modules on CPAN.  This will change when/if L<Test::Stream> replaces
+L<Test::More>.  For the most part testing of L<Alien> modules is done in
+isolation to other testing libraries so that shouldn't be too terrible.
+
 =head1 FUNCTIONS
 
 =head2 alien_ok
@@ -374,3 +433,13 @@ sub xs_ok
 sub with_subtest (&) { $_[0]; }
 
 1;
+
+=head1 CAVEATS
+
+This module uses L<Test::Stream> instead of L<Test::More>.
+
+Although L<Test::Stream> has gone "stable" it is a relatively new
+module, and thus the interface is probably still in a state of flux
+to some extent.
+
+=cut
