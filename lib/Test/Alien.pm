@@ -160,6 +160,8 @@ The L<ExtUtils::ParseXS> arguments passes as a hash reference.
 
 Spew copious debug information via test note.
 
+=back
+
 =cut
 
 sub xs_ok
