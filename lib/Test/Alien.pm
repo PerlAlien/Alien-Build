@@ -9,6 +9,7 @@ use Capture::Tiny qw( capture capture_merged );
 use File::Temp qw( tempdir );
 use File::Spec;
 use Text::ParseWords qw( shellwords );
+use Test::Stream::Plugin::Subtest ();
 use Test::Stream::Context qw( context );
 use Test::Stream::Exporter;
 default_exports qw( alien_ok run_ok xs_ok );
@@ -140,8 +141,13 @@ sub run_ok
 
  xs_ok $xs;
  xs_ok $xs, $message;
+ xs_ok $xs, \&cb;
+ xs_ok $xs, $message, \&cb;
 
 Compiles, links the given C<XS> code and attaches to Perl.
+If a callback (C<\&cb>) is provided then it will be run as
+a subtest if the C<xs_ok> test succeeds, and if so, this will
+count as two tests.
 
 C<$xs> may be either a string containing the C<XS> code,
 or a hash reference with these keys:
@@ -166,8 +172,24 @@ Spew copious debug information via test note.
 
 sub xs_ok
 {
+  my $cb;
+  $cb = pop if defined $_[-1] && ref $_[-1] eq 'CODE';
   my($xs, $message) = @_;
   $message ||= 'xs';
+
+  require ExtUtils::CBuilder;
+  my $skip = !ExtUtils::CBuilder->new->have_compiler;
+
+  if($skip)
+  {
+    my $ctx = context();
+    $ctx->debug->set_skip('test requires a compiler');
+    $ctx->ok(1, $message);
+    $ctx->ok(1, "$message subtest") if $cb;
+    $ctx->debug->set_skip(undef);
+    $ctx->release;
+    return;
+  }
   
   $xs = { xs => $xs } unless ref $xs;
   $xs->{pxs} ||= {};
@@ -233,7 +255,6 @@ sub xs_ok
 
   if($ok)
   {
-    require ExtUtils::CBuilder;
     my $cb = ExtUtils::CBuilder->new;
 
     my($out, $obj, $err) = capture_merged {
@@ -289,6 +310,15 @@ sub xs_ok
   $ctx->ok($ok, $message);
   $ctx->diag($_) for @diag;
   $ctx->release;
+  
+  if($cb)
+  {
+    $cb = sub {
+      Test::Stream::Plugin::Core::skip_all("subtest requires xs success");
+    } unless $ok;
+    @_ = ("$message subtest", $cb);
+    goto \&Test::Stream::Plugin::Subtest::subtest_buffered;
+  }
   
   $ok;
 }
