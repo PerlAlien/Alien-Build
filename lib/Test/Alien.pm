@@ -7,6 +7,7 @@ use Env qw( @PATH );
 use File::Which 1.10 qw( which );
 use Capture::Tiny qw( capture capture_merged );
 use File::Temp qw( tempdir );
+use Carp qw( croak );
 use File::Spec;
 use Text::ParseWords qw( shellwords );
 use Test::Stream::Plugin::Subtest ();
@@ -207,9 +208,10 @@ sub xs_ok
   # in part because we need the module name to do the bootstrap
   # and also because if this regex doesn't match then ParseXS
   # does an exit() which we don't want.
-  if($xs->{xs} =~ /^MODULE\s*=\s*([\w:])+(?:\s+PACKAGE\s*=\s*([\w:]+))?(?:\s+PREFIX\s*=\s*(\S+))?\s*$/m)
+  if($xs->{xs} =~ /^MODULE\s*=\s*([\w:]+)(?:\s+PACKAGE\s*=\s*([\w:]+))?(?:\s+PREFIX\s*=\s*(\S+))?\s*$/m)
   {
     $module = $1;
+    $ctx->note("detect module name $module") if $verbose;
   }
   else
   {
@@ -243,7 +245,6 @@ sub xs_ok
     $ctx->note($out) if $verbose;
     $ctx->note("error: $err") if $verbose && $err;
 
-    $DB::single = 1;  
     unless($pxs->report_error_count == 0)
     {
       $ok = 0;
@@ -302,9 +303,29 @@ sub xs_ok
         push @diag, '  ExtUtils::CBuilder->link failed';
         push @diag, "    $_" for split /\r?\n/, $out;
       }
-    
+      
+      if($ok)
+      {
+        # TODO: replace this with an actual call to DynaLoader::bootstrap
+        my $bootname = "boot_$module";
+        $bootname =~ s/\W/_/g;
+        @DynaLoader::dl_require_symbols = ($bootname);
+        
+        eval {
+          my $libref = DynaLoader::dl_load_file($lib) or croak("Can't load '$lib' for module $module: ".DynaLoader::dl_error());
+          my $symref = DynaLoader::dl_find_symbol($libref, $bootname) or croak("Can't find '$bootname'\n");;
+          my $xsub   = DynaLoader::dl_install_xsub("${module}::bootstrap", $symref);
+          $xsub->($module);
+        };
+        
+        if(my $error = $@)
+        {
+          $ok = 0;
+          push @diag, '  DynaLoader failed';
+          push @diag, "    $error";
+        }
+      }
     }
-
   }
 
   $ctx->ok($ok, $message);

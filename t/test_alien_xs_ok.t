@@ -66,7 +66,10 @@ is(
 # TODO: test that link error should fail
 
 my $xs = do { local $/; <DATA> };
-xs_ok { xs => $xs, verbose => 1 }, sub { ok 1 };
+xs_ok { xs => $xs, verbose => 1 }, sub {
+  plan 1;
+  is Foo::Bar::baz(), 42, 'call Foo::Bar::baz()';
+};
 
 __DATA__
 
@@ -74,5 +77,12 @@ __DATA__
 #include "perl.h"
 #include "XSUB.h"
 
+int baz()
+{
+  return 42;
+}
+
 MODULE = Foo::Bar PACKAGE = Foo::Bar
 
+int baz();
+  
