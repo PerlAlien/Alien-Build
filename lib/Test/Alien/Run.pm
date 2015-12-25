@@ -93,4 +93,28 @@ sub exit_is
   $self;
 }
 
+=head2 exit_isnt
+
+ $run->exit_isnt($exit);
+ $run->exit_isnt($exit, $message);
+
+Passes if the process terminated with an exit value of anything
+but the given value.
+
+=cut
+
+sub exit_isnt
+{
+  my($self, $exit, $message) = @_;
+  
+  $message ||= "command exited with value not $exit";
+  my $ok = $self->exit != $exit;
+  
+  my $ctx = context();
+  $ctx->ok($ok, $message);
+  $ctx->diag("  actual exit value was: @{[ $self->exit ]}") unless $ok;
+  $ctx->release;
+  $self;
+}
+
 1;
