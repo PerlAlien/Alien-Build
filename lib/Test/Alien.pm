@@ -83,12 +83,15 @@ sub run_ok
     err    => '',
     exit   => 0,
     sig    => 0,
+    cmd    => [@command],
   }, 'Test::Alien::Run';
   
   my $ctx = context();
-  my $exe = which shift @command;
+  my $exe = which $command[0];
   if(defined $exe)
   {
+    shift @command;
+    $run->{cmd} = [$exe, @command];
     my @diag;
     my $ok = 1;
     my($exit, $errno);

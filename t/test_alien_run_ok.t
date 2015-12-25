@@ -47,6 +47,8 @@ subtest 'run with exit 0' => sub {
     "run_ok",
   );
 
+  $run->note;
+
   is $run->out, 'this is some output', 'output';
   is $run->err, 'this is some error', 'error';
   is $run->exit, 0, 'exit';

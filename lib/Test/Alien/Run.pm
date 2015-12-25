@@ -202,4 +202,58 @@ sub err_unlike
   $self->_like($regex, 'err', 1, $message);
 }
 
+=head2 note
+
+ $run->note;
+
+Send the output and standard error as test note.
+
+=cut
+
+sub note
+{
+  my($self) = @_;
+  my $ctx = context();  
+  $ctx->note("[cmd]");
+  $ctx->note("  @{$self->{cmd}}");
+  if($self->out ne '')
+  {
+    $ctx->note("[out]");
+    $ctx->note("  $_") for split /\r?\n/, $self->out;
+  }
+  if($self->err ne '')
+  {
+    $ctx->note("[err]");
+    $ctx->note("  $_") for split /\r?\n/, $self->err;
+  }
+  $ctx->release;
+}
+
+=head2 diag
+
+ $run->diag;
+
+Send the output and standard error as test diagnostic.
+
+=cut
+
+sub diag
+{
+  my($self) = @_;
+  my $ctx = context();
+  $ctx->diag("[cmd]");
+  $ctx->diag("  @{$self->{cmd}}");
+  if($self->out ne '')
+  {
+    $ctx->diag("[out]");
+    $ctx->diag("  $_") for split /\r?\n/, $self->out;
+  }
+  if($self->err ne '')
+  {
+    $ctx->diag("[err]");
+    $ctx->diag("  $_") for split /\r?\n/, $self->err;
+  }
+  $ctx->release;
+}
+
 1;
