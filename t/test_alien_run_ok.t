@@ -22,7 +22,7 @@ plan 5;
 
 subtest 'run with exit 0' => sub {
 
-  plan 6;
+  plan 8;
 
   my $run;
   my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
@@ -64,11 +64,38 @@ subtest 'run with exit 0' => sub {
     "run.success",
   );
 
+  is(
+    intercept { $run->exit_is(0) },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => "command exited with value 0";
+      };
+      end;
+    },
+    "run.exit_is(0)",
+  );
+
+  is(
+    intercept { $run->exit_is(22) },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => "command exited with value 22";
+      };
+      event Diag => sub {
+        call message => '  actual exit value was: 0';
+      };
+      end;
+    },
+    "run.exit_is(22)",
+  );
+
 };
 
 subtest 'run with exit 22' => sub {
 
-  plan 6;
+  plan 8;
 
   my $run;
   my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
@@ -112,6 +139,33 @@ subtest 'run with exit 22' => sub {
       end;
     },
     "run.success",
+  );
+
+  is(
+    intercept { $run->exit_is(0) },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => "command exited with value 0";
+      };
+      event Diag => sub {
+        call message => '  actual exit value was: 22';
+      };
+      end;
+    },
+    "run.exit_is(0)",
+  );
+
+  is(
+    intercept { $run->exit_is(22) },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => "command exited with value 22";
+      };
+      end;
+    },
+    "run.exit_is(22)",
   );
 
 };

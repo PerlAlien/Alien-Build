@@ -66,7 +66,31 @@ sub success
     $ctx->diag("  command killed with @{[ $self->signal ]}") if $self->signal;
     $ctx->diag("  @{[ $self->{fail} ]}") if $self->{fail};
   }
-  $ctx->release;  
+  $ctx->release;
+  $self;
+}
+
+=head2 exit_is
+
+ $run->exit_is($exit);
+ $run->exit_is($exit, $message);
+
+Passes if the process terminated with the given exit value.
+
+=cut
+
+sub exit_is
+{
+  my($self, $exit, $message) = @_;
+  
+  $message ||= "command exited with value $exit";
+  my $ok = $self->exit == $exit;
+  
+  my $ctx = context();
+  $ctx->ok($ok, $message);
+  $ctx->diag("  actual exit value was: @{[ $self->exit ]}") unless $ok;
+  $ctx->release;
+  $self;
 }
 
 1;
