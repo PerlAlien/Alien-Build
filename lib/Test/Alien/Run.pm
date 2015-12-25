@@ -117,4 +117,57 @@ sub exit_isnt
   $self;
 }
 
+=head2 out_like
+
+ $run->out_like($regex);
+ $run->out_like($regex, $message);
+
+Passes if the output of the run matches the given pattern.
+
+=cut
+
+sub _like
+{
+  my($self, $regex, $source, $not, $message) = @_;
+  
+  my $ok = $self->{$source} =~ $regex;
+  $ok = !$ok if $not;
+  
+  my $ctx = context();  
+  $ctx->ok($ok, $message);
+  unless($ok)
+  {
+    $ctx->diag("  $source:");
+    $ctx->diag("    $_") for split /\r?\n/, $self->{$source};
+    $ctx->diag($not ? '  matches:' : '  does not match:');
+    $ctx->diag("    $regex");
+  }
+  $ctx->release;
+  
+  $self;
+}
+
+sub out_like
+{
+  my($self, $regex, $message) = @_;
+  $message ||= "output matches $regex";
+  $self->_like($regex, 'out', 0, $message);
+}
+
+=head2 out_unlike
+
+ $run->out_unlike($regex);
+ $run->out_unlike($regex, $message);
+
+Passes if the output of the run does not match the given pattern.
+
+=cut
+
+sub out_unlike
+{
+  my($self, $regex, $message) = @_;
+  $message ||= "output does not match $regex";
+  $self->_like($regex, 'out', 1, $message);
+}
+
 1;

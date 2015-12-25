@@ -22,7 +22,7 @@ plan 5;
 
 subtest 'run with exit 0' => sub {
 
-  plan 10;
+  plan 14;
 
   my $run;
   my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
@@ -116,6 +116,76 @@ subtest 'run with exit 0' => sub {
       end;
     },
     "run.exit_isnt(22)",
+  );
+
+  is(
+    intercept { $run->out_like(qr{is some out}) },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => validator(sub{/^output matches/ });
+      };
+    },
+    "run.out_like(is some out)",
+  );
+
+  is(
+    intercept { $run->out_like(qr{bogus}) },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => validator(sub{/^output matches/ });
+      };
+      event Diag => sub {
+        call message => '  out:';
+      };
+      event Diag => sub {
+        call message => '    this is some output';
+      };
+      event Diag => sub {
+        call message => '  does not match:';
+      };
+      event Diag => sub {
+        call message => validator(sub{/^    /});
+      };
+      end;
+    },
+    "run.out_like(bogus)",
+  );
+
+  is(
+    intercept { $run->out_unlike(qr{is some out}) },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => validator(sub{/^output does not match/ });
+      };
+      event Diag => sub {
+        call message => '  out:';
+      };
+      event Diag => sub {
+        call message => '    this is some output';
+      };
+      event Diag => sub {
+        call message => '  matches:';
+      };
+      event Diag => sub {
+        call message => validator(sub{/^    /});
+      };
+    },
+    "run.out_unlike(is some out)",
+  );
+
+  is(
+    intercept { $run->out_unlike(qr{bogus}) },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => validator(sub{/^output does not match/ });
+      };
+      end;
+    },
+    "run.out_unlike(bogus)",
   );
 
 };
