@@ -13,7 +13,7 @@ use Text::ParseWords qw( shellwords );
 use Test::Stream::Plugin::Subtest ();
 use Test::Stream::Context qw( context );
 use Test::Stream::Exporter;
-default_exports qw( alien_ok run_ok xs_ok with_subtest );
+default_exports qw( alien_ok run_ok xs_ok ffi_ok with_subtest );
 no Test::Stream::Exporter;
 
 # ABSTRACT: Testing tools for Alien modules
@@ -71,6 +71,25 @@ This module provides tools for testing L<Alien> modules.  It has hooks
 to work easily with L<Alien::Base> based modules, but can also be used
 via the synthetic interface to test non L<Alien::Base> based L<Alien>
 modules.  It has very modest prerequisites.
+
+Prior to this module the best way to test a L<Alien> module was via L<Test::CChecker>.
+The main downside to that module is that it is heavily influenced by and uses
+L<ExtUtils::CChecker>, which is a tool for checking at install time various things
+about your compiler.  It was also written before L<Alien::Base> became as stable as it
+is today.  In particular, L<Test::CChecker> does its testing by creating an executable
+and running it.  Unfortunately Perl uses extensions by creating dynamic libraries
+and linking them into the Perl process, which is different in subtle and error prone
+ways.  This module attempts to test the libraries in the way that they will actually
+be used, via either C<XS> or L<FFI::Platypus>.  It also provides a mechanism for
+testing binaries that are provided by the various L<Alien> modules (for example
+L<Alien::gmake> and L<Alien::patch>).
+
+L<Alien> modules can actually be useable without a compiler, or without L<FFI::Platypus>
+(for example, if the library is provided by the system, and you are using L<FFI::Platypus>,
+or if you are building from source and you are using C<XS>), so tests with missing
+prerequisites are automatically skipped.  For example, L</xs_ok> will automatically skip
+itself if a compiler is not found, and L</ffi_ok> will automatically skip itself
+if L<FFI::Platypus> is not installed.
 
 B<NOTE>: This module uses L<Test::Stream> instead of the classic L<Test::More>.
 As of this writing that makes it incompatible with the vast majority of
@@ -431,6 +450,119 @@ sub xs_ok
 }
 
 sub with_subtest (&) { $_[0]; }
+
+=head2 ffi_ok
+
+ ffi_ok;
+ ffi_ok \%opt;
+ ffi_ok \%opt, $message;
+
+C<\%opt> is a hash reference with these keys (all optional):
+
+=over 4
+
+=item symbols
+
+List references of symbols that must be found for the test to succeed.
+
+=item ignore_not_found
+
+Ignores symbols that aren't found.  This affects functions accessed via
+L<FFI::Platypus#attach> and L<FFI::Platypus#function> methods, and does
+not influence the C<symbols> key above.
+
+=item lang
+
+Set the language.  Used primarily for language specific native types.
+
+=back
+
+=cut
+
+sub ffi_ok
+{
+  my $cb;
+  $cb = pop if defined $_[-1] && ref $_[-1] eq 'CODE';
+  my($opt, $message) = @_;
+  
+  $message ||= 'ffi';
+  
+  my $ok = 1;
+  my $skip;
+  my $ffi;
+  my @diag;
+  
+  {
+    my $min = '0.12'; # the first CPAN release
+    $min = '0.15' if $opt->{ignore_not_found};
+    $min = '0.18' if $opt->{lang};
+    eval qq{ use FFI::Platypus $min };
+    if($@)
+    {
+      $ok = 0;
+      $skip = "Test requires FFI::Platypus $min";
+    }
+  }
+  
+  if($ok && $opt->{lang})
+  {
+    my $class = "FFI::Platypus::Lang::@{[ $opt->{lang} ]}";
+    eval qq{ use $class () };
+    if($@)
+    {
+      $ok = 0;
+      $skip = "Test requires FFI::Platypus::Lang::@{[ $opt->{lang} ]}";
+    }
+  }
+  
+  if($ok)
+  {
+    $ffi = FFI::Platypus->new(
+      lib              => [map { $_->dynamic_libs } @aliens],
+      ignore_not_found => $opt->{ignore_not_found},
+      lang             => $opt->{lang},
+    );
+    foreach my $symbol (@{ $opt->{symbols} || [] })
+    {
+      unless($ffi->find_symbol($symbol))
+      {
+        $ok = 0;
+        push @diag, "  $symbol not found"
+      }
+    }
+  }
+  
+  my $ctx = context(); 
+  
+  if($skip)
+  {
+    $ok = 1;
+    $ctx->debug->set_skip($skip);
+  }
+  
+  $ctx->ok($ok, $message);
+  $ctx->diag($_) for @diag;
+  
+  if($skip)
+  {
+    $ok = 0;
+    $ctx->debug->set_skip(undef);
+  }
+  
+  $ctx->release;
+
+  if($cb)
+  {
+    $cb = sub {
+      Test::Stream::Plugin::Core::skip_all("subtest requires ffi success");
+    } unless $ok;
+
+    @_ = ("$message subtest", $cb, $ffi);
+    goto \&Test::Stream::Plugin::Subtest::subtest_buffered;
+  }
+  
+  $ok;
+}
 
 1;
 
