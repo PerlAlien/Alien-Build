@@ -44,7 +44,11 @@ sub alien_ok ($;$)
   $ctx->diag("  missing method $_") for @missing;
   $ctx->release;
   
-  push @aliens, $alien if $ok;
+  if($ok)
+  {
+    push @aliens, $alien;
+    unshift @PATH, $alien->bin_dir;
+  }
   
   $ok;
 }
@@ -69,9 +73,6 @@ Always returns an instance of L<Test::Alien::Run>, even if the command could not
 sub run_ok
 {
   my($command, $message) = @_;
-  
-  local @PATH = @PATH;
-  unshift @PATH, map { $_->bin_dir } @aliens;
   
   my(@command) = ref $command ? @$command : ($command);
   $message ||= "run @command";

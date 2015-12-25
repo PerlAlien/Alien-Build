@@ -2,8 +2,9 @@ use strict;
 use warnings;
 use Test::Stream qw( -V1 -Tester );
 use Test::Alien;
+use Env qw( @PATH );
 
-plan 3;
+plan 4;
 
 is(
   intercept { alien_ok 'Alien::Foo' },
@@ -16,6 +17,8 @@ is(
   },
   "alien_ok with class"
 );
+
+is $PATH[0], '/foo/bar/baz', 'bin_dir added to path';
 
 is(
   intercept { alien_ok(Alien::Foo->new) },
@@ -54,5 +57,5 @@ sub libs         {}
 sub install_type {}
 sub config       {}
 sub dynamic_libs {}
-sub bin_dir      {}
+sub bin_dir      { '/foo/bar/baz' }
 sub alien_helper {}
