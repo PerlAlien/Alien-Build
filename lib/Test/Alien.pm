@@ -457,6 +457,8 @@ sub with_subtest (&) { $_[0]; }
  ffi_ok \%opt;
  ffi_ok \%opt, $message;
 
+Test that L<FFI::Platypus> works.
+
 C<\%opt> is a hash reference with these keys (all optional):
 
 =over 4
@@ -476,6 +478,16 @@ not influence the C<symbols> key above.
 Set the language.  Used primarily for language specific native types.
 
 =back
+
+As with L</xs_ok> above, you can use the C<with_subtest> keyword to specify
+a subtest to be run if C<ffi_ok> succeeds (it will skip otherwise).  The
+L<FFI::Platypus> instance is passed into the subtest as the first argument.
+For example:
+
+ ffi_ok with_subtest {
+   my($ffi) = @_;
+   is $ffi->function(foo => [] => 'void')->call, 42;
+ };
 
 =cut
 
