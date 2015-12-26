@@ -13,7 +13,7 @@ use Text::ParseWords qw( shellwords );
 use Test::Stream::Plugin::Subtest ();
 use Test::Stream::Context qw( context );
 use Test::Stream::Exporter;
-default_exports qw( alien_ok run_ok xs_ok ffi_ok with_subtest );
+default_exports qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic );
 no Test::Stream::Exporter;
 
 # ABSTRACT: Testing tools for Alien modules
@@ -123,7 +123,32 @@ isolation to other testing libraries so that shouldn't be too terrible.
  alien_ok $alien;
 
 Load the given L<Alien> instance or class.  Checks that the instance or class conforms to the same
-interface as L<Alien::Base>.  Will be used by subsequent tests.
+interface as L<Alien::Base>.  Will be used by subsequent tests.  The C<$alien> module only needs to
+provide these methods in order to conform to the L<Alien::Base> interface:
+
+=over 4
+
+=item cflags
+
+String containing the compiler flags
+
+=item libs
+
+String containing the linker and library flags
+
+=item dynamic_libs
+
+List of dynamic libraries.  Returns empty list if the L<Alien> module does not provide this.
+
+=item bin_dir
+
+Directory containing tool binaries.  Returns empty list if the L<Alien> module does not provide
+this.
+
+=back
+
+If your L<Alien> module does not conform to this interface then you can create a synthetic L<Alien>
+module using the L</synthetic> function.
 
 =cut
 
@@ -135,7 +160,7 @@ sub alien_ok ($;$)
 
   my $name = ref $alien ? ref($alien) . '[instance]' : $alien;
   
-  my @methods = qw( dist_dir cflags libs install_type config dynamic_libs bin_dir alien_helper );
+  my @methods = qw( cflags libs dynamic_libs bin_dir );
   $message ||= "$name responds to: @methods";
   my @missing = grep { ! $alien->can($_) } @methods;
   
@@ -152,6 +177,46 @@ sub alien_ok ($;$)
   }
   
   $ok;
+}
+
+=head2 synthetic
+
+ my $alien = synthetic \%config;
+
+Create a synthetic L<Alien> module which can be passed into L</alien_ok>.  C<\%config>
+can contain these keys (all of which are optional):
+
+=over 4
+
+=item cflags
+
+String containing the compiler flags
+
+=item libs
+
+String containing the linker and library flags
+
+=item dynamic_libs
+
+List reference containing the dynamic libraries.
+
+=item bin_dir
+
+Tool binary directory.
+
+=back
+
+See L<Test::Alien::Synthetic> for more details.
+
+=cut
+
+sub synthetic (;$)
+{
+  my($opt) = @_;
+  $opt ||= {};
+  my %alien = %$opt;
+  require Test::Alien::Synthetic;
+  bless \%alien, 'Test::Alien::Synthetic', 
 }
 
 =head2 run_ok

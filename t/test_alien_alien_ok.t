@@ -11,7 +11,7 @@ is(
   array {
     event Ok => sub {
       call pass => T();
-      call name => 'Alien::Foo responds to: dist_dir cflags libs install_type config dynamic_libs bin_dir alien_helper';
+      call name => 'Alien::Foo responds to: cflags libs dynamic_libs bin_dir';
     };
     end;
   },
@@ -25,7 +25,7 @@ is(
   array {
     event Ok => sub {
       call pass => T();
-      call name => 'Alien::Foo[instance] responds to: dist_dir cflags libs install_type config dynamic_libs bin_dir alien_helper';
+      call name => 'Alien::Foo[instance] responds to: cflags libs dynamic_libs bin_dir';
     };
     end;
   },
@@ -37,11 +37,11 @@ is(
   array {
     event Ok => sub {
       call pass => F();
-      call name => 'Alien::Bogus responds to: dist_dir cflags libs install_type config dynamic_libs bin_dir alien_helper';
+      call name => 'Alien::Bogus responds to: cflags libs dynamic_libs bin_dir';
     };
     event Diag => sub {
       call message => "  missing method $_";
-    } for qw( dist_dir cflags libs install_type config dynamic_libs bin_dir alien_helper );
+    } for qw( cflags libs dynamic_libs bin_dir );
     end;
   },
   "alien_ok with bad class",
@@ -51,11 +51,7 @@ package
   Alien::Foo;
 
 sub new { bless {}, __PACKAGE__ }
-sub dist_dir     {}
 sub cflags       {}
 sub libs         {}
-sub install_type {}
-sub config       {}
 sub dynamic_libs {}
 sub bin_dir      { '/foo/bar/baz' }
-sub alien_helper {}
