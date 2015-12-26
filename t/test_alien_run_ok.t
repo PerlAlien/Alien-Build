@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use Test::Stream qw( -V1 -Tester Subtest );
 use File::Which ();
+use File::Spec;
+use File::Temp qw( tempdir );
 our $which;
 our $system;
 BEGIN {
@@ -20,20 +22,32 @@ use Test::Alien;
 
 plan 5;
 
+sub _prog ($)
+{
+  my($code) = @_;
+  my($package, $filename, $line) = caller;
+  my $pl = File::Spec->catfile( tempdir( CLEANUP => 1 ), 'test.pl');
+  open my $fh, '>', $pl;
+  print $fh qq{# line @{[ $line ]} "@{[ $filename ]}"\n};
+  print $fh $code;
+  close $fh;
+  $pl;
+}
+
 subtest 'run with exit 0' => sub {
 
   plan 16;
 
   my $run;
-  my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
+  my $prog = _prog q{
     use strict;
     use warnings;
     print "this is some output";
     print STDERR "this is some error";
   };
-
+  
   is(
-    intercept { $run = run_ok [ $^X, -e => $prog ], 'run it!' },
+    intercept { $run = run_ok [ $^X, $prog ], 'run it!' },
     array {
       event Ok => sub {
         call pass => T();
@@ -223,7 +237,7 @@ subtest 'run with exit 22' => sub {
   plan 10;
 
   my $run;
-  my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
+  my $prog = _prog q{
     use strict;
     use warnings;
     print "2x";
@@ -232,7 +246,7 @@ subtest 'run with exit 22' => sub {
   };
 
   is(
-    intercept { $run = run_ok [ $^X, -e => $prog ], 'run it!' },
+    intercept { $run = run_ok [ $^X, $prog ], 'run it!' },
     array {
       event Ok => sub {
         call pass => T();
@@ -324,7 +338,9 @@ subtest 'run with exit 22' => sub {
 
 subtest 'run with kill 9' => sub {
 
-  my $prog = '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . q{
+  skip_all "Test doesn't make sense on Windows" if $^O eq 'MSWin32';
+
+  my $prog = _prog q{
     use strict;
     use warnings;
     kill 9, $$;
@@ -335,7 +351,7 @@ subtest 'run with kill 9' => sub {
   my $run;
 
   is(
-    intercept { $run = run_ok [ $^X, -e => $prog ], 'run it!' },
+    intercept { $run = run_ok [ $^X, $prog ], 'run it!' },
     array {
       event Ok => sub {
         call pass => F();
