@@ -477,6 +477,7 @@ sub xs_ok
       my($out, $lib) = capture_merged {
         $cb->link(
           objects            => [$obj],
+          module_name        => $module,
           extra_linker_flags => [shellwords map { $_->libs } @aliens],
         );
       };
