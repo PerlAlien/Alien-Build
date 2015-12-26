@@ -516,7 +516,8 @@ sub xs_ok
           use strict;
           use warnings;
           require XSLoader;
-          XSLoader::load();
+          our \$VERSION = '0.01';
+          XSLoader::load('$module','\$VERSION');
           
           1;
         };
