@@ -30,6 +30,11 @@ interface needed by L<Test::Alien>.
 It can be useful if you have a non-L<Alien::Base>
 based L<Alien> distribution that you need to test.
 
+B<NOTE>: The name of this class may move in the
+future, so do not refer to this class name directly.
+Instead create instances of this class using the
+L<Test::Alien#synthetic> function.
+
 =head1 ATTRIBUTES
 
 =head2 cflags

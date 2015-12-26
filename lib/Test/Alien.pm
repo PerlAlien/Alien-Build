@@ -210,7 +210,7 @@ See L<Test::Alien::Synthetic> for more details.
 
 =cut
 
-sub synthetic (;$)
+sub synthetic
 {
   my($opt) = @_;
   $opt ||= {};

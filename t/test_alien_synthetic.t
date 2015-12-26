@@ -21,7 +21,7 @@ is(
 );
 
 is(
-  synthetic { cflags => '-DFOO=1 -I/foo/bar/baz'},
+  synthetic({ cflags => '-DFOO=1 -I/foo/bar/baz'}),
   object {
     prop blessed => 'Test::Alien::Synthetic';
     call cflags  => '-DFOO=1 -I/foo/bar/baz';
@@ -30,7 +30,7 @@ is(
 );
 
 is(
-  synthetic { libs => '-L/foo/bar/baz -lfoo'},
+  synthetic({ libs => '-L/foo/bar/baz -lfoo'}),
   object {
     prop blessed => 'Test::Alien::Synthetic';
     call libs    => '-L/foo/bar/baz -lfoo';
@@ -39,7 +39,7 @@ is(
 );
 
 is(
-  synthetic { dynamic_libs => [qw( foo bar baz )] },
+  synthetic({ dynamic_libs => [qw( foo bar baz )] }),
   object {
     prop blessed => 'Test::Alien::Synthetic';
     call sub { [shift->dynamic_libs] } => [qw( foo bar baz )];
@@ -50,7 +50,7 @@ is(
 my $dir = tempdir( CLEANUP => 1 );
 
 is(
-  synthetic { bin_dir => $dir },
+  synthetic({ bin_dir => $dir }),
   object {
     prop blessed => 'Test::Alien::Synthetic';
     call bin_dir => $dir;
@@ -59,7 +59,7 @@ is(
 );
 
 is(
-  synthetic { bin_dir => File::Spec->catdir($dir, 'foo') },
+  synthetic({ bin_dir => File::Spec->catdir($dir, 'foo') }),
   object {
     prop blessed => 'Test::Alien::Synthetic';
     call sub { [shift->bin_dir] } => [];
