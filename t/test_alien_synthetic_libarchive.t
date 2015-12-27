@@ -18,10 +18,14 @@ is(
 );
 
 my $real = Alien::Libarchive->new;
+my @dlls = eval { $real->dlls };
 my $alien = synthetic {
   cflags       => scalar $real->cflags,
   libs         => scalar $real->libs,
-  dynamic_libs => [$real->dlls],
+  # wrap in an eval as Alien::Libarchive::Installer
+  # still uses FFI::Raw for probing and will crap out if
+  # it isn't installed.
+  dynamic_libs => [@dlls],
 };
 
 alien_ok $alien;
@@ -34,6 +38,11 @@ xs_ok do { local $/; <DATA> }, with_subtest {
   $module->archive_read_free($ptr);
 };
 
+SKIP: {
+
+  skip "Test (may) require FFI::Raw", 2 unless @dlls;
+
+
 ffi_ok { symbols => [qw( archive_read_new )] }, with_subtest {
   my($ffi) = @_;
   my $new  = $ffi->function(archive_read_new => [] => 'opaque');
@@ -42,6 +51,8 @@ ffi_ok { symbols => [qw( archive_read_new )] }, with_subtest {
   like $ptr, qr{^[0-9]+$};
   $free->($ptr);  
 };
+
+}
 
 __DATA__
 
