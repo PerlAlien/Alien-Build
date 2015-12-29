@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::Alien::CanCompile;
-use Test::Stream ('-V1', SkipWithout => [ { 'Acme::Alien::DontPanic' => 0.025 } ]);
+use Test::Stream ('-V1', SkipWithout => [ { 'Acme::Alien::DontPanic' => '0.025', 'Alien::Base' => '0.023' } ]);
 use Test::Alien;
 
 plan 3;
