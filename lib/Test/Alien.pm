@@ -26,7 +26,7 @@ no Test::Stream::Exporter;
 
 Test commands that come with your Alien:
 
- use Test::Stream -V1;
+ use Test2::Bundle::Extended;
  use Test::Alien;
  use Alien::patch;
  
@@ -41,7 +41,7 @@ Test commands that come with your Alien:
 
 Test that your library works with C<XS>:
 
- use Test::Stream -V1;
+ use Test2::Bundle::Extended;
  use Test::Alien;
  use Alien::Editline;
  
@@ -72,7 +72,7 @@ Test that your library works with C<XS>:
 
 Test that your library works with L<FFI::Platypus>:
 
- use Test::Stream -V1;
+ use Test2::Bundle::Extended;
  use Test::Alien;
  use Alien::LibYAML;
  
@@ -112,9 +112,9 @@ prerequisites are automatically skipped.  For example, L</xs_ok> will automatica
 itself if a compiler is not found, and L</ffi_ok> will automatically skip itself
 if L<FFI::Platypus> is not installed.
 
-B<NOTE>: This module uses L<Test::Stream> instead of the classic L<Test::More>.
+B<NOTE>: This module uses L<Test2> instead of the classic L<Test::More>.
 As of this writing that makes it incompatible with the vast majority of
-testing modules on CPAN.  This will change when/if L<Test::Stream> replaces
+testing modules on CPAN.  This will change when/if L<Test2> replaces
 L<Test::More>.  For the most part testing of L<Alien> modules is done in
 isolation to other testing libraries so that shouldn't be too terrible.
 
