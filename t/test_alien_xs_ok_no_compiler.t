@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Stream qw( -V1 -Tester );
+use Test2::Bundle::Extended;
 use ExtUtils::CBuilder;
 
 BEGIN {
@@ -18,7 +18,7 @@ xs_ok '', sub {};
 is(
   intercept { xs_ok '' },
   array {
-    event Ok => sub {
+    event Skip => sub {
       # doesn't seem to be a way of testing
       # if an event was skipped
       call pass           => T();
@@ -33,14 +33,14 @@ is(
 is(
   intercept { xs_ok '', sub {} },
   array {
-    event Ok => sub {
+    event Skip => sub {
       # doesn't seem to be a way of testing
       # if an event was skipped
       call pass           => T();
       call name           => 'xs';
       call effective_pass => T();
     };
-    event Ok => sub {
+    event Skip => sub {
       # doesn't seem to be a way of testing
       # if an event was skipped
       call pass           => T();

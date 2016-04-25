@@ -1,7 +1,9 @@
 use strict;
 use warnings;
+use Test2::Require::Module 'Acme::Alien::DontPanic' => '0.026';
+use Test2::Require::Module 'Alien::Base' => '0.023';
+use Test2::Bundle::Extended;
 use Test::Alien::CanCompile;
-use Test::Stream ('-V1', SkipWithout => [ { 'Acme::Alien::DontPanic' => '0.025', 'Alien::Base' => '0.023' } ]);
 use Test::Alien;
 
 plan 3;

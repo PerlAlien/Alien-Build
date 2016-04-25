@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::Alien::CanCompile;
-use Test::Stream qw( -V1 -Tester Subtest );
+use Test2::Bundle::Extended;
 use Test::Alien;
 
 plan 7;
@@ -13,6 +13,7 @@ is(
       call pass => F();
       call name => 'xs';
     };
+    event Diag => sub {};
     event Diag => sub {
       call message => '  XS does not have a module decleration that we could find';
     };
@@ -28,6 +29,7 @@ is(
       call pass => F();
       call name => 'xs';
     };
+    event Diag => sub {};
     event Diag => sub {
       call message => '  XS does not have a module decleration that we could find';
     };
@@ -56,6 +58,7 @@ is(
       call pass => F();
       call name => 'xs';
     };
+    event Diag => sub {};
     event Diag => sub {
       call message => '  ExtUtils::CBuilder->compile failed';
     };

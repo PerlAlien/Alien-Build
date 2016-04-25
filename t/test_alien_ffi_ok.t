@@ -1,7 +1,7 @@
 use strict;
 use warnings;
+use Test2::Bundle::Extended;
 use Test::Alien::CanPlatypus;
-use Test::Stream qw( -V1 -Tester Subtest );
 use Test::Alien;
 
 plan 8;
@@ -47,6 +47,7 @@ is(
       call pass => F();
       call name => 'ffi';
     };
+    event Diag => sub {};
     event Diag => sub {
       call message => '  bogus1 not found';
     };

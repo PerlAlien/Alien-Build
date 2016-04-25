@@ -2,8 +2,7 @@ package Test::Alien::CanPlatypus;
 
 use strict;
 use warnings;
-use Test::Stream::Context qw( context );
-use Test::Stream::Plugin;
+use base 'Test2::Require';
 
 # ABSTRACT: Skip a test file unless FFI::Platypus is available
 # VERSION
@@ -14,21 +13,14 @@ use Test::Stream::Plugin;
 
 =head1 DESCRIPTION
 
-This is just a L<Test::Stream> plugin that requires that L<FFI::Platypus>
+This is just a L<Test2> plugin that requires that L<FFI::Platypus>
 be available.  Otherwise the test will be skipped.
 
 =cut
-sub load_ts_plugin
-{
-  require ExtUtils::CBuilder;
-  
-  my $skip = ! eval { require FFI::Platypus; 1 };
-  
-  return unless $skip;
 
-  my $ctx = context();
-  $ctx->plan(0, "SKIP", "This test requires FFI::Platypus.");
-  $ctx->release;
+sub skip
+{
+  eval { require FFI::Platypus; 1 } ? undef : 'This test requires FFI::Platypus.';
 }
 
 1;

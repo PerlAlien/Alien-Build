@@ -1,8 +1,8 @@
 use strict;
 use warnings;
-use Test::Stream '-V1', '-Tester', SkipWithout => [ { 'Alien::Libarchive' => '0.26' } ];
+use Test2::Require::Module 'Alien::Libarchive' => '0.26';
+use Test2::Bundle::Extended;
 use Test::Alien;
-use Alien::Libarchive;
 
 plan 6;
 

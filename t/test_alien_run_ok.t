@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Stream qw( -V1 -Tester Subtest );
+use Test2::Bundle::Extended;
 use File::Which ();
 use File::Spec;
 use File::Temp qw( tempdir );
@@ -99,6 +99,7 @@ subtest 'run with exit 0' => sub {
         call pass => F();
         call name => "command exited with value 22";
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  actual exit value was: 0';
       };
@@ -114,6 +115,7 @@ subtest 'run with exit 0' => sub {
         call pass => F();
         call name => "command exited with value not 0";
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  actual exit value was: 0';
       };
@@ -153,6 +155,7 @@ subtest 'run with exit 0' => sub {
         call pass => F();
         call name => validator(sub{/^output matches/ });
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  out:';
       };
@@ -177,6 +180,7 @@ subtest 'run with exit 0' => sub {
         call pass => F();
         call name => validator(sub{/^output does not match/ });
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  out:';
       };
@@ -272,6 +276,7 @@ subtest 'run with exit 22' => sub {
         call pass => F();
         call name => "command succeeded"
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  command exited with 22';
       };
@@ -287,6 +292,7 @@ subtest 'run with exit 22' => sub {
         call pass => F();
         call name => "command exited with value 0";
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  actual exit value was: 22';
       };
@@ -326,6 +332,7 @@ subtest 'run with exit 22' => sub {
         call pass => F();
         call name => "command exited with value not 22";
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  actual exit value was: 22';
       };
@@ -357,6 +364,7 @@ subtest 'run with kill 9' => sub {
         call pass => F();
         call name => 'run it!';
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => "  using $^X";
       };
@@ -380,6 +388,7 @@ subtest 'run with kill 9' => sub {
         call pass => F();
         call name => "command succeeded"
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  command killed with 9';
       };
@@ -405,6 +414,7 @@ subtest 'run with not found' => sub {
         call pass => F();
         call name => 'run foo bar baz';
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => "  command not found";
       };
@@ -425,6 +435,7 @@ subtest 'run with not found' => sub {
         call pass => F();
         call name => "command succeeded"
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => '  command not found';
       };
@@ -451,6 +462,7 @@ subtest 'run -1' => sub {
         call pass => F();
         call name => 'run foo bar baz';
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => "  using /baz/bar/foo";
       };
@@ -474,6 +486,7 @@ subtest 'run -1' => sub {
         call pass => F();
         call name => "command succeeded"
       };
+      event Diag => sub {};
       event Diag => sub {
         call message => validator(sub{/^  failed to execute:/ });
       };

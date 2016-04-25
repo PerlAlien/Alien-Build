@@ -2,14 +2,14 @@ package Test::Alien::Synthetic;
 
 use strict;
 use warnings;
-use Test::Stream::Context qw( context );
+use Test2::API qw( context );
 
 # ABSTRACT: A mock alien object for testing
 # VERSION
 
 =head1 SYNOPSIS
 
- use Test::Stream -V1;
+ use Test2::Bundle::Extended;
  use Test::Alien;
  
  plan 1;
@@ -76,7 +76,7 @@ based L<Alien> distribution.
 
  use strict;
  use warnings;
- use Test::Stream '-V1';
+ use Test2::Bundle::Extended;
  use Test::Alien;
  use Alien::Libarchive;
  

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Stream qw( -V1 );
+use Test2::Bundle::Extended;
 use Test::Alien::CanPlatypus;
 use ExtUtils::CBuilder;
 

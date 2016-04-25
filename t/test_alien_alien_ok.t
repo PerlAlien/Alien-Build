@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Stream qw( -V1 -Tester );
+use Test2::Bundle::Extended;
 use Test::Alien;
 use Env qw( @PATH );
 
@@ -39,6 +39,7 @@ is(
       call pass => F();
       call name => 'Alien::Bogus responds to: cflags libs dynamic_libs bin_dir';
     };
+    event Diag => sub {};
     event Diag => sub {
       call message => "  missing method $_";
     } for qw( cflags libs dynamic_libs bin_dir );

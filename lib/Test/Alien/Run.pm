@@ -2,14 +2,14 @@ package Test::Alien::Run;
 
 use strict;
 use warnings;
-use Test::Stream::Context qw( context );
+use Test2::API qw( context );
 
 # ABSTRACT: Run object
 # VERSION
 
 =head1 SYNOPSIS
 
- use Test::Stream -V1;
+ use Test2::Extended::Bundle;
  use Test::Alien;
  
  run_ok([ $^X, -e => 'print "some output"; exit 22'])

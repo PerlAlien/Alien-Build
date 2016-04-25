@@ -13,11 +13,11 @@ use File::Basename qw( dirname );
 use File::Path qw( mkpath );
 use File::Copy qw( move );
 use Text::ParseWords qw( shellwords );
-use Test::Stream::Plugin::Subtest ();
-use Test::Stream::Context qw( context );
-use Test::Stream::Exporter;
-default_exports qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic );
-no Test::Stream::Exporter;
+use Test2::Bundle::Extended;
+use Test2::API qw( context run_subtest );
+use base qw( Exporter );
+
+our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic );
 
 # ABSTRACT: Testing tools for Alien modules
 # VERSION
@@ -365,10 +365,8 @@ sub xs_ok
   if($skip)
   {
     my $ctx = context();
-    $ctx->debug->set_skip('test requires a compiler');
-    $ctx->ok(1, $message);
-    $ctx->ok(1, "$message subtest") if $cb;
-    $ctx->debug->set_skip(undef);
+    $ctx->skip($message, 'test requires a compiler');
+    $ctx->skip("$message subtest", 'test requires a compiler') if $cb;
     $ctx->release;
     return;
   }
@@ -549,12 +547,16 @@ sub xs_ok
   if($cb)
   {
     $cb = sub {
-      Test::Stream::Plugin::Core::skip_all("subtest requires xs success");
+      my $ctx = context();
+      $ctx->plan(0, 'SKIP', "subtest requires xs success");
+      $ctx->release;
     } unless $ok;
-    @_ = ("$message subtest", $cb, $module);
-    goto \&Test::Stream::Plugin::Subtest::subtest_buffered;
+
+    @_ = ("$message subtest", $cb, 1, $module);
+
+    goto \&Test2::API::run_subtest;
   }
-  
+
   $ok;
 }
 
@@ -657,29 +659,27 @@ sub ffi_ok
   
   if($skip)
   {
-    $ok = 1;
-    $ctx->debug->set_skip($skip);
+    $ctx->skip($message, $skip);
   }
-  
-  $ctx->ok($ok, $message);
-  $ctx->diag($_) for @diag;
-  
-  if($skip)
+  else
   {
-    $ok = 0;
-    $ctx->debug->set_skip(undef);
+    $ctx->ok($ok, $message);
   }
+  $ctx->diag($_) for @diag;
   
   $ctx->release;
 
   if($cb)
   {
     $cb = sub {
-      Test::Stream::Plugin::Core::skip_all("subtest requires ffi success");
+      my $ctx = context();
+      $ctx->plan(0, 'SKIP', "subtest requires ffi success");
+      $ctx->release;
     } unless $ok;
 
-    @_ = ("$message subtest", $cb, $ffi);
-    goto \&Test::Stream::Plugin::Subtest::subtest_buffered;
+    @_ = ("$message subtest", $cb, 1, $ffi);
+
+    goto \&Test2::API::run_subtest;
   }
   
   $ok;
@@ -691,7 +691,7 @@ sub ffi_ok
 
 =over 4
 
-=item L<Test::Stream>
+=item L<Test2>
 
 =item L<Test::Alien::Run>
 
@@ -705,10 +705,6 @@ sub ffi_ok
 
 =head1 CAVEATS
 
-This module uses L<Test::Stream> instead of L<Test::More>.
-
-Although L<Test::Stream> has gone "stable" it is a relatively new
-module, and thus the interface is probably still in a state of flux
-to some extent.
+This module uses L<Test2> instead of L<Test::More>.
 
 =cut

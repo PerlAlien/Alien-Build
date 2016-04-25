@@ -2,8 +2,7 @@ package Test::Alien::CanCompile;
 
 use strict;
 use warnings;
-use Test::Stream::Context qw( context );
-use Test::Stream::Plugin;
+use base 'Test2::Require';
 
 # ABSTRACT: Skip a test file unless a C compiler is available
 # VERSION
@@ -14,22 +13,15 @@ use Test::Stream::Plugin;
 
 =head1 DESCRIPTION
 
-This is just a L<Test::Stream> plugin that requires that a compiler
+This is just a L<Test2> plugin that requires that a compiler
 be available.  Otherwise the test will be skipped.
 
 =cut
 
-sub load_ts_plugin
+sub skip
 {
   require ExtUtils::CBuilder;
-  
-  my $skip = !ExtUtils::CBuilder->new->have_compiler;
-  
-  return unless $skip;
-
-  my $ctx = context();
-  $ctx->plan(0, "SKIP", "This test requires a compiler.");
-  $ctx->release;
+  ExtUtils::CBuilder->new->have_compiler ? undef : 'This test requires a compiler.';
 }
 
 1;
