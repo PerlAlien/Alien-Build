@@ -372,6 +372,9 @@ sub xs_ok
   }
   
   $xs = { xs => $xs } unless ref $xs;
+  # make sure this is a copy because we may
+  # modify it.
+  $xs->{xs} = "@{[ $xs->{xs} ]}";
   $xs->{pxs} ||= {};
   my $verbose = $xs->{verbose};
   my $ok = 1;
@@ -472,16 +475,20 @@ sub xs_ok
     if($ok)
     {
     
-      my($out, $lib) = capture_merged {
-        $cb->link(
-          objects            => [$obj],
-          module_name        => $module,
-          extra_linker_flags => [shellwords map { $_->libs } @aliens],
-        );
+      my($out, $lib, $err) = capture_merged {
+        my $lib = eval { 
+          $cb->link(
+            objects            => [$obj],
+            module_name        => $module,
+            extra_linker_flags => [shellwords map { $_->libs } @aliens],
+          );
+        };
+        ($lib, $@);
       };
       
       $ctx->note("link $obj") if $verbose;
       $ctx->note($out) if $verbose;
+      $ctx->note($err) if $verbose && $err;
       
       if($lib)
       {
@@ -491,6 +498,7 @@ sub xs_ok
       {
         $ok = 0;
         push @diag, '  ExtUtils::CBuilder->link failed';
+        push @diag, "    $err" if $err;
         push @diag, "    $_" for split /\r?\n/, $out;
       }
       
