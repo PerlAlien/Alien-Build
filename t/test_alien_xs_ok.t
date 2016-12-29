@@ -62,6 +62,7 @@ is(
     event Diag => sub {
       call message => '  ExtUtils::CBuilder->compile failed';
     };
+    etc;
   },
   'xs with C compile error'
 );

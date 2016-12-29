@@ -13,7 +13,6 @@ use File::Basename qw( dirname );
 use File::Path qw( mkpath );
 use File::Copy qw( move );
 use Text::ParseWords qw( shellwords );
-use Test2::Bundle::Extended;
 use Test2::API qw( context run_subtest );
 use base qw( Exporter );
 

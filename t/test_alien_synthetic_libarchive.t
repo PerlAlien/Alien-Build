@@ -12,7 +12,8 @@ is(
     event Ok => sub {
       call pass => F();
       call name => 'Alien::Libarchive responds to: cflags libs dynamic_libs bin_dir';
-    },
+    };
+    etc;
   },
   'Alien::Libarchive fails alien_ok'
 );
