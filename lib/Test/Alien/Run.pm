@@ -57,6 +57,9 @@ sub signal { shift->{sig} }
 
 =head1 METHODS
 
+These methods return the run object itself, so they can be chained,
+as in the synopsis above.
+
 =head2 success
 
  $run->success;
@@ -242,6 +245,7 @@ sub note
     $ctx->note("  $_") for split /\r?\n/, $self->err;
   }
   $ctx->release;
+  $self;
 }
 
 =head2 diag
@@ -269,6 +273,7 @@ sub diag
     $ctx->diag("  $_") for split /\r?\n/, $self->err;
   }
   $ctx->release;
+  $self;
 }
 
 1;
