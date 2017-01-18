@@ -16,7 +16,7 @@ sub new
   $self;
 }
 
-sub add
+sub add_helper
 {
   my $self = shift;
   my $name = shift;
