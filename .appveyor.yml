@@ -1,9 +1,16 @@
 ---
 
 install:
-  - choco install strawberryperl
+
+  - if not exist C:\strawberry type nul > installperl.txt
+  - if exist installperl.txt curl -O http://strawberryperl.com/download/5.24.0.1/strawberry-perl-5.24.0.1-32bit.msi
+  - if exist installperl.txt msiexec /i strawberry-perl-5.24.0.1-32bit.msi /quiet /qn /norestart
+  - if exist installperl.txt del strawberry-perl-5.24.0.1-32bit.msi
+  - if exist installperl.txt del installperl.txt
   - SET PATH=C:\Perl5\bin;C:\strawberry\c\bin;C:\strawberry\perl\site\bin;C:\strawberry\perl\bin;%PATH%
   - perl -v
+  - gcc --version
+  - gmake --version
   - if not exist C:\Perl5 mkdir C:\Perl5
   - SET PERL5LIB=C:/Perl5/lib/perl5
   - SET PERL_LOCAL_LIB_ROOT=C:/Perl5
@@ -18,7 +25,8 @@ build: off
 test_script:
   - dzil test -v
 
+shallow_clone: true
+
 cache:
   - C:\Perl5
-
-shallow_clone: true
+  - C:\strawberry
