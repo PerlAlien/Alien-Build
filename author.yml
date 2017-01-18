@@ -16,10 +16,13 @@ pod_spelling_system:
     - pkgconf
     - xz
     - interpolator
+    - Autoconf
+    - autoconf
 
 pod_coverage:
   skip: 0
   # format is "Class#method" or "Class", regex allowed
   # for either Class or method.
-  private: []
+  private:
+    - Alien::Build::Plugin::.*#init
 

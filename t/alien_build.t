@@ -28,6 +28,9 @@ subtest 'from file' => sub {
   is( $build->requires('share'), { Foo => '1.00', Bar => '2.00' }, 'share' );
   is( $build->requires('system'), { Foo => '1.00', Baz => '3.00' }, 'system' );
 
+  my $intr = $build->meta->interpolator;
+  isa_ok $intr, 'Alien::Build::Interpolate::Default';
+
 };
 
 subtest 'invalid alienfile' => sub {

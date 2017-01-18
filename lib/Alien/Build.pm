@@ -157,6 +157,33 @@ sub add_requires
   $self;
 }
 
+sub interpolator
+{
+  my($self, $new) = @_;
+  if(defined $new)
+  {
+    if(defined $self->{intr})
+    {
+      require Carp;
+      Carp::croak "tried to set interpolator twice";
+    }
+    if(ref $new)
+    {
+      $self->{intr} = $new;
+    }
+    else
+    {
+      $self->{intr} = $new->new;
+    }
+  }
+  elsif(!defined $self->{intr})
+  {
+    require Alien::Build::Interpolate::Default;
+    $self->{intr} = Alien::Build::Interpolate::Default->new;
+  }
+  $self->{intr};
+}
+
 sub _dump
 {
   my($self) = @_;
