@@ -6,6 +6,14 @@ use warnings;
 # ABSTRACT: Advanced interpolation engine for Alien builds
 # VERSION
 
+=head1 CONSTRUCTOR
+
+=head2 new
+
+ my $intr = Alien::Build::Interpolate->new;
+
+=cut
+
 sub new
 {
   my($class) = @_;
@@ -16,16 +24,23 @@ sub new
   $self;
 }
 
+=head2 add_helper
+
+ $intr->add_helper($name => $code);
+ $intr->add_helper($name => $code, %requirements);
+
+=cut
+
 sub add_helper
 {
   my $self = shift;
   my $name = shift;
   my $code = shift;
-  
+
   if(defined $self->{helper}->{$name}->{code})
   {
     require Carp;
-    Carp::croak "duplicate implementation for interpolated key $name";
+    Carp::croak("duplicate implementation for interpolated key $name");
   }
   
   while(@_)
@@ -38,6 +53,12 @@ sub add_helper
   
   $self->{helper}->{$name}->{code} = $code;
 }
+
+=head2 execute_helper
+
+ my $value = $intr->execute_helper($name);
+
+=cut
 
 sub execute_helper
 {
@@ -81,6 +102,12 @@ sub execute_helper
   
   $code->();
 }
+
+=head2 interpolate
+
+ my $string = $self->interpolate($template);
+
+=cut
 
 sub interpolate
 {

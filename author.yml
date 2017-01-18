@@ -5,6 +5,17 @@ pod_spelling_system:
   # (regardless of what spell check thinks)
   stopwords:
     - alienfile
+    - ar
+    - bzip
+    - cmake
+    - cp
+    - devnull
+    - gmake
+    - ld
+    - nasm
+    - pkgconf
+    - xz
+    - interpolator
 
 pod_coverage:
   skip: 0
