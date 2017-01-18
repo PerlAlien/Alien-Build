@@ -9,5 +9,6 @@ require_ok 'Alien::Build::Interpolate';
 require_ok 'Alien::Build::Interpolate::Default';
 require_ok 'Alien::Build::Plugin';
 require_ok 'Alien::Build::Plugin::Autoconf';
+require_ok 'Alien::Build::Plugin::MSYS';
 
 done_testing;
