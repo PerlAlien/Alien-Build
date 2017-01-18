@@ -18,6 +18,7 @@ pod_spelling_system:
     - interpolator
     - Autoconf
     - autoconf
+    - MSYS
 
 pod_coverage:
   skip: 0
