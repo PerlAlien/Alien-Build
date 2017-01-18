@@ -25,10 +25,12 @@ subtest 'basic usage' => sub {
   is( $intr->interpolate("-%{foomake2}-"), '-foomake.exe-' );
 
   eval { $intr->interpolate("-%{foomake3}-") };
-  isnt( $@, '', "error = $@");
+  isnt( $@, '', "error!");
+  note $@;
 
   eval { $intr->interpolate("-%{foomake4}-") };
-  isnt( $@, '', "error = $@");
+  isnt( $@, '', "error!");
+  note $@;
 
 };
 
