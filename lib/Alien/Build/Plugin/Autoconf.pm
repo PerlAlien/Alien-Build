@@ -26,6 +26,12 @@ Some reasonable default flags will be provided.
 
 =cut
 
+  # TODO:
+  #  - --with-pic       on by default
+  #  - --disable-shared on by default
+  #  - modify %{make} to be just 'make' on MSWin32 (since you will be using the Alien::MSYS verson);
+  #  - AB::P::Autoconf::Shared to build shared library too
+
   $intr->add_helper(
     configure => sub {
       _win ? 'sh configure' : './configure'
