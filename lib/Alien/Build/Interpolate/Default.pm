@@ -185,7 +185,11 @@ Requires: L<Devel::FindPerl>
 
 =cut
 
-  $self->add_helper( perl => sub { Devel::FindPerl::find_perl_interpreter() }, 'Devel::FindPerl' );
+  $self->add_helper( perl => sub {
+      my $perl = Devel::FindPerl::find_perl_interpreter();
+      $perl =~ s{\\}{/}g if $^O eq 'MSWin32';
+      $perl;
+  }, 'Devel::FindPerl' );
 
 =head2 pkgconf
 
