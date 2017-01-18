@@ -1,0 +1,13 @@
+use alienfile;
+
+requires 'Foo', '1.00';
+
+on 'share' => sub {
+  requires 'Bar', '2.00';
+};
+
+on 'system' => sub {
+  requires 'Baz', '3.00';
+};
+
+42;

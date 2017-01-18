@@ -2,6 +2,28 @@
 
 Build external dependencies for use in CPAN
 
+# CONSTRUCTOR
+
+## new
+
+    my $build = Alien::Build->new;
+
+# METHODS
+
+## load
+
+    my $build = Alien::Build->load($filename);
+
+## requires
+
+    my $hash = Alien::Build->requires;
+    my $hash = $build->requires;
+
+## meta
+
+    my $meta = Alien::Build->meta;
+    my $meta = $build->meta;
+
 # AUTHOR
 
 Graham Ollis <plicease@cpan.org>
