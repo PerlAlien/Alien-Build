@@ -55,4 +55,11 @@ sub on
   ();
 }
 
+sub import
+{
+  strict->import;
+  warnings->import;
+  goto &Exporter::import;
+}
+
 1;

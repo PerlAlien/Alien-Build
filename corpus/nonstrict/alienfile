@@ -1,0 +1,3 @@
+use alienfile;
+my $foo = 'bar';
+@{ "${foo}::${foo}" } = ();
