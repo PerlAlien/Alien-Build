@@ -1,11 +1,17 @@
 use Test2::Bundle::Extended;
 use Alien::Build::Plugin::MSYS;
+use lib 't/lib';
+use MyTest;
 
 subtest 'basic' => sub {
 
   my $plugin = Alien::Build::Plugin::MSYS->new;
   isa_ok $plugin, 'Alien::Build::Plugin';
   isa_ok $plugin, 'Alien::Build::Plugin::MSYS';
+
+  my($build, $meta) = build_blank_alien_build;
+
+  $plugin->init($meta);
 
 };
 

@@ -2,6 +2,7 @@ package Alien::Build::Plugin;
 
 use strict;
 use warnings;
+use Carp ();
 
 # ABSTRACT: Plugin base class for Alien::Build
 # VERSION
@@ -16,8 +17,26 @@ use warnings;
 
 sub new
 {
-  my($class) = @_;
-  bless {}, $class;
+  my $class = shift;
+  my %args = @_ == 1 ? ($class->meta->default => $_[0]) : @_;
+  my $self = bless {}, $class;
+  
+  my $prop = $self->meta->prop;
+  foreach my $name (keys %$prop)
+  {
+    $self->{$name} = defined $args{$name} 
+      ? delete $args{$name} 
+      : ref($prop->{$name}) eq 'CODE'
+        ? $prop->{$name}->()
+        : $prop->{$name};
+  }
+  
+  foreach my $name (keys %args)
+  {
+    Carp::carp "$class has no $name property";
+  }
+  
+  $self;
 }
 
 =head1 METHODS
@@ -37,15 +56,19 @@ sub init
 sub import
 {
   my($class) = @_;
-  my $meta = $class->meta;
+
+  return if $class ne __PACKAGE__;
+
+  my $caller = caller;
+  { no strict 'refs'; @{ "${caller}::ISA" } = __PACKAGE__ }
+  
+  my $meta = $caller->meta;
   my $has = sub {
     my($name, $default) = @_;
     $meta->add_property($name, $default);
   };
-  my $caller = caller;
-  no strict 'refs';
-  @{ "${caller}::ISA" } = __PACKAGE__;
-  *{ "${caller}::has" } = $has;
+  
+  { no strict 'refs'; *{ "${caller}::has" } = $has }
 }
 
 my %meta;
@@ -67,10 +90,36 @@ sub new
   }, $class;
 }
 
+sub default
+{
+  my($self) = @_;
+  $self->{default} || do {
+    Carp::croak "No default for @{[ $self->{class} ]}";
+  };
+}
+
 sub add_property
 {
   my($self, $name, $default) = @_;
+  my $single = $name =~ s{^(\+)}{};
+  $self->{default} = $name if $single;
   $self->{prop}->{$name} = $default;
+
+  my $accessor = sub {
+    my($self, $new) = @_;
+    $self->{$name} = $new if defined $new;
+    $self->{$name};
+  };
+  
+  # add the accessor
+  { no strict 'refs'; *{ $self->{class} . '::' . $name} = $accessor }
+
+  $self;
+}
+
+sub prop
+{
+  shift->{prop};
 }
 
 1;

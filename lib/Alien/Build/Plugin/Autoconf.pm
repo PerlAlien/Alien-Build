@@ -8,6 +8,7 @@ use constant _win => $^O eq 'MSWin32';
 # ABSTRACT: Autoconf plugin for Alien::Build
 # VERSION
 
+has with_pic       => 1;
 
 sub init
 {
@@ -27,7 +28,6 @@ Some reasonable default flags will be provided.
 =cut
 
   # TODO:
-  #  - --with-pic       on by default
   #  - --disable-shared on by default
   #  - AB::P::Autoconf::Shared to build shared library too
 
@@ -35,7 +35,9 @@ Some reasonable default flags will be provided.
 
   $intr->add_helper(
     configure => sub {
-      _win ? 'sh configure' : './configure'
+      my $configure = _win ? 'sh configure' : './configure';
+      $configure .= ' --with-pic' if $self->with_pic;
+      $configure;
     },
     @msys_reqs,
   );
