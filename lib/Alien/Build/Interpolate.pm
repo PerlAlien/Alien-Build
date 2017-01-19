@@ -54,6 +54,21 @@ sub add_helper
   $self->{helper}->{$name}->{code} = $code;
 }
 
+=head2 replace_helper
+
+ $intr->replace_helper($name => $code);
+ $intr->replace_helper($name => $code, %requirements);
+
+=cut
+
+sub replace_helper
+{
+  my $self = shift;
+  my($name) = @_;
+  delete $self->{helper}->{$name};
+  $self->add_helper(@_);
+}
+
 =head2 execute_helper
 
  my $value = $intr->execute_helper($name);

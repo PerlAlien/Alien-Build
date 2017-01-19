@@ -37,6 +37,12 @@ subtest 'basic usage' => sub {
   
   is( [$intr->requires("%{bar}%{baz}")], [ 'XYZ::ABC' => '1.234', 'ABC::XYZ' => '4.321' ], 'requires' );
 
+  eval { $intr->add_helper( foo1 => sub { } ) };
+  like $@, qr{duplicate implementation for interpolated key foo1};
+
+  $intr->replace_helper( foo1 => sub { 'newfoo1' } );
+  is( $intr->interpolate("%{foo1}"), 'newfoo1' );
+
 };
 
 done_testing;
