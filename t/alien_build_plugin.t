@@ -1,5 +1,5 @@
 use Test2::Bundle::Extended;
-use Alien::Build::Plugin;
+use Alien::Build::Plugin ();
 
 subtest 'basic' => sub {
 

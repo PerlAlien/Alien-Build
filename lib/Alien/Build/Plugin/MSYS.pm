@@ -2,7 +2,7 @@ package Alien::Build::Plugin::MSYS;
 
 use strict;
 use warnings;
-use base qw( Alien::Build::Plugin );
+use Alien::Build::Plugin;
 use constant _win => $^O eq 'MSWin32';
 
 # ABSTRACT: MSYS plugin for Alien::Build

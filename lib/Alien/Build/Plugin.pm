@@ -34,4 +34,11 @@ sub init
   $self;
 }
 
+sub import
+{
+  my($class) = @_;
+  my $caller = caller;
+  { no strict 'refs'; @{ "${caller}::ISA" } = __PACKAGE__ }
+}
+
 1;
