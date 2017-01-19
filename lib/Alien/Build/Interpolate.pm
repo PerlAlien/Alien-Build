@@ -117,4 +117,19 @@ sub interpolate
   $string;
 }
 
+=head2 requires
+
+ my %requires = $self->requires($template);
+
+=cut
+
+sub requires
+{
+  my($self, $string) = @_;
+  map {
+    my $name = $_;
+    map { $_ => $self->{helper}->{$name}->{require}->{$_} || 0 } keys %{ $self->{helper}->{$name}->{require} }
+  } $string =~ m{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}g;
+}
+
 1;

@@ -31,6 +31,11 @@ subtest 'basic usage' => sub {
   eval { $intr->interpolate("-%{foomake4}-") };
   isnt( $@, '', "error!");
   note $@;
+  
+  $intr->add_helper( bar => undef, 'XYZ::ABC' => '1.234' );
+  $intr->add_helper( baz => undef, 'ABC::XYZ' => '4.321' );
+  
+  is( [$intr->requires("%{bar}%{baz}")], [ 'XYZ::ABC' => '1.234', 'ABC::XYZ' => '4.321' ], 'requires' );
 
 };
 

@@ -16,8 +16,7 @@ Build external dependencies for use in CPAN
 
 ## requires
 
-    my $hash = Alien::Build->requires;
-    my $hash = $build->requires;
+    my $hash = $build->requires($phase);
 
 ## meta
 

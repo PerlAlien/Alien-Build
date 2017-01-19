@@ -148,11 +148,17 @@ sub filename
 
 sub add_requires
 {
-  my($self, $module, $version) = @_;
+  #my($self, $module, $version) = @_;
+  my $self = shift;
   my $phase = $self->{phase};
-  my $old = $self->{require}->{$phase}->{$module} || 0;
-  if($version > $old)
-  { $self->{require}->{$phase}->{$module} = $version }
+  while(@_)
+  {
+    my $module = shift;
+    my $version = shift;
+    my $old = $self->{require}->{$phase}->{$module} || 0;
+    if($version > $old)
+    { $self->{require}->{$phase}->{$module} = $version }
+  }
   $self;
 }
 
