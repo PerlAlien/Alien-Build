@@ -24,9 +24,10 @@ subtest 'from file' => sub {
 
   note($build->meta->_dump);
 
-  is( $build->requires, { Foo => '1.00' }, 'any' );
-  is( $build->requires('share'), { Foo => '1.00', Bar => '2.00' }, 'share' );
-  is( $build->requires('system'), { Foo => '1.00', Baz => '3.00' }, 'system' );
+  is( $build->requires,              { Foo => '1.00' },                'any'       );
+  is( $build->requires('share'),     { Foo => '1.00', Bar => '2.00' }, 'share'     );
+  is( $build->requires('system'),    { Foo => '1.00', Baz => '3.00' }, 'system'    );
+  is( $build->requires('configure'), { 'Early::Module' => '1.234' },   'configure' );
 
   my $intr = $build->meta->interpolator;
   isa_ok $intr, 'Alien::Build::Interpolate::Default';

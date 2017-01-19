@@ -4,6 +4,10 @@ use warnings;
 
 requires 'Foo', '1.00';
 
+on 'configure' => sub {
+  requires 'Early::Module', '1.234';
+};
+
 on 'share' => sub {
   requires 'Bar', '2.00';
 };

@@ -92,8 +92,7 @@ sub _merge
 
 =head2 requires
 
- my $hash = Alien::Build->requires;
- my $hash = $build->requires;
+ my $hash = $build->requires($phase);
 
 =cut
 
@@ -102,8 +101,8 @@ sub requires
   my($class, $phase) = @_;
   $phase ||= 'any';
   my $meta = $class->meta;
-  $phase eq 'any'
-  ? $meta->{require}->{any}
+  $phase =~ /^(?:any|configure)$/
+  ? $meta->{require}->{$phase}
   : _merge %{ $meta->{require}->{any} }, %{ $meta->{require}->{$phase} };
 }
 

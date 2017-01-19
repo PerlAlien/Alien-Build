@@ -42,7 +42,7 @@ sub on
 {
   my($phase, $code) = @_;
   
-  unless($phase =~ /^(any|share|system)$/)
+  unless($phase =~ /^(?:any|share|system|configure)$/)
   {
     require Carp;
     Carp::croak "illegal phase: $phase";
