@@ -37,8 +37,40 @@ sub init
 sub import
 {
   my($class) = @_;
+  my $meta = $class->meta;
+  my $has = sub {
+    my($name, $default) = @_;
+    $meta->add_property($name, $default);
+  };
   my $caller = caller;
-  { no strict 'refs'; @{ "${caller}::ISA" } = __PACKAGE__ }
+  no strict 'refs';
+  @{ "${caller}::ISA" } = __PACKAGE__;
+  *{ "${caller}::has" } = $has;
+}
+
+my %meta;
+sub meta
+{
+  my($class) = @_;
+  $class = ref $class if ref $class;
+  $meta{$class} ||= Alien::Build::PluginMeta->new( class => $class );
+}
+
+package Alien::Build::PluginMeta;
+
+sub new
+{
+  my($class, %args) = @_;
+  my $self = bless {
+    prop => {},
+    %args,
+  }, $class;
+}
+
+sub add_property
+{
+  my($self, $name, $default) = @_;
+  $self->{prop}->{$name} = $default;
 }
 
 1;
