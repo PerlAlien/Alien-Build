@@ -134,7 +134,7 @@ sub new
       share  => {},
       system => {},
     },
-    %args
+    %args,
   }, $class;
   $self;
 }
