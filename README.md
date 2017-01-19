@@ -18,10 +18,18 @@ Build external dependencies for use in CPAN
 
     my $hash = $build->requires($phase);
 
+## load\_requires
+
+    $build->load_requires;
+
 ## meta
 
     my $meta = Alien::Build->meta;
     my $meta = $build->meta;
+
+## fetch
+
+    my $response = $build->fetch;
 
 # AUTHOR
 

@@ -84,7 +84,7 @@ sub _merge
   {
     my $mod = shift;
     my $ver = shift;
-    if($ver > ($h{$mod} || 0))
+    if((!defined $h{$mod}) || $ver > $h{$mod})
     { $h{$mod} = $ver }
   }
   \%h;
@@ -106,6 +106,25 @@ sub requires
   : _merge %{ $meta->{require}->{any} }, %{ $meta->{require}->{$phase} };
 }
 
+=head2 load_requires
+
+ $build->load_requires;
+
+=cut
+
+sub load_requires
+{
+  my($class, $phase) = @_;
+  my $reqs = $class->requires($phase);
+  foreach my $mod (keys %$reqs)
+  {
+    my $ver = $reqs->{$mod};
+    eval qq{ use $mod $ver () };
+    return 0 if $@;
+  }
+  1;
+}
+
 my %meta;
 
 =head2 meta
@@ -120,6 +139,19 @@ sub meta
   my($class) = @_;
   $class = ref $class if ref $class;
   $meta{$class} ||= Alien::Build::Meta->new( class => $class );
+}
+
+=head2 fetch
+
+ my $response = $build->fetch;
+
+=cut
+
+sub fetch
+{
+  my($self, $url) = @_;
+  my $meta = $self->meta;
+  $meta->call_hook( 'fetch' => $url );
 }
 
 package Alien::Build::Meta;
@@ -148,15 +180,14 @@ sub filename
 
 sub add_requires
 {
-  #my($self, $module, $version) = @_;
   my $self = shift;
-  my $phase = $self->{phase};
+  my $phase = shift;
   while(@_)
   {
     my $module = shift;
     my $version = shift;
-    my $old = $self->{require}->{$phase}->{$module} || 0;
-    if($version > $old)
+    my $old = $self->{require}->{$phase}->{$module};
+    if((!defined $old) || $version > $old)
     { $self->{require}->{$phase}->{$module} = $version }
   }
   $self;
@@ -187,6 +218,27 @@ sub interpolator
     $self->{intr} = Alien::Build::Interpolate::Default->new;
   }
   $self->{intr};
+}
+
+sub register_hook
+{
+  my($self, $name, $instr) = @_;
+  $self->{hook}->{$name} = $instr;
+  $self;
+}
+
+sub call_hook
+{
+  my($self, $name, @args) = @_;
+  my $hook = $self->{hook}->{$name};
+  if(ref($hook) eq 'CODE')
+  {
+    return $hook->(@args);
+  }
+  else
+  {
+    die "fixme";
+  }
 }
 
 sub _dump

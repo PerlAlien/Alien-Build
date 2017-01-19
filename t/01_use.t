@@ -10,5 +10,6 @@ require_ok 'Alien::Build::Interpolate::Default';
 require_ok 'Alien::Build::Plugin';
 require_ok 'Alien::Build::Plugin::Autoconf';
 require_ok 'Alien::Build::Plugin::MSYS';
+require_ok 'Alien::Build::Plugin::Fetch::LWP';
 
 done_testing;

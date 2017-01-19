@@ -25,7 +25,7 @@ sub requires
   $version ||= 0;
   my $caller = caller;
   my $meta = $caller->meta;
-  $meta->add_requires($module, $version);
+  $meta->add_requires($meta->{phase}, $module, $version);
   ();
 }
 

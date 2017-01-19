@@ -71,6 +71,12 @@ sub import
   { no strict 'refs'; *{ "${caller}::has" } = $has }
 }
 
+=head2 meta
+
+ my $meta = $plugin->meta;
+
+=cut
+
 my %meta;
 sub meta
 {
