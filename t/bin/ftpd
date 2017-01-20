@@ -5,12 +5,43 @@ use warnings;
 use URI;
 use AnyEvent;
 use AnyEvent::FTP::Server;
-use JSON::PP qw( encode_json );
+use JSON::PP qw( encode_json decode_json );
 use Path::Tiny qw( path );
+use Getopt::Long qw( GetOptions );
+
+my $daemon = 0;
+my $kill   = 0;
+my $host   = 'localhost';
+
+GetOptions(
+  "d"   => \$daemon,
+  "k"   => \$kill,
+  "h=s" => \$host,
+);
+
+my $config_file = path(__FILE__)->sibling('ftpd.json');
+
+if(-r $config_file)
+{
+  my $config = decode_json($config_file->slurp);
+  my $pid = $config->{pid};
+  if(defined $pid)
+  {
+    kill 'KILL', $pid;
+  }
+}
+
+exit if $kill;
+
+if($daemon)
+{
+  require Proc::Daemon;
+  Proc::Daemon::Init();
+}
 
 my $server = AnyEvent::FTP::Server->new(
-  host => 'localhost',
-  port => 0,
+  host            => $host,
+  port            => 0,
   default_context => 'AnyEvent::FTP::Server::Context::FSRO',
 );
 
@@ -18,9 +49,11 @@ my %config = (
   user => join('', map { chr(ord('a') + int rand(26)) } (1..10)),
   pass => join('', map { chr(ord('a') + int rand(26)) } (1..10)),
   root => path(__FILE__)->absolute->parent->parent->parent->child('corpus/dist')->stringify,
+  pid             => $$,
 );
 
 my $url = URI->new("ftp://localhost");
+$url->host($host);
 $url->path($config{root});
 $url->user($config{user});
 $url->password($config{pass});
@@ -43,6 +76,8 @@ $server->on_connect(sub {
 $server->start;
 
 $config{url} = $url->as_string;
-path(__FILE__)->sibling('ftpd.json')->spew(encode_json(\%config));
+$config_file->spew(encode_json(\%config));
+
+print "$url\n";
 
 AnyEvent->condvar->recv;
