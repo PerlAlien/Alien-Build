@@ -154,8 +154,22 @@ described below in the hook documentation.
 sub fetch
 {
   my($self, $url) = @_;
-  my $meta = $self->meta;
-  $meta->call_hook( 'fetch' => $url );
+  $self->meta->call_hook( 'fetch' => $url );
+}
+
+=head2 decode
+
+ my $decoded_res = $build->decode($res);
+
+Decode the HTML or file listing returned by C<fetch>.
+
+=cut
+
+sub decode
+{
+  my($self, $res) = @_;
+  my $hook_name = "decode_" . $res->{type};
+  $self->meta->call_hook( $hook_name => $res );
 }
 
 =head1 HOOKS
