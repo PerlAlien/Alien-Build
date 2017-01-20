@@ -1,0 +1,8 @@
+total 28
+drwxr-xr-x 2 ollisg ollisg 4096 Jan 19 19:43 /xyz/abc/foo-1.00
+-rw-r--r-- 1 ollisg ollisg 3584 Jan 20 06:22 /xyz/abc/foo-1.00.tar
+-rw-r--r-- 1 ollisg ollisg  385 Jan 19 19:43 /xyz/abc/foo-1.00.tar.Z
+-rw-r--r-- 1 ollisg ollisg  301 Jan 19 19:43 /xyz/abc/foo-1.00.tar.bz2
+-rw-r--r-- 1 ollisg ollisg  261 Jan 20 06:22 /xyz/abc/foo-1.00.tar.gz
+-rw-r--r-- 1 ollisg ollisg  296 Jan 19 19:43 /xyz/abc/foo-1.00.tar.xz
+-rw-r--r-- 1 ollisg ollisg  584 Jan 20 06:23 /xyz/abc/foo-1.00.zip
