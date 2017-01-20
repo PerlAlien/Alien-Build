@@ -12,31 +12,28 @@ my $ftp_error;
 
 sub ftp_error
 {
-  $ftp_error;
+  my($new) = @_;
+  if($new)
+  {
+    $ftp_error = $new;
+    return;
+  }
+  else
+  {
+    return $ftp_error;
+  }
 }
 
 sub ftp_url
 {
   my $file = path('t/bin/ftpd.json');
-  unless(-r $file)
-  {
-    $ftp_error = 'no ftpd.json';
-    return;
-  }
+  return ftp_error('no ftpd.json') unless -r $file;
 
   my $config = eval { decode_json($file->slurp) };
-  if($@)
-  {
-    $ftp_error = "error loadig ftpd.json $@";
-    return;
-  }
+  return ftp_error("error loading ftpd.json $@") if $@;
 
   my $url = $config->{url};
-  unless($url)
-  {
-    $ftp_error = "no url in ftpd.json";
-    return;
-  }
+  return ftp_error("no url in ftpd.json") unless $url;
 
   require Net::FTP;
   require URI;
@@ -44,8 +41,7 @@ sub ftp_url
   $url = URI->new($url);
 
   my $ftp = Net::FTP->new($url->host, Port =>  $url->port) or do {
-    $ftp_error = "Connot connect to @{[ $url->host ]}";
-    return;
+    return ftp_error("Connot connect to @{[ $url->host ]}");
   };
   
   eval {
@@ -58,12 +54,8 @@ sub ftp_url
     $ftp->quit;
   };
   
-  if($@)
-  {
-    $ftp_error = $ftp->message;
-    return;
-  }
-  
+  return ftp_error($ftp->message) if $@;
+
   $url->path($url->path . '/')
     unless $url->path =~ m!/$!;
   

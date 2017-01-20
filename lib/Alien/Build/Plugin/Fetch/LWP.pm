@@ -15,6 +15,7 @@ sub init
   my($self, $meta) = @_;
 
   $meta->add_requires('share' => 'LWP::UserAgent' => 0 );
+  
   $meta->register_hook( fetch => sub {
     my($url) = @_;
     $url ||= $self->url;
@@ -36,6 +37,14 @@ sub init
         type    => 'html',
         charset => $charset,
         base    => "$base",
+        content => $res->decoded_content,
+      };
+    }
+    elsif($type eq 'text/ftp-dir-listing')
+    {
+      return {
+        type => 'ftp',
+        base => "$base",
         content => $res->decoded_content,
       };
     }
