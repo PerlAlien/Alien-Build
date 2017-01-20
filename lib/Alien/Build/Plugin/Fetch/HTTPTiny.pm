@@ -19,7 +19,7 @@ sub init
   $meta->add_requires('share' => 'URI' => 0 );
   
   $meta->register_hook( fetch => sub {
-    my($url) = @_;
+    my(undef, $url) = @_;
     $url ||= $self->url;
 
     my $ua = HTTP::Tiny->new;

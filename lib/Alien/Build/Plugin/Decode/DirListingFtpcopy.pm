@@ -16,7 +16,7 @@ sub init
   $meta->add_requires('share' => 'URI' => 0);
   
   $meta->register_hook( decode_dir_listing => sub {
-    my($res) = @_;
+    my(undef, $res) = @_;
     
     my $base = URI->new($res->{base});
     

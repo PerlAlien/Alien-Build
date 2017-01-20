@@ -161,7 +161,7 @@ described below in the hook documentation.
 sub fetch
 {
   my($self, $url) = @_;
-  $self->meta->call_hook( 'fetch' => $url );
+  $self->_call_hook( 'fetch' => $url );
 }
 
 =head2 decode
@@ -176,7 +176,7 @@ sub decode
 {
   my($self, $res) = @_;
   my $hook_name = "decode_" . $res->{type};
-  $self->meta->call_hook( $hook_name => $res );
+  $self->_call_hook( $hook_name => $res );
 }
 
 =head2 sort
@@ -191,7 +191,7 @@ The worst candidate will be returned last.
 sub sort
 {
   my($self, $res) = @_;
-  $self->meta->call_hook( sort => $res );
+  $self->_call_hook( sort => $res );
 }
 
 =head1 HOOKS
@@ -212,7 +212,7 @@ sub sort
    my($self, $meta) = @_;
    
    $meta->register_hook( fetch => sub {
-     my($url) = @_;
+     my($build, $url) = @_;
      ...
    }
  }
@@ -283,7 +283,7 @@ reference:
    my($self, $meta) = @_;
    
    $meta->register_hook( decode_html => sub {
-     my($res) = @_;
+     my($build, $res) = @_;
      ...
    }
  }
@@ -302,7 +302,7 @@ for the specification of the input and response hash references.
    my($self, $meta) = @_;
    
    $meta->register_hook( decode_html => sub {
-     my($res) = @_;
+     my($build, $res) = @_;
      ...
    }
  }
@@ -317,7 +317,7 @@ reference with type C<dir_listing>.
    my($self, $meta) = @_;
    
    $meta->register_hook( sort => sub {
-     my($res) = @_;
+     my($build, $res) = @_;
      return {
        type => 'list',
        list => [sort @{ $res->{list} }],

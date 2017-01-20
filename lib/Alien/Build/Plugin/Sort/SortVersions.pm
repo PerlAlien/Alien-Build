@@ -17,7 +17,7 @@ sub init
   $meta->add_requires('share' => 'Sort::Versions' => 0);
   
   $meta->register_hook( sort => sub {
-    my($res) = @_;
+    my(undef, $res) = @_;
     
     my $cmp = sub {
       my($A,$B) = map { $_ =~ $self->version } @_;
