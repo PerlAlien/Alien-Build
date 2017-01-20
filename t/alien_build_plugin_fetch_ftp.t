@@ -23,7 +23,13 @@ subtest 'updates requires' => sub {
 subtest 'fetch' => sub {
 
   my $url = ftp_url;
-  skip_all ftp_error unless $url;
+  
+  unless($url)
+  {
+    note path('t/bin/ftpd.log')->slurp;
+    skip_all ftp_error;
+  }
+
   note "url = $url";
 
   my $plugin = Alien::Build::Plugin::Fetch::FTP->new( url => $url );
