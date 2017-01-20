@@ -36,6 +36,8 @@ sub init
     # TODO: this doesn't get exercised by t/bin/httpd
     if(my $disposition = $res->{headers}->{"content-disposition"})
     {
+      # Note: from memory without quotes does not match the spec,
+      # but many servers actually return this sort of value.
       if($disposition =~ /filename="([^"]+)"/ || $disposition =~ /filename=([^\s]+)/)
       {
         $filename = $1;
