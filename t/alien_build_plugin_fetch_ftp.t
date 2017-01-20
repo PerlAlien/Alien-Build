@@ -52,22 +52,12 @@ subtest 'fetch' => sub {
       hash {
         field type => 'list';
         field list => array {
-          item hash {
-            field filename => 'foo-1.00';
-            field url => match qr!^ftp://!;
-          };
-          item hash {
-            field filename => 'foo-1.00.tar.bz2';
-            field url => match qr!^ftp://!;
-          };
-          item hash {
-            field filename => 'foo-1.00.tar.gz';
-            field url => match qr!^ftp://!;
-          };
-          item hash {
-            field filename => 'foo-1.00.tar.xz';
-            field url => match qr!^ftp://!;
-          };
+          for (qw( foo-1.00 foo-1.00.tar foo-1.00.tar.Z foo-1.00.tar.bz2 foo-1.00.tar.gz foo-1.00.tar.xz foo-1.00.zip )) {
+            item hash {
+              field filename => $_;
+              field url      => match qr!^ftp://!;
+            };
+          }
         };
       }
     );
