@@ -16,4 +16,3 @@ on 'system' => sub {
   requires 'Baz', '3.00';
 };
 
-42;
