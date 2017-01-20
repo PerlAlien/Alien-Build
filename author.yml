@@ -19,6 +19,7 @@ pod_spelling_system:
     - Autoconf
     - autoconf
     - MSYS
+    - ftpcopy
 
 pod_coverage:
   skip: 0
