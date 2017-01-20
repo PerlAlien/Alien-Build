@@ -35,7 +35,7 @@ sub init
       return {
         type    => 'html',
         charset => $charset,
-        base    => $base,
+        base    => "$base",
         content => $res->decoded_content,
       };
     }
@@ -44,7 +44,7 @@ sub init
       return {
         type     => 'file',
         filename => $filename || 'downloadedfile',
-        content  => $res->decoded_content,
+        content  => $res->content,
       };
     }
     
