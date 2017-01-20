@@ -10,7 +10,14 @@ our @EXPORT = qw( build_blank_alien_build );
 
 sub build_blank_alien_build
 {
-  my $alienfile = path( tempdir( CLEANUP => 1 ) )->child('alienfile');
+  my($name) = @_;
+  unless($name)
+  {
+    (undef, $name) = caller;
+    $name =~ s/\..*$//;
+  }
+  my $alienfile = path( tempdir( CLEANUP => 1 ) )->child("$name/alienfile");
+  $alienfile->parent->mkpath;
   $alienfile->touch;
   require Alien::Build;
   my $build = Alien::Build->load($alienfile);

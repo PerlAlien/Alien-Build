@@ -3,6 +3,7 @@ package Alien::Build;
 use strict;
 use warnings;
 use Path::Tiny ();
+use Carp ();
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -139,6 +140,12 @@ sub meta
   my($class) = @_;
   $class = ref $class if ref $class;
   $meta{$class} ||= Alien::Build::Meta->new( class => $class );
+}
+
+sub _call_hook
+{
+  my($self, $name, @args) = @_;
+  $self->meta->call_hook( $name => $self, @args );
 }
 
 =head2 fetch
@@ -371,7 +378,6 @@ sub interpolator
   {
     if(defined $self->{intr})
     {
-      require Carp;
       Carp::croak "tried to set interpolator twice";
     }
     if(ref $new)
@@ -394,22 +400,31 @@ sub interpolator
 sub register_hook
 {
   my($self, $name, $instr) = @_;
-  $self->{hook}->{$name} = $instr;
+  push @{ $self->{hook}->{$name} }, $instr;
   $self;
 }
 
 sub call_hook
 {
   my($self, $name, @args) = @_;
-  my $hook = $self->{hook}->{$name};
-  if(ref($hook) eq 'CODE')
+  
+  my $error;
+  
+  foreach my $hook (@{ $self->{hook}->{$name} })
   {
-    return $hook->(@args);
+    if(ref($hook) eq 'CODE')
+    {
+      my $value = eval { $hook->(@args) };
+      next if $error = $@;
+      return $value;
+    }
+    else
+    {
+      die "fixme";
+    }
   }
-  else
-  {
-    die "fixme";
-  }
+  die $error if $error;
+  Carp::croak "No hooks registered for $name";
 }
 
 sub _dump
