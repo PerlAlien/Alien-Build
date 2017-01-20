@@ -3,7 +3,7 @@ sudo: false
 
 install:
 
-  - cpanm -l /tmp/myftpd URI AnyEvent AnyEvent::FTP::Server Proc::Daemon
+  - cpanm -n -l /tmp/myftpd URI AnyEvent AnyEvent::FTP::Server Proc::Daemon
   - perl -I /tmp/myftpd/lib/perl5/ t/bin/ftpd -d
 
   - perlbrew list
