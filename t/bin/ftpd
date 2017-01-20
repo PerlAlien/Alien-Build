@@ -35,8 +35,8 @@ exit if $kill;
 
 if($daemon)
 {
-  require Proc::Daemon;
-  Proc::Daemon::Init();
+  #require Proc::Daemon;
+  #Proc::Daemon::Init();
 }
 
 my $server = AnyEvent::FTP::Server->new(

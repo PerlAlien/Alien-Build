@@ -21,7 +21,7 @@ subtest 'updates requires' => sub {
 
 subtest 'fetch' => sub {
 
-  skip_all unless has_uri_file;
+  skip_all 'test requires URI::file' unless has_uri_file;
 
   my $url = URI::file->new(path("corpus/dist")->absolute);
 
@@ -30,7 +30,8 @@ subtest 'fetch' => sub {
   my($build,$meta) = build_blank_alien_build;
   
   $plugin->init($meta);
-  $build->load_requires;
+  eval { $build->load_requires };
+  skip_all 'test requires LWP' if $@;
   
   ok 1;
 

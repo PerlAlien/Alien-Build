@@ -11,5 +11,6 @@ require_ok 'Alien::Build::Plugin';
 require_ok 'Alien::Build::Plugin::Autoconf';
 require_ok 'Alien::Build::Plugin::MSYS';
 require_ok 'Alien::Build::Plugin::Fetch::LWP';
+require_ok 'Alien::Build::Plugin::Fetch::FTP';
 
 done_testing;
