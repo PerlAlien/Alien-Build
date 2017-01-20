@@ -3,9 +3,9 @@ use Alien::Build;
 use lib 't/lib';
 use lib 'corpus/lib';
 use MyTest;
+use Capture::Tiny qw( capture_merged );
 
 subtest 'simple new' => sub {
-
   my $build = MyBuild->new;
   
   isa_ok $build, 'Alien::Build';
@@ -13,7 +13,6 @@ subtest 'simple new' => sub {
   isa_ok( $build->meta, 'Alien::Build::Meta' );
   isa_ok( MyBuild->meta, 'Alien::Build::Meta' );
   note($build->meta->_dump);
-
 
 };
 
@@ -73,7 +72,7 @@ subtest 'hook' => sub {
     my @foo1;
   
     $meta->register_hook(
-      foo1 => sub {
+      share => foo1 => sub {
         @foo1 = @_;
         return 42;
       }
@@ -96,7 +95,7 @@ subtest 'hook' => sub {
   my $exception_count = 0;
   
   $meta->register_hook(
-    foo2 => sub {
+    share => foo2 => sub {
       $exception_count++;
       die "throw exception";
     }
@@ -118,7 +117,7 @@ subtest 'hook' => sub {
     $exception_count = 0;
     
     $meta->register_hook(
-      foo2 => sub {
+      share => foo2 => sub {
         99;
       }
     );
@@ -132,6 +131,49 @@ subtest 'hook' => sub {
   
     eval { $build->_call_hook(foo3 => ()) };
     like $@, qr/No hooks registered for foo3/;
+  
+  };
+  
+  subtest 'command list hook' => sub {
+  
+    $meta->register_hook(
+      share => foo4 => [[$^X, -e => 'print @ARGV', 'hello', ' ', 'world']],
+    );
+    
+    my $out = capture_merged { $build->_call_hook('foo4') };
+    note $out;
+    
+    like $out, qr/hello world/s;
+  
+  };
+  
+  subtest 'command with failure' => sub {
+  
+    $meta->register_hook(
+      share => foo5 => [[$^X, -e => 'exit 1']],
+    );
+    
+    my $error;
+    note capture_merged {
+      eval { $build->_call_hook('foo5') };
+      $error = $@;
+    };
+    
+    like $error, qr/external command failed/;
+  
+  };
+  
+  subtest 'command with failure, followed by good command' => sub {
+  
+    $meta->register_hook(
+      share => foo5 => [[$^X, -e => '']],
+    );
+    
+    note capture_merged {
+      $build->_call_hook('foo5');
+    };
+    
+    ok 1;
   
   };
 

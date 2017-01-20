@@ -75,7 +75,7 @@ The worst candidate will be returned last.
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( fetch => sub {
+      $meta->register_hook( share => fetch => sub {
         my($build, $url) = @_;
         ...
       }
@@ -146,7 +146,7 @@ reference:
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( decode => sub {
+      $meta->register_hook( share => decode => sub {
         my($build, $res) = @_;
         ...
       }
@@ -166,7 +166,7 @@ hash references.
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( sort => sub {
+      $meta->register_hook( share => sort => sub {
         my($build, $res) = @_;
         return {
           type => 'list',

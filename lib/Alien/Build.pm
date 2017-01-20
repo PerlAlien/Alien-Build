@@ -222,7 +222,7 @@ sub sort
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( fetch => sub {
+   $meta->register_hook( share => fetch => sub {
      my($build, $url) = @_;
      ...
    }
@@ -293,7 +293,7 @@ reference:
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( decode => sub {
+   $meta->register_hook( share => decode => sub {
      my($build, $res) = @_;
      ...
    }
@@ -313,7 +313,7 @@ hash references.
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( sort => sub {
+   $meta->register_hook( share => sort => sub {
      my($build, $res) = @_;
      return {
        type => 'list',
@@ -394,9 +394,30 @@ sub interpolator
   $self->{intr};
 }
 
+sub has_hook
+{
+  my($self, $name) = @_;
+  defined $self->{hook}->{$name};
+}
+
 sub register_hook
 {
-  my($self, $name, $instr) = @_;
+  my($self, $phase, $name, $instr) = @_;
+  if(ref($instr) eq 'CODE')
+  {
+    # nothing.
+  }
+  elsif(ref($instr) eq 'ARRAY')
+  {
+    require Alien::Build::CommandSequence;
+    my $seq = Alien::Build::CommandSequence->new(@$instr);
+    $seq->apply_requirements($self, $phase||'any');
+    $instr = $seq;
+  }
+  else
+  {
+    die "type not supported as a hook";
+  }
   push @{ $self->{hook}->{$name} }, $instr;
   $self;
 }
@@ -417,7 +438,9 @@ sub call_hook
     }
     else
     {
-      die "fixme";
+      eval { $hook->execute(@args) };
+      next if $error = $@;
+      return;
     }
   }
   die $error if $error;

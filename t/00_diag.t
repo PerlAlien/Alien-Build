@@ -11,6 +11,7 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   Alien::Base
+  Capture::Tiny
   ExtUtils::MakeMaker
   JSON::PP
   Path::Tiny

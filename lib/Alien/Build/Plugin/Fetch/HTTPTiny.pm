@@ -18,7 +18,7 @@ sub init
   $meta->add_requires('share' => 'HTTP::Tiny' => '0.044' );
   $meta->add_requires('share' => 'URI' => 0 );
   
-  $meta->register_hook( fetch => sub {
+  $meta->register_hook( share => fetch => sub {
     my(undef, $url) = @_;
     $url ||= $self->url;
 

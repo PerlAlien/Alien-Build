@@ -17,5 +17,6 @@ require_ok 'Alien::Build::Plugin::Decode::HTML';
 require_ok 'Alien::Build::Plugin::Decode::DirListing';
 require_ok 'Alien::Build::Plugin::Decode::DirListingFtpcopy';
 require_ok 'Alien::Build::Plugin::Sort::SortVersions';
+require_ok 'Alien::Build::CommandSequence';
 
 done_testing;
