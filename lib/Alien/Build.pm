@@ -175,8 +175,7 @@ Decode the HTML or file listing returned by C<fetch>.
 sub decode
 {
   my($self, $res) = @_;
-  my $hook_name = "decode_" . $res->{type};
-  $self->_call_hook( $hook_name => $res );
+  $self->_call_hook( decode => $res );
 }
 
 =head2 sort
@@ -276,39 +275,25 @@ reference:
    content => $content,
  };
 
-=head2 decode_html hook
+=head2 decode
 
  sub init
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( decode_html => sub {
+   $meta->register_hook( decode => sub {
      my($build, $res) = @_;
      ...
    }
  }
 
 This hook takes a response hash reference from the C<fetch> hook above
-with a type of C<html> and converts it into a response hash reference
-of type C<list>.  In short it takes an HTML response from a fetch hook
-and converts it into a list of filenames and links that can be used
-by the sort hook to choose the correct file to download.  See C<fetch>
-for the specification of the input and response hash references.
-
-=head2 decode_dir_listing
-
- sub init
- {
-   my($self, $meta) = @_;
-   
-   $meta->register_hook( decode_html => sub {
-     my($build, $res) = @_;
-     ...
-   }
- }
-
-This is the same as the C<decode_html> hook above, but it decodes hash
-reference with type C<dir_listing>.
+with a type of C<html> or C<dir_listing> and converts it into a response
+hash reference of type C<list>.  In short it takes an HTML or FTP file
+listing response from a fetch hook and converts it into a list of filenames
+and links that can be used by the sort hook to choose the correct file to
+download.  See C<fetch> for the specification of the input and response
+hash references.
 
 =head2 sort
 
@@ -326,8 +311,8 @@ reference with type C<dir_listing>.
  }
 
 This hook sorts candidates from a listing generated from either the C<fetch>
-or one of the C<decode> hooks.  It should return a new list hash reference
-with the candidates sorted from best to worst.  It may also remove candidates
+or C<decode> hooks.  It should return a new list hash reference with the
+candidates sorted from best to worst.  It may also remove candidates
 that are totally unacceptable.
 
 =cut

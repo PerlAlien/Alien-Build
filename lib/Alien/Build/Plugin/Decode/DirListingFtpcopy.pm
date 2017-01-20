@@ -15,9 +15,12 @@ sub init
   $meta->add_requires('share' => 'File::Listing::Ftpcopy' => 0);
   $meta->add_requires('share' => 'URI' => 0);
   
-  $meta->register_hook( decode_dir_listing => sub {
+  $meta->register_hook( decode => sub {
     my(undef, $res) = @_;
-    
+
+    die "do not know how to decode @{[ $res->{type} ]}"
+      unless $res->{type} eq 'dir_listing';
+
     my $base = URI->new($res->{base});
     
     return {
