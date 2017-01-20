@@ -19,7 +19,13 @@ GetOptions(
   "h=s" => \$host,
 );
 
-my $config_file = path(__FILE__)->sibling('ftpd.json');
+my $bindir    = path(__FILE__)->parent->absolute;
+my $distdir   = $bindir->parent->parent;
+
+print "bindir  = $bindir\n";
+print "distdir = $distdir\n";
+
+my $config_file = $bindir->child('ftpd.json');
 
 if(-r $config_file)
 {
@@ -35,8 +41,12 @@ exit if $kill;
 
 if($daemon)
 {
-  #require Proc::Daemon;
-  #Proc::Daemon::Init();
+  require Proc::Daemon;
+  my $daemon = Proc::Daemon->new(
+    child_STDOUT => $bindir->child('ftpd.log')->stringify,
+    child_STDERR => $bindir->child('ftpd.log')->stringify,
+  );
+  $daemon->Init;
 }
 
 my $server = AnyEvent::FTP::Server->new(
@@ -48,7 +58,7 @@ my $server = AnyEvent::FTP::Server->new(
 my %config = (
   user => join('', map { chr(ord('a') + int rand(26)) } (1..10)),
   pass => join('', map { chr(ord('a') + int rand(26)) } (1..10)),
-  root => path(__FILE__)->absolute->parent->parent->parent->child('corpus/dist')->stringify,
+  root => $distdir->child('corpus/dist')->stringify,
   pid             => $$,
 );
 
