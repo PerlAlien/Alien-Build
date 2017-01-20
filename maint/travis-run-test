@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+cp ../../t/bin/*.json t/bin
+perl Makefile.PL
+make
+make test TEST_VERBOSE=1

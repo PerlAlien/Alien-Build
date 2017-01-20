@@ -19,4 +19,4 @@ perl:
   - "5.24"
 
 script:
-  - dzil test -v
+  - dzil run 'maint/travis-run-test'
