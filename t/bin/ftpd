@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use URI;
+use AnyEvent;
+use AnyEvent::FTP::Server;
+use JSON::PP qw( encode_json );
+use Path::Tiny qw( path );
+
+my $server = AnyEvent::FTP::Server->new(
+  host => 'localhost',
+  port => 0,
+  default_context => 'AnyEvent::FTP::Server::Context::FSRO',
+);
+
+my %config = (
+  user => join('', map { chr(ord('a') + int rand(26)) } (1..10)),
+  pass => join('', map { chr(ord('a') + int rand(26)) } (1..10)),
+  root => path(__FILE__)->absolute->parent->parent->parent->child('corpus/dist')->stringify,
+);
+
+my $url = URI->new("ftp://localhost");
+$url->path($config{root});
+$url->user($config{user});
+$url->password($config{pass});
+
+$server->on_bind(sub {
+  my $port = shift;
+  $url->port($port);
+});
+
+$server->on_connect(sub {
+  my $con = shift;
+  $con->context->authenticator(sub {
+    my($user, $pass) = @_;
+    $user eq $config{user} && $pass eq $config{pass} ? 1 : 0;
+  });
+  $con->context->bad_authentication_delay(0);
+});
+
+
+$server->start;
+
+$config{url} = $url->as_string;
+path(__FILE__)->sibling('ftpd.json')->spew(encode_json(\%config));
+
+AnyEvent->condvar->recv;
