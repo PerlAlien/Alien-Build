@@ -43,7 +43,7 @@ sub init
     elsif($type eq 'text/ftp-dir-listing')
     {
       return {
-        type => 'ftp',
+        type => 'dir_listing',
         base => "$base",
         content => $res->decoded_content,
       };

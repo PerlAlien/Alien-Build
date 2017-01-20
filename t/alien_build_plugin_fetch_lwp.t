@@ -49,7 +49,7 @@ subtest 'fetch' => sub {
           hash {
             if($type eq 'ftp')
             {
-              field type => 'ftp';
+              field type => 'dir_listing';
             }
             else
             {

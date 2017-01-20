@@ -242,8 +242,67 @@ HTML information:
    type => 'html',
    charset => $charset, # optional
    base    => $base,    # the base URL: used for computing relative URLs
-   content => $content, # the decoded HTML content
+   content => $content, # the HTML content
  };
+
+or a directory listing (usually produced by ftp servers) as a hash
+reference:
+
+ return {
+   type    => 'dir_listing',
+   base    => $base,
+   content => $content,
+ };
+
+=head2 decode_html hook
+
+ package Alien::Build::Plugin::MyPlugin;
+ 
+ use strict;
+ use warnings;
+ use Alien::Build::Plugin;
+ 
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->register_hook( decode_html => sub {
+     my($res) = @_;
+     ...
+   }
+ }
+ 
+ 1;
+
+This hook takes a response hash reference from the C<fetch> hook above
+with a type of C<html> and converts it into a response hash reference
+of type C<list>.  In short it takes an HTML response from a fetch hook
+and converts it into a list of filenames and links that can be used
+by the select hook to choose the correct file to download.  See C<fetch>
+for the specification of the input and response hash references.
+
+=head2 decode_dir_listing
+
+ package Alien::Build::Plugin::MyPlugin;
+ 
+ use strict;
+ use warnings;
+ use Alien::Build::Plugin;
+ 
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->register_hook( decode_html => sub {
+     my($res) = @_;
+     ...
+   }
+ }
+ 
+ 1;
+
+This is the same as the C<decode_html> hook above, but it decodes hash
+reference with type C<dir_listing>.
 
 =cut
 
