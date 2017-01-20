@@ -20,6 +20,12 @@ pod_spelling_system:
     - autoconf
     - MSYS
     - ftpcopy
+    - ETJ
+    - Mughal
+    - SIVOAIS
+    - Zaki
+    - mohawk
+    - plugable
 
 pod_coverage:
   skip: 0
