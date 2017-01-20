@@ -22,9 +22,6 @@ GetOptions(
 my $bindir    = path(__FILE__)->parent->absolute;
 my $distdir   = $bindir->parent->parent;
 
-print "bindir  = $bindir\n";
-print "distdir = $distdir\n";
-
 my $config_file = $bindir->child('ftpd.json');
 
 if(-r $config_file)

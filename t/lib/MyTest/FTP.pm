@@ -18,11 +18,25 @@ sub ftp_error
 sub ftp_url
 {
   my $file = path('t/bin/ftpd.json');
-  return unless -r $file;
+  unless(-r $file)
+  {
+    $ftp_error = 'no ftpd.json';
+    return;
+  }
+
   my $config = eval { decode_json($file->slurp) };
-  return if $@;
+  if($@)
+  {
+    $ftp_error = "error loadig ftpd.json $@";
+    return;
+  }
+
   my $url = $config->{url};
-  return unless $url;
+  unless($url)
+  {
+    $ftp_error = "no url in ftpd.json";
+    return;
+  }
 
   require Net::FTP;
   require URI;
