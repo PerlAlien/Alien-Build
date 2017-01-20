@@ -1,5 +1,5 @@
 /Alien-Build-*
 /.build
 *.swp
-/t/bin/ftpd.json
-/t/bin/ftpd.log
+/t/bin/*.json
+/t/bin/*.log

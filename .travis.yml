@@ -4,7 +4,10 @@ sudo: false
 install:
 
   - cpanm -n -l /tmp/myftpd URI AnyEvent AnyEvent::FTP::Server Proc::Daemon
-  - perl -I /tmp/myftpd/lib/perl5/ t/bin/ftpd -d
+  - perl -I/tmp/myftpd/lib/perl5/ t/bin/ftpd -d
+  
+  - cpanm -n -l /tmp/myhttpd Mojolicious Mojolicious::Plugin::Directory Proc::Daemon
+  - perl -I/tmp/myhttpd/lib/perl5/ t/bin/httpd -d 
 
   - perlbrew list
   - dzil authordeps --missing | cpanm -n

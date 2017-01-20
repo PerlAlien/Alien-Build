@@ -14,9 +14,9 @@ my $kill   = 0;
 my $host   = 'localhost';
 
 GetOptions(
-  "d"   => \$daemon,
-  "k"   => \$kill,
-  "h=s" => \$host,
+  "d"       => \$daemon,
+  "k"       => \$kill,
+  "hosth=s" => \$host,
 );
 
 my $bindir    = path(__FILE__)->parent->absolute;
