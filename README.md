@@ -41,6 +41,13 @@ described below in the hook documentation.
 
 Decode the HTML or file listing returned by `fetch`.
 
+## sort
+
+    my $sorted_res = $build->sort($res);
+
+Filter and sort candidates.  The best candidate will be returned first in the list.
+The worst candidate will be returned last.
+
 # HOOKS
 
 ## fetch hook
@@ -125,12 +132,6 @@ reference:
 
 ## decode\_html hook
 
-    package Alien::Build::Plugin::MyPlugin;
-    
-    use strict;
-    use warnings;
-    use Alien::Build::Plugin;
-    
     sub init
     {
       my($self, $meta) = @_;
@@ -140,24 +141,16 @@ reference:
         ...
       }
     }
-    
-    1;
 
 This hook takes a response hash reference from the `fetch` hook above
 with a type of `html` and converts it into a response hash reference
 of type `list`.  In short it takes an HTML response from a fetch hook
 and converts it into a list of filenames and links that can be used
-by the select hook to choose the correct file to download.  See `fetch`
+by the sort hook to choose the correct file to download.  See `fetch`
 for the specification of the input and response hash references.
 
 ## decode\_dir\_listing
 
-    package Alien::Build::Plugin::MyPlugin;
-    
-    use strict;
-    use warnings;
-    use Alien::Build::Plugin;
-    
     sub init
     {
       my($self, $meta) = @_;
@@ -167,11 +160,29 @@ for the specification of the input and response hash references.
         ...
       }
     }
-    
-    1;
 
 This is the same as the `decode_html` hook above, but it decodes hash
 reference with type `dir_listing`.
+
+## sort
+
+    sub init
+    {
+      my($self, $meta) = @_;
+      
+      $meta->register_hook( sort => sub {
+        my($res) = @_;
+        return {
+          type => 'list',
+          list => [sort @{ $res->{list} }],
+        };
+      }
+    }
+
+This hook sorts candidates from a listing generated from either the `fetch`
+or one of the `decode` hooks.  It should return a new list hash reference
+with the candidates sorted from best to worst.  It may also remove candidates
+that are totally unacceptable.
 
 # AUTHOR
 
