@@ -8,6 +8,18 @@ use Carp ();
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
 
+=head1 SYNOPSIS
+
+TODO
+
+=head1 DESCRIPTION
+
+This module provides tools for building external (non-CPAN) dependencies 
+for CPAN.  It is mainly designed to be used at install time of a CPAN 
+client, and work closely with L<Alien::Base> which is used at runtime.
+
+=cut
+
 sub _path { Path::Tiny::path(@_) }
 
 =head1 CONSTRUCTOR
