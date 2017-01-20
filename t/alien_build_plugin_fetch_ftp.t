@@ -26,7 +26,11 @@ subtest 'fetch' => sub {
   
   unless($url)
   {
-    note path('t/bin/ftpd.log')->slurp;
+    my $log = path('t/bin/ftpd.log');
+    if(-r $log)
+    {
+      note($log->slurp);
+    }
     skip_all ftp_error;
   }
 
