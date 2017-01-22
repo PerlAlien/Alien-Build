@@ -18,6 +18,16 @@ client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base
 
     my $build = Alien::Build->new;
 
+# PROPERTIES
+
+## install\_prop
+
+    my $href = $build->install_prop;
+
+## runtime\_prop
+
+    my $href = $build->runtime_prop;
+
 # METHODS
 
 ## load

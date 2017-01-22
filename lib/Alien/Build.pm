@@ -33,13 +33,40 @@ sub _path { Path::Tiny::path(@_) }
 sub new
 {
   my($class) = @_;
-  my $self = bless {}, $class;
+  my $self = bless {
+    install_prop => {},
+    runtime_prop => {},
+  }, $class;
   my(undef, $filename) = caller;
   $self->meta->filename(_path($filename)->absolute->stringify);
   $self;
 }
 
 my $count = 0;
+
+=head1 PROPERTIES
+
+=head2 install_prop
+
+ my $href = $build->install_prop;
+ 
+=cut
+
+sub install_prop
+{
+  shift->{install_prop};
+}
+
+=head2 runtime_prop
+
+ my $href = $build->runtime_prop;
+
+=cut
+
+sub runtime_prop
+{
+  shift->{runtime_prop};
+}
 
 =head1 METHODS
 
@@ -461,22 +488,35 @@ sub register_hook
 
 sub call_hook
 {
-  my($self, $name, @args) = @_;
+  my $self = shift;
+  my %args = ref $_[0] ? %{ shift() } : ();
+  my($name, @args) = @_;
   my $error;
   
   foreach my $hook (@{ $self->{hook}->{$name} })
   {
+    my $value;
+    $args{before}->() if $args{before};
     if(ref($hook) eq 'CODE')
     {
-      my $value = eval { $hook->(@args) };
-      next if $error = $@;
-      return $value;
+      $value = eval { $hook->(@args) };
     }
     else
     {
       eval { $hook->execute(@args) };
-      next if $error = $@;
-      return;
+      $value = 1;
+    }
+    $error = $@;
+    $args{after}->() if $args{after};
+    if($error)
+    {
+      $args{on_fail}->() if $args{on_fail};
+      next if $error;
+    }
+    else
+    {
+      $args{on_ok}->() if $args{on_ok};
+      return $value;
     }
   }
   die $error if $error;
