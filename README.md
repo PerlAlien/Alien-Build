@@ -180,6 +180,33 @@ or `decode` hooks.  It should return a new list hash reference with the
 candidates sorted from best to worst.  It may also remove candidates
 that are totally unacceptable.
 
+# META METHODS
+
+## filename
+
+    my $filename = $build->meta->filename;
+    my $filename = Alien::Build->meta->filename;
+
+## add\_requires
+
+    $build->meta->add_requires($phase, $module => $version, ...);
+    Alien::Build->meta->add_requires($phase, $module => $version, ...);
+
+## interpolator
+
+    my $interpolator = $build->meta->interpolator;
+    my $interpolator = Alien::Build->interpolator;
+
+## has\_hook
+
+    my $bool = $build->meta->has_hook($name);
+    my $bool = Alien::Build->has_hook($name);
+
+## register\_hook
+
+    $build->meta->register_hook($phase, $name, $instructions);
+    Alien::Build->meta->register_hook($phase, $name, $instructions);
+
 # CONTRIBUTING
 
 Thank you for considering to contribute to my open source project!  If 

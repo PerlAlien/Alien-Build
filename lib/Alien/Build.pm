@@ -346,12 +346,28 @@ sub new
   $self;
 }
 
+=head1 META METHODS
+
+=head2 filename
+
+ my $filename = $build->meta->filename;
+ my $filename = Alien::Build->meta->filename;
+
+=cut
+
 sub filename
 {
   my($self, $new) = @_;
   $self->{filename} = $new if defined $new;
   $self->{filename};
 }
+
+=head2 add_requires
+
+ $build->meta->add_requires($phase, $module => $version, ...);
+ Alien::Build->meta->add_requires($phase, $module => $version, ...);
+
+=cut
 
 sub add_requires
 {
@@ -367,6 +383,13 @@ sub add_requires
   }
   $self;
 }
+
+=head2 interpolator
+
+ my $interpolator = $build->meta->interpolator;
+ my $interpolator = Alien::Build->interpolator;
+
+=cut
 
 sub interpolator
 {
@@ -394,11 +417,25 @@ sub interpolator
   $self->{intr};
 }
 
+=head2 has_hook
+
+ my $bool = $build->meta->has_hook($name);
+ my $bool = Alien::Build->has_hook($name);
+
+=cut
+
 sub has_hook
 {
   my($self, $name) = @_;
   defined $self->{hook}->{$name};
 }
+
+=head2 register_hook
+
+ $build->meta->register_hook($phase, $name, $instructions);
+ Alien::Build->meta->register_hook($phase, $name, $instructions);
+
+=cut
 
 sub register_hook
 {
@@ -425,7 +462,6 @@ sub register_hook
 sub call_hook
 {
   my($self, $name, @args) = @_;
-  
   my $error;
   
   foreach my $hook (@{ $self->{hook}->{$name} })
