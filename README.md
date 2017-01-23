@@ -34,6 +34,10 @@ that are needed ONLY during the install phase.  Standard properties:
     The build root directory.  This will be an absolute path.  It is the
     absolute form of `./_alien` by default.
 
+**NOTE**: These properties should not include any blessed objects or code
+references, because they will be serialized using a method that does
+not preserve those capabilities.
+
 ## runtime\_prop
 
     my $href = $build->runtime_prop;
@@ -54,6 +58,10 @@ frequently useful:
 
     The version of the library or tool
 
+- prefix
+
+    The final install root.
+
 - install\_type
 
     The install type.  Is one of:
@@ -69,6 +77,10 @@ frequently useful:
         For when a system install is not possible, the library source will be
         downloaded from the internet or retrieved in another appropriate fashion
         and built.
+
+**NOTE**: These properties should not include any blessed objects or code
+references, because they will be serialized using a method that does
+not preserve those capabilities.
 
 ## root
 

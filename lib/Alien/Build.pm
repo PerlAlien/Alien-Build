@@ -37,13 +37,8 @@ sub new
   my $self = bless {
     install_prop => {
       root => $args{root} || _path("_alien")->stringify,
-      # prefix
     },
     runtime_prop => {
-      # cflags
-      # libs
-      # version
-      # pc_path
     },
   }, $class;
   
@@ -78,6 +73,10 @@ absolute form of C<./_alien> by default.
 
 =back
 
+B<NOTE>: These properties should not include any blessed objects or code
+references, because they will be serialized using a method that does
+not preserve those capabilities.
+
 =cut
 
 sub install_prop
@@ -107,6 +106,10 @@ The library flags
 
 The version of the library or tool
 
+=item prefix
+
+The final install root.
+
 =item install_type
 
 The install type.  Is one of:
@@ -128,6 +131,10 @@ and built.
 =back
 
 =back
+
+B<NOTE>: These properties should not include any blessed objects or code
+references, because they will be serialized using a method that does
+not preserve those capabilities.
 
 =cut
 
