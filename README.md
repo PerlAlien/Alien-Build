@@ -49,6 +49,8 @@ frequently useful:
 
     The version of the library or tool
 
+- install\_type
+
     The install type.  Is one of:
 
     - system

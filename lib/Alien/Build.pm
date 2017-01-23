@@ -98,6 +98,8 @@ The library flags
 
 The version of the library or tool
 
+=item install_type
+
 The install type.  Is one of:
 
 =over
