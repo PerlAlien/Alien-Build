@@ -309,6 +309,9 @@ be returned and a system install will be performed.  If not,
 then the string C<share> will be installed and the tool or
 library will be downloaded and built from source.
 
+If the environment variable C<ALIEN_INSTALL_TYPE> is set, then that
+will be used instead of the detection logic.
+
 =cut
 
 sub probe
@@ -317,7 +320,7 @@ sub probe
   local $CWD = $self->root;
   my $dir;
   
-  my $type = eval {
+  my $type = $ENV{ALIEN_INSTALL_TYPE} || eval {
     $self->meta->call_hook(
       {
         before => sub {
@@ -327,7 +330,7 @@ sub probe
         after  => sub {
           $CWD = $self->root;
         },
-        ok     => 'share',
+        ok     => 'system',
       },
       'probe',
       $self,
@@ -337,11 +340,6 @@ sub probe
   if($@)
   {
     warn "error in probe (will do a share install): $@";
-    $type = 'share';
-  }
-  
-  if($type eq '1')
-  {
     $type = 'share';
   }
   

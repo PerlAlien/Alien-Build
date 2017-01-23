@@ -129,6 +129,9 @@ be returned and a system install will be performed.  If not,
 then the string `share` will be installed and the tool or
 library will be downloaded and built from source.
 
+If the environment variable `ALIEN_INSTALL_TYPE` is set, then that
+will be used instead of the detection logic.
+
 ## fetch
 
     my $res = $build->fetch;

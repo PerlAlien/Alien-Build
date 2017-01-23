@@ -232,6 +232,31 @@ subtest 'probe' => sub {
   
   };
   
+  subtest 'env' => sub {
+  
+    foreach my $expected (qw( share system ))
+    {
+    
+      subtest "type = $expected" => sub {
+        
+        local $ENV{ALIEN_INSTALL_TYPE} = $expected;
+        
+        my($build, $meta) = build_blank_alien_build;
+        
+        $meta->register_hook(
+          probe => sub {
+            die "should not get into here!";
+          },
+        );
+        
+        is( $build->probe, $expected);
+        
+      };
+    
+    }
+  
+  };
+  
 };
 
 done_testing;
