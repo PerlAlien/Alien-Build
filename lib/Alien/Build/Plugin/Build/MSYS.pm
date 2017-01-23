@@ -1,4 +1,4 @@
-package Alien::Build::Plugin::MSYS;
+package Alien::Build::Plugin::Build::MSYS;
 
 use strict;
 use warnings;

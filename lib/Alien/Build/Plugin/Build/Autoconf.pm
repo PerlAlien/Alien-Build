@@ -1,4 +1,4 @@
-package Alien::Build::Plugin::Autoconf;
+package Alien::Build::Plugin::Build::Autoconf;
 
 use strict;
 use warnings;

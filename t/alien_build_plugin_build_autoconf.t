@@ -1,13 +1,13 @@
 use Test2::Bundle::Extended;
-use Alien::Build::Plugin::Autoconf;
+use Alien::Build::Plugin::Build::Autoconf;
 use lib 't/lib';
 use MyTest;
 
 subtest 'basic' => sub {
 
-  my $plugin = Alien::Build::Plugin::Autoconf->new;
+  my $plugin = Alien::Build::Plugin::Build::Autoconf->new;
   isa_ok $plugin, 'Alien::Build::Plugin';
-  isa_ok $plugin, 'Alien::Build::Plugin::Autoconf';
+  isa_ok $plugin, 'Alien::Build::Plugin::Build::Autoconf';
 
   my($build, $meta) = build_blank_alien_build;
   
@@ -20,7 +20,7 @@ subtest 'basic' => sub {
 
 subtest 'turn off --with-pic' => sub {
 
-  my $plugin = Alien::Build::Plugin::Autoconf->new( with_pic => 0 );
+  my $plugin = Alien::Build::Plugin::Build::Autoconf->new( with_pic => 0 );
 
   is( $plugin->with_pic, 0 );
   
