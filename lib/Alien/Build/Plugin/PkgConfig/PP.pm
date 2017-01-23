@@ -71,7 +71,9 @@ sub init
       $build->runtime_prop->{cflags}  = _cleanup scalar $pkg->get_cflags;
       $build->runtime_prop->{libs}    = _cleanup scalar $pkg->get_ldflags;
       $build->runtime_prop->{version} = $pkg->pkg_version;
-      # pkg-config --cflags, libs version
+      $pkg = PkgConfig->find($self->pkg_name, static => 1);
+      $build->runtime_prop->{cflags_static} = _cleanup scalar $pkg->get_cflags;
+      $build->runtime_prop->{libs_static}   = _cleanup scalar $pkg->get_ldflags;
     },
   );
   

@@ -66,10 +66,13 @@ subtest 'system available, okay' => sub {
     hash {
       field cflags  => '-fPIC -I/test/include/foo ';
       field libs    => '-L/test/lib -lfoo ';
+      field libs_static => '-L/test/lib -lfoo -lbar -lbaz ';
       field version => '1.2.3';
       etc;
     },
   );
+  
+  note "cflags_static = @{[ $build->runtime_prop->{cflags_static} ]}";
 
 };
 

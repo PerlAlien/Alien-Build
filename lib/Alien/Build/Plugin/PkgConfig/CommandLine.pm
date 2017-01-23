@@ -69,6 +69,13 @@ sub init
     push @gather_system,
       [ $pkgconf, $flag, $self->pkg_name, sub { _val @_, $prop_name } ];
   }
+
+  foreach my $prop_name (qw( cflags libs ))
+  {
+    my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
+    push @gather_system,
+      [ $pkgconf, '--static', $flag, $self->pkg_name, sub { _val @_, "${prop_name}_static" } ];
+  }
   
   $meta->register_hook(
     gather_system => \@gather_system,

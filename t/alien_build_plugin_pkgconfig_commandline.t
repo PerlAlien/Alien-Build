@@ -67,12 +67,18 @@ subtest 'system available, okay' => sub {
   is(
     $build->runtime_prop,
     hash {
-      field cflags  => '-fPIC -I/test/include/foo ';
-      field libs    => '-L/test/lib -lfoo ';
-      field version => '1.2.3';
+      field cflags      => '-fPIC -I/test/include/foo ';
+      field libs        => '-L/test/lib -lfoo ';
+      field libs_static => '-L/test/lib -lfoo -lbar -lbaz ';
+      field version     => '1.2.3';
       etc;
     },
   );
+  
+  # not supported by pkg-config.
+  # may be supported by recent pkgconfig
+  # so we do not test it.
+  note "cflags_static = @{[ $build->runtime_prop->{cflags_static} ]}";
 
 };
 

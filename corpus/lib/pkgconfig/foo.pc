@@ -7,5 +7,6 @@ Name: foo
 Description: A testing pkg-config file
 Version: 1.2.3
 Libs: -L${libdir} -lfoo
+Libs.private: -lbar -lbaz
 Cflags: -fPIC -I${includedir}/foo
 Cflags.private: -DFOO_STATIC
