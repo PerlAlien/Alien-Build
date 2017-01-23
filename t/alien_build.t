@@ -73,7 +73,7 @@ subtest 'hook' => sub {
     my @foo1;
   
     $meta->register_hook(
-      share => foo1 => sub {
+      foo1 => sub {
         @foo1 = @_;
         return 42;
       }
@@ -96,7 +96,7 @@ subtest 'hook' => sub {
   my $exception_count = 0;
   
   $meta->register_hook(
-    share => foo2 => sub {
+    foo2 => sub {
       $exception_count++;
       die "throw exception";
     }
@@ -118,7 +118,7 @@ subtest 'hook' => sub {
     $exception_count = 0;
     
     $meta->register_hook(
-      share => foo2 => sub {
+      foo2 => sub {
         99;
       }
     );
@@ -138,7 +138,7 @@ subtest 'hook' => sub {
   subtest 'command list hook' => sub {
   
     $meta->register_hook(
-      share => foo4 => [[$^X, -e => 'print @ARGV', 'hello', ' ', 'world']],
+      foo4 => [[$^X, -e => 'print @ARGV', 'hello', ' ', 'world']],
     );
     
     my $out = capture_merged { $build->_call_hook('foo4') };
@@ -151,7 +151,7 @@ subtest 'hook' => sub {
   subtest 'command with failure' => sub {
   
     $meta->register_hook(
-      share => foo5 => [[$^X, -e => 'exit 1']],
+      foo5 => [[$^X, -e => 'exit 1']],
     );
     
     my $error;
@@ -167,7 +167,7 @@ subtest 'hook' => sub {
   subtest 'command with failure, followed by good command' => sub {
   
     $meta->register_hook(
-      share => foo5 => [[$^X, -e => '']],
+      foo5 => [[$^X, -e => '']],
     );
     
     note capture_merged {
@@ -187,7 +187,7 @@ subtest 'probe' => sub {
     my($build, $meta) = build_blank_alien_build;
     
     $meta->register_hook(
-      any => probe => sub {
+      probe => sub {
         note "dir = $CWD";
         return 'system';
       },
@@ -203,7 +203,7 @@ subtest 'probe' => sub {
     my($build, $meta) = build_blank_alien_build;
     
     $meta->register_hook(
-      any => probe => sub {
+      probe => sub {
         note "dir = $CWD";
         return 'system';
       },
@@ -219,7 +219,7 @@ subtest 'probe' => sub {
     my($build, $meta) = build_blank_alien_build;
     
     $meta->register_hook(
-      any => probe => sub {
+      probe => sub {
         note "dir = $CWD";
         die "error will robinson!";
       },
@@ -237,7 +237,7 @@ subtest 'probe' => sub {
     my($build, $meta) = build_blank_alien_build;
     
     $meta->register_hook(
-      any => probe => sub {
+      probe => sub {
         note "dir = $CWD";
         return 1;
       },

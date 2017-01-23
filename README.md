@@ -82,13 +82,13 @@ The worst candidate will be returned last.
 
 ## probe hook
 
-    $meta->register_hook( any => probe => sub {
+    $meta->register_hook( probe => sub {
       my($build) = @_;
       return 'system' if ...; # system install
       return 'share';         # otherwise
     });
     
-    $meta->register_hook( any => probe => [ $command ] );
+    $meta->register_hook( probe => [ $command ] );
 
 This hook should return the string `system` if the operating
 system provides the library or tool.  It should return `share`
@@ -97,12 +97,12 @@ otherwise.
 You can also use a command that returns true when the tool
 or library is available.  For example for use with `pkg-config`:
 
-    $meta->register_hook( any => probe =>
+    $meta->register_hook( probe =>
       [ '%{pkgconf} --exists libfoo' ] );
 
 Or if you needed a minimum version:
 
-    $meta->register_hook( any => probe =>
+    $meta->register_hook( probe =>
       [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
 
 ## fetch hook
@@ -120,7 +120,7 @@ Or if you needed a minimum version:
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( share => fetch => sub {
+      $meta->register_hook( fetch => sub {
         my($build, $url) = @_;
         ...
       }
@@ -191,7 +191,7 @@ reference:
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( share => decode => sub {
+      $meta->register_hook( decode => sub {
         my($build, $res) = @_;
         ...
       }
@@ -211,7 +211,7 @@ hash references.
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( share => sort => sub {
+      $meta->register_hook( sort => sub {
         my($build, $res) = @_;
         return {
           type => 'list',
@@ -249,8 +249,8 @@ that are totally unacceptable.
 
 ## register\_hook
 
-    $build->meta->register_hook($phase, $name, $instructions);
-    Alien::Build->meta->register_hook($phase, $name, $instructions);
+    $build->meta->register_hook($name, $instructions);
+    Alien::Build->meta->register_hook($name, $instructions);
 
 ## default\_hook
 

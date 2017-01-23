@@ -16,7 +16,7 @@ sub init
 
   $meta->add_requires('share' => 'LWP::UserAgent' => 0 );
   
-  $meta->register_hook( share => fetch => sub {
+  $meta->register_hook( fetch => sub {
     my(undef, $url) = @_;
     $url ||= $self->url;
 

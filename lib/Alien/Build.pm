@@ -314,13 +314,13 @@ sub sort
 
 =head2 probe hook
 
- $meta->register_hook( any => probe => sub {
+ $meta->register_hook( probe => sub {
    my($build) = @_;
    return 'system' if ...; # system install
    return 'share';         # otherwise
  });
  
- $meta->register_hook( any => probe => [ $command ] );
+ $meta->register_hook( probe => [ $command ] );
 
 This hook should return the string C<system> if the operating
 system provides the library or tool.  It should return C<share>
@@ -329,12 +329,12 @@ otherwise.
 You can also use a command that returns true when the tool
 or library is available.  For example for use with C<pkg-config>:
 
- $meta->register_hook( any => probe =>
+ $meta->register_hook( probe =>
    [ '%{pkgconf} --exists libfoo' ] );
 
 Or if you needed a minimum version:
 
- $meta->register_hook( any => probe =>
+ $meta->register_hook( probe =>
    [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
 
 =head2 fetch hook
@@ -352,7 +352,7 @@ Or if you needed a minimum version:
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( share => fetch => sub {
+   $meta->register_hook( fetch => sub {
      my($build, $url) = @_;
      ...
    }
@@ -423,7 +423,7 @@ reference:
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( share => decode => sub {
+   $meta->register_hook( decode => sub {
      my($build, $res) = @_;
      ...
    }
@@ -443,7 +443,7 @@ hash references.
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( share => sort => sub {
+   $meta->register_hook( sort => sub {
      my($build, $res) = @_;
      return {
        type => 'list',
@@ -562,23 +562,34 @@ sub has_hook
 
 =head2 register_hook
 
- $build->meta->register_hook($phase, $name, $instructions);
- Alien::Build->meta->register_hook($phase, $name, $instructions);
+ $build->meta->register_hook($name, $instructions);
+ Alien::Build->meta->register_hook($name, $instructions);
 
 =cut
 
 sub _instr
 {
-  my($self, $phase, $instr) = @_;
+  my($self, $name, $instr) = @_;
   if(ref($instr) eq 'CODE')
   {
     return $instr;
   }
   elsif(ref($instr) eq 'ARRAY')
   {
+    my %phase = (
+      download      => 'share',
+      fetch         => 'share',
+      decode        => 'share',
+      sort          => 'share',
+      extract       => 'share',
+      build         => 'share',
+      stage         => 'share',
+      gather_share  => 'share',
+      gather_system => 'system',
+    );
     require Alien::Build::CommandSequence;
     my $seq = Alien::Build::CommandSequence->new(@$instr);
-    $seq->apply_requirements($self, $phase||'any');
+    $seq->apply_requirements($self, $phase{$name} || 'any');
     return $seq;
   }
   else
@@ -589,8 +600,8 @@ sub _instr
 
 sub register_hook
 {
-  my($self, $phase, $name, $instr) = @_;
-  push @{ $self->{hook}->{$name} }, _instr $self, $phase, $instr;
+  my($self, $name, $instr) = @_;
+  push @{ $self->{hook}->{$name} }, _instr $self, $name, $instr;
   $self;
 }
 
@@ -604,7 +615,7 @@ sub register_hook
 sub default_hook
 {
   my($self, $phase, $name, $instr) = @_;
-  $self->{default_hook}->{$name} = _instr $self, $phase, $instr;
+  $self->{default_hook}->{$name} = _instr $self, $name, $instr;
   $self;
 }
 
