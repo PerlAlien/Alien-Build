@@ -33,6 +33,8 @@ sub _val
   my($build, $args, $prop_name) = @_;
   my $string = $args->{out};
   chomp $string;
+  $string =~ s{^\s+}{};
+  $string =~ s{\s+$}{ };
   $build->runtime_prop->{$prop_name} = $string;
   ();
 }
