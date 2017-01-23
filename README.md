@@ -24,9 +24,60 @@ client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base
 
     my $href = $build->install_prop;
 
+Hash of properties used during the install phase, for either a
+`system` or `share` install.  For most things you will want to
+use `runtime_prop` below.  Only use `install_prop` for properties
+that are needed ONLY during the install phase.
+
 ## runtime\_prop
 
     my $href = $build->runtime_prop;
+
+Hash of properties used during the runtime phase.  This can include
+anything needed by your [Alien::Base](https://metacpan.org/pod/Alien::Base) based module, but these are
+frequently useful:
+
+- cflags
+
+    The compiler flags
+
+- libs
+
+    The library flags
+
+- version
+
+    The version of the library or tool
+
+    The install type.  Is one of:
+
+    - system
+
+        For when the library or tool is provided by the operating system, can be
+        detected by [Alien::Build](https://metacpan.org/pod/Alien::Build), and is considered satisfactory by the
+        `alienfile` recipe.
+
+    - share
+
+        For when a system install is not possible, the library source will be
+        downloaded from the internet or retrieved in another appropriate fashion
+        and built.
+
+## root
+
+    my $dir = $build->root;
+
+The build root directory.  This will be an absolute path.  It will be
+created if it does not already exist.  It is the absolute form of
+`./_alien` by default.
+
+## install\_type
+
+    my $type = $build->install_type;
+
+This is just a shortcut for:
+
+    my $type = $build->runtime_prop->{install_type};
 
 # METHODS
 

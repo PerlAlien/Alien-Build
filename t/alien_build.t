@@ -232,22 +232,6 @@ subtest 'probe' => sub {
   
   };
   
-  subtest 'return 1' => sub {
-  
-    my($build, $meta) = build_blank_alien_build;
-    
-    $meta->register_hook(
-      probe => sub {
-        note "dir = $CWD";
-        return 1;
-      },
-    );
-    
-    is($build->probe, 'share');
-    is($build->runtime_prop->{install_type}, 'share');
-  
-  };
-
 };
 
 done_testing;

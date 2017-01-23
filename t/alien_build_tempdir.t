@@ -8,8 +8,8 @@ use Path::Tiny qw( path );
 my($build,$meta) = build_blank_alien_build;
 
 ok(
-  -d $build->_root,
-  "root = @{[ $build->_root ]}",
+  -d $build->root,
+  "root = @{[ $build->root ]}",
 );
 
 subtest 'cleanup on empty' => sub {

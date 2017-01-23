@@ -63,7 +63,12 @@ my $count = 0;
 =head2 install_prop
 
  my $href = $build->install_prop;
- 
+
+Hash of properties used during the install phase, for either a
+C<system> or C<share> install.  For most things you will want to
+use C<runtime_prop> below.  Only use C<install_prop> for properties
+that are needed ONLY during the install phase.
+
 =cut
 
 sub install_prop
@@ -75,11 +80,83 @@ sub install_prop
 
  my $href = $build->runtime_prop;
 
+Hash of properties used during the runtime phase.  This can include
+anything needed by your L<Alien::Base> based module, but these are
+frequently useful:
+
+=over 4
+
+=item cflags
+
+The compiler flags
+
+=item libs
+
+The library flags
+
+=item version
+
+The version of the library or tool
+
+The install type.  Is one of:
+
+=over
+
+=item system
+
+For when the library or tool is provided by the operating system, can be
+detected by L<Alien::Build>, and is considered satisfactory by the
+C<alienfile> recipe.
+
+=item share
+
+For when a system install is not possible, the library source will be
+downloaded from the internet or retrieved in another appropriate fashion
+and built.
+
+=back
+
+=back
+
 =cut
 
 sub runtime_prop
 {
   shift->{runtime_prop};
+}
+
+=head2 root
+
+ my $dir = $build->root;
+
+The build root directory.  This will be an absolute path.  It will be
+created if it does not already exist.  It is the absolute form of
+C<./_alien> by default.
+
+=cut
+
+sub root
+{
+  my($self) = @_;
+  my $root = $self->install_prop->{root};
+  _path($root)->mkpath unless -d $root;
+  $root;
+}
+
+=head2 install_type
+
+ my $type = $build->install_type;
+
+This is just a shortcut for:
+
+ my $type = $build->runtime_prop->{install_type};
+ 
+=cut
+
+sub install_type
+{
+  my($self) = @_;
+  $self->{runtime_prop}->{install_type} ||= $self->probe;
 }
 
 =head1 METHODS
@@ -214,18 +291,10 @@ library will be downloaded and built from source.
 
 =cut
 
-sub _root
-{
-  my($self) = @_;
-  my $root = $self->install_prop->{root};
-  _path($root)->mkpath unless -d $root;
-  $root;
-}
-
 sub probe
 {
   my($self) = @_;
-  local $CWD = $self->_root;
+  local $CWD = $self->root;
   my $dir;
   
   my $type = eval {
@@ -236,8 +305,9 @@ sub probe
           $CWD = "$dir";
         },
         after  => sub {
-          $CWD = $self->_root;
+          $CWD = $self->root;
         },
+        ok     => 'share',
       },
       'probe',
       $self,
@@ -649,7 +719,8 @@ sub call_hook
         $hook->execute(@args);
         $args{verify}->() if $args{verify};
       };
-      $value = 1;
+      $value = $args{ok};
+      $value = 1 unless defined;
     }
     $error = $@;
     $args{after}->() if $args{after};

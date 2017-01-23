@@ -26,6 +26,8 @@ pod_spelling_system:
     - Zaki
     - mohawk
     - plugable
+    - cflags
+    - libs
 
 pod_coverage:
   skip: 0
