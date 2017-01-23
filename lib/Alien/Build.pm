@@ -797,7 +797,7 @@ sub call_hook
         $args{verify}->() if $args{verify};
       };
       $value = $args{ok};
-      $value = 1 unless defined;
+      $value = 1 unless defined $value;
     }
     $error = $@;
     $args{after}->() if $args{after};

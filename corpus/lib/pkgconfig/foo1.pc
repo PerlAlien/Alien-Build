@@ -1,0 +1,11 @@
+prefix=/test
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: foo1
+Description: A testing pkg-config file
+Version: 1.2.3
+Libs: -L${libdir} -LC:/Program\ Files/Foo\ App/lib -lfoo1
+Cflags: -fPIC -I${includedir}/foo1 -IC:/Program\ Files/Foo\ App/include
+Cflags.private: -DFOO1_STATIC

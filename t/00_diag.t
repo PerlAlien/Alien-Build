@@ -14,6 +14,7 @@ $modules{$_} = $_ for qw(
   Capture::Tiny
   ExtUtils::MakeMaker
   File::chdir
+  IPC::Cmd
   JSON::PP
   Path::Tiny
   Test2::Suite
