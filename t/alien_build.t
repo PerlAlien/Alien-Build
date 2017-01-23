@@ -259,6 +259,38 @@ subtest 'probe' => sub {
   
 };
 
+subtest 'gather system' => sub {
+
+  local $ENV{ALIEN_INSTALL_TYPE} = 'system';
+
+  my($build, $meta) = build_blank_alien_build;
+  
+  $meta->register_hook(
+    gather_system => sub {
+      my($build) = @_;
+      $build->runtime_prop->{cflags}  = '-DFoo=1';
+      $build->runtime_prop->{libs}    = '-lfoo';
+      $build->runtime_prop->{version} = '1.2.3';
+    },
+  );
+  
+  if($build->install_type eq 'system')
+  {
+    $build->gather_system;
+  }
+  
+  is(
+    $build->runtime_prop,
+    hash {
+      field cflags  => '-DFoo=1';
+      field libs    => '-lfoo';
+      field version => '1.2.3';
+      etc;
+    },
+  );
+
+};
+
 done_testing;
 
 {

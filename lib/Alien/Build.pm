@@ -353,6 +353,44 @@ sub probe
   $type;
 }
 
+=head2 gather_system
+
+ $build->gather_system
+
+This method gathers the necessary properties from the system for using
+the library or tool under a system install type.
+ 
+=cut
+
+sub gather_system
+{
+  my($self) = @_;
+  
+  return $self if $self->install_prop->{complete}->{gather_system};
+  
+  local $CWD = $self->root;
+  my $dir;
+  
+  $self->meta->call_hook(
+    {
+      before => sub {
+        $dir = Alien::Build::TempDir->new($self, "gather");
+        $CWD = "$dir";
+      },
+      after  => sub {
+        $CWD = $self->root;
+      },
+    },
+    'gather_system',
+    $self,
+  );
+  
+  $self->install_prop->{finished} = 1;
+  $self->install_prop->{complete}->{gather_system} = 1;
+  
+  $self;
+}
+
 =head2 fetch
 
  my $res = $build->fetch;
@@ -424,6 +462,27 @@ Or if you needed a minimum version:
 
  $meta->register_hook( probe =>
    [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
+
+Note that this hook SHOULD NOT gather system properties, such as
+cflags, libs, versions, etc, because the probe hook will be skipped
+in the even the environment variable C<ALIEN_INSTALL_TYPE> is set.
+The detection of these properties should instead be done by the
+C<gather_system> hook, below.
+
+=head2 gather_system
+
+ $meta->register_hook( gather_system => sub {
+   my($build) = @_;
+   $build->runtime_prop->{cflags}  = ...;
+   $build->runtime_prop->{libs}    = ...;
+   $build->runtime_prop->{version} = ...;
+ });
+
+This hook is called for a system install to determine the properties
+necessary for using the library or tool.  These properties should be
+stored in the C<runtime_prop> hash as shown above.  Typical properties
+that are needed for libraries are cflags and libs.  If at all possible
+you should also try to determine the version of the library or tool.
 
 =head2 fetch hook
 
