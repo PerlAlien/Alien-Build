@@ -34,7 +34,7 @@ sub _val
   my $string = $args->{out};
   chomp $string;
   $string =~ s{^\s+}{};
-  $string =~ s{\s+$}{ };
+  $string =~ s{\s*$}{ };
   $build->runtime_prop->{$prop_name} = $string;
   ();
 }
@@ -62,8 +62,9 @@ sub init
   
   foreach my $prop_name (qw( cflags libs version ))
   {
+    my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
     push @gather_system,
-      [ $pkgconf, "--$prop_name", $self->pkg_name, sub { _val @_, $prop_name } ];
+      [ $pkgconf, $flag, $self->pkg_name, sub { _val @_, $prop_name } ];
   }
   
   $meta->register_hook(
