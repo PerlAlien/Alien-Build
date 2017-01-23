@@ -69,6 +69,8 @@ sub init
   $meta->register_hook(
     gather_system => \@gather_system,
   );
+  
+  $self;
 }
 
 1;
