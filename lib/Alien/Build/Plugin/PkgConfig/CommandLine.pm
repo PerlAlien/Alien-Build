@@ -52,7 +52,7 @@ sub init
     [$pkgconf, '--exists', $self->pkg_name],
   );
   
-  if($self->minimum_version)
+  if(defined $self->minimum_version)
   {
     push @probe, [ $pkgconf, '--atleast-version=' . $self->minimum_version, $self->pkg_name ];
   }

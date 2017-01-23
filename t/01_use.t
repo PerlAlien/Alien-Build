@@ -20,5 +20,6 @@ require_ok 'Alien::Build::Plugin::Sort::SortVersions';
 require_ok 'Alien::Build::CommandSequence';
 require_ok 'Alien::Build::Plugin::PkgConfig::CommandLine';
 require_ok 'Alien::Build::Plugin::PkgConfig::PP';
+require_ok 'Alien::Build::Plugin::PkgConfig::LibPkgConf';
 
 done_testing;

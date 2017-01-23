@@ -5,6 +5,9 @@ use warnings;
 use Alien::Build::Plugin;
 use Carp ();
 
+# ABSTRACT: Probe system and determine library or tool properties using PkgConfig.pm
+# VERSION
+
 has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
@@ -28,7 +31,7 @@ sub init
     # running when $^O eq 'linux'
     $meta->add_requires('any' => 'PkgConfig' => '0.09026');
   }
-  elsif($self->minimum_version)
+  elsif(defined $self->minimum_version)
   {
     # added support for --atleast-version
     $meta->add_requires('any' => 'PkgConfig' => '0.08926');
@@ -49,7 +52,7 @@ sub init
     probe => sub {
       my $pkg = PkgConfig->find($self->pkg_name);
       return 'share' if $pkg->errmsg;
-      if($self->minimum_version)
+      if(defined $self->minimum_version)
       {
         my $version = PkgConfig::Version->new($pkg->pkg_version);
         my $need    = PkgConfig::Version->new($self->minimum_version);
