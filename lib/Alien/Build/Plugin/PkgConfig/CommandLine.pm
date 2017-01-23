@@ -34,7 +34,10 @@ sub _val
   my $string = $args->{out};
   chomp $string;
   $string =~ s{^\s+}{};
-  $string =~ s{\s*$}{ };
+  if($prop_name eq 'version')
+  { $string =~ s{\s*$}{} }
+  else
+  { $string =~ s{\s*$}{ } }
   $build->runtime_prop->{$prop_name} = $string;
   ();
 }
