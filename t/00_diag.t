@@ -13,6 +13,7 @@ $modules{$_} = $_ for qw(
   Alien::Base
   Capture::Tiny
   ExtUtils::MakeMaker
+  File::chdir
   JSON::PP
   Path::Tiny
   Test2::Suite

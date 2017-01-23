@@ -10,17 +10,28 @@ our @EXPORT = qw( build_blank_alien_build );
 
 sub build_blank_alien_build
 {
-  my($name) = @_;
-  unless($name)
+  my(@args) = @_;
+  my (undef, $name) = caller;
+  if($name =~ /([a-z_]+)\.(t|pm|pl)$/i)
   {
-    (undef, $name) = caller;
-    $name =~ s/\..*$//;
+    $name = $1;
   }
-  my $alienfile = path( tempdir( CLEANUP => 1 ) )->child("$name/alienfile");
-  $alienfile->parent->mkpath;
+  else
+  {
+    $name = 'other';
+  }
+  
+  my $dir = path(tempdir(CLEANUP => 1))->child($name);
+  $dir->mkpath;
+  
+  my $alienfile = $dir->child("alienfile");
   $alienfile->touch;
   require Alien::Build;
-  my $build = Alien::Build->load($alienfile);
+  my $build = Alien::Build->load(
+    $alienfile->stringify, 
+    root => $dir->child('_alien')->stringify,
+    @args,
+  );
   my $meta = $build->meta;
   wantarray ? ($build, $meta) : $build;
 }

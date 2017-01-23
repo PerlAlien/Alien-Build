@@ -4,6 +4,7 @@ use lib 't/lib';
 use lib 'corpus/lib';
 use MyTest;
 use Capture::Tiny qw( capture_merged );
+use File::chdir;
 
 subtest 'simple new' => sub {
   my $build = MyBuild->new;
@@ -174,6 +175,76 @@ subtest 'hook' => sub {
     };
     
     ok 1;
+  
+  };
+
+};
+
+subtest 'probe' => sub {
+
+  subtest 'system' => sub {
+  
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      any => probe => sub {
+        note "dir = $CWD";
+        return 'system';
+      },
+    );
+    
+    is($build->probe, 'system');
+    is($build->runtime_prop->{install_type}, 'system');
+  
+  };
+  
+  subtest 'share' => sub {
+
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      any => probe => sub {
+        note "dir = $CWD";
+        return 'system';
+      },
+    );
+    
+    is($build->probe, 'system');
+    is($build->runtime_prop->{install_type}, 'system');
+  
+  };
+  
+  subtest 'throw exception' => sub {
+  
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      any => probe => sub {
+        note "dir = $CWD";
+        die "error will robinson!";
+      },
+    );
+    
+    my $type;
+    note capture_merged { $type = $build->probe };
+    is($type, 'share');
+    is($build->runtime_prop->{install_type}, 'share');
+  
+  };
+  
+  subtest 'return 1' => sub {
+  
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      any => probe => sub {
+        note "dir = $CWD";
+        return 1;
+      },
+    );
+    
+    is($build->probe, 'share');
+    is($build->runtime_prop->{install_type}, 'share');
   
   };
 

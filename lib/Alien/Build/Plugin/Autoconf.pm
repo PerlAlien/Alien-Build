@@ -41,6 +41,14 @@ Some reasonable default flags will be provided.
     },
     @msys_reqs,
   );
+  
+  $meta->default_hook(
+    share => build => [
+      '%{configure} --prefix=%{prefix}',
+      '%{make}',
+      '%{make} install',
+    ]
+  );
 
 =head2 make
 

@@ -47,6 +47,16 @@ client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base
     my $meta = Alien::Build->meta;
     my $meta = $build->meta;
 
+## probe
+
+    my $install_type = $build->probe;
+
+Attempts to determine if the operating system has the library or
+tool already installed.  If so, then the string `system` will
+be returned and a system install will be performed.  If not,
+then the string `share` will be installed and the tool or
+library will be downloaded and built from source.
+
 ## fetch
 
     my $res = $build->fetch;
@@ -69,6 +79,31 @@ Filter and sort candidates.  The best candidate will be returned first in the li
 The worst candidate will be returned last.
 
 # HOOKS
+
+## probe hook
+
+    $meta->register_hook( any => probe => sub {
+      my($build) = @_;
+      return 'system' if ...; # system install
+      return 'share';         # otherwise
+    });
+    
+    $meta->register_hook( any => probe => [ $command ] );
+
+This hook should return the string `system` if the operating
+system provides the library or tool.  It should return `share`
+otherwise.
+
+You can also use a command that returns true when the tool
+or library is available.  For example for use with `pkg-config`:
+
+    $meta->register_hook( any => probe =>
+      [ '%{pkgconf} --exists libfoo' ] );
+
+Or if you needed a minimum version:
+
+    $meta->register_hook( any => probe =>
+      [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
 
 ## fetch hook
 
@@ -216,6 +251,11 @@ that are totally unacceptable.
 
     $build->meta->register_hook($phase, $name, $instructions);
     Alien::Build->meta->register_hook($phase, $name, $instructions);
+
+## default\_hook
+
+    $build->meta->default_hook($phase, $name, $instructions);
+    Alien::Build->meta->default_hook($phase, $name, $instructions);
 
 # CONTRIBUTING
 

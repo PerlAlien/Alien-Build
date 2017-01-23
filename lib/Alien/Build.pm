@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Path::Tiny ();
 use Carp ();
+use File::chdir;
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -32,13 +33,26 @@ sub _path { Path::Tiny::path(@_) }
 
 sub new
 {
-  my($class) = @_;
+  my($class, %args) = @_;
   my $self = bless {
-    install_prop => {},
-    runtime_prop => {},
+    install_prop => {
+      root => $args{root} || _path("_alien")->stringify,
+      # prefix
+    },
+    runtime_prop => {
+      # cflags
+      # libs
+      # version
+      # pc_path
+    },
   }, $class;
-  my(undef, $filename) = caller;
-  $self->meta->filename(_path($filename)->absolute->stringify);
+  
+  $self->meta->filename(
+    $args{filename} || do {
+      my(undef, $filename) = caller;
+      _path($filename)->absolute->stringify;
+    }
+  );
   $self;
 }
 
@@ -78,7 +92,7 @@ sub runtime_prop
 
 sub load
 {
-  my(undef, $filename) = @_;
+  my(undef, $filename, @args) = @_;
 
   unless(-r $filename)
   {
@@ -102,10 +116,11 @@ sub load
     $class =~ s{::Alienfile$}{};
     $class->meta;
   }};
-  
-  $class->meta->filename($file->absolute->stringify);
-  
-  my $self = bless {}, $class;
+    
+  my $self = $class->new(
+    filename => $file->absolute->stringify,
+    @args,
+  );
 
   eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
     package ${class}::Alienfile;
@@ -187,6 +202,69 @@ sub _call_hook
   $self->meta->call_hook( $name => $self, @args );
 }
 
+=head2 probe
+
+ my $install_type = $build->probe;
+
+Attempts to determine if the operating system has the library or
+tool already installed.  If so, then the string C<system> will
+be returned and a system install will be performed.  If not,
+then the string C<share> will be installed and the tool or
+library will be downloaded and built from source.
+
+=cut
+
+sub _root
+{
+  my($self) = @_;
+  my $root = $self->install_prop->{root};
+  _path($root)->mkpath unless -d $root;
+  $root;
+}
+
+sub probe
+{
+  my($self) = @_;
+  local $CWD = $self->_root;
+  my $dir;
+  
+  my $type = eval {
+    $self->meta->call_hook(
+      {
+        before => sub {
+          $dir = Alien::Build::TempDir->new($self, "probe");
+          $CWD = "$dir";
+        },
+        after  => sub {
+          $CWD = $self->_root;
+        },
+      },
+      'probe',
+      $self,
+    );
+  };
+  
+  if($@)
+  {
+    warn "error in probe (will do a share install): $@";
+    $type = 'share';
+  }
+  
+  if($type eq '1')
+  {
+    $type = 'share';
+  }
+  
+  if($type !~ /^(system|share)$/)
+  {
+    Carp::croak "probe hook returned something other than system or share: $type";
+  }
+  
+  $self->runtime_prop->{install_type} = $type;
+  
+  $type;
+}
+
 =head2 fetch
 
  my $res = $build->fetch;
@@ -233,6 +311,31 @@ sub sort
 }
 
 =head1 HOOKS
+
+=head2 probe hook
+
+ $meta->register_hook( any => probe => sub {
+   my($build) = @_;
+   return 'system' if ...; # system install
+   return 'share';         # otherwise
+ });
+ 
+ $meta->register_hook( any => probe => [ $command ] );
+
+This hook should return the string C<system> if the operating
+system provides the library or tool.  It should return C<share>
+otherwise.
+
+You can also use a command that returns true when the tool
+or library is available.  For example for use with C<pkg-config>:
+
+ $meta->register_hook( any => probe =>
+   [ '%{pkgconf} --exists libfoo' ] );
+
+Or if you needed a minimum version:
+
+ $meta->register_hook( any => probe =>
+   [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
 
 =head2 fetch hook
 
@@ -464,25 +567,44 @@ sub has_hook
 
 =cut
 
-sub register_hook
+sub _instr
 {
-  my($self, $phase, $name, $instr) = @_;
+  my($self, $phase, $instr) = @_;
   if(ref($instr) eq 'CODE')
   {
-    # nothing.
+    return $instr;
   }
   elsif(ref($instr) eq 'ARRAY')
   {
     require Alien::Build::CommandSequence;
     my $seq = Alien::Build::CommandSequence->new(@$instr);
     $seq->apply_requirements($self, $phase||'any');
-    $instr = $seq;
+    return $seq;
   }
   else
   {
     die "type not supported as a hook";
   }
-  push @{ $self->{hook}->{$name} }, $instr;
+}
+
+sub register_hook
+{
+  my($self, $phase, $name, $instr) = @_;
+  push @{ $self->{hook}->{$name} }, _instr $self, $phase, $instr;
+  $self;
+}
+
+=head2 default_hook
+
+ $build->meta->default_hook($phase, $name, $instructions);
+ Alien::Build->meta->default_hook($phase, $name, $instructions);
+
+=cut
+
+sub default_hook
+{
+  my($self, $phase, $name, $instr) = @_;
+  $self->{default_hook}->{$name} = _instr $self, $phase, $instr;
   $self;
 }
 
@@ -493,17 +615,29 @@ sub call_hook
   my($name, @args) = @_;
   my $error;
   
-  foreach my $hook (@{ $self->{hook}->{$name} })
+  my @hooks = @{ $self->{hook}->{$name} || []};
+  
+  if(@hooks == 0 && defined $self->{default_hook}->{$name})
+  {
+    @hooks = ($self->{default_hook}->{$name})
+  }
+    
+  foreach my $hook (@hooks)
   {
     my $value;
     $args{before}->() if $args{before};
     if(ref($hook) eq 'CODE')
     {
-      $value = eval { $hook->(@args) };
+      $value = eval {
+        $hook->(@args);
+      };
     }
     else
     {
-      eval { $hook->execute(@args) };
+      eval {
+        $hook->execute(@args);
+        $args{verify}->() if $args{verify};
+      };
       $value = 1;
     }
     $error = $@;
@@ -534,6 +668,36 @@ sub _dump
   {
     require Data::Dumper;
     return Data::Dumper::Dumper($self);
+  }
+}
+
+package Alien::Build::TempDir;
+
+use Path::Tiny qw( path );
+use overload '""' => sub { shift->as_string };
+use File::Temp qw( tempdir );
+
+sub new
+{
+  my($class, $build, $name) = @_;
+  my $root = $build->install_prop->{root};
+  path($root)->mkpath unless -d $root;
+  bless {
+    dir => path(tempdir( "${name}_XXXX", DIR => $root)),
+  }, $class;
+}
+
+sub as_string
+{
+  shift->{dir}->stringify;
+}
+
+sub DESTROY
+{
+  my($self) = @_;
+  if($self->{dir}->children == 0)
+  {
+    rmdir($self->{dir}) || warn "unable to remove @{[ $self->{dir} ]} $!";
   }
 }
 
