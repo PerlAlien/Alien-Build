@@ -67,7 +67,16 @@ my $count = 0;
 Hash of properties used during the install phase, for either a
 C<system> or C<share> install.  For most things you will want to
 use C<runtime_prop> below.  Only use C<install_prop> for properties
-that are needed ONLY during the install phase.
+that are needed ONLY during the install phase.  Standard properties:
+
+=over
+
+=item root
+
+The build root directory.  This will be an absolute path.  It is the
+absolute form of C<./_alien> by default.
+
+=back
 
 =cut
 
@@ -131,9 +140,11 @@ sub runtime_prop
 
  my $dir = $build->root;
 
-The build root directory.  This will be an absolute path.  It will be
-created if it does not already exist.  It is the absolute form of
-C<./_alien> by default.
+This is just a shortcut for:
+
+ my $root = $build->install_prop->{root};
+
+Except that it will be created if it does not already exist.  
 
 =cut
 
