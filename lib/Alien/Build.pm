@@ -295,8 +295,10 @@ sub meta
 
 sub _call_hook
 {
-  my($self, $name, @args) = @_;
-  $self->meta->call_hook( $name => $self, @args );
+  my $self = shift;
+  my $config = ref($_[0]) eq 'HASH' ? shift : {};
+  my($name, @args) = @_;
+  $self->meta->call_hook( $config, $name => $self, @args );
 }
 
 =head2 probe
@@ -331,7 +333,7 @@ sub probe
   else
   {
     $type = eval {
-      $self->meta->call_hook(
+      $self->_call_hook(
         {
           before => sub {
             $dir = Alien::Build::TempDir->new($self, "probe");
@@ -343,7 +345,6 @@ sub probe
           ok     => 'system',
         },
         'probe',
-        $self,
       );
     };
     $error = $@;
@@ -392,7 +393,7 @@ sub gather_system
   local $CWD = $self->root;
   my $dir;
   
-  $self->meta->call_hook(
+  $self->_call_hook(
     {
       before => sub {
         $dir = Alien::Build::TempDir->new($self, "gather");
@@ -403,7 +404,6 @@ sub gather_system
       },
     },
     'gather_system',
-    $self,
   );
   
   $self->install_prop->{finished} = 1;
@@ -426,34 +426,50 @@ sub download
   
   if($self->meta->has_hook('download'))
   {
-    my $tmp = Alien::Build::TempDir->new($self, "download");
-    local $CWD = "$tmp";
-    $self->_call_hook(download => ());
+    my $tmp;
+    local $CWD;
+    my $valid = 0;
     
-    my @list = grep { $_->basename !~ /^\./, } _path('.')->children;
+    $self->_call_hook(
+      {
+        before => sub {
+          $tmp = Alien::Build::TempDir->new($self, "download");
+          $CWD = "$tmp";
+        },
+        verify => sub {
+          my @list = grep { $_->basename !~ /^\./, } _path('.')->children;
     
-    my $count = scalar @list;
+          my $count = scalar @list;
     
-    if($count == 0)
-    {
-      die "no files downloaded";
-    }
-    elsif($count == 1)
-    {
-      print "Alien::Build> single file, assuming archive\n";
-      my($archive) = $list[0];
-      $self->install_prop->{download} = $archive->absolute->stringify;
-      $self->install_prop->{complete}->{download} = 1;
-      return $self;
-    }
-    else
-    {
-      print "Alien::Build> multiple files, assuming already extracted\n";
-      $self->install_prop->{complete}->{download} = 1;
-      $self->install_prop->{complete}->{extract} = 1;
-      $self->install_prop->{extract} = _path('.')->absolute->stringify;
-      return $self;
-    }
+          if($count == 0)
+          {
+            die "no files downloaded";
+          }
+          elsif($count == 1)
+          {
+            print "Alien::Build> single file, assuming archive\n";
+            my($archive) = $list[0];
+            $self->install_prop->{download} = $archive->absolute->stringify;
+            $self->install_prop->{complete}->{download} = 1;
+            $valid = 1;
+          }
+          else
+          {
+            print "Alien::Build> multiple files, assuming already extracted\n";
+            $self->install_prop->{complete}->{download} = 1;
+            $self->install_prop->{complete}->{extract} = 1;
+            $self->install_prop->{extract} = _path('.')->absolute->stringify;
+            $valid = 1;
+          }   
+        },
+        after  => sub {
+          $CWD = $self->root;
+        },
+      },
+      'download',
+    );
+    
+    return $self if $valid;
   }
   else
   {
@@ -933,14 +949,16 @@ sub call_hook
     if(ref($hook) eq 'CODE')
     {
       $value = eval {
-        $hook->(@args);
+        my $value = $hook->(@args);
+        $args{verify}->('code') if $args{verify};
+        $value;
       };
     }
     else
     {
       eval {
         $hook->execute(@args);
-        $args{verify}->() if $args{verify};
+        $args{verify}->('command') if $args{verify};
       };
       $value = $args{ok};
       $value = 1 unless defined $value;
