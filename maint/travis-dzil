@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source ${PERLBREW_ROOT}/etc/bashrc
+perlbrew use 5.20
+
+set -euo pipefail
+IFS=$'\n\t'
+
+PREFIX=~/mylib/dzil
+
+function dzil {
+  perl -I$PREFIX/lib/perl5 $PREFIX/bin/dzil $@
+}
+
+if [ ! -e ~/.travis-dzil-first ]; then
+  cpanm -n -l $PREFIX Dist::Zilla
+  dzil authordeps --missing | cpanm -l $PREFIX -n
+  dzil listdeps   --missing | cpanm -l $PREFIX -n
+  touch ~/.travis-dzil-first
+fi
+
+dzil $@

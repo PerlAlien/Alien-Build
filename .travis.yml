@@ -2,18 +2,15 @@ language: perl
 sudo: false
 
 install:
-
-  - cpanm -n -l /tmp/myftpd URI AnyEvent AnyEvent::FTP::Server Proc::Daemon
-  - perl -I/tmp/myftpd/lib/perl5/ t/bin/ftpd -d
-  
-  - cpanm -n -l /tmp/myhttpd Mojolicious Mojolicious::Plugin::Directory Proc::Daemon
-  - perl -I/tmp/myhttpd/lib/perl5/ t/bin/httpd -d 
-
   - perlbrew list
-  - dzil authordeps --missing | cpanm -n
-  - dzil listdeps   --missing | cpanm -n
+  - ./maint/travis-dzil nop
+  - ./maint/travis-install-deps
+  - echo $INSTALL_OPTIONAL | cpanm -n
 
 perl:
+  - "5.8"
+  - "5.10"
+  - "5.12"
   - "5.14"
   - "5.16"
   - "5.18"
@@ -22,4 +19,12 @@ perl:
   - "5.24"
 
 script:
-  - dzil run 'maint/travis-run-test'
+  - ./maint/travis-run-test
+
+cache:
+  directories:
+    - $HOME/mylib
+
+env:
+  - INSTALL_OPTIONAL="File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML"
+  - INSTALL_OPTIONAL=""

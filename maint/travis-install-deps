@@ -9,8 +9,4 @@ rm -f *.tar.gz
 
 cd Alien-Build-*
 
-./maint/travis-daemon
-
-perl Makefile.PL
-make
-make test TEST_VERBOSE=1
+cpanm -n --installdeps .

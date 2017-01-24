@@ -13,12 +13,22 @@ $modules{$_} = $_ for qw(
   Alien::Base
   Capture::Tiny
   ExtUtils::MakeMaker
+  File::Listing::Ftpcopy
   File::chdir
+  HTML::LinkExtor
+  HTTP::Tiny
   IPC::Cmd
   JSON::PP
+  LWP
+  Net::FTP
   Path::Tiny
+  PkgConfig
+  PkgConfig::LibPkgConf
+  Sort::Versions
   Test2::Suite
   Test::More
+  URI
+  YAML
 );
 
 
