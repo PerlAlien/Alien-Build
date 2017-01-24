@@ -447,18 +447,24 @@ sub download
           }
           elsif($count == 1)
           {
-            print "Alien::Build> single file, assuming archive\n";
             my($archive) = $list[0];
+            if(-d $archive)
+            {
+              print "Alien::Build> single dir, assuming directory\n";
+            }
+            else
+            {
+              print "Alien::Build> single file, assuming archive\n";
+            }
             $self->install_prop->{download} = $archive->absolute->stringify;
             $self->install_prop->{complete}->{download} = 1;
             $valid = 1;
           }
           else
           {
-            print "Alien::Build> multiple files, assuming already extracted\n";
+            print "Alien::Build> multiple files, assuming directoryn";
             $self->install_prop->{complete}->{download} = 1;
-            $self->install_prop->{complete}->{extract} = 1;
-            $self->install_prop->{extract} = _path('.')->absolute->stringify;
+            $self->install_prop->{download} = _path('.')->absolute->stringify;
             $valid = 1;
           }   
         },
@@ -639,9 +645,8 @@ new empty directory, so you can save the download to the current
 directory.  If you store a single file in the directory, L<Alien::Build>
 will assume that it is an archive, which will be processed by the 
 extract hook below.  If you store multiple files, L<Alien::Build> will
-assume that you have already performed the archive step and proceed to
-the build hook next.  If no files are stored at all, an exception with
-an appropriate diagnostic will be thrown.
+assume the current directory is the source root.  If no files are stored
+at all, an exception with an appropriate diagnostic will be thrown.
 
 B<Note>: If you register this hook, then the fetch, decode and sort 
 hooks will NOT be called.

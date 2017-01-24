@@ -225,9 +225,8 @@ new empty directory, so you can save the download to the current
 directory.  If you store a single file in the directory, [Alien::Build](https://metacpan.org/pod/Alien::Build)
 will assume that it is an archive, which will be processed by the 
 extract hook below.  If you store multiple files, [Alien::Build](https://metacpan.org/pod/Alien::Build) will
-assume that you have already performed the archive step and proceed to
-the build hook next.  If no files are stored at all, an exception with
-an appropriate diagnostic will be thrown.
+assume the current directory is the source root.  If no files are stored
+at all, an exception with an appropriate diagnostic will be thrown.
 
 **Note**: If you register this hook, then the fetch, decode and sort 
 hooks will NOT be called.

@@ -504,10 +504,9 @@ subtest 'download' => sub {
     is(
       $build->install_prop,
       hash {
-        field extract => T();
+        field download => T();
         field complete => hash {
           field download => T();
-          field extract  => T();
           etc;
         };
         etc;
@@ -515,7 +514,7 @@ subtest 'download' => sub {
       'install props'
     );
     
-    my $dir = path($build->install_prop->{extract});
+    my $dir = path($build->install_prop->{download});
     ok(-d $dir, "dir exists");
     ok(-f $dir->child($_), "file $_ exists") for map { "$_.txt" } qw( foo bar baz );
   
