@@ -5,6 +5,7 @@ use warnings;
 use base qw( Exporter );
 use Scalar::Util qw( refaddr );
 use Text::ParseWords qw( shellwords );
+use Scalar::Util qw( weaken );
 
 our @EXPORT = qw( system_fake system_add );
 
@@ -35,6 +36,7 @@ sub new
   my($class, %cmds) = @_;
   my $self = bless { %cmds }, $class;
   push @stack, $self;
+  weaken $stack[-1];
   $self;
 }
 

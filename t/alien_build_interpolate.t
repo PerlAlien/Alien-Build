@@ -43,6 +43,30 @@ subtest 'basic usage' => sub {
   $intr->replace_helper( foo1 => sub { 'newfoo1' } );
   is( $intr->interpolate("%{foo1}"), 'newfoo1' );
 
+  eval { $intr->interpolate('%{totallybogus}') };
+  my $error = $@;
+  like $error, qr/no helper defined for totallybogus/;
+
+};
+
+subtest 'clone' => sub {
+
+  my $intr1 = Alien::Build::Interpolate->new;
+  isa_ok $intr1, 'Alien::Build::Interpolate';
+
+  $intr1->add_helper( foo => sub { 100 } );
+  
+  my $intr2 = $intr1->clone;
+  
+  $intr2->add_helper( bar => sub { 200 } );
+  
+  is( $intr1->interpolate('%{foo}'), 100);
+  is( $intr2->interpolate('%{foo}'), 100);
+  is( $intr2->interpolate('%{bar}'), 200);
+  
+  my $ret = eval { $intr1->interpolate('%{bar}') };
+  my $error = $@;
+  like $error, qr/no helper defined for bar/;
 };
 
 done_testing;

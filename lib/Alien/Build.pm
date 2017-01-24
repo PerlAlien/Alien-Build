@@ -405,7 +405,32 @@ sub download
   
   if($self->meta->has_hook('download'))
   {
-    die "todo";
+    my $tmp = Alien::Build::TempDir->new($self, "download");
+    local $CWD = "$tmp";
+    $self->_call_hook(download => ());
+    
+    my $count = scalar grep { $_->basename !~ /^\./, } _path('.')->children;
+    
+    if($count == 0)
+    {
+      die "no files downloaded";
+    }
+    elsif($count == 1)
+    {
+      print "Alien::Build> single file, assuming archive\n";
+      my($archive) = _path('.')->children;
+      $self->install_prop->{download} = $archive->absolute->stringify;
+      $self->install_prop->{complete}->{download} = 1;
+      return $self;
+    }
+    else
+    {
+      print "Alien::Build> multiple files, assuming already extracted\n";
+      $self->install_prop->{complete}->{download} = 1;
+      $self->install_prop->{complete}->{extract} = 1;
+      $self->install_prop->{extract} = _path('.')->absolute->stringify;
+      return $self;
+    }
   }
   else
   {
@@ -415,7 +440,7 @@ sub download
     {
       my $type = $res->{type};
       $type =~ s/_/ /;
-      print "decoding $type\n";
+      print "Alien::Build> decoding $type\n";
       $res = $self->decode($res);
     }
     
@@ -429,8 +454,8 @@ sub download
         splice @other, 7;
         push @other, '...';
       }
-      print "candidate *$pick\n";
-      print "candidate  $_\n" for @other;
+      print "Alien::Build> candidate *$pick\n";
+      print "Alien::Build> candidate  $_\n" for @other;
       $res = $self->fetch($pick);
     }
 
@@ -439,14 +464,14 @@ sub download
     if($res->{type} eq 'file')
     {
       my $filename = $res->{filename};
-      print "downloaded $filename\n";
+      print "Alien::Build> downloaded $filename\n";
       if($res->{content})
       {
         my $path = _path("$tmp/$filename");
         $path->spew_raw($res->{content});
         $self->install_prop->{download} = $path->stringify;
         $self->install_prop->{complete}->{download} = 1;
-        return;
+        return $self;
       }
       elsif($res->{path})
       {
@@ -458,18 +483,15 @@ sub download
         ) || die "copy $from => $to failed: $!";
         $self->install_prop->{download} = $to->stringify;
         $self->install_prop->{complete}->{download} = 1;
-        return;
+        return $self;
       }
-      else
-      {
-        die "file without content or path";
-      }
+      die "file without content or path";
     }
-    else
-    {
-      die "unknown fetch response type: @{[ $res->{type} ]}";
-    }
+    
+    die "unknown fetch response type: @{[ $res->{type} ]}";
   }
+  
+  die "download failed";
 }
 
 =head2 fetch

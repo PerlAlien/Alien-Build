@@ -104,6 +104,8 @@ sub execute_helper
   
   my $code = $self->{helper}->{$name}->{code};
   
+  die "no helper defined for $name" unless defined $code;
+
   if(ref($code) ne 'CODE')
   {
     my $perl = $code;
@@ -120,7 +122,7 @@ sub execute_helper
 
 =head2 interpolate
 
- my $string = $self->interpolate($template);
+ my $string = $intr->interpolate($template);
 
 =cut
 
@@ -134,7 +136,7 @@ sub interpolate
 
 =head2 requires
 
- my %requires = $self->requires($template);
+ my %requires = $intr->requires($template);
 
 =cut
 
@@ -145,6 +147,25 @@ sub requires
     my $name = $_;
     map { $_ => $self->{helper}->{$name}->{require}->{$_} || 0 } keys %{ $self->{helper}->{$name}->{require} }
   } $string =~ m{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}g;
+}
+
+=head2 clone
+
+ my $intr2 = $intr->clone;
+
+=cut
+
+sub clone
+{
+  my($self) = @_;
+  
+  my %help = %{ $self->{helper} };
+  require Storable;
+
+  my $new = bless {
+    helper => \%help,
+    classes => Storable::dclone($self->{classes}),
+  }, ref $self;
 }
 
 1;

@@ -3,6 +3,7 @@ use Alien::Build;
 use lib 't/lib';
 use lib 'corpus/lib';
 use MyTest;
+use MyTest::System2;
 use Capture::Tiny qw( capture_merged );
 use File::chdir;
 use Path::Tiny qw( path );
@@ -316,37 +317,37 @@ subtest 'download' => sub {
     ($build, $meta, $plugin);
   };
 
-  my $tarpath = path('corpus/dist/foo-1.00.tar.gz');
-  
-  subtest 'component' => sub {
-  
-    my $check = sub {
-      my($build) = @_;
+  my $tarpath = path('corpus/dist/foo-1.00.tar.gz')->absolute;
 
-        note capture_merged { $build->download };
+  my $check = sub {
+    my($build) = @_;
+
+    note scalar capture_merged { $build->download };
+     
+    is(
+      $build->install_prop,
+      hash {
+        field download => match qr/foo-1.00.tar.gz/;
+        field complete => hash {
+          field download => T();
+          etc;
+        };
+        etc;
+      },
+      'install props'
+    );
       
-        is(
-          $build->install_prop,
-          hash {
-            field download => match qr/foo-1.00.tar.gz/;
-            field complete => hash {
-              field download => T();
-              etc;
-            };
-            etc;
-          },
-          'install props'
-        );
-      
-        note "build.install_prop.download=@{[ $build->install_prop->{download} ]}";
+    note "build.install_prop.download=@{[ $build->install_prop->{download} ]}";
         
-        is(
-          path($build->install_prop->{download})->slurp_raw,
-          $tarpath->slurp_raw,
-          'file matches',
-        );
-    };
-  
+    is(
+      path($build->install_prop->{download})->slurp_raw,
+      $tarpath->slurp_raw,
+      'file matches',
+    );
+  };  
+
+  subtest 'component' => sub {
+
     foreach my $file_as (qw( content path ))
     {
   
@@ -379,7 +380,94 @@ subtest 'download' => sub {
     }
   
   };
-
+  
+  subtest 'command single' => sub {
+  
+    my $guard = system_fake
+      wget => sub {
+        my($url) = @_;
+        
+        # just pretend that we have some hidden files
+        path('.foo')->touch;
+        
+        if($url eq 'http://test1.test/foo/bar/baz/foo-1.00.tar.gz')
+        {
+          print "200 found $url!\n";
+          path('foo-1.00.tar.gz')->spew_raw($tarpath->slurp_raw);
+          return 0;
+        }
+        else
+        {
+          print "404 not found $url\n";
+          return 2;
+        }
+      };
+    
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      download => [ "wget http://test1.test/foo/bar/baz/foo-1.00.tar.gz" ],
+    );
+    
+    $check->($build);
+  
+  };
+  
+  subtest 'command no file' => sub {
+  
+    my $guard = system_fake
+      true => sub {
+        0;
+      };
+    
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      download => [ 'true' ],
+    );
+    
+    my($out, $error) = capture_merged { eval { $build->download }; $@ };
+    note $out;
+    like $error, qr/no files downloaded/, 'diagnostic failure';
+  
+  };
+  
+  subtest 'command multiple files' => sub {
+  
+    my $guard = system_fake
+      explode => sub {
+        path($_)->touch for map { "$_.txt" } qw( foo bar baz );
+        0;
+      };
+    
+    my($build, $meta) = build_blank_alien_build;
+    
+    $meta->register_hook(
+      download => ['explode'],
+    );
+    
+    note scalar capture_merged { $build->download };
+    
+    is(
+      $build->install_prop,
+      hash {
+        field extract => T();
+        field complete => hash {
+          field download => T();
+          field extract  => T();
+          etc;
+        };
+        etc;
+      },
+      'install props'
+    );
+    
+    my $dir = path($build->install_prop->{extract});
+    ok(-d $dir, "dir exists");
+    ok(-f $dir->child($_), "file $_ exists") for map { "$_.txt" } qw( foo bar baz );
+  
+  };
+  
 };
 
 done_testing;
