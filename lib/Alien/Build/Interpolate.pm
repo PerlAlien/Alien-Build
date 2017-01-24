@@ -159,8 +159,14 @@ sub clone
 {
   my($self) = @_;
   
-  my %help = %{ $self->{helper} };
   require Storable;
+  
+  my %help;
+  foreach my $helper (keys %{ $self->{helper} })
+  {
+    $help{$helper}->{code}    = $self->{helper}->{$helper}->{code};
+    $help{$helper}->{require} = $self->{helper}->{$helper}->{require };
+  }
 
   my $new = bless {
     helper => \%help,
