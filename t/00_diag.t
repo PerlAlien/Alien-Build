@@ -13,6 +13,7 @@ $modules{$_} = $_ for qw(
   Alien::Base
   Capture::Tiny
   ExtUtils::MakeMaker
+  File::Listing
   File::Listing::Ftpcopy
   File::chdir
   HTML::LinkExtor

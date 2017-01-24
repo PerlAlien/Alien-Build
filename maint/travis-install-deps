@@ -10,3 +10,52 @@ rm -f *.tar.gz
 cd Alien-Build-*
 
 cpanm -n --installdeps .
+
+if echo $INSTALL_OPTIONAL | grep PkgConfig::LibPkgConf ; then
+
+  echo "installing PkgConfig::LibPkgConf from git";
+
+  MYPREFIX=/tmp/pkgconf
+  SYSTEM_LIBDIRS=`gcc -print-search-dirs | sed -n -e's/^libraries: =//p' | sed -e 's/:/\n/g' | perl -n -e 'chomp; system "readlink", -f => $_' | grep -v 'gcc\|/[0-9.]\+$$' | sort -u | tr '\n' : | sed 's/:$//'`
+  DEB_HOST_MULTIARCH=`/usr/bin/dpkg-architecture | grep ^DEB_HOST_MULTIARCH | cut -d= -f2`
+  PKG_CONFIG_DIR="/usr/local/lib/$DEB_HOST_MULTIARCH/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig:/usr/lib/$DEB_HOST_MULTIARCH/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig"
+  rm -rf $MYPREFIX
+  mkdir -p $MYPREFIX/src
+
+  # build pkgconf
+  git clone --depth 2 https://github.com/pkgconf/pkgconf.git $MYPREFIX/src/pkgconf
+  cd $MYPREFIX/src/pkgconf
+  ./autogen.sh
+  ./configure \
+    --prefix=$MYPREFIX \
+    --with-pic \
+    --disable-shared \
+    --with-system-libdir=$SYSTEM_LIBDIRS \
+    --with-system-includedir=/usr/include \
+    --with-pkg-config-dir=$MYPREFIX/lib/pkgconfig:$PKG_CONFIG_DIR
+  make
+  make install
+  export PKG_CONFIG=$MYPREFIX/bin/pkgconf
+
+  # build PkgConfig::LibPkgConf
+  git clone https://github.com/plicease/PkgConfig-LibPkgConf.git $MYPREFIX/src/PkgConfig-LibPkgConf
+  cd $MYPREFIX/src/PkgConfig-LibPkgConf
+  perl Makefile.PL
+  make
+  make test
+  make install
+
+  unset PKG_CONFIG
+  unset MYPREFIX
+  unset SYSTEM_LIBDIRS
+  unset DEB_HOST_MULTIARCH
+  unset PKG_CONFIG_DIR
+
+else
+
+  echo "not installing PkgConfig::LibPkgConf"
+
+fi
+
+echo $INSTALL_OPTIONAL | cpanm -n
+
