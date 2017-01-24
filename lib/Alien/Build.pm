@@ -320,27 +320,48 @@ sub probe
   local $CWD = $self->root;
   my $dir;
   
-  my $type = $ENV{ALIEN_INSTALL_TYPE} || eval {
-    $self->meta->call_hook(
-      {
-        before => sub {
-          $dir = Alien::Build::TempDir->new($self, "probe");
-          $CWD = "$dir";
-        },
-        after  => sub {
-          $CWD = $self->root;
-        },
-        ok     => 'system',
-      },
-      'probe',
-      $self,
-    );
-  };
+  my $env = $ENV{ALIEN_INSTALL_TYPE} || '';
+  my $type;
+  my $error;
   
-  if($@)
+  if($env eq 'share')
   {
+    $type = 'share';
+  }
+  else
+  {
+    $type = eval {
+      $self->meta->call_hook(
+        {
+          before => sub {
+            $dir = Alien::Build::TempDir->new($self, "probe");
+            $CWD = "$dir";
+          },
+          after  => sub {
+            $CWD = $self->root;
+          },
+          ok     => 'system',
+        },
+        'probe',
+        $self,
+      );
+    };
+    $error = $@;
+  }
+  
+  if($error)
+  {
+    if($env eq 'system')
+    {
+      die $error;
+    }
     warn "error in probe (will do a share install): $@";
     $type = 'share';
+  }
+  
+  if($env && $env ne $type)
+  {
+    die "requested $env install not available";
   }
   
   if($type !~ /^(system|share)$/)
@@ -588,6 +609,26 @@ necessary for using the library or tool.  These properties should be
 stored in the C<runtime_prop> hash as shown above.  Typical properties
 that are needed for libraries are cflags and libs.  If at all possible
 you should also try to determine the version of the library or tool.
+
+=head2 download hook
+
+ $meta->register_hook( download => sub {
+   my($build) = @_;
+ });
+
+This hook is used to download from the internet the source.  Either as
+an archive (like tar, zip, etc), or as a directory of files (git clone,
+etc).  When the hook is called, the current working directory will be a
+new empty directory, so you can save the download to the current
+directory.  If you store a single file in the directory, L<Alien::Build>
+will assume that it is an archive, which will be processed by the 
+extract hook below.  If you store multiple files, L<Alien::Build> will
+assume that you have already performed the archive step and proceed to
+the build hook next.  If no files are stored at all, an exception with
+an appropriate diagnostic will be thrown.
+
+B<Note>: If you register this hook, then the fetch, decode and sort 
+hooks will NOT be called.
 
 =head2 fetch hook
 

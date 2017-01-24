@@ -236,27 +236,74 @@ subtest 'probe' => sub {
   
   subtest 'env' => sub {
   
-    foreach my $expected (qw( share system ))
-    {
+    subtest 'share' => sub {
     
-      subtest "type = $expected" => sub {
+      local $ENV{ALIEN_INSTALL_TYPE} = 'share';
+      
+      my($build,$meta) = build_blank_alien_build;
+      
+      $meta->register_hook(
+        probe => sub {
+          die "should not get into here!";
+        },
+      );
+      
+      is( $build->probe, 'share' );
+    
+    };
+    
+    subtest 'system' => sub {
+    
+      local $ENV{ALIEN_INSTALL_TYPE} = 'system';
+    
+      subtest 'probe okay' => sub {
+      
+        my($build,$meta) = build_blank_alien_build;
         
-        local $ENV{ALIEN_INSTALL_TYPE} = $expected;
+        $meta->register_hook(
+          probe => sub {
+            'system';
+          },
+        );
         
+        is( $build->probe, 'system' );
+      
+      };
+      
+      subtest 'probe share' => sub {
+      
         my($build, $meta) = build_blank_alien_build;
         
         $meta->register_hook(
           probe => sub {
-            die "should not get into here!";
+            'share';
+          }
+        );
+        
+        eval { $build->probe };
+        my $error = $@;
+        like $error, qr/requested system install not available/;
+      
+      };
+      
+      subtest 'probe exception' => sub {
+      
+        my($build, $meta) = build_blank_alien_build;
+        
+        $meta->register_hook(
+          probe => sub {
+            die "oops!";
           },
         );
         
-        is( $build->probe, $expected);
-        
+        eval { $build->probe };
+        my $error = $@;
+        like $error, qr/oops!/;
+      
       };
     
-    }
-  
+    };
+
   };
   
 };
@@ -266,6 +313,12 @@ subtest 'gather system' => sub {
   local $ENV{ALIEN_INSTALL_TYPE} = 'system';
 
   my($build, $meta) = build_blank_alien_build;
+  
+  $meta->register_hook(
+    probe => sub {
+      'system';
+    }
+  );
   
   $meta->register_hook(
     gather_system => sub {

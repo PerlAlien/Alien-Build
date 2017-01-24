@@ -212,6 +212,26 @@ stored in the `runtime_prop` hash as shown above.  Typical properties
 that are needed for libraries are cflags and libs.  If at all possible
 you should also try to determine the version of the library or tool.
 
+## download hook
+
+    $meta->register_hook( download => sub {
+      my($build) = @_;
+    });
+
+This hook is used to download from the internet the source.  Either as
+an archive (like tar, zip, etc), or as a directory of files (git clone,
+etc).  When the hook is called, the current working directory will be a
+new empty directory, so you can save the download to the current
+directory.  If you store a single file in the directory, [Alien::Build](https://metacpan.org/pod/Alien::Build)
+will assume that it is an archive, which will be processed by the 
+extract hook below.  If you store multiple files, [Alien::Build](https://metacpan.org/pod/Alien::Build) will
+assume that you have already performed the archive step and proceed to
+the build hook next.  If no files are stored at all, an exception with
+an appropriate diagnostic will be thrown.
+
+**Note**: If you register this hook, then the fetch, decode and sort 
+hooks will NOT be called.
+
 ## fetch hook
 
     package Alien::Build::Plugin::MyPlugin;
