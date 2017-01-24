@@ -409,7 +409,9 @@ sub download
     local $CWD = "$tmp";
     $self->_call_hook(download => ());
     
-    my $count = scalar grep { $_->basename !~ /^\./, } _path('.')->children;
+    my @list = grep { $_->basename !~ /^\./, } _path('.')->children;
+    
+    my $count = scalar @list;
     
     if($count == 0)
     {
@@ -418,7 +420,7 @@ sub download
     elsif($count == 1)
     {
       print "Alien::Build> single file, assuming archive\n";
-      my($archive) = _path('.')->children;
+      my($archive) = $list[0];
       $self->install_prop->{download} = $archive->absolute->stringify;
       $self->install_prop->{complete}->{download} = 1;
       return $self;
