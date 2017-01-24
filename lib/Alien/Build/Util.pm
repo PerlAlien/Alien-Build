@@ -56,6 +56,12 @@ sub _mirror
       {
         print "Alien::Build> cp $src $dst\n" if $opt->{verbose};
         File::Copy::cp("$src", "$dst") || die "copy error $src => $dst: $!";
+        if($] < 5.012 && -x "$src" && $^O ne 'MSWin32')
+        {
+          # apparently Perl 5.8 and 5.10 do not preserver perms
+          my $mode = [stat "$src"]->[2] & 0777;
+          eval { chmod $mode, "$dst" };
+        }
       }
     },
     no_chdir => 1,
