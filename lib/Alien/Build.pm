@@ -584,6 +584,59 @@ sub sort
   $self->_call_hook( sort => $res );
 }
 
+=head2 extract
+
+ my $dir = $build->extract;
+
+=cut
+
+sub extract
+{
+  my($self) = @_;
+
+  unless(defined $self->install_prop->{download})
+  {
+    die "tried to call extract before download";
+  }
+  
+  my $tmp;
+  local $CWD;
+  my $ret;
+
+  $self->_call_hook({
+  
+    before => sub {
+      $tmp = Alien::Build::TempDir->new($self, "extract");
+      $CWD = "$tmp";
+    },
+    verify => sub {
+      my @list = grep { $_->basename !~ /^\./, } _path('.')->children;
+      
+      my $count = scalar @list;
+      
+      if($count == 0)
+      {
+        die "no files extracted";
+      }
+      elsif($count == 1 && -d $list[0])
+      {
+        $ret = $list[0]->absolute->stringify;
+      }
+      else
+      {
+        $ret = "$tmp";
+      }
+    
+    },
+    after => sub {
+      $CWD = $self->root;
+    },
+  
+  }, 'extract');
+  
+  $ret ? $ret : ();
+}
+
 =head1 HOOKS
 
 =head2 probe hook
@@ -770,6 +823,13 @@ This hook sorts candidates from a listing generated from either the C<fetch>
 or C<decode> hooks.  It should return a new list hash reference with the
 candidates sorted from best to worst.  It may also remove candidates
 that are totally unacceptable.
+
+=head2 extract hook
+
+ $meta->register_hook( extract => sub {
+   my($build) = @_;
+   ...
+ });
 
 =cut
 
@@ -988,15 +1048,8 @@ sub call_hook
 sub _dump
 {
   my($self) = @_;
-  if(eval { require YAML })
-  {
-    return YAML::Dump($self);
-  }
-  else
-  {
-    require Data::Dumper;
-    return Data::Dumper::Dumper($self);
-  }
+  require Alien::Build::Util;
+  Alien::Build::Util::_dump($self);
 }
 
 package Alien::Build::TempDir;

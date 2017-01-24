@@ -164,6 +164,10 @@ Decode the HTML or file listing returned by `fetch`.
 Filter and sort candidates.  The best candidate will be returned first in the list.
 The worst candidate will be returned last.
 
+## extract
+
+    my $dir = $build->extract;
+
 # HOOKS
 
 ## probe hook
@@ -350,6 +354,13 @@ This hook sorts candidates from a listing generated from either the `fetch`
 or `decode` hooks.  It should return a new list hash reference with the
 candidates sorted from best to worst.  It may also remove candidates
 that are totally unacceptable.
+
+## extract hook
+
+    $meta->register_hook( extract => sub {
+      my($build) = @_;
+      ...
+    });
 
 # META METHODS
 
