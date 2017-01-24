@@ -37,7 +37,8 @@ sub http_url
 
   require HTTP::Tiny;
   my $res = HTTP::Tiny->new->get("${url}about.json");
-  my $about = decode_json( $res->{content} );
+  my $about = eval { decode_json( $res->{content} ) };
+  return http_error($@) if $@;
   return http_error("not a AB TEST HTTPd")
     unless $about->{ident} eq 'AB Test HTTPd';
 
