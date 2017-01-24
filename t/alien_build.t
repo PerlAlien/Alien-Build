@@ -5,6 +5,7 @@ use lib 'corpus/lib';
 use MyTest;
 use Capture::Tiny qw( capture_merged );
 use File::chdir;
+use Path::Tiny qw( path );
 
 subtest 'simple new' => sub {
   my $build = MyBuild->new;
@@ -287,7 +288,97 @@ subtest 'gather system' => sub {
       field version => '1.2.3';
       etc;
     },
+    'runtime props'
   );
+  
+  is(
+    $build->install_prop,
+    hash {
+      field finished => T();
+      field complete => hash {
+        field gather_system => T();
+        etc;
+      };
+      etc;
+    },
+    'install props'
+  );
+
+};
+
+subtest 'download' => sub {
+
+  my $build = sub {
+    my($build, $meta) = build_blank_alien_build;
+    require Alien::Build::Plugin::Fetch::Corpus;
+    my $plugin = Alien::Build::Plugin::Fetch::Corpus->new(@_);
+    $plugin->init($meta);
+    ($build, $meta, $plugin);
+  };
+
+  my $tarpath = path('corpus/dist/foo-1.00.tar.gz');
+  
+  subtest 'component' => sub {
+  
+    my $check = sub {
+      my($build) = @_;
+
+        note capture_merged { $build->download };
+      
+        is(
+          $build->install_prop,
+          hash {
+            field download => match qr/foo-1.00.tar.gz/;
+            field complete => hash {
+              field download => T();
+              etc;
+            };
+            etc;
+          },
+          'install props'
+        );
+      
+        note "build.install_prop.download=@{[ $build->install_prop->{download} ]}";
+        
+        is(
+          path($build->install_prop->{download})->slurp_raw,
+          $tarpath->slurp_raw,
+          'file matches',
+        );
+    };
+  
+    foreach my $file_as (qw( content path ))
+    {
+  
+      subtest "single download with file as $file_as" => sub {
+    
+        my($build, $meta) = $build->(
+          url            => 'http://test1.test/foo/bar/baz/foo-1.00.tar.gz',
+          return_file_as => $file_as,
+        );
+      
+        $check->($build);
+    
+      };
+    }
+    
+    foreach my $listing_as (qw( list html dir_listing ))
+    {
+    
+      subtest "listing download with listing as $listing_as" => sub {
+      
+        my($build, $meta) = $build->(
+          url               => 'http://test1.test/foo/bar/baz/',
+          return_listing_as => $listing_as,
+        );
+        
+        $check->($build);
+      
+      };
+    
+    }
+  
+  };
 
 };
 

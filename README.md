@@ -139,6 +139,10 @@ will be used instead of the detection logic.
 This method gathers the necessary properties from the system for using
 the library or tool under a system install type.
 
+## download
+
+    $build->download;
+
 ## fetch
 
     my $res = $build->fetch;
@@ -193,7 +197,7 @@ in the even the environment variable `ALIEN_INSTALL_TYPE` is set.
 The detection of these properties should instead be done by the
 `gather_system` hook, below.
 
-## gather\_system
+## gather\_system hook
 
     $meta->register_hook( gather_system => sub {
       my($build) = @_;
@@ -288,7 +292,7 @@ reference:
       content => $content,
     };
 
-## decode
+## decode hook
 
     sub init
     {
@@ -308,7 +312,7 @@ and links that can be used by the sort hook to choose the correct file to
 download.  See `fetch` for the specification of the input and response
 hash references.
 
-## sort
+## sort hook
 
     sub init
     {

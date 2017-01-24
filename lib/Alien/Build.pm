@@ -391,6 +391,87 @@ sub gather_system
   $self;
 }
 
+=head2 download
+
+ $build->download;
+
+=cut
+
+sub download
+{
+  my($self) = @_;
+  
+  return $self if $self->install_prop->{complete}->{download};
+  
+  if($self->meta->has_hook('download'))
+  {
+    die "todo";
+  }
+  else
+  {
+    my $res = $self->fetch;
+
+    if($res->{type} =~ /^(?:html|dir_listing)$/)
+    {
+      my $type = $res->{type};
+      $type =~ s/_/ /;
+      print "decoding $type\n";
+      $res = $self->decode($res);
+    }
+    
+    if($res->{type} eq 'list')
+    {
+      $res = $self->sort($res);
+      die "no matching files in listing" if @{ $res->{list} } == 0;
+      my($pick, @other) = map { $_->{url} } @{ $res->{list} };
+      if(@other > 8)
+      {
+        splice @other, 7;
+        push @other, '...';
+      }
+      print "candidate *$pick\n";
+      print "candidate  $_\n" for @other;
+      $res = $self->fetch($pick);
+    }
+
+    my $tmp = Alien::Build::TempDir->new($self, "download");
+    
+    if($res->{type} eq 'file')
+    {
+      my $filename = $res->{filename};
+      print "downloaded $filename\n";
+      if($res->{content})
+      {
+        my $path = _path("$tmp/$filename");
+        $path->spew_raw($res->{content});
+        $self->install_prop->{download} = $path->stringify;
+        $self->install_prop->{complete}->{download} = 1;
+        return;
+      }
+      elsif($res->{path})
+      {
+        require File::Copy;
+        my $from = _path $res->{path};
+        my $to   = _path("$tmp/@{[ $from->basename ]}");
+        File::Copy::copy(
+          "$from" => "$to",
+        ) || die "copy $from => $to failed: $!";
+        $self->install_prop->{download} = $to->stringify;
+        $self->install_prop->{complete}->{download} = 1;
+        return;
+      }
+      else
+      {
+        die "file without content or path";
+      }
+    }
+    else
+    {
+      die "unknown fetch response type: @{[ $res->{type} ]}";
+    }
+  }
+}
+
 =head2 fetch
 
  my $res = $build->fetch;
@@ -469,7 +550,7 @@ in the even the environment variable C<ALIEN_INSTALL_TYPE> is set.
 The detection of these properties should instead be done by the
 C<gather_system> hook, below.
 
-=head2 gather_system
+=head2 gather_system hook
 
  $meta->register_hook( gather_system => sub {
    my($build) = @_;
@@ -564,7 +645,7 @@ reference:
    content => $content,
  };
 
-=head2 decode
+=head2 decode hook
 
  sub init
  {
@@ -584,7 +665,7 @@ and links that can be used by the sort hook to choose the correct file to
 download.  See C<fetch> for the specification of the input and response
 hash references.
 
-=head2 sort
+=head2 sort hook
 
  sub init
  {
