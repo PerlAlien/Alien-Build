@@ -97,7 +97,7 @@ sub init
   );
   
   $meta->register_hook(
-    sort => sub {
+    prefer => sub {
       my(undef, $res) = @_;
       
       my @list = sort { $b->{filename} cmp $a->{filename} }

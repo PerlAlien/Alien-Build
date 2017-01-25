@@ -1,5 +1,6 @@
 use Test2::Bundle::Extended;
 use Alien::Build;
+use Path::Tiny qw( path );
 
 subtest 'non struct alienfile' => sub {
 
@@ -18,6 +19,19 @@ subtest 'warnings alienfile' => sub {
   
   ok $warning;
   note $warning;
+
+};
+
+subtest 'compile examples' => sub {
+
+  foreach my $alienfile (path('example')->children(qr/\.alienfile$/))
+  {
+    my $build = eval {
+      Alien::Build->load("$alienfile");
+    };
+    is $@, '';
+    isa_ok $build, 'Alien::Build';
+  }
 
 };
 

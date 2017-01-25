@@ -500,7 +500,7 @@ sub download
     
     if($res->{type} eq 'list')
     {
-      $res = $self->sort($res);
+      $res = $self->prefer($res);
       die "no matching files in listing" if @{ $res->{list} } == 0;
       my($pick, @other) = map { $_->{url} } @{ $res->{list} };
       if(@other > 8)
@@ -578,19 +578,19 @@ sub decode
   $self->_call_hook( decode => $res );
 }
 
-=head2 sort
+=head2 prefer
 
- my $sorted_res = $build->sort($res);
+ my $sorted_res = $build->prefer($res);
 
-Filter and sort candidates.  The best candidate will be returned first in the list.
+Filter and sort candidates.  The preferred candidate will be returned first in the list.
 The worst candidate will be returned last.
 
 =cut
 
-sub sort
+sub prefer
 {
   my($self, $res) = @_;
-  $self->_call_hook( sort => $res );
+  $self->_call_hook( prefer => $res );
 }
 
 =head2 extract
@@ -765,7 +765,7 @@ extract hook below.  If you store multiple files, L<Alien::Build> will
 assume the current directory is the source root.  If no files are stored
 at all, an exception with an appropriate diagnostic will be thrown.
 
-B<Note>: If you register this hook, then the fetch, decode and sort 
+B<Note>: If you register this hook, then the fetch, decode and prefer 
 hooks will NOT be called.
 
 =head2 fetch hook
@@ -864,17 +864,17 @@ This hook takes a response hash reference from the C<fetch> hook above
 with a type of C<html> or C<dir_listing> and converts it into a response
 hash reference of type C<list>.  In short it takes an HTML or FTP file
 listing response from a fetch hook and converts it into a list of filenames
-and links that can be used by the sort hook to choose the correct file to
+and links that can be used by the prefer hook to choose the correct file to
 download.  See C<fetch> for the specification of the input and response
 hash references.
 
-=head2 sort hook
+=head2 prefer hook
 
  sub init
  {
    my($self, $meta) = @_;
    
-   $meta->register_hook( sort => sub {
+   $meta->register_hook( prefer => sub {
      my($build, $res) = @_;
      return {
        type => 'list',
@@ -1024,7 +1024,7 @@ sub _instr
       download      => 'share',
       fetch         => 'share',
       decode        => 'share',
-      sort          => 'share',
+      prefer        => 'share',
       extract       => 'share',
       build         => 'share',
       stage         => 'share',

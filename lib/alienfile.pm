@@ -8,7 +8,7 @@ use base qw( Exporter );
 # ABSTRACT: Specification for defining an external dependency for CPAN
 # VERSION
 
-our @EXPORT = qw( requires on plugin probe share sys download fetch decode sort extract build gather );
+our @EXPORT = qw( requires on plugin probe share sys download fetch decode prefer extract build gather );
 
 =head1 DIRECTIVES
 
@@ -68,12 +68,11 @@ sub decode
 {
 }
 
-=head2 sort
+=head2 prefer
 
 =cut
 
-# TODO: rename
-sub sort
+sub prefer
 {
 }
 

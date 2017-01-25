@@ -29,6 +29,7 @@ pod_spelling_system:
     - cflags
     - libs
     - PkgConfig
+    - sys
 
 pod_coverage:
   skip: 0

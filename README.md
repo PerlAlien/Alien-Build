@@ -166,11 +166,11 @@ described below in the hook documentation.
 
 Decode the HTML or file listing returned by `fetch`.
 
-## sort
+## prefer
 
-    my $sorted_res = $build->sort($res);
+    my $sorted_res = $build->prefer($res);
 
-Filter and sort candidates.  The best candidate will be returned first in the list.
+Filter and sort candidates.  The preferred candidate will be returned first in the list.
 The worst candidate will be returned last.
 
 ## extract
@@ -246,7 +246,7 @@ extract hook below.  If you store multiple files, [Alien::Build](https://metacpa
 assume the current directory is the source root.  If no files are stored
 at all, an exception with an appropriate diagnostic will be thrown.
 
-**Note**: If you register this hook, then the fetch, decode and sort 
+**Note**: If you register this hook, then the fetch, decode and prefer 
 hooks will NOT be called.
 
 ## fetch hook
@@ -345,17 +345,17 @@ This hook takes a response hash reference from the `fetch` hook above
 with a type of `html` or `dir_listing` and converts it into a response
 hash reference of type `list`.  In short it takes an HTML or FTP file
 listing response from a fetch hook and converts it into a list of filenames
-and links that can be used by the sort hook to choose the correct file to
+and links that can be used by the prefer hook to choose the correct file to
 download.  See `fetch` for the specification of the input and response
 hash references.
 
-## sort hook
+## prefer hook
 
     sub init
     {
       my($self, $meta) = @_;
       
-      $meta->register_hook( sort => sub {
+      $meta->register_hook( prefer => sub {
         my($build, $res) = @_;
         return {
           type => 'list',

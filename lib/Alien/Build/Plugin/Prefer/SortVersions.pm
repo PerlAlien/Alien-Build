@@ -1,4 +1,4 @@
-package Alien::Build::Plugin::Sort::SortVersions;
+package Alien::Build::Plugin::Prefer::SortVersions;
 
 use strict;
 use warnings;
@@ -16,7 +16,7 @@ sub init
   
   $meta->add_requires('share' => 'Sort::Versions' => 0);
   
-  $meta->register_hook( sort => sub {
+  $meta->register_hook( prefer => sub {
     my(undef, $res) = @_;
     
     my $cmp = sub {
