@@ -5,6 +5,7 @@ use warnings;
 use Path::Tiny ();
 use Carp ();
 use File::chdir;
+use Env qw( @PATH @PKG_CONFIG_PATH );
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -100,11 +101,12 @@ absolute form of C<./_alien> by default.
 =item prefix
 
 The install time prefix.  This may or may not be the same as the 
-runtime prefix.  It may or may not be the same as blib_share.
+runtime prefix.  It may or may not be the same as stage.
 
-=item blib_share
+=item stage
 
-The root of the blib share directory.
+The stage directory where files will be copied.  This is usually the
+root of the blib share directory.
 
 =back
 
@@ -713,15 +715,40 @@ sub build
     },
   }, 'build');
   
+  my $gather = sub {
+    local $ENV{PATH} = $ENV{PATH};
+    local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
+    unshift @PATH, _path('bin')->absolute->stringify
+      if -d 'bin';
+    unshift @PKG_CONFIG_PATH, _path('lib/pkgconfig')->absolute->stringify
+      if -d 'lib/pkgconfig';
+    $self->_call_hook('gather_share');
+  };
+  
   if($destdir)
   {
     die "nothing was installed into destdir" unless -d $destdir;
     require Alien::Build::Util;
     my $prefix = $self->install_prop->{prefix};
     my $src = _path("$ENV{DESTDIR}/$prefix");
-    my $dst = _path($self->install_prop->{blib_share});
+    my $dst = _path($self->install_prop->{stage});
+    
+    if($self->meta->has_hook('gather_share'))
+    {
+      local $CWD = "$src";
+      $gather->();
+    }
+    
     $dst->mkpath;
     Alien::Build::Util::_mirror("$src", "$dst", { verbose => 1 });
+  }
+  else
+  {
+    if($self->meta->has_hook('gather_share'))
+    {
+      local $CWD = $self->install_prop->{stage};
+      $gather->();
+    }
   }
   
   $self;
@@ -925,8 +952,16 @@ that are totally unacceptable.
 
  $meta->register_hook( build => sub {
    my($build) = @_;
+   ...
  });
- 
+
+=head2 gather_share hook
+
+ $meta->register_hook( register_hook => sub {
+   my($build) = @_;
+   ... 
+ });
+
 =cut
 
 package Alien::Build::Meta;

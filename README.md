@@ -51,11 +51,12 @@ that are needed ONLY during the install phase.  Standard properties:
 - prefix
 
     The install time prefix.  This may or may not be the same as the 
-    runtime prefix.  It may or may not be the same as blib\_share.
+    runtime prefix.  It may or may not be the same as stage.
 
-- blib\_share
+- stage
 
-    The root of the blib share directory.
+    The stage directory where files will be copied.  This is usually the
+    root of the blib share directory.
 
 **NOTE**: These properties should not include any blessed objects or code
 references, because they will be serialized using a method that does
@@ -394,6 +395,14 @@ that are totally unacceptable.
 
     $meta->register_hook( build => sub {
       my($build) = @_;
+      ...
+    });
+
+## gather\_share hook
+
+    $meta->register_hook( register_hook => sub {
+      my($build) = @_;
+      ... 
     });
 
 # META METHODS
