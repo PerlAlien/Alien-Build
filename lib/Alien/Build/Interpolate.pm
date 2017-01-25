@@ -128,8 +128,30 @@ sub execute_helper
 
 sub interpolate
 {
-  my($self, $string) = @_;
+  my($self, $string, $prop) = @_;
+  $prop ||= {};
+  
+  my $get_prop;
+  $get_prop = sub {
+    my($name, $prop) = @_;
+    $DB::single = 1;
+    if($name =~ /^(.*?)\.(.*)$/)
+    {
+      my($key,$rest) = ($1,$2);
+      return $get_prop->($rest, $prop->{$key});
+    }
+    elsif(exists $prop->{$name})
+    {
+      return $prop->{$name};
+    }
+    else
+    {
+      return '';
+    }
+  };
+  
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
+  $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9\.]+)\}}{$get_prop->($1,$prop)}eg;
   $string =~ s/\%(?=\%)//g;
   $string;
 }

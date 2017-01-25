@@ -69,4 +69,26 @@ subtest 'clone' => sub {
   like $error, qr/no helper defined for bar/;
 };
 
+subtest 'property' => sub {
+
+  my $intr = Alien::Build::Interpolate->new;
+  isa_ok $intr, 'Alien::Build::Interpolate';
+
+  is(
+    $intr->interpolate("%{foo.bar}", { foo => { bar => 'baz' } }),
+    'baz',
+  );
+
+  is(
+    $intr->interpolate("'%{foo.bar}'", { foo => { bar1 => 'baz' } }),
+    "''",
+  );
+  
+  is(
+    $intr->interpolate("%{foo.bar.baz}", { foo => { bar => { baz => 'starscream' } } }),
+    'starscream',
+  );
+  
+};
+
 done_testing;

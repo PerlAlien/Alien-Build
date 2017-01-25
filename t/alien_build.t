@@ -522,6 +522,37 @@ subtest 'download' => sub {
   
 };
 
+subtest 'extract' => sub {
+
+  require IPC::Cmd;
+  
+  skip_all 'test requires command line tar' unless IPC::Cmd::can_run('tar');
+
+  my($build, $meta) = build_blank_alien_build;
+  
+  $meta->register_hook(
+    extract => [ [ "tar", "xf", "%{build.install.download}"] ],
+  );
+  
+  $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
+  
+  my($out, $dir, $error) = capture_merged { (eval { $build->extract }, $@) };
+  
+  note $out if $out ne '';
+  
+  is $error, '', 'no exception';
+  note $error if $error;
+  ok defined $dir && -d $dir, 'directory exists';
+  note "dir = $dir";
+
+  foreach my $name (qw( configure foo.c ))
+  {
+    my $file = path($dir)->child($name);
+    ok -f $file, "$name exists";
+  }
+
+};
+
 done_testing;
 
 {

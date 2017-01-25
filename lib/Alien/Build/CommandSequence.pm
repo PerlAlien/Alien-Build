@@ -87,6 +87,13 @@ sub execute
   my($self, $build) = @_;
   my $intr = $build->meta->interpolator;
 
+  my $prop = {
+    build => {
+      install => $build->install_prop,
+      runtime => $build->runtime_prop,
+    },
+  };
+  
   foreach my $command (@{ $self->{commands} })
   {
     if(ref($command) eq 'CODE')
@@ -97,7 +104,7 @@ sub execute
     {
       my($command, @args) = @$command;
       my $code = pop @args if $args[-1] && ref($args[-1]) eq 'CODE';
-      ($command, @args) = map { $intr->interpolate($_) } ($command, @args);
+      ($command, @args) = map { $intr->interpolate($_, $prop) } ($command, @args);
       
       if($code)
       {
@@ -110,7 +117,7 @@ sub execute
     }
     else
     {
-      my $command = $intr->interpolate($command);
+      my $command = $intr->interpolate($command,$prop);
       _run $build, $command;
     }
   }
