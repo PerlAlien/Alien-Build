@@ -20,6 +20,20 @@ client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base
 
 # PROPERTIES
 
+## meta\_prop
+
+    my $href = $build->meta_prop;
+    my $href = Alien::Build->meta_prop;
+
+Hash of class properties.
+
+- destdir
+
+    Use the `DESTDIR` environment variable to stage your install before
+    copying the files into `blib`.  This is the preferred method of
+    installing libraries because it improves reliability.  This technique
+    is supported by `autoconf` and others.
+
 ## install\_prop
 
     my $href = $build->install_prop;
@@ -383,6 +397,14 @@ that are totally unacceptable.
     });
 
 # META METHODS
+
+## prop
+
+    my $href = $build->meta->prop;
+    my $href = Alien::Build->meta->prop;
+
+Meta properties.  This is the same as calling `meta_prop` on
+the class or [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.
 
 ## filename
 

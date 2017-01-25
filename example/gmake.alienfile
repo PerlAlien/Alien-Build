@@ -32,7 +32,7 @@ share {
   plugin 'Build::Autoconf' => ();
   
   build [
-    '%{configure} --program-prefix=g',
+    '%{configure} --program-prefix=g --disable-shared',
     '%{make}',
     '%{make} install',
   ];

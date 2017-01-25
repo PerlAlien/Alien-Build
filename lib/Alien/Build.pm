@@ -55,6 +55,32 @@ my $count = 0;
 
 =head1 PROPERTIES
 
+=head2 meta_prop
+
+ my $href = $build->meta_prop;
+ my $href = Alien::Build->meta_prop;
+
+Hash of class properties.
+
+=over
+
+=item destdir
+
+Use the C<DESTDIR> environment variable to stage your install before
+copying the files into C<blib>.  This is the preferred method of
+installing libraries because it improves reliability.  This technique
+is supported by C<autoconf> and others.
+
+=back
+
+=cut
+
+sub meta_prop
+{
+  my($class) = @_;
+  $class->meta->prop;
+}
+
 =head2 install_prop
 
  my $href = $build->install_prop;
@@ -665,7 +691,7 @@ sub build
   local $CWD;
   local $ENV{DESTDIR} = $ENV{DESTDIR};
   
-  unless($self->install_prop->{destdir})
+  unless($self->meta_prop->{destdir})
   {
     delete $ENV{DESTDIR};
   }
@@ -676,7 +702,7 @@ sub build
   {
     before => sub {
       $CWD = $self->extract;
-      if($self->install_prop->{destdir})
+      if($self->meta_prop->{destdir})
       {
         $destdir = Alien::Build::TempDir->new($self, 'destdir');
         $ENV{DESTDIR} = "$destdir";
@@ -915,12 +941,28 @@ sub new
       share  => {},
       system => {},
     },
+    prop => {},
     %args,
   }, $class;
   $self;
 }
 
 =head1 META METHODS
+
+=head2 prop
+
+ my $href = $build->meta->prop;
+ my $href = Alien::Build->meta->prop;
+
+Meta properties.  This is the same as calling C<meta_prop> on
+the class or L<Alien::Build> instance.
+
+=cut
+
+sub prop
+{
+  shift->{prop};
+}
 
 =head2 filename
 

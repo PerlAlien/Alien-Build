@@ -17,6 +17,9 @@ subtest 'basic' => sub {
   isnt $configure, '', "\%{configure} = $configure";
   like $configure, qr{configure};
   like $configure, qr{--with-pic};
+  
+  is($build->meta_prop->{destdir}, 1);
+  is($meta->prop->{destdir}, 1);
 };
 
 subtest 'turn off --with-pic' => sub {

@@ -30,6 +30,7 @@ pod_spelling_system:
     - libs
     - PkgConfig
     - sys
+    - destdir
 
 pod_coverage:
   skip: 0

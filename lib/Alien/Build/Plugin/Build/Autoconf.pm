@@ -15,6 +15,8 @@ sub init
 {
   my($self, $meta) = @_;
   
+  $meta->prop->{destdir} = 1;
+  
   my $intr = $meta->interpolator;
 
 =head1 HELPERS
@@ -29,7 +31,6 @@ Some reasonable default flags will be provided.
 =cut
 
   # TODO:
-  #  - --disable-shared on by default
   #  - AB::P::Autoconf::Shared to build shared library too
 
   my @msys_reqs = $^O eq 'MSWin32' ? ('Alien::MSYS' => '0.07') : ();
