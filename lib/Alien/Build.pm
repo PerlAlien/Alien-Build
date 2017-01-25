@@ -71,6 +71,15 @@ that are needed ONLY during the install phase.  Standard properties:
 The build root directory.  This will be an absolute path.  It is the
 absolute form of C<./_alien> by default.
 
+=item prefix
+
+The install time prefix.  This may or may not be the same as the 
+runtime prefix.  It may or may not be the same as blib_share.
+
+=item blib_share
+
+The root of the blib share directory.
+
 =back
 
 B<NOTE>: These properties should not include any blessed objects or code
@@ -609,7 +618,10 @@ sub extract
   $self->_call_hook({
   
     before => sub {
-      $tmp = Alien::Build::TempDir->new($self, "extract");
+      # called build instead of extract, because this 
+      # will be used for the build step, and technically
+      # extract is a substage of build anyway.
+      $tmp = Alien::Build::TempDir->new($self, "build");
       $CWD = "$tmp";
     },
     verify => sub {
@@ -638,6 +650,55 @@ sub extract
   }, 'extract', $archive);
   
   $ret ? $ret : ();
+}
+
+=head2 build
+
+ $build->build;
+
+=cut
+
+sub build
+{
+  my($self) = @_;
+  
+  local $CWD;
+  local $ENV{DESTDIR} = $ENV{DESTDIR};
+  
+  unless($self->install_prop->{destdir})
+  {
+    delete $ENV{DESTDIR};
+  }
+  
+  my $destdir;
+  
+  $self->_call_hook(
+  {
+    before => sub {
+      $CWD = $self->extract;
+      if($self->install_prop->{destdir})
+      {
+        $destdir = Alien::Build::TempDir->new($self, 'destdir');
+        $ENV{DESTDIR} = "$destdir";
+      }
+    },
+    after => sub {
+      $destdir = "$destdir" if $destdir;
+    },
+  }, 'build');
+  
+  if($destdir)
+  {
+    die "nothing was installed into destdir" unless -d $destdir;
+    require Alien::Build::Util;
+    my $prefix = $self->install_prop->{prefix};
+    my $src = _path("$ENV{DESTDIR}/$prefix");
+    my $dst = _path($self->install_prop->{blib_share});
+    $dst->mkpath;
+    Alien::Build::Util::_mirror("$src", "$dst", { verbose => 1 });
+  }
+  
+  $self;
 }
 
 =head1 HOOKS
@@ -830,10 +891,16 @@ that are totally unacceptable.
 =head2 extract hook
 
  $meta->register_hook( extract => sub {
-   my($build) = @_;
+   my($build, $archive) = @_;
    ...
  });
 
+=head2 build hook
+
+ $meta->register_hook( build => sub {
+   my($build) = @_;
+ });
+ 
 =cut
 
 package Alien::Build::Meta;

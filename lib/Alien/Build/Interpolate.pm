@@ -134,7 +134,6 @@ sub interpolate
   my $get_prop;
   $get_prop = sub {
     my($name, $prop) = @_;
-    $DB::single = 1;
     if($name =~ /^(.*?)\.(.*)$/)
     {
       my($key,$rest) = ($1,$2);

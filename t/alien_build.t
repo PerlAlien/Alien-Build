@@ -531,7 +531,7 @@ subtest 'extract' => sub {
   my($build, $meta) = build_blank_alien_build;
   
   $meta->register_hook(
-    extract => [ [ "tar", "xf", "%{build.install.download}"] ],
+    extract => [ [ "tar", "xf", "%{alien.install.download}"] ],
   );
   
   $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
@@ -551,6 +551,78 @@ subtest 'extract' => sub {
     ok -f $file, "$name exists";
   }
 
+};
+
+subtest 'build' => sub {
+
+  subtest 'plain' => sub {
+    my($build, $meta) = build_blank_alien_build;
+  
+    my @data;
+  
+    $meta->register_hook(
+      extract => sub {
+        path('file1')->spew('text1');
+        path('file2')->spew('text2');
+      },
+    );
+  
+    $meta->register_hook(
+      build => sub {
+        @data = (path('file1')->slurp, path('file2')->slurp);
+      },
+    );
+  
+    $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
+
+    $build->build;
+  
+    is(
+      \@data,
+      [ 'text1', 'text2'],
+    );
+  };
+  
+  subtest 'destdir' => sub {
+  
+    my($build, $meta) = build_blank_alien_build;
+  
+    $meta->register_hook(
+      extract => sub {
+        path('file1')->spew('text1');
+        path('file2')->spew('text2');
+      },
+    );
+    
+    $meta->register_hook(
+      build => sub {
+        my($build) = @_;
+        my $prefix = $build->install_prop->{prefix};
+        my $dir = path("$ENV{DESTDIR}/$prefix");
+        note "install dir = $dir";
+        $dir->mkpath;
+        $dir->child($_)->mkpath for qw( bin lib );
+        $dir->child('bin/foo')->spew('foo exe');
+        $dir->child('lib/libfoo.a')->spew('foo lib');
+      },
+    );
+    
+    my $tmp = Path::Tiny->tempdir;
+   
+    my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
+
+    $build->install_prop->{download}   = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
+    $build->install_prop->{destdir}    = 1;
+    $build->install_prop->{prefix}     = $tmp->child('usr/local')->stringify;
+    $build->install_prop->{blib_share} = $share->stringify;
+    $build->runtime_prop->{prefix}     = $tmp->child('usr/local')->stringify;
+    
+    note capture_merged { $build->build };
+  
+    ok(-d $share, "directory created" );
+  
+  };
+  
 };
 
 done_testing;

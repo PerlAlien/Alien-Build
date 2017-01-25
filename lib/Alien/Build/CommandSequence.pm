@@ -88,7 +88,7 @@ sub execute
   my $intr = $build->meta->interpolator;
 
   my $prop = {
-    build => {
+    alien => {
       install => $build->install_prop,
       runtime => $build->runtime_prop,
     },

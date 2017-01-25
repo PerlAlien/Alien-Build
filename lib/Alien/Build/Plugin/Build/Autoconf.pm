@@ -9,6 +9,7 @@ use constant _win => $^O eq 'MSWin32';
 # VERSION
 
 has with_pic       => 1;
+has dynamic        => 0;
 
 sub init
 {
@@ -43,8 +44,8 @@ Some reasonable default flags will be provided.
   );
   
   $meta->default_hook(
-    share => build => [
-      '%{configure} --prefix=%{prefix}',
+    build => [
+      '%{configure} --prefix=%{alien.runtime.prefix} --disable-shared',
       '%{make}',
       '%{make} install',
     ]
