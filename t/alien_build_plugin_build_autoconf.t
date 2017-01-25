@@ -15,7 +15,8 @@ subtest 'basic' => sub {
   
   my $configure = $meta->interpolator->interpolate('%{configure}');
   isnt $configure, '', "\%{configure} = $configure";
-  like $configure, qr{configure --with-pic};
+  like $configure, qr{configure};
+  like $configure, qr{--with-pic};
 };
 
 subtest 'turn off --with-pic' => sub {

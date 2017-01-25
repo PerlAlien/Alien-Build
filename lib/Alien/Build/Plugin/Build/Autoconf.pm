@@ -44,7 +44,7 @@ Some reasonable default flags will be provided.
   );
   
   $meta->default_hook(
-    build => [
+    share => build => [
       '%{configure} --prefix=%{alien.runtime.prefix} --disable-shared',
       '%{make}',
       '%{make} install',
