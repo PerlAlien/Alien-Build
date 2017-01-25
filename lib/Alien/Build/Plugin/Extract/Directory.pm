@@ -16,6 +16,7 @@ sub init
   $meta->register_hook(
     extract => sub {
       my($build, $src) = @_;
+      die "not a directory: $src" unless -d $src;
       my $dst = Path::Tiny::path('.')->absolute;
       # Please note: _mirror and Alien::Build::Util are ONLY
       # allowed to be used by core plugins.  If you are writing
