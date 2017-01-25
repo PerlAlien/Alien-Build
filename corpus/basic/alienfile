@@ -4,15 +4,14 @@ use warnings;
 
 requires 'Foo', '1.00';
 
-on 'configure' => sub {
+configure {
   requires 'Early::Module', '1.234';
 };
 
-on 'share' => sub {
+share {
   requires 'Bar', '2.00';
 };
 
-on 'system' => sub {
+sys {
   requires 'Baz', '3.00';
 };
-

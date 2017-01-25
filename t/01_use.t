@@ -8,6 +8,7 @@ require_ok 'Alien::Base2';
 require_ok 'Alien::Build::Interpolate';
 require_ok 'Alien::Build::Interpolate::Default';
 require_ok 'Alien::Build::Plugin';
+require_ok 'Alien::Build::Plugin::Download::Negotiate';
 require_ok 'Alien::Build::Plugin::Build::Autoconf';
 require_ok 'Alien::Build::Plugin::Build::MSYS';
 require_ok 'Alien::Build::Plugin::Fetch::LWP';
@@ -25,6 +26,7 @@ require_ok 'Alien::Build::Plugin::Extract::Directory';
 require_ok 'Alien::Build::Plugin::Extract::CommandLine';
 require_ok 'Alien::Build::Plugin::Extract::ArchiveTar';
 require_ok 'Alien::Build::Plugin::Extract::ArchiveZip';
+require_ok 'Alien::Build::Plugin::Extract::Negotiate';
 require_ok 'Alien::Build::Util';
 
 done_testing;

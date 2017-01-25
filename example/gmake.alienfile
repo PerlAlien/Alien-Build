@@ -1,7 +1,9 @@
 use alienfile;
 use Capture::Tiny qw( capture );
 
-requires 'configure' => 'Capture::Tiny';
+configure {
+  requires 'Capture::Tiny';
+};
 
 probe sub {
   my($build) = @_;

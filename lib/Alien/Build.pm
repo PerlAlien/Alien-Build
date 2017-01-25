@@ -966,6 +966,8 @@ that are totally unacceptable.
 
 package Alien::Build::Meta;
 
+our @CARP_NOT = qw( alienfile );
+
 sub new
 {
   my($class, %args) = @_;
@@ -1115,7 +1117,7 @@ sub _instr
   }
   else
   {
-    die "type not supported as a hook";
+    Carp::croak "type not supported as a hook";
   }
 }
 
@@ -1223,7 +1225,7 @@ sub as_string
 sub DESTROY
 {
   my($self) = @_;
-  if($self->{dir}->children == 0)
+  if(-d $self->{dir} && $self->{dir}->children == 0)
   {
     rmdir($self->{dir}) || warn "unable to remove @{[ $self->{dir} ]} $!";
   }
