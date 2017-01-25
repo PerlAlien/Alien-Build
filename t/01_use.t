@@ -24,6 +24,7 @@ require_ok 'Alien::Build::Plugin::PkgConfig::LibPkgConf';
 require_ok 'Alien::Build::Plugin::Extract::Directory';
 require_ok 'Alien::Build::Plugin::Extract::CommandLine';
 require_ok 'Alien::Build::Plugin::Extract::ArchiveTar';
+require_ok 'Alien::Build::Plugin::Extract::ArchiveZip';
 require_ok 'Alien::Build::Util';
 
 done_testing;
