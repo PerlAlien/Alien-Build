@@ -9,6 +9,24 @@ use Path::Tiny ();
 # ABSTRACT: Plugin to extract a downloaded directory to a build directory
 # VERSION
 
+=head1 METHODS
+
+=head2 handles
+
+ Alien::Build::Plugin::Extract::Directory->handles($ext);
+ $plugin->handles($ext);
+
+Returns true if the plugin is able to handle the archive of the
+given format.  Only returns true for C<d> (for directory).
+
+=cut
+
+sub handles
+{
+  my($class, $ext) = @_;
+  $ext eq 'd' ? 1 : ();
+}
+
 sub init
 {
   my($self, $meta) = @_;
