@@ -19,6 +19,7 @@ subtest 'archive' => sub {
     {
       my $method = "${cmd}_cmd";
       my $exe = $plugin->$method;
+      $exe = 'undef' unless defined $exe;
       note "$cmd = $exe";
     }
 

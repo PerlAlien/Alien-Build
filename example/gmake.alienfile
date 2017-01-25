@@ -1,0 +1,57 @@
+use alienfile;
+use Capture::Tiny qw( capture );
+
+requires 'configure' => 'Capture::Tiny';
+
+probe sub {
+  my($build) = @_;
+
+  foreach my $try ('gmake', 'make')
+  {
+    my($stdout) = capture {
+      system $try, '--version';
+    };
+    if($stdout =~ /GNU Make ([0-9\.]+)/)
+    {
+      $build->runtime_prop->{version} = $1;
+      $build->runtime_prop->{exe}     = $try;
+      return 'system';
+    }
+  }
+
+  return 'share';
+};
+
+share {
+
+  plugin 'Download' => (
+    url     => 'http://ftp.gnu.org/gnu/make',
+    version => qr/^make-([0-9\.]+)\.tar\.gz$/,
+  );
+  plugin 'Extract' => 'tar.gz';  
+  plugin 'Build::Autoconf' => ();
+  
+  build [
+    '%{configure} --program-prefix=g',
+    '%{make}',
+    '%{make} install',
+  ];
+  
+  gather sub {
+    my($build) = @_;
+    my($stdout) = capture {
+      system 'gmake', '--version';
+    };
+    my($version) = $stdout =~ /GNU Make ([0-9\.]+)/;
+    $build->runtime_prop->{version} = $version;
+    $build->runtime_prop->{exe}     = 'gmake';
+  
+  };
+
+};
+
+sys {
+  # necessary info obtained during
+  # probe stage.
+  gather [];
+};

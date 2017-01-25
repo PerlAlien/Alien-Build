@@ -8,9 +8,98 @@ use base qw( Exporter );
 # ABSTRACT: Specification for defining an external dependency for CPAN
 # VERSION
 
-our @EXPORT = qw( requires on );
+our @EXPORT = qw( requires on plugin probe share sys download fetch decode sort extract build gather );
 
 =head1 DIRECTIVES
+
+=head2 plugin
+
+=cut
+
+sub plugin
+{
+}
+
+=head2 probe
+
+=cut
+
+sub probe
+{
+}
+
+=head2 share
+
+=cut
+
+sub share (&)
+{
+}
+
+=head2 sys
+
+=cut
+
+sub sys (&)
+{
+}
+
+=head2 download
+
+=cut
+
+sub download
+{
+}
+
+=head2 fetch
+
+=cut
+
+sub fetch
+{
+}
+
+=head2 decode
+
+=cut
+
+sub decode
+{
+}
+
+=head2 sort
+
+=cut
+
+# TODO: rename
+sub sort
+{
+}
+
+=head2 extract
+
+=cut
+
+sub extract
+{
+}
+
+=head2 build
+
+=cut
+
+sub build
+{
+}
+
+=head2 gather
+
+=cut
+
+sub gather
+{
+}
 
 =head2 requires
 

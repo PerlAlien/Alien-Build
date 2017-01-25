@@ -34,6 +34,15 @@ that are needed ONLY during the install phase.  Standard properties:
     The build root directory.  This will be an absolute path.  It is the
     absolute form of `./_alien` by default.
 
+- prefix
+
+    The install time prefix.  This may or may not be the same as the 
+    runtime prefix.  It may or may not be the same as blib\_share.
+
+- blib\_share
+
+    The root of the blib share directory.
+
 **NOTE**: These properties should not include any blessed objects or code
 references, because they will be serialized using a method that does
 not preserve those capabilities.
@@ -168,6 +177,10 @@ The worst candidate will be returned last.
 
     my $dir = $build->extract;
     my $dir = $build->extract($archive);
+
+## build
+
+    $build->build;
 
 # HOOKS
 
@@ -359,8 +372,14 @@ that are totally unacceptable.
 ## extract hook
 
     $meta->register_hook( extract => sub {
-      my($build) = @_;
+      my($build, $archive) = @_;
       ...
+    });
+
+## build hook
+
+    $meta->register_hook( build => sub {
+      my($build) = @_;
     });
 
 # META METHODS
