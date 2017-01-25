@@ -572,6 +572,14 @@ subtest 'build' => sub {
         @data = (path('file1')->slurp, path('file2')->slurp);
       },
     );
+    
+    my $gather = 0;
+    
+    $meta->register_hook(
+      gather_share => sub {
+        $gather = 1;
+      },
+    );
   
     $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
 
@@ -581,6 +589,8 @@ subtest 'build' => sub {
       \@data,
       [ 'text1', 'text2'],
     );
+    
+    is $gather, 1;
   };
   
   subtest 'destdir' => sub {
@@ -607,6 +617,14 @@ subtest 'build' => sub {
       },
     );
     
+    my $gather = 0;
+    
+    $meta->register_hook(
+      gather_share => sub {
+        $gather = 1;
+      },
+    );
+    
     my $tmp = Path::Tiny->tempdir;
    
     my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
@@ -620,6 +638,8 @@ subtest 'build' => sub {
     note capture_merged { $build->build };
   
     ok(-d $share, "directory created" );
+    
+    ok $gather, 1;
   
   };
   
