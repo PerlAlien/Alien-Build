@@ -22,6 +22,7 @@ require_ok 'Alien::Build::Plugin::PkgConfig::CommandLine';
 require_ok 'Alien::Build::Plugin::PkgConfig::PP';
 require_ok 'Alien::Build::Plugin::PkgConfig::LibPkgConf';
 require_ok 'Alien::Build::Plugin::Extract::Directory';
+require_ok 'Alien::Build::Plugin::Extract::CommandLine';
 require_ok 'Alien::Build::Util';
 
 done_testing;

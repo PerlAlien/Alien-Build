@@ -15,8 +15,7 @@ sub init
   
   $meta->register_hook(
     extract => sub {
-      my($build) = @_;
-      my $src = $build->install_prop->{download};
+      my($build, $src) = @_;
       my $dst = Path::Tiny::path('.')->absolute;
       # Please note: _mirror and Alien::Build::Util are ONLY
       # allowed to be used by core plugins.  If you are writing

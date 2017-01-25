@@ -587,14 +587,17 @@ sub sort
 =head2 extract
 
  my $dir = $build->extract;
+ my $dir = $build->extract($archive);
 
 =cut
 
 sub extract
 {
-  my($self) = @_;
-
-  unless(defined $self->install_prop->{download})
+  my($self, $archive) = @_;
+  
+  $archive ||= $self->install_prop->{download};
+  
+  unless(defined $archive)
   {
     die "tried to call extract before download";
   }
@@ -632,7 +635,7 @@ sub extract
       $CWD = $self->root;
     },
   
-  }, 'extract');
+  }, 'extract', $archive);
   
   $ret ? $ret : ();
 }

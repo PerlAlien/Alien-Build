@@ -167,6 +167,7 @@ The worst candidate will be returned last.
 ## extract
 
     my $dir = $build->extract;
+    my $dir = $build->extract($archive);
 
 # HOOKS
 
