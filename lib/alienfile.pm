@@ -49,7 +49,7 @@ sub _path { Path::Tiny::path(@_) }
  gather [
    [ 'pkg-config', '--modversion', 'libarchive', sub { pkgconfig_value 'version', @_ } ],
    [ 'pkg-config', '--cflags',     'libarchive', sub { pkgconfig_value 'cflags', @_ }  ],
-   [ 'pkg-config', '--libs',       'libarchive', sub { pkgconfig_value 'cflags', @_ }  ],
+   [ 'pkg-config', '--libs',       'libarchive', sub { pkgconfig_value 'libs', @_ }    ],
  ];
 
 =head1 DESCRIPTION

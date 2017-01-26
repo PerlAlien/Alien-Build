@@ -7,7 +7,7 @@ use Alien::Build::Plugin;
 # ABSTRACT: Plugin to extract a tarball using Archive::Tar
 # VERSION
 
-has 'format' => 'zip';
+has '+format' => 'zip';
 
 =head1 METHODS
 

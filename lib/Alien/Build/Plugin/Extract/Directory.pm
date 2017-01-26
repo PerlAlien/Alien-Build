@@ -9,7 +9,7 @@ use Path::Tiny ();
 # ABSTRACT: Plugin to extract a downloaded directory to a build directory
 # VERSION
 
-has 'format' => 'd';
+has '+format' => 'd';
 
 =head1 METHODS
 

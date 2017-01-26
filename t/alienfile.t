@@ -39,8 +39,6 @@ subtest 'warnings alienfile' => sub {
 
 subtest 'compile examples' => sub {
 
-  skip_all 'todo';
-
   foreach my $alienfile (path('example')->children(qr/\.alienfile$/))
   {
     my $build = eval {

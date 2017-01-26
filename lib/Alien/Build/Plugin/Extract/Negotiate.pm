@@ -7,6 +7,8 @@ use Alien::Build::Plugin;
 # ABSTRACT: Extraction negotiation plugin
 # VERSION
 
+has '+format' => 'tar';
+
 sub init
 {
   my($self, $meta) = @_;

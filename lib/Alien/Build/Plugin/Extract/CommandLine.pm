@@ -9,7 +9,7 @@ use IPC::Cmd ();
 # ABSTRACT: Plugin to extract an archive using command line tools
 # VERSION
 
-has 'format' => 'tar';
+has '+format' => 'tar';
 
 has gzip_cmd => sub {
   IPC::Cmd::can_run('gzip') ? 'gzip' : undef;
