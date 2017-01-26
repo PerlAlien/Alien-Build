@@ -30,7 +30,7 @@ subtest 'decode' => sub {
   eval { $build->load_requires('share') };
   skip_all 'test requires HTML::LinkExtor' if $@;
 
-  foreach my $file (path('corpus/listing')->children(qr/\.html$/))
+  foreach my $file (path('corpus/dir')->children(qr/\.html$/))
   {
     subtest "parse $file" => sub {
       my $res1 = {

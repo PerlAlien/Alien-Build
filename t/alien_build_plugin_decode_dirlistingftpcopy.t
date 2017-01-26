@@ -30,7 +30,7 @@ subtest 'decode' => sub {
   eval { $build->load_requires('share') };
   skip_all 'test requires File::Listing' if $@;
 
-  foreach my $file (path('corpus/listing')->children(qr/\.list$/))
+  foreach my $file (path('corpus/dir')->children(qr/\.list$/))
   {
     subtest "parse $file" => sub {
       my $res1 = {
