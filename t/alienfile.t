@@ -7,6 +7,18 @@ use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
 use MyTest;
 
+subtest 'compile examples' => sub {
+
+  foreach my $alienfile (path('example')->children(qr/\.alienfile$/))
+  {
+    my $build = eval {
+      Alien::Build->load("$alienfile");
+    };
+    is $@, '', $alienfile->basename;
+  }
+
+};
+
 subtest 'non struct alienfile' => sub {
 
   eval {
@@ -34,19 +46,6 @@ subtest 'warnings alienfile' => sub {
   
   ok $warning;
   note $warning;
-
-};
-
-subtest 'compile examples' => sub {
-
-  foreach my $alienfile (path('example')->children(qr/\.alienfile$/))
-  {
-    my $build = eval {
-      Alien::Build->load("$alienfile");
-    };
-    is $@, '';
-    isa_ok $build, 'Alien::Build';
-  }
 
 };
 

@@ -38,18 +38,25 @@ unless($name)
   exit 2;
 }
 
-my $build = Alien::Build->load("$alienfile");
+my $example = path(__FILE__)->parent->absolute;
+
+my $build = Alien::Build->load("$alienfile",
+  root => $example->child('_alien')->stringify,
+);
 
 if($build->meta_prop->{destdir})
 {
   print "$name using DESTDIR\n";
   $build->install_prop->{prefix} = $prefix->child("perl/lib/share/Alien-$name")->absolute->stringify;
-  $build->install_prop->{stage}  = path("blib/lib/auto/share/Alien-$name")->absolute->stringify;
+  $build->install_prop->{stage}  = $example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify;
   $build->runtime_prop->{prefix} = $prefix->child("perl/lib/share/Alien-$name")->absolute->stringify;
 }
 else
 {
   print "$name using direct install\n";
+  $build->install_prop->{prefix} = $example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify;
+  $build->install_prop->{stage}  = $example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify;
+  $build->runtime_prop->{prefix} = $prefix->child("perl/lib/share/Alien-$name")->absolute->stringify;  
 }
 
 $build->load_requires('configure');

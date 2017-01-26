@@ -1,0 +1,48 @@
+use alienfile;
+use Config;
+use Path::Tiny qw( path );
+
+plugin 'Probe::CBuilder' => (
+  libs    => '-lbz2',
+  version => qr/version = '(.*?)[,']/,
+  program => q{
+#include <stdio.h>
+#include <bzlib.h>
+
+int main(int argc, char *argv[])
+{
+  printf("version = '%s'\n", BZ2_bzlibVersion());
+  return 0;
+}
+},
+);
+
+share {
+
+  plugin 'Build::MSYS' => ();
+  plugin 'Download' => (
+    url     => 'http://www.bzip.org/downloads.html',
+    version => qr/^bzip2-([0-9\.]+)tar.gz$/,
+  );
+  plugin Extract => 'tar.gz';
+  
+  build [
+    [ '%{make}', 'all', "CC=$Config{cc}", "CFLAGS=$Config{cccdlflags} $Config{optimize}", ],
+    [ '%{make}', 'install', 'PREFIX=%{alien.install.prefix}',                             ],
+    sub {
+      my($build) = @_;
+      my($version) = path(".")->absolute->basename =~ /([0-9\.]+)$/;
+      $build->runtime_prop->{version} = $version;
+    },
+  ];
+
+  gather sub {
+    my($build) =@_;
+    my $prefix = $build->runtime_prop->{prefix};
+    $build->runtime_prop->{cflags}        = "-I$prefix/include";
+    $build->runtime_prop->{cflags_static} = "-I$prefix/include";
+    $build->runtime_prop->{libs}          = "-L$prefix/lib -lbz2";
+    $build->runtime_prop->{libs_static}   = "-L$prefix/lib -lbz2";
+  };
+
+};

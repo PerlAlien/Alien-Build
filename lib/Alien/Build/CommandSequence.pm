@@ -98,7 +98,7 @@ sub execute
   {
     if(ref($command) eq 'CODE')
     {
-      $command->();
+      $command->($build);
     }
     elsif(ref($command) eq 'ARRAY')
     {
