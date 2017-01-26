@@ -19,7 +19,7 @@ sub build
 skip_all 'Test requires PkgConfig::LibPkgConf'
   unless eval {
     my($build, $meta, $plugin) = build(pkg_name => 'foo', minimum_version => 1);
-    $build->load_requires;
+    $build->load_requires('configure');
   };
 
 ok $INC{'PkgConfig/LibPkgConf/Client.pm'}, 'Loaded PkgConfig::LibPkgConf::Client';
