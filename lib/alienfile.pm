@@ -432,6 +432,15 @@ sub build
 
 sub gather
 {
+  my($instr) = @_;
+  my $caller = caller;
+  my $meta = $caller->meta;
+  my $phase = $meta->{phase};
+  Carp::croak "gather is not allowed in configure block"
+    if $phase eq 'configure';
+  $meta->register_hook(gather_system => $instr) if $phase =~ /^(any|system)$/;
+  $meta->register_hook(gather_share => $instr)  if $phase =~ /^(any|share)$/;
+  return;;
 }
 
 sub import

@@ -254,4 +254,70 @@ foreach my $hook (qw( fetch decode prefer extract build ))
 
 }
 
+subtest 'gather' => sub {
+
+  subtest 'configure' => sub {
+  
+    eval {
+      alienfile q{
+        use alienfile;
+        configure {
+          gather sub {};
+        }
+      };
+    };
+    
+    like $@, qr/gather is not allowed in configure block/;
+  
+  };
+  
+  subtest 'system + share' => sub {
+  
+    my $build = alienfile q{
+      use alienfile;
+      gather sub {};
+    };
+    
+    is( $build->meta->has_hook('gather_system'), T() );
+    is( $build->meta->has_hook('gather_share'),  T() );
+  
+  };
+
+  subtest 'system' => sub {
+  
+    my $build = alienfile q{
+      use alienfile;
+      sys { gather sub {} };
+    };
+    
+    is( $build->meta->has_hook('gather_system'), T() );
+    is( $build->meta->has_hook('gather_share'),  F() );
+  
+  };
+
+  subtest 'share' => sub {
+  
+    my $build = alienfile q{
+      use alienfile;
+      share { gather sub {} };
+    };
+    
+    is( $build->meta->has_hook('gather_system'), F() );
+    is( $build->meta->has_hook('gather_share'),  T() );
+  
+  };
+
+  subtest 'nada' => sub {
+  
+    my $build = alienfile q{
+      use alienfile;
+    };
+    
+    is( $build->meta->has_hook('gather_system'), F() );
+    is( $build->meta->has_hook('gather_share'),  F() );
+  
+  };
+
+};
+
 done_testing;
