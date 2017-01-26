@@ -212,7 +212,7 @@ sub plugin
 
 =head2 probe
 
- probe \$code;
+ probe $code;
  probe \@commandlist;
 
 Instructions for the probe stage.  May be either a
@@ -276,6 +276,12 @@ sub sys (&)
 
 =head2 share
 
+ share {
+   ...
+ };
+
+System block.  Allowed directives are: download, fetch, decode, prefer, extract, build, gather.
+
 =cut
 
 sub share (&)
@@ -284,6 +290,14 @@ sub share (&)
 }
 
 =head2 download
+
+ share {
+   download $code;
+   download \@commandlist;
+ };
+
+Instructions for the download stage.  May be either a
+code reference, or a command list.
 
 =cut
 
@@ -309,42 +323,107 @@ sub download
 
 =head2 fetch
 
+ share {
+   fetch $code;
+   fetch \@commandlist;
+ };
+
+Instructions for the fetch stage.  May be either a
+code reference, or a command list.
+
 =cut
 
 sub fetch
 {
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(fetch => $instr);
+  return;
 }
 
 =head2 decode
+
+ share {
+   decode $code;
+   decode \@commandlist;
+ };
+
+Instructions for the decode stage.  May be either a
+code reference, or a command list.
 
 =cut
 
 sub decode
 {
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(decode => $instr);
+  return;
 }
 
 =head2 prefer
+
+ share {
+   prefer $code;
+   prefer \@commandlist;
+ };
+
+Instructions for the prefer stage.  May be either a
+code reference, or a command list.
 
 =cut
 
 sub prefer
 {
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(prefer => $instr);
+  return;
 }
 
 =head2 extract
+
+ share {
+   extract $code;
+   extract \@commandlist;
+ };
+
+Instructions for the extract stage.  May be either a
+code reference, or a command list.
 
 =cut
 
 sub extract
 {
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(extract => $instr);
+  return;
 }
 
 =head2 build
+
+ share {
+   build $code;
+   build \@commandlist;
+ };
+
+Instructions for the build stage.  May be either a
+code reference, or a command list.
 
 =cut
 
 sub build
 {
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(build => $instr);
+  return;
 }
 
 =head2 gather

@@ -236,4 +236,22 @@ subtest 'download' => sub {
 
 };
 
+foreach my $hook (qw( fetch decode prefer extract build ))
+{
+
+  subtest "$hook" => sub {
+  
+    my $build = alienfile qq{
+      use alienfile;
+      share {
+        $hook sub { };
+      };
+    };
+    
+    ok( $build->meta->has_hook($hook) );
+  
+  };
+
+}
+
 done_testing;
