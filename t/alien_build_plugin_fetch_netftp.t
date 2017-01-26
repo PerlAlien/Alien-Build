@@ -1,5 +1,5 @@
 use Test2::Bundle::Extended;
-use Alien::Build::Plugin::Fetch::FTP;
+use Alien::Build::Plugin::Fetch::NetFTP;
 use lib 't/lib';
 use MyTest;
 use MyTest::FTP;
@@ -7,7 +7,7 @@ use Path::Tiny qw( path );
 
 subtest 'updates requires' => sub {
 
-  my $plugin = Alien::Build::Plugin::Fetch::FTP->new( url => 'ftp://localhost/' );
+  my $plugin = Alien::Build::Plugin::Fetch::NetFTP->new( url => 'ftp://localhost/' );
 
   my($build,$meta) = build_blank_alien_build;
   
@@ -36,7 +36,7 @@ subtest 'fetch' => sub {
 
   note "url = $url";
 
-  my $plugin = Alien::Build::Plugin::Fetch::FTP->new( url => $url );
+  my $plugin = Alien::Build::Plugin::Fetch::NetFTP->new( url => $url );
 
   my($build,$meta) = build_blank_alien_build;
   

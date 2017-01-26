@@ -1,4 +1,4 @@
-package Alien::Build::Plugin::Fetch::FTP;
+package Alien::Build::Plugin::Fetch::NetFTP;
 
 use strict;
 use warnings;

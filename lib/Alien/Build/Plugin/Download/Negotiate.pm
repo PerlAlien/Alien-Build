@@ -33,7 +33,7 @@ sub init
     }
     else
     {
-      $fetch = 'FTP';
+      $fetch = 'NetFTP';
     }
   }
   elsif($scheme eq 'ftps')
@@ -55,7 +55,7 @@ sub init
   
   if($self->version)
   {
-    if($fetch eq 'FTP')
+    if($fetch eq 'NetFTP')
     {
       # no decoder necessary
     }

@@ -13,7 +13,7 @@ require_ok 'Alien::Build::Plugin::Build::Autoconf';
 require_ok 'Alien::Build::Plugin::Build::MSYS';
 require_ok 'Alien::Build::Plugin::Fetch::LWP';
 require_ok 'Alien::Build::Plugin::Fetch::HTTPTiny';
-require_ok 'Alien::Build::Plugin::Fetch::FTP';
+require_ok 'Alien::Build::Plugin::Fetch::NetFTP';
 require_ok 'Alien::Build::Plugin::Decode::HTML';
 require_ok 'Alien::Build::Plugin::Decode::DirListing';
 require_ok 'Alien::Build::Plugin::Decode::DirListingFtpcopy';
