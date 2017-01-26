@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 use Carp ();
+use Env qw( @PKG_CONFIG_PATH );
 
 # ABSTRACT: Probe system and determine library or tool properties using PkgConfig.pm
 # VERSION
@@ -64,20 +65,26 @@ sub init
       'system';
     },
   );
+
+  my $gather = sub {
+    my($build) = @_;
+    my $pkg = PkgConfig->find($self->pkg_name, search_path => [@PKG_CONFIG_PATH]);
+    die "second load of PkgConfig.pm @{[ $self->pkg_name ]} failed: @{[ $pkg->errmsg ]}"
+      if $pkg->errmsg;
+    $build->runtime_prop->{cflags}  = _cleanup scalar $pkg->get_cflags;
+    $build->runtime_prop->{libs}    = _cleanup scalar $pkg->get_ldflags;
+    $build->runtime_prop->{version} = $pkg->pkg_version;
+    $pkg = PkgConfig->find($self->pkg_name, static => 1);
+    $build->runtime_prop->{cflags_static} = _cleanup scalar $pkg->get_cflags;
+    $build->runtime_prop->{libs_static}   = _cleanup scalar $pkg->get_ldflags;
+  };
   
   $meta->register_hook(
-    gather_system => sub {
-      my($build) = @_;
-      my $pkg = PkgConfig->find($self->pkg_name);
-      die "second load of PkgConfig.pm @{[ $self->pkg_name ]} failed: @{[ $pkg->errmsg ]}"
-        if $pkg->errmsg;
-      $build->runtime_prop->{cflags}  = _cleanup scalar $pkg->get_cflags;
-      $build->runtime_prop->{libs}    = _cleanup scalar $pkg->get_ldflags;
-      $build->runtime_prop->{version} = $pkg->pkg_version;
-      $pkg = PkgConfig->find($self->pkg_name, static => 1);
-      $build->runtime_prop->{cflags_static} = _cleanup scalar $pkg->get_cflags;
-      $build->runtime_prop->{libs_static}   = _cleanup scalar $pkg->get_ldflags;
-    },
+    gather_system => $gather,
+  );
+
+  $meta->register_hook(
+    gather_share => $gather,
   );
   
   $self;

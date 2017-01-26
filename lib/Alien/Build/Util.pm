@@ -37,6 +37,7 @@ sub _mirror
   
   File::Find::find({
     wanted => sub {
+      next unless -e $File::Find::name;
       my $src = path($File::Find::name)->relative($src_root);
       return if "$src" eq '.';
       my $dst = $dst_root->child("$src");
@@ -51,12 +52,18 @@ sub _mirror
       }
       elsif(-l "$src")
       {
+        # TODO: rmtree if a directory?
+        if(-e "$dst")
+        { unlink "$dst" }
         my $target = readlink "$src";
         print "Alien::Build> ln -s $target $dst\n" if $opt->{verbose};
         symlink($target, $dst) || die "unable to symlink $target => $dst";
       }
       elsif(-f "$src")
       {
+        # TODO: rmtree if a directory?
+        if(-e "$dst")
+        { unlink "$dst" }
         print "Alien::Build> cp $src $dst\n" if $opt->{verbose};
         File::Copy::cp("$src", "$dst") || die "copy error $src => $dst: $!";
         if($] < 5.012 && -x "$src" && $^O ne 'MSWin32')

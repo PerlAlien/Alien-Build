@@ -44,7 +44,7 @@ sub init
   );
   
   $meta->register_hook(
-    gather_system => sub {
+    $_ => sub {
       my($build) = @_;
       $client ||= PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
@@ -56,7 +56,7 @@ sub init
       $build->runtime_prop->{cflags_static}  = $pkg->cflags_static;
       $build->runtime_prop->{libs_static}    = $pkg->libs_static;
     },
-  );
+  ) for qw( gather_system gather_share );
   
   $self;
 }

@@ -78,8 +78,8 @@ sub init
   }
   
   $meta->register_hook(
-    gather_system => \@gather_system,
-  );
+    $_ => \@gather_system,
+  ) for qw( gather_system gather_share );
   
   $self;
 }

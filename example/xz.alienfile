@@ -1,0 +1,14 @@
+use alienfile;
+
+plugin 'PkgConfig::LibPkgConf' => 'liblzma';
+
+share {
+
+  plugin Download => (
+    url     => 'http://tukaani.org/xz/',
+    version => qr/^xz-([0-9\.]+)\.tar.gz$/,
+  );
+  plugin Extract => 'tar.gz';
+  plugin 'Build::Autoconf' => ();
+
+};
