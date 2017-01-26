@@ -19,6 +19,7 @@ require_ok 'Alien::Build::Plugin::Decode::DirListing';
 require_ok 'Alien::Build::Plugin::Decode::DirListingFtpcopy';
 require_ok 'Alien::Build::Plugin::Prefer::SortVersions';
 require_ok 'Alien::Build::CommandSequence';
+require_ok 'Alien::Build::Plugin::PkgConfig::Negotiate';
 require_ok 'Alien::Build::Plugin::PkgConfig::CommandLine';
 require_ok 'Alien::Build::Plugin::PkgConfig::PP';
 require_ok 'Alien::Build::Plugin::PkgConfig::LibPkgConf';

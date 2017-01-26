@@ -26,28 +26,7 @@ sub init
 {
   my($self, $meta) = @_;
   
-  if($^O eq 'linux')
-  {
-    # includes support Gentoo Linux, which we could be
-    # running when $^O eq 'linux'
-    $meta->add_requires('any' => 'PkgConfig' => '0.09026');
-  }
-  elsif(defined $self->minimum_version)
-  {
-    # added support for --atleast-version
-    $meta->add_requires('any' => 'PkgConfig' => '0.08926');
-  }
-  elsif($^O eq 'sun')
-  {
-    # fixes for 64bit solaris
-    $meta->add_requires('any' => 'PkgConfig' => '0.08826');  
-  }
-  else
-  {
-    # baseline includes support for a number of envs
-    # and lots of Windows fixes.
-    $meta->add_requires('any' => 'PkgConfig' => '0.08826');  
-  }
+  $meta->add_requires('configure' => 'PkgConfig' => '0.14026');
 
   $meta->register_hook(
     probe => sub {

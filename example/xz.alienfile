@@ -1,6 +1,6 @@
 use alienfile;
 
-plugin 'PkgConfig::LibPkgConf' => 'liblzma';
+plugin 'PkgConfig' => 'liblzma';
 
 share {
 

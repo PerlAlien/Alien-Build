@@ -52,7 +52,7 @@ else
   print "$name using direct install\n";
 }
 
-$build->load_requires('any');
+$build->load_requires('configure');
 
 if($build->install_type eq 'share')
 {

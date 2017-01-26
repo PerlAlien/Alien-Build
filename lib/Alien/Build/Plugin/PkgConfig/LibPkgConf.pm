@@ -17,12 +17,13 @@ has minimum_version => undef;
 sub init
 {
   my($self, $meta) = @_;
-  
-  $meta->add_requires('any' => 'PkgConfig::LibPkgConf::Client' => '0.04');
+
+  # Also update in Neotiate.pm  
+  $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => '0.04');
   
   if(defined $self->minimum_version)
   {
-    $meta->add_requires('any' => 'PkgConfig::LibPkgConf::Util' => '0.04');
+    $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => '0.04');
   }
   
   my $client;
