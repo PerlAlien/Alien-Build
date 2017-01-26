@@ -428,6 +428,23 @@ sub build
 
 =head2 gather
 
+ gather $code;
+ gather \@commandlist;
+ 
+ share {
+   gather $code;
+   gather \@commandlist;
+ };
+ 
+ sys {
+   gather $code;
+   gather \@commandlist;
+ };
+
+Instructions for the gather stage.  May be either a code reference, or a command list.
+In the root block of te alinefile it will trigger in both share and system build.
+In the share or sys block it will only trigger in the corresponding build.
+
 =cut
 
 sub gather
