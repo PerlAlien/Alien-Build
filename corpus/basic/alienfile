@@ -1,6 +1,4 @@
 use alienfile;
-use strict;
-use warnings;
 
 requires 'Foo', '1.00';
 
