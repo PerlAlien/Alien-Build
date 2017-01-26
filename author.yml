@@ -31,6 +31,7 @@ pod_spelling_system:
     - PkgConfig
     - sys
     - destdir
+    - alienfile
 
 pod_coverage:
   skip: 0
