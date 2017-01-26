@@ -43,8 +43,11 @@ sub _mirror
       $src = $src->absolute($src_root);
       if(-d "$src")
       {
-        print "Alien::Build> mkdir $dst\n" if $opt->{verbose};
-        mkdir($dst) || die "unable to create directory $dst: $!";
+        unless(-d $dst)
+        {
+          print "Alien::Build> mkdir $dst\n" if $opt->{verbose};
+          mkdir($dst) || die "unable to create directory $dst: $!";
+        }
       }
       elsif(-l "$src")
       {

@@ -3,3 +3,5 @@
 *.swp
 /t/bin/*.json
 /t/bin/*.log
+/example/_alien
+/example/blib

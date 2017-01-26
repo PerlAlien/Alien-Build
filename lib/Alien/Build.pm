@@ -2,9 +2,11 @@ package Alien::Build;
 
 use strict;
 use warnings;
+use Alien::Build::Util;
 use Path::Tiny ();
 use Carp ();
 use File::chdir;
+use JSON::PP;
 use Env qw( @PATH @PKG_CONFIG_PATH );
 
 # ABSTRACT: Build external dependencies for use in CPAN
@@ -22,7 +24,7 @@ client, and work closely with L<Alien::Base> which is used at runtime.
 
 =cut
 
-sub _path { Path::Tiny::path(@_) }
+sub _path { goto \&Path::Tiny::path }
 
 =head1 CONSTRUCTOR
 
@@ -37,7 +39,7 @@ sub new
   my($class, %args) = @_;
   my $self = bless {
     install_prop => {
-      root => $args{root} || _path("_alien")->stringify,
+      root => _path($args{root} || "_alien")->absolute->stringify,
     },
     runtime_prop => {
     },
@@ -430,18 +432,21 @@ sub gather_system
   local $CWD = $self->root;
   my $dir;
   
-  $self->_call_hook(
-    {
-      before => sub {
-        $dir = Alien::Build::TempDir->new($self, "gather");
-        $CWD = "$dir";
+  if($self->meta->has_hook('gather_system'))
+  {
+    $self->_call_hook(
+      {
+        before => sub {
+          $dir = Alien::Build::TempDir->new($self, "gather");
+          $CWD = "$dir";
+        },
+        after  => sub {
+          $CWD = $self->root;
+        },
       },
-      after  => sub {
-        $CWD = $self->root;
-      },
-    },
-    'gather_system',
-  );
+      'gather_system',
+    );
+  }
   
   $self->install_prop->{finished} = 1;
   $self->install_prop->{complete}->{gather_system} = 1;
@@ -725,13 +730,15 @@ sub build
     $self->_call_hook('gather_share');
   };
   
+  my $stage = _path($self->install_prop->{stage});
+  $stage->mkpath;
+  
   if($destdir)
   {
     die "nothing was installed into destdir" unless -d $destdir;
-    require Alien::Build::Util;
     my $prefix = $self->install_prop->{prefix};
     my $src = _path("$ENV{DESTDIR}/$prefix");
-    my $dst = _path($self->install_prop->{stage});
+    my $dst = $stage;
     
     if($self->meta->has_hook('gather_share'))
     {
@@ -749,6 +756,13 @@ sub build
       local $CWD = $self->install_prop->{stage};
       $gather->();
     }
+  }
+  
+  $stage->child('alien')->mkpath;
+  $stage->child('alien/alien.json')->spew(JSON::PP::encode_json($self->runtime_prop));
+  if($self->meta->filename && -r $self->meta->filename && $self->meta->filename !~ /\.(pm|pl)$/)
+  {
+    _path($self->meta->filename)->copy(_path($stage->child('alien/alienfile')));
   }
   
   $self;

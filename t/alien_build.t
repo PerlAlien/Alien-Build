@@ -580,17 +580,24 @@ subtest 'build' => sub {
         $gather = 1;
       },
     );
-  
+    
+    my $tmp = Path::Tiny->tempdir;
+    my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
     $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
+    $build->install_prop->{stage}    = $share->stringify;
 
     $build->build;
   
     is(
       \@data,
       [ 'text1', 'text2'],
+      'build',
     );
     
-    is $gather, 1;
+    is $gather, 1, 'ran gather';
+    
+    ok( -f $share->child('alien/alien.json'), 'has alien/alien.json');
+    ok( -f $share->child('alien/alien.json'), 'has alienfile');
   };
   
   subtest 'destdir' => sub {
@@ -639,7 +646,10 @@ subtest 'build' => sub {
   
     ok(-d $share, "directory created" );
     
-    ok $gather, 1;
+    is $gather, 1, 'ran gather';
+    
+    ok( -f $share->child('alien/alien.json'), 'has alien/alien.json');
+    ok( -f $share->child('alien/alien.json'), 'has alienfile');
   
   };
   

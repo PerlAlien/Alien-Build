@@ -34,7 +34,7 @@ share {
   plugin 'Build::Autoconf' => ();
   
   build [
-    '%{configure} --program-prefix=g --disable-shared',
+    '%{configure} --program-prefix=g --disable-shared --prefix=%{alien.install.prefix}',
     '%{make}',
     '%{make} install',
   ];
@@ -51,3 +51,4 @@ share {
   };
 
 };
+
