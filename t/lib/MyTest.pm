@@ -6,7 +6,7 @@ use Path::Tiny qw( path );
 use File::Temp qw( tempdir );
 use base qw( Exporter );
 
-our @EXPORT = qw( build_blank_alien_build );
+our @EXPORT = qw( build_blank_alien_build alienfile );
 
 sub build_blank_alien_build
 {
@@ -34,6 +34,16 @@ sub build_blank_alien_build
   );
   my $meta = $build->meta;
   wantarray ? ($build, $meta) : $build;
+}
+
+sub alienfile
+{
+  my($str) = @_;
+  my(undef, $filename, $line) = caller;
+  $str = '# line '. $line . ' "' . $filename . qq("\n) . $str;
+  my $alienfile = Path::Tiny->tempfile;
+  $alienfile->spew($str);
+  Alien::Build->load("$alienfile", root => tempdir(CLEANUP => 1));
 }
 
 1;

@@ -1,14 +1,20 @@
 use Test2::Bundle::Extended;
 use Alien::Build;
 use Path::Tiny qw( path );
+use lib 't/lib';
 use lib 'corpus/lib';
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
+use MyTest;
 
 subtest 'non struct alienfile' => sub {
 
   eval {
-    Alien::Build->load('corpus/nonstrict/alienfile');
+    alienfile q{
+      use alienfile;
+      my $foo = 'bar';
+      @{ "${foo}::${foo}" } = ();
+    };
   };
   my $error = $@;
   isnt $error, '', 'throws error';
@@ -18,7 +24,13 @@ subtest 'non struct alienfile' => sub {
 
 subtest 'warnings alienfile' => sub {
 
-  my $warning = warning { Alien::Build->load('corpus/warning/alienfile') };
+  my $warning = warning { 
+    alienfile q{
+      use alienfile;
+      my $foo;
+      my $bar = "$foo";
+    };
+  };
   
   ok $warning;
   note $warning;
@@ -39,16 +51,6 @@ subtest 'compile examples' => sub {
   }
 
 };
-
-sub alienfile
-{
-  my($str) = @_;
-  my(undef, $filename, $line) = caller;
-  $str = '# line '. $line . ' "' . $filename . qq("\n) . $str;
-  my $alienfile = Path::Tiny->tempfile;
-  $alienfile->spew($str);
-  Alien::Build->load("$alienfile", root => tempdir(CLEANUP => 1));
-}
 
 subtest 'plugin' => sub {
 
