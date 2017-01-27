@@ -8,6 +8,13 @@ use alienfile;
 # "system" or "share" install.
 plugin 'PkgConfig' => 'liblzma';
 
+# in addition to the library, we require that the xz command
+# is also available.
+plugin 'Probe::CommandLine' => (
+  command   => 'xz',
+  secondary => 1,
+);
+
 share {
 
   # items in the share block relate to building the package

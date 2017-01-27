@@ -14,24 +14,11 @@ configure {
 # it.  Because 'make' could be some other make, we
 # try running it with --version and see if it looks
 # like the GNU version.
-probe sub {
-  my($build) = @_;
-
-  foreach my $try ('gmake', 'make')
-  {
-    my($stdout) = capture {
-      system $try, '--version';
-    };
-    if($stdout =~ /GNU Make/)
-    {
-      $build->runtime_prop->{exe}     = $try;
-      return 'system';
-    }
-  }
-
-  # can't find it!  Install from source.
-  return 'share';
-};
+plugin 'Probe::CommandLine' => (
+  command => $_,
+  args    => ['--version'],
+  match   => qr/GNU Make/,
+) for qw( make gmake );
 
 share {
 
@@ -78,7 +65,7 @@ share {
     '%{make} install',
     sub {
       my($build) = @_;
-      $build->runtime_prop->{exe} = 'gmake';
+      $build->runtime_prop->{command} = 'gmake';
     },
   ];
   
@@ -92,7 +79,7 @@ share {
 gather sub {
   my($build) = @_;
   my($stdout) = capture {
-    system($build->runtime_prop->{exe}, '--version');
+    system($build->runtime_prop->{command}, '--version');
   };
   my($version) = $stdout =~ /GNU Make ([0-9\.]+)/;
   $build->runtime_prop->{version} = $version || 'unknown';

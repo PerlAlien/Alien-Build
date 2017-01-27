@@ -6,6 +6,7 @@ use base qw( Exporter );
 use Scalar::Util qw( refaddr );
 use Text::ParseWords qw( shellwords );
 use Scalar::Util qw( weaken );
+use IPC::Cmd ();
 
 our @EXPORT = qw( system_fake system_add );
 
@@ -30,6 +31,24 @@ my @stack;
   }
 
 };
+
+{
+  my $old = \&IPC::Cmd::can_run;
+  no warnings 'redefine';
+  *IPC::Cmd::can_run = sub 
+  {
+    my $system = $stack[-1];
+    
+    if($system)
+    {
+      $system->can_run(@_);
+    }
+    else
+    {
+      return $old->(@_);
+    }
+  };
+}
 
 sub new
 {
@@ -65,6 +84,18 @@ sub call
     $! = 'No such file or directory';
     return $? = -1;
   }
+}
+
+sub can_run
+{
+  my($self, $command) = @_;
+
+  # we only really use can_run to figure out if
+  # we CAN run an executable, but make up some
+  # path just for pretends.  
+  $self->{$command}
+  ? "/bin/$command"
+  : undef;
 }
 
 sub DESTROY

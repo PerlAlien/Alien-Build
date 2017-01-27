@@ -28,6 +28,13 @@ int main(int argc, char *argv[])
 },
 );
 
+# in addition to the library, we require that the bzip2 command
+# is also available.
+plugin 'Probe::CommandLine' => (
+  command   => 'bzip2',
+  secondary => 1,
+);
+
 share {
 
   # items in the share block relate to building the package
