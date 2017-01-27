@@ -696,7 +696,7 @@ sub build
   my($self) = @_;
 
   # save the evironment, in case some plugins decide
-  # to alter it.
+  # to alter it.  Or us!  See just a few lines below.
   local %ENV = %ENV;
   
   local $CWD;
