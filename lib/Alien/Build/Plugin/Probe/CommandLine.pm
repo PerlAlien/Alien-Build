@@ -26,11 +26,9 @@ sub init
   my $check = sub {
     my($build) = @_;
 
-    $DB::single = 1;
-
     unless(IPC::Cmd::can_run($self->command))
     {
-      return 'share';
+      die 'Command not found ' . $self->command;
     }
 
     if(defined $self->match || defined $self->version)
@@ -38,8 +36,8 @@ sub init
       my($out,$err,$ret) = capture {
         system( $self->command, @{ $self->args } );
       };
-      return 'share' if $ret;
-      return 'share' if defined $self->match && $out !~ $self->match;
+      die 'Command did not return a true value' if $ret;
+      die 'Command output did not match' if defined $self->match && $out !~ $self->match;
       if(defined $self->version)
       {
         if($out =~ $self->version)
@@ -49,7 +47,7 @@ sub init
       }
     }
 
-    $build->runtime_prop->{command} = $self->command if $build;
+    $build->runtime_prop->{command} = $self->command;
     'system';
   };
   

@@ -1205,7 +1205,7 @@ sub call_hook
     if(ref($hook) eq 'CODE')
     {
       $value = eval {
-        my $value = $wrapper->(sub { $hook->(@args) });
+        my $value = $wrapper->(sub { $hook->(@args) }, @args);
         $args{verify}->('code') if $args{verify};
         $value;
       };

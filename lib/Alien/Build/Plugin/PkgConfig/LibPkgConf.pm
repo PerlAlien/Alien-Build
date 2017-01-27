@@ -32,12 +32,12 @@ sub init
     probe => sub {
       $client ||= PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
-      return 'share' unless $pkg;
+      die "package @{[ $self->pkg_name ]} not found" unless $pkg;
       if(defined $self->minimum_version)
       {
         if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->minimum_version) == -1)
         {
-          return 'share';
+          die "package @{[ $self->pkg_name ]} is not recent enough";
         }
       }
       'system';

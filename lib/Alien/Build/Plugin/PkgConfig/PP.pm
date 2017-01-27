@@ -31,14 +31,14 @@ sub init
   $meta->register_hook(
     probe => sub {
       my $pkg = PkgConfig->find($self->pkg_name);
-      return 'share' if $pkg->errmsg;
+      die "package @{[ $self->pkg_name ]} not found" if $pkg->errmsg;
       if(defined $self->minimum_version)
       {
         my $version = PkgConfig::Version->new($pkg->pkg_version);
         my $need    = PkgConfig::Version->new($self->minimum_version);
         if($version < $need)
         {
-          return 'share';
+          die "package @{[ $self->pkg_name ]} is not recent enough";
         }
       }
       'system';

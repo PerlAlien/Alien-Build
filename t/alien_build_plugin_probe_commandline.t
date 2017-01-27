@@ -4,6 +4,15 @@ use MyTest::System2;
 use MyTest;
 use Alien::Build::Plugin::Probe::CommandLine;
 use IPC::Cmd;
+use Capture::Tiny qw( capture_merged );
+
+sub cap (&)
+{
+  my($code) = @_;
+  my($out, $ret) = capture_merged { $code->() };
+  note $out if $out;
+  $ret;
+}
 
 sub build 
 {
@@ -29,14 +38,14 @@ subtest 'basic existence' => sub {
   subtest 'it is there' => sub {
   
     my($build) = build('foo');
-    is $build->probe, 'system', 'is system';
+    is cap { $build->probe }, 'system', 'is system';
   
   };
   
   subtest 'it is not there' => sub {
 
     my($build) = build('bar');
-    is $build->probe, 'share', 'is share';
+    is cap { $build->probe }, 'share', 'is share';
 
   };
 
@@ -53,7 +62,7 @@ subtest 'args' => sub {
   
   my($build) = build(command => 'foo', args => [1,2,3], match => qr// );
   
-  is $build->probe, 'system', 'is system';
+  is cap { $build->probe }, 'system', 'is system';
   
   is $called, 1, 'was called';
   
@@ -83,7 +92,7 @@ subtest 'secondary' => sub {
       });
     });
     
-    is($build->probe, 'system');
+    is(cap { $build->probe }, 'system');
     is $run, 1, 'run';
     is $lib, 1, 'lib';
   
@@ -102,7 +111,7 @@ subtest 'secondary' => sub {
       });
     });
     
-    is($build->probe, 'share');
+    is(cap { $build->probe }, 'share');
     is $lib, 1, 'lib';
   
   };
@@ -120,7 +129,7 @@ subtest 'secondary' => sub {
       });
     });
     
-    is($build->probe, 'share');
+    is(cap { $build->probe }, 'share');
     is $run, 0, 'run';
     is $lib, 1, 'lib';
   
@@ -139,7 +148,7 @@ subtest 'secondary' => sub {
       });
     });
     
-    is($build->probe, 'share');
+    is(cap { $build->probe }, 'share');
     is $run, 0, 'run';
     is $lib, 1, 'lib';
   
@@ -155,23 +164,23 @@ subtest 'match + version' => sub {
   
   subtest 'match good' => sub {
     my($build) = build(command => 'foo', match => qr/Froodle/);
-    is $build->probe, 'system';
+    is cap { $build->probe }, 'system';
   };
 
   subtest 'match bad' => sub {
     my($build) = build(command => 'foo', match => qr/Droodle/);
-    is $build->probe, 'share';
+    is cap { $build->probe }, 'share';
   };
   
   subtest 'version found' => sub {
     my($build) = build(command => 'foo', version => qr/version ([0-9\.]+)/);
-    is $build->probe, 'system';
+    is cap { $build->probe }, 'system';
     is $build->runtime_prop->{version}, '1.00';
   };
   
   subtest 'version unfound' => sub {
     my($build) = build(command => 'foo', version => qr/version = ([0-9\.]+)/);
-    is $build->probe, 'system';
+    is cap { $build->probe }, 'system';
     is $build->runtime_prop->{version}, undef;
   };
 
