@@ -238,6 +238,32 @@ subtest 'hook' => sub {
       is( \@args, [1,2], 'arguments' );
     
     };
+    
+    subtest 'alter args' => sub {
+    
+      my @args;
+      
+      $meta->register_hook(
+        foo8 => sub {
+          my $build = shift;
+          @args = @_;
+          die "oops" unless $build->isa('Alien::Build');
+          return 'platypus';
+        },
+      );
+      
+      $meta->around_hook(
+        foo8 => sub {
+          my $orig = shift;
+          my $build = shift;
+          $orig->($build, map { $_ + 1 } @_);
+        }
+      );
+      
+      is( $build->_call_hook('foo8', 1, 2), 'platypus' );
+      is( \@args, [ 2,3 ] );
+    
+    };
   
   };
 

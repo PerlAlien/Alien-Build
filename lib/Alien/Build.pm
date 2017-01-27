@@ -1199,13 +1199,13 @@ sub call_hook
     
   foreach my $hook (@hooks)
   {
-    my $wrapper = $self->{around}->{$name} || sub { shift->(@_) };
+    my $wrapper = $self->{around}->{$name} || sub { my $code = shift; $code->(@_) };
     my $value;
     $args{before}->() if $args{before};
     if(ref($hook) eq 'CODE')
     {
       $value = eval {
-        my $value = $wrapper->(sub { $hook->(@args) }, @args);
+        my $value = $wrapper->(sub { $hook->(@_) }, @args);
         $args{verify}->('code') if $args{verify};
         $value;
       };
@@ -1214,7 +1214,7 @@ sub call_hook
     {
       $value = $wrapper->(sub {
         eval {
-          $hook->execute(@args);
+          $hook->execute(@_);
           $args{verify}->('command') if $args{verify};
         };
         defined $args{ok} ? $args{ok} : 1;
