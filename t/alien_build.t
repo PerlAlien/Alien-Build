@@ -179,6 +179,67 @@ subtest 'hook' => sub {
     ok 1;
   
   };
+  
+  subtest 'around hook' => sub {
+  
+    subtest 'single wrapper' => sub {
+    
+      my @args;
+    
+      $meta->register_hook(
+        foo6 => sub {
+          my $build = shift;
+          @args = @_;
+          die "oops" unless $build->isa('Alien::Build');
+          return 'platypus';
+        },
+      );
+      
+      $meta->around_hook(
+        foo6 => sub {
+          my $orig = shift;
+          return $orig->(@_) . ' man';
+        }
+      );
+      
+      is( $build->_call_hook('foo6', 1, 2), 'platypus man', 'return value' );
+      is( \@args, [1,2], 'arguments' );
+    
+    };
+    
+    subtest 'double wrapper' => sub {
+    
+      my @args;
+    
+      $meta->register_hook(
+        foo7 => sub {
+          my $build = shift;
+          @args = @_;
+          die "oops" unless $build->isa('Alien::Build');
+          return 'platypus';
+        },
+      );
+      
+      $meta->around_hook(
+        foo7 => sub {
+          my $orig = shift;
+          return '(' . $orig->(@_) . ') man';
+        }
+      );
+      
+      $meta->around_hook(
+        foo7 => sub {
+          my $orig = shift;
+          return 'the (' . $orig->(@_) . ')';
+        }
+      );
+      
+      is( $build->_call_hook('foo7', 1, 2), 'the ((platypus) man)', 'return value' );
+      is( \@args, [1,2], 'arguments' );
+    
+    };
+  
+  };
 
 };
 

@@ -1002,6 +1002,7 @@ sub new
       share  => {},
       system => {},
     },
+    around => {},
     prop => {},
     %args,
   }, $class;
@@ -1154,16 +1155,41 @@ sub register_hook
 
 =head2 default_hook
 
- $build->meta->default_hook($phase, $name, $instructions);
- Alien::Build->meta->default_hook($phase, $name, $instructions);
+ $build->meta->default_hook($name, $instructions);
+ Alien::Build->meta->default_hook($name, $instructions);
 
 =cut
 
 sub default_hook
 {
-  my($self, $phase, $name, $instr) = @_;
+  my($self, $name, $instr) = @_;
   $self->{default_hook}->{$name} = _instr $self, $name, $instr;
   $self;
+}
+
+=head2 around_hook
+
+ $build->meta->around_hook($hook, $code);
+ Alien::Build->meta->around_hook($name, $code);
+
+=cut
+
+sub around_hook
+{
+  my($self, $name, $code) = @_;
+  if(my $old = $self->{around}->{$name})
+  {
+    # this is the craziest shit I have ever
+    # come up with.
+    $self->{around}->{$name} = sub {
+      my $orig = shift;
+      $code->(sub { $old->($orig, @_) }, @_);
+    };
+  }
+  else
+  {
+    $self->{around}->{$name} = $code;
+  }
 }
 
 sub call_hook
@@ -1182,37 +1208,31 @@ sub call_hook
     
   foreach my $hook (@hooks)
   {
+    my $wrapper = $self->{around}->{$name} || sub { shift->(@_) };
     my $value;
     $args{before}->() if $args{before};
     if(ref($hook) eq 'CODE')
     {
       $value = eval {
-        my $value = $hook->(@args);
+        my $value = $wrapper->(sub { $hook->(@args) });
         $args{verify}->('code') if $args{verify};
         $value;
       };
     }
     else
     {
-      eval {
-        $hook->execute(@args);
-        $args{verify}->('command') if $args{verify};
-      };
-      $value = $args{ok};
-      $value = 1 unless defined $value;
+      $value = $wrapper->(sub {
+        eval {
+          $hook->execute(@args);
+          $args{verify}->('command') if $args{verify};
+        };
+        defined $args{ok} ? $args{ok} : 1;
+      });
     }
     $error = $@;
     $args{after}->() if $args{after};
-    if($error)
-    {
-      $args{on_fail}->() if $args{on_fail};
-      next if $error;
-    }
-    else
-    {
-      $args{on_ok}->() if $args{on_ok};
-      return $value;
-    }
+    next if $error;
+    return $value;
   }
   die $error if $error;
   Carp::croak "No hooks registered for $name";

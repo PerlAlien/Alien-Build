@@ -46,7 +46,7 @@ Some reasonable default flags will be provided.
   );
   
   $meta->default_hook(
-    share => build => [
+    build => [
       '%{configure} --prefix=%{alien.install.autoconf_prefix} --disable-shared',
       '%{make}',
       '%{make} install',

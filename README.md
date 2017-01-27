@@ -442,8 +442,13 @@ the class or [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.
 
 ## default\_hook
 
-    $build->meta->default_hook($phase, $name, $instructions);
-    Alien::Build->meta->default_hook($phase, $name, $instructions);
+    $build->meta->default_hook($name, $instructions);
+    Alien::Build->meta->default_hook($name, $instructions);
+
+## around\_hook
+
+    $build->meta->around_hook($hook, $code);
+    Alien::Build->meta->around_hook($name, $code);
 
 # CONTRIBUTING
 
