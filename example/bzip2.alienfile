@@ -1,5 +1,4 @@
 use alienfile;
-use Config;
 use Path::Tiny qw( path );
 
 # Because bzip2 does not come with a pkg-config compatible .pc file
@@ -72,7 +71,7 @@ share {
   # We also use CC=$Config{cc} to make sure that we use the
   # same compiler as was used to build Perl.
   build [
-    [ '%{make}', 'all', "CC=$Config{cc}", "CFLAGS=$Config{cccdlflags} $Config{optimize}", ],
+    [ '%{make}', 'all', "CC=%{perl.config.cc}", "CFLAGS=%{perl.config.cccdlflags} %{perl.config.optimize}", ],
     [ '%{make}', 'install', 'PREFIX=%{alien.install.prefix}',                    ],
     
     # we can use a code ref here to determine the version number of
