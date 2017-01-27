@@ -708,7 +708,7 @@ sub build
   if($self->meta_prop->{autoconf})
   {
     my $prefix = $self->install_prop->{prefix};
-    $prefix =~ s!^([a-z]):!$1!i if $^O eq 'MSWin32';
+    $prefix =~ s!^([a-z]):!/$1!i if $^O eq 'MSWin32';
     $self->install_prop->{autoconf_prefix} = $prefix;
   }
   
