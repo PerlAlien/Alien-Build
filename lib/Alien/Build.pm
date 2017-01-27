@@ -703,15 +703,6 @@ sub build
     delete $ENV{DESTDIR};
   }
   
-  # TODO: do this from a plugin
-  # instead of in here.
-  if($self->meta_prop->{autoconf})
-  {
-    my $prefix = $self->install_prop->{prefix};
-    $prefix =~ s!^([a-z]):!/$1!i if $^O eq 'MSWin32';
-    $self->install_prop->{autoconf_prefix} = $prefix;
-  }
-  
   my $destdir;
   
   $self->_call_hook(
@@ -1227,7 +1218,7 @@ sub call_hook
           $args{verify}->('command') if $args{verify};
         };
         defined $args{ok} ? $args{ok} : 1;
-      });
+      }, @args);
     }
     $error = $@;
     $args{after}->() if $args{after};

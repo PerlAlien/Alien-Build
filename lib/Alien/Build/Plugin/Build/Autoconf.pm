@@ -3,6 +3,7 @@ package Alien::Build::Plugin::Build::Autoconf;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use Env qw( @PATH );
 use constant _win => $^O eq 'MSWin32';
 
 # ABSTRACT: Autoconf plugin for Alien::Build
@@ -20,6 +21,25 @@ sub init
   
   my $intr = $meta->interpolator;
 
+  $meta->around_hook(
+    build => sub {
+      my $orig = shift;
+      my $build = shift;
+
+      my $prefix = $build->install_prop->{prefix};
+      $prefix =~ s!^([a-z]):!/$1!i if _win;
+      $build->install_prop->{autoconf_prefix} = $prefix;
+
+      local $ENV{PATH} = $ENV{PATH};
+      if(_win)
+      {
+        unshift @PATH, Alien::MSYS::msys_path();
+      }
+
+      $orig->($build, @_);
+    },
+  );
+
 =head1 HELPERS
 
 =head2 configure
@@ -34,7 +54,7 @@ Some reasonable default flags will be provided.
   # TODO:
   #  - AB::P::Autoconf::Shared to build shared library too
 
-  my @msys_reqs = $^O eq 'MSWin32' ? ('Alien::MSYS' => '0.07') : ();
+  my @msys_reqs = _win ? ('Alien::MSYS' => '0.07') : ();
 
   $intr->add_helper(
     configure => sub {
@@ -69,7 +89,7 @@ will not build with C<nmake> or C<dmake> typically used by Perl on Windows.
   $intr->replace_helper(
     make => sub { 'make' },
     @msys_reqs,
-  ) if $^O eq 'MSWin32';
+  ) if _win;
   
   $self;
 }
