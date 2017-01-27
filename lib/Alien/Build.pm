@@ -694,9 +694,12 @@ sub extract
 sub build
 {
   my($self) = @_;
+
+  # save the evironment, in case some plugins decide
+  # to alter it.
+  local %ENV = %ENV;
   
   local $CWD;
-  local $ENV{DESTDIR} = $ENV{DESTDIR};
   
   unless($self->meta_prop->{destdir})
   {
@@ -704,6 +707,9 @@ sub build
   }
   
   my $destdir;
+  
+  %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
+  %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
   
   $self->_call_hook(
   {

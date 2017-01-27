@@ -649,6 +649,11 @@ subtest 'build' => sub {
   
     my @data;
   
+    $meta->prop->{env}->{FOO1} = 'bar1';
+    $build->install_prop->{env}->{FOO3} = 'bar3';
+
+    local $ENV{FOO2} = 'bar2';
+  
     $meta->register_hook(
       extract => sub {
         path('file1')->spew('text1');
@@ -658,6 +663,9 @@ subtest 'build' => sub {
   
     $meta->register_hook(
       build => sub {
+        is $ENV{FOO1}, 'bar1';
+        is $ENV{FOO2}, 'bar2';
+        is $ENV{FOO3}, 'bar3';
         @data = (path('file1')->slurp, path('file2')->slurp);
       },
     );

@@ -92,6 +92,7 @@ sub execute
     alien => {
       install => $build->install_prop,
       runtime => $build->runtime_prop,
+      meta    => $build->meta_prop,
     },
     perl    => {
       config => \%Config::Config,
