@@ -28,7 +28,12 @@ has xz_cmd => sub {
 has tar_cmd => sub {
   IPC::Cmd::can_run('bsdtar')
     ? 'bsdtar'
-    : IPC::Cmd::can_run('tar')
+    # TODO: GNU tar can be iffy on windows, where absolute
+    # paths get confused with remote tars.  *sigh* fix later
+    # if we can, for now just assume that 'tar.exe' is borked
+    # on windows to be on the safe side.  The Fetch::ArchiveTar
+    # is probably a better plugin to use on windows anyway.
+    : IPC::Cmd::can_run('tar') && $^O ne 'MSWin32'
       ? 'tar'
       : undef;
 };

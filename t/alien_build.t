@@ -525,13 +525,15 @@ subtest 'download' => sub {
 subtest 'extract' => sub {
 
   require IPC::Cmd;
+
+  my $tar_cmd = path_to_tar;
   
-  skip_all 'test requires command line tar' unless IPC::Cmd::can_run('tar');
+  skip_all 'test requires command line tar' unless $tar_cmd;
 
   my($build, $meta) = build_blank_alien_build;
   
   $meta->register_hook(
-    extract => [ [ "tar", "xf", "%{alien.install.download}"] ],
+    extract => [ [ $tar_cmd, "xf", "%{alien.install.download}"] ],
   );
   
   $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;

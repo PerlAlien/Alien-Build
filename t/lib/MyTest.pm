@@ -6,7 +6,7 @@ use Path::Tiny qw( path );
 use File::Temp qw( tempdir );
 use base qw( Exporter );
 
-our @EXPORT = qw( build_blank_alien_build alienfile );
+our @EXPORT = qw( build_blank_alien_build alienfile path_to_tar );
 
 sub build_blank_alien_build
 {
@@ -44,6 +44,13 @@ sub alienfile
   my $alienfile = Path::Tiny->tempfile;
   $alienfile->spew($str);
   Alien::Build->load("$alienfile", root => tempdir(CLEANUP => 1));
+}
+
+sub path_to_tar
+{
+  require Alien::Build::Plugin::Extract::CommandLine;
+  my $plugin = Alien::Build::Plugin::Extract::CommandLine->new;
+  $plugin->tar_cmd;
 }
 
 1;
