@@ -757,6 +757,39 @@ subtest 'build' => sub {
   
 };
 
+subtest 'checkpoint' => sub {
+
+  my $root = Path::Tiny->tempdir;
+
+  my $alienfile = Path::Tiny->tempfile( TEMPLATE => 'alienfileXXXXXXX' );
+  $alienfile->spew(q{
+    use alienfile;
+    prop foo1 => 'bar1';
+  });
+  
+  subtest 'create checkpoint' => sub {
+  
+    my $build = Alien::Build->load("$alienfile", root => "$root");
+    is($build->meta_prop->{foo1}, 'bar1');
+    $build->install_prop->{foo2} = 'bar2';
+    $build->runtime_prop->{foo3} = 'bar3';
+    $build->checkpoint;
+    
+    ok( -r path($build->root, 'alien.json') );
+  
+  };
+  
+  subtest 'resume checkpoint' => sub {
+  
+    my $build = Alien::Build->resume("$alienfile", "$root");
+    is($build->meta_prop->{foo1}, 'bar1');
+    is($build->install_prop->{foo2}, 'bar2');
+    is($build->runtime_prop->{foo3}, 'bar3');
+  
+  };
+
+};
+
 done_testing;
 
 {

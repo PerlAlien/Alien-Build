@@ -51,7 +51,18 @@ sub new
       _path($filename)->absolute->stringify;
     }
   );
+  
+  $self->{autosave} = $args{autosave};
   $self;
+}
+
+sub DESTROY
+{
+  my($self) = @_;
+  if($self->{autosave} && -d $self->install_prop->{root})
+  {
+    $self->checkpoint;
+  }
 }
 
 my $count = 0;
@@ -222,21 +233,21 @@ sub install_type
 
 =head2 load
 
- my $build = Alien::Build->load($filename);
+ my $build = Alien::Build->load($alienfile);
 
 =cut
 
 sub load
 {
-  my(undef, $filename, @args) = @_;
+  my(undef, $alienfile, @args) = @_;
 
-  unless(-r $filename)
+  unless(-r $alienfile)
   {
     require Carp;
-    Carp::croak "Unable to read alienfile: $filename";
+    Carp::croak "Unable to read alienfile: $alienfile";
   }
 
-  my $file = _path $filename;
+  my $file = _path $alienfile;
   my $name = $file->parent->basename;
   $name =~ s/^alien-//i;
   $name =~ s/[^a-z]//g;
@@ -265,7 +276,48 @@ sub load
   };
   die $@ if $@;
 
+  $self->{args} = \@args;
+
   return $self;
+}
+
+=head2 checkpoint
+
+ $build->checkpoint;
+
+Save any install or runtime properties so that they can be reloaded on
+a subsequent run.
+
+=cut
+
+sub checkpoint
+{
+  my($self) = @_;
+  my $root = $self->root;
+  _path("$root/alien.json")->spew(
+    JSON::PP::encode_json({
+      install => $self->install_prop,
+      runtime => $self->runtime_prop,
+      args    => $self->{args},
+    })
+  );
+  $self;
+}
+
+=head2 resume
+
+ Alien::Build->resume($alienfile, $root);
+
+=cut
+
+sub resume
+{
+  my(undef, $alienfile, $root) = @_;
+  my $h = JSON::PP::decode_json(_path("$root/alien.json")->slurp);
+  my $self = Alien::Build->load("$alienfile", @{ $h->{args} });
+  $self->{install_prop} = $h->{install};
+  $self->{runtime_prop} = $h->{runtime};
+  $self;
 }
 
 sub _merge
@@ -550,11 +602,11 @@ sub download
     
     if($res->{type} eq 'file')
     {
-      my $filename = $res->{filename};
-      print "Alien::Build> downloaded $filename\n";
+      my $alienfile = $res->{filename};
+      print "Alien::Build> downloaded $alienfile\n";
       if($res->{content})
       {
-        my $path = _path("$tmp/$filename");
+        my $path = _path("$tmp/$alienfile");
         $path->spew_raw($res->{content});
         $self->install_prop->{download} = $path->stringify;
         $self->install_prop->{complete}->{download} = 1;

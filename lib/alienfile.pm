@@ -59,7 +59,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract build gather );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract build gather prop );
 
 =head1 DIRECTIVES
 
@@ -458,6 +458,24 @@ sub gather
   $meta->register_hook(gather_system => $instr) if $phase =~ /^(any|system)$/;
   $meta->register_hook(gather_share => $instr)  if $phase =~ /^(any|share)$/;
   return;;
+}
+
+=head2 prop
+
+ my $value = prop $key;
+ prop $key => $val;
+
+Get or set a meta property.
+
+=cut
+
+sub prop
+{
+  my($key, $value) = @_;
+  my $caller = caller;
+  my $meta = $caller->meta;
+  $meta->prop->{$key} = $value if defined $value;
+  $meta->prop->{$key};
 }
 
 sub import

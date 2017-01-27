@@ -128,7 +128,18 @@ This is just a shortcut for:
 
 ## load
 
-    my $build = Alien::Build->load($filename);
+    my $build = Alien::Build->load($alienfile);
+
+## checkpoint
+
+    $build->checkpoint;
+
+Save any install or runtime properties so that they can be reloaded on
+a subsequent run.
+
+## resume
+
+    Alien::Build->resume($alienfile, $root);
 
 ## requires
 
