@@ -1,0 +1,26 @@
+use alienfile;
+
+probe sub { 'share' };
+
+share {
+
+  download [
+    [ "git clone --bare https://github.com/Perl5-Alien/dontpanic.git" ]
+  ];
+
+  extract [
+    [ "git clone %{alien.install.download}" ]
+  ];
+
+  plugin 'Build::Autoconf' => ();
+
+  build [
+    'git checkout v1.00',
+    'bash autogen.sh',
+    '%{configure} --disable-shared --prefix=%{alien.install.prefix}',
+    '%{make}',
+    '%{make} install',
+  ];
+
+
+};
