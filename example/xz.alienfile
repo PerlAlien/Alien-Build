@@ -1,14 +1,44 @@
 use alienfile;
 
+# PkgConfig uses the pkg-config negotiator to pick the best
+# available implementation (as of this writing, in order:
+# libpkgconf, pkg-config, PkgConfig,pm), to determine
+# if the system already provides the library.  In addition,
+# it gets the version, cflags and libs during either a
+# "system" or "share" install.
 plugin 'PkgConfig' => 'liblzma';
 
 share {
 
+  # items in the share block relate to building the package
+  # from source.  It is called share because it will be
+  # installed into a dist level share directory in your
+  # perl lib.
+
+  # The Download negotiator picks the best method for
+  # downloading the package.  It uses the version
+  # regex to parse out the version number from the
+  # tarball so that it can pick the most recent
+  # version.
   plugin Download => (
     url     => 'http://tukaani.org/xz/',
     version => qr/^xz-([0-9\.]+)\.tar.gz$/,
   );
+
+  # The Extract negotiator picks the best method for
+  # extracting from the tarball.  We give it a hint
+  # here that we expect the tarball to be .gz compressed
+  # in case it needs to load extra modules to 
+  # decompress.
   plugin Extract => 'tar.gz';
+
+  # The Autoconf plugin builds using the standard
+  # configure and make tools.  It uses a DESTDIR
+  # ( https://www.gnu.org/prep/standards/html_node/DESTDIR.html )
+  # to ensure that the prefix during the build
+  # (ie when you install the Alien::xz module)
+  # matches the prefix during runtime
+  # (ie when you use it from XZ::XS).
   plugin 'Build::Autoconf' => ();
 
 };

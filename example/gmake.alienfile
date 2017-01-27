@@ -2,9 +2,18 @@ use alienfile;
 use Capture::Tiny qw( capture );
 
 configure {
+  # Because we use Capture::Tiny in
+  # the alienfile itself, we need to register it
+  # as a configure time require (that is it needs
+  # to be installed before we even attempt to load
+  # this alienfile).
   requires 'Capture::Tiny';
 };
 
+# probe for GNU Make by trying the usual names for
+# it.  Because 'make' could be some other make, we
+# try running it with --version and see if it looks
+# like the GNU version.
 probe sub {
   my($build) = @_;
 
@@ -13,42 +22,79 @@ probe sub {
     my($stdout) = capture {
       system $try, '--version';
     };
-    if($stdout =~ /GNU Make ([0-9\.]+)/)
+    if($stdout =~ /GNU Make/)
     {
-      $build->runtime_prop->{version} = $1;
       $build->runtime_prop->{exe}     = $try;
       return 'system';
     }
   }
 
+  # can't find it!  Install from source.
   return 'share';
 };
 
 share {
 
+  # items in the share block relate to building the package
+  # from source.  It is called share because it will be
+  # installed into a dist level share directory in your
+  # perl lib.
+
+  # The Download negotiator picks the best method for
+  # downloading the package.  It uses the version
+  # regex to parse out the version number from the
+  # tarball so that it can pick the most recent
+  # version.
   plugin 'Download' => (
     url     => 'http://ftp.gnu.org/gnu/make',
     version => qr/^make-([0-9\.]+)\.tar\.gz$/,
   );
+
+  # The Extract negotiator picks the best method for
+  # extracting from the tarball.  We give it a hint
+  # here that we expect the tarball to be .gz compressed
+  # in case it needs to load extra modules to 
+  # decompress.
   plugin 'Extract' => 'tar.gz';  
+
+
+  # The Autoconf plugin builds using the standard
+  # configure and make tools.  It uses a DESTDIR
+  # ( https://www.gnu.org/prep/standards/html_node/DESTDIR.html )
+  # to ensure that the prefix during the build
+  # (ie when you install the Alien::xz module)
+  # matches the prefix during runtime
+  # (ie when you use it from XZ::XS).
   plugin 'Build::Autoconf' => ();
-  
+
+  # unlike the xz alienfile, we need to explicitly specify
+  # the commands used to build.  For this package it is
+  # because we need to specify --program-prefix=g so that
+  # the gmake executable will be 'gmake' and will not conflict
+  # with the system provided 'make' which may not be compatible.  
   build [
     '%{configure} --program-prefix=g --disable-shared --prefix=%{alien.install.prefix}',
     '%{make}',
     '%{make} install',
+    sub {
+      my($build) = @_;
+      $build->runtime_prop->{exe} = 'gmake';
+    },
   ];
   
-  gather sub {
-    my($build) = @_;
-    my($stdout) = capture {
-      system 'gmake', '--version';
-    };
-    my($version) = $stdout =~ /GNU Make ([0-9\.]+)/;
-    $build->runtime_prop->{version} = $version;
-    $build->runtime_prop->{exe}     = 'gmake';
-  
-  };
+};
 
+# For either a 'share' or 'system' install we try to get
+# the version number from make --version output.  But if
+# for whatever reason we are not able to parse it out, it
+# is more important to just have gmake, so we will set
+# version to unknown.
+gather sub {
+  my($build) = @_;
+  my($stdout) = capture {
+    system($build->runtime_prop->{exe}, '--version');
+  };
+  my($version) = $stdout =~ /GNU Make ([0-9\.]+)/;
+  $build->runtime_prop->{version} = $version || 'unknown';
 };
 

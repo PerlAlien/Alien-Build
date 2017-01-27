@@ -2,9 +2,20 @@ use alienfile;
 use Config;
 use Path::Tiny qw( path );
 
+# Because bzip2 does not come with a pkg-config compatible .pc file
+# we use the CBuilder plugin to guess the appropriate flags
+# (usually just libs=-lbz2):
 plugin 'Probe::CBuilder' => (
   libs    => '-lbz2',
+  
+  # The version regex here will attempt to parse out the
+  # bzip2 version number from the output of the test program below.
   version => qr/version = '(.*?)[,']/,
+  
+  # Both the test program and the version regex are optional, but
+  # if you do not provide them, then you should provide a 
+  # sys { gather } declaration for how to obtain the version number.
+  # assuming the version number matters.
   program => q{
 #include <stdio.h>
 #include <bzlib.h>
@@ -19,16 +30,48 @@ int main(int argc, char *argv[])
 
 share {
 
+  # items in the share block relate to building the package
+  # from source.  It is called share because it will be
+  # installed into a dist level share directory in your
+  # perl lib.
+
+  # The Build::MSYS plugin just makes sure that Alien::MSYS
+  # is used to provide the necessary tools on Windows.  It
+  # doesn't do anything on other platforms.
   plugin 'Build::MSYS' => ();
+
+  # The Download negotiator picks the best method for
+  # downloading the package.  It uses the version
+  # regex to parse out the version number from the
+  # tarball so that it can pick the most recent
+  # version.
   plugin 'Download' => (
     url     => 'http://www.bzip.org/downloads.html',
     version => qr/^bzip2-([0-9\.]+)tar.gz$/,
   );
+
+  # The Extract negotiator picks the best method for
+  # extracting from the tarball.  We give it a hint
+  # here that we expect the tarball to be .gz compressed
+  # in case it needs to load extra modules to 
+  # decompress.
   plugin Extract => 'tar.gz';
-  
+
+  # The build stage here is specified as a series of commands.
+  # bzip2 uses make to build and install.  It is vital that we
+  # include cccdlflags in the compiler flags, because this will
+  # include any flags necessary for making the library relocatable
+  # which we need to link into a Perl XS .so file.
+  # We also use CC=$Config{cc} to make sure that we use the
+  # same compiler as was used to build Perl.
   build [
     [ '%{make}', 'all', "CC=$Config{cc}", "CFLAGS=$Config{cccdlflags} $Config{optimize}", ],
     [ '%{make}', 'install', 'PREFIX=%{alien.install.prefix}',                             ],
+    
+    # we can use a code ref here to determine the version number of
+    # bzip2 from the directory that is extracted from the tarball.
+    # Usually this is something like bzip2-1.0.6 and we just parse
+    # off the bit that looks like a version number.
     sub {
       my($build) = @_;
       my($version) = path(".")->absolute->basename =~ /([0-9\.]+)$/;
@@ -36,6 +79,8 @@ share {
     },
   ];
 
+  # The gather stage determines the appropriate cflags and libs for
+  # using the library that we just built.
   gather sub {
     my($build) =@_;
     my $prefix = $build->runtime_prop->{prefix};
