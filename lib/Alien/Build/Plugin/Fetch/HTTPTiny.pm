@@ -25,8 +25,12 @@ sub init
     my $ua = HTTP::Tiny->new;
     my $res = $ua->get($url);
 
-    die "error fetching $url: @{[ map{ defined $_ } $res->{status}, $res->{reason} ]}"
-      unless $res->{success};
+    unless($res->{success})
+    {
+      my $status = $res->{status} || '---';
+      my $reason = $res->{reason} || 'unknown';
+      die "error fetching $url: $status $reason";
+    }
 
     my($type) = split ';', $res->{headers}->{'content-type'};
     $type = lc $type;
