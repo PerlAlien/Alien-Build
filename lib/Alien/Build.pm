@@ -703,6 +703,15 @@ sub build
     delete $ENV{DESTDIR};
   }
   
+  # TODO: do this from a plugin
+  # instead of in here.
+  if($self->meta_prop->{autoconf})
+  {
+    my $prefix = $self->install_prop->{prefix};
+    $prefix =~ s!^([a-z]):!$1!i if $^O eq 'MSWin32';
+    $self->install_prop->{autoconf_prefix} = $prefix;
+  }
+  
   my $destdir;
   
   $self->_call_hook(
@@ -737,6 +746,7 @@ sub build
   {
     die "nothing was installed into destdir" unless -d $destdir;
     my $prefix = $self->install_prop->{prefix};
+    $prefix =~ s!^([a-z]):!$1!i;
     my $src = _path("$ENV{DESTDIR}/$prefix");
     my $dst = $stage;
     

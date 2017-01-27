@@ -615,6 +615,11 @@ subtest 'build' => sub {
       build => sub {
         my($build) = @_;
         my $prefix = $build->install_prop->{prefix};
+
+        # Handle DESTDIR in windows, where : may be
+        # in install.prefix
+        $prefix =~ s!^([a-z]):!$1!i if $^O eq 'MSWin32';
+
         my $dir = path("$ENV{DESTDIR}/$prefix");
         note "install dir = $dir";
         $dir->mkpath;

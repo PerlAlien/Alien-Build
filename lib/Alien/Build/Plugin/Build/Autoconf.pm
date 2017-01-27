@@ -16,6 +16,7 @@ sub init
   my($self, $meta) = @_;
   
   $meta->prop->{destdir} = 1;
+  $meta->prop->{autoconf} = 1;
   
   my $intr = $meta->interpolator;
 
@@ -46,7 +47,7 @@ Some reasonable default flags will be provided.
   
   $meta->default_hook(
     share => build => [
-      '%{configure} --prefix=%{alien.install.prefix} --disable-shared',
+      '%{configure} --prefix=%{alien.install.autoconf_prefix} --disable-shared',
       '%{make}',
       '%{make} install',
     ]

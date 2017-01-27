@@ -73,7 +73,7 @@ share {
   # the gmake executable will be 'gmake' and will not conflict
   # with the system provided 'make' which may not be compatible.  
   build [
-    '%{configure} --program-prefix=g --disable-shared --prefix=%{alien.install.prefix}',
+    '%{configure} --program-prefix=g --disable-shared --prefix=%{alien.install.autoconf_prefix}',
     '%{make}',
     '%{make} install',
     sub {
