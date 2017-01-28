@@ -231,6 +231,28 @@ sub install_type
 
 =head1 METHODS
 
+=head2 set_prefix
+
+ $build->set_prefix($prefix);
+
+=cut
+
+sub set_prefix
+{
+  my($self, $prefix) = @_;
+  
+  if($self->meta_prop->{destdir})
+  {
+    $self->runtime_prop->{prefix} = 
+    $self->install_prop->{prefix} = $prefix;
+  }
+  else
+  {
+    $self->runtime_prop->{prefix} = $prefix;
+    $self->install_prop->{prefix} = $self->install_prop->{stage};
+  }
+}
+
 =head2 load
 
  my $build = Alien::Build->load($alienfile);
@@ -751,70 +773,78 @@ sub build
   # to alter it.  Or us!  See just a few lines below.
   local %ENV = %ENV;
   
-  local $CWD;
-  
-  unless($self->meta_prop->{destdir})
-  {
-    delete $ENV{DESTDIR};
-  }
-  
-  my $destdir;
-  
-  %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
-  %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
-  
-  $self->_call_hook(
-  {
-    before => sub {
-      $CWD = $self->extract;
-      if($self->meta_prop->{destdir})
-      {
-        $destdir = Alien::Build::TempDir->new($self, 'destdir');
-        $ENV{DESTDIR} = "$destdir";
-      }
-    },
-    after => sub {
-      $destdir = "$destdir" if $destdir;
-    },
-  }, 'build');
-  
-  my $gather = sub {
-    local $ENV{PATH} = $ENV{PATH};
-    local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
-    unshift @PATH, _path('bin')->absolute->stringify
-      if -d 'bin';
-    unshift @PKG_CONFIG_PATH, _path('lib/pkgconfig')->absolute->stringify
-      if -d 'lib/pkgconfig';
-    $self->_call_hook('gather_share');
-  };
-  
   my $stage = _path($self->install_prop->{stage});
   $stage->mkpath;
   
-  if($destdir)
+  if($self->install_type eq 'share')
   {
-    die "nothing was installed into destdir" unless -d $destdir;
-    my $prefix = $self->install_prop->{prefix};
-    $prefix =~ s!^([a-z]):!$1!i;
-    my $src = _path("$ENV{DESTDIR}/$prefix");
-    my $dst = $stage;
-    
-    if($self->meta->has_hook('gather_share'))
+    local $CWD;
+  
+    unless($self->meta_prop->{destdir})
     {
-      local $CWD = "$src";
-      $gather->();
+      delete $ENV{DESTDIR};
     }
+  
+    my $destdir;
+  
+    %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
+    %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
+  
+    $self->_call_hook(
+    {
+      before => sub {
+        $CWD = $self->extract;
+        if($self->meta_prop->{destdir})
+        {
+          $destdir = Alien::Build::TempDir->new($self, 'destdir');
+          $ENV{DESTDIR} = "$destdir";
+        }
+      },
+      after => sub {
+        $destdir = "$destdir" if $destdir;
+      },
+    }, 'build');
+  
+    my $gather = sub {
+      local $ENV{PATH} = $ENV{PATH};
+      local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
+      unshift @PATH, _path('bin')->absolute->stringify
+        if -d 'bin';
+      unshift @PKG_CONFIG_PATH, _path('lib/pkgconfig')->absolute->stringify
+        if -d 'lib/pkgconfig';
+      $self->_call_hook('gather_share');
+    };
+  
+    if($destdir)
+    {
+      die "nothing was installed into destdir" unless -d $destdir;
+      my $prefix = $self->install_prop->{prefix};
+      $prefix =~ s!^([a-z]):!$1!i;
+      my $src = _path("$ENV{DESTDIR}/$prefix"); 
+      my $dst = $stage;
     
-    $dst->mkpath;
-    Alien::Build::Util::_mirror("$src", "$dst", { verbose => 1 });
+      if($self->meta->has_hook('gather_share'))
+      {
+        local $CWD = "$src";
+        $gather->();
+      }
+    
+      $dst->mkpath;
+      Alien::Build::Util::_mirror("$src", "$dst", { verbose => 1 });
+    }
+    else
+    {
+      if($self->meta->has_hook('gather_share'))
+      {
+        local $CWD = $self->install_prop->{stage};
+        $gather->();
+      }
+    }
   }
-  else
+  
+  elsif($self->install_type eq 'system')
   {
-    if($self->meta->has_hook('gather_share'))
-    {
-      local $CWD = $self->install_prop->{stage};
-      $gather->();
-    }
+    $self->gather_system;
   }
   
   $stage->child('alien')->mkpath;

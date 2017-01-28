@@ -70,14 +70,19 @@ subtest 'basic' => sub {
       \%args,
       hash {
         field CONFIGURE_REQUIRES => hash {
+          field 'Alien::Build::MM' => T();
           field 'YAML' => '1.2';
           field 'Dancer2' => '3.4';
           field 'Config::Foo' => '1.234';
           field 'Config::Bar' => '0.01';
         };
         field BUILD_REQUIRES => hash {
+          field 'Alien::Build::MM' => T();
           field 'Foo::Bar::Baz' => '1.23';
           field 'Sys::Foo'      => '9.99';
+        };
+        field PREREQ_PM => hash {
+          field 'Alien::Build' => T();
         };
         etc;
       },
@@ -116,14 +121,19 @@ subtest 'basic' => sub {
       \%args,
       hash {
         field CONFIGURE_REQUIRES => hash {
+          field 'Alien::Build::MM' => T();
           field 'YAML' => '1.2';
           field 'Dancer2' => '3.4';
           field 'Config::Foo' => '1.234';
           field 'Config::Bar' => '0.01';
         };
         field BUILD_REQUIRES => hash {
+          field 'Alien::Build::MM' => T();
           field 'Foo::Bar::Baz' => '1.23';
           field 'Share::Foo'    => '4.567';
+        };
+        field PREREQ_PM => hash {
+          field 'Alien::Build' => T();
         };
         etc;
       },

@@ -5,3 +5,10 @@
 /t/bin/*.log
 /example/_alien
 /example/blib
+/example/Alien-*/*.bak
+/example/Alien-*/Makefile
+/example/Alien-*/_alien
+/example/Alien-*/blib
+/example/Alien-*/pm_to_blib
+/example/Alien-*/MYMETA.*
+

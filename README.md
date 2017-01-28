@@ -126,6 +126,10 @@ This is just a shortcut for:
 
 # METHODS
 
+## set\_prefix
+
+    $build->set_prefix($prefix);
+
 ## load
 
     my $build = Alien::Build->load($alienfile);

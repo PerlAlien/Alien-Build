@@ -790,6 +790,14 @@ subtest 'checkpoint' => sub {
 
 };
 
+subtest 'set_prefix' => sub {
+
+  ok 1;
+  
+  diag 'TODO';
+
+};
+
 done_testing;
 
 {
