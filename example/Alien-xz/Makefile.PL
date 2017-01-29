@@ -18,7 +18,5 @@ my %args = $abmm->mm_args(
 WriteMakefile(%args);
 
 sub MY::postamble {
-
   $abmm->mm_postamble;
-
 }

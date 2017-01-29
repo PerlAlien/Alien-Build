@@ -9,13 +9,44 @@ use Carp ();
 # ABSTRACT: Alien::Build installer code for ExtUtils::MakeMaker
 # VERSION
 
-sub _path { goto \&Path::Tiny::path };
+=head1 SYNOPSIS
+
+In your Makefile.PL:
+
+ use ExtUtils::MakeMaker;
+ use Alien::Build::MM;
+ 
+ my $abmm = Alien::Build::MM->new;
+ 
+ WriteMakefile($abmm->mm_args(
+   ABSTRACT     => 'Discover or download and install libfoo',
+   DISTNAME     => 'ALien-Libfoo',
+   NAME         => 'Alien::Libfoo',
+   VERSION_FROM => 'lib/Alien/Libfoo.pm',
+   ...
+ ));
+ 
+ sub MY::postamble {
+   $abmm->mm_postamble;
+ }
+
+In your lib/Alien/Libfoo.pm:
+
+ package Alien::Libfoo;
+ use base qw( Alien::Base );
+ 1;
+
+=head1 DESCRIPTION
+
+This class allows you to use Alien::Build and Alien::Base with L<ExtUtils::MakeMaker>.
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
- my $mm = Alien::Build::MM->new;
+ my $abmm = Alien::Build::MM->new;
+
+Create a new instance of L<Alien::Build::MM>.
 
 =cut
 
@@ -25,12 +56,21 @@ sub new
   
   my $self = bless {}, $class;
   
-  $self->{build} =
+  my $build = $self->{build} =
     Alien::Build->load('alienfile',
       root     => "_alien",
       autosave => 1,
     )
   ;
+  
+  if(defined $build->meta->prop->{mm}->{arch})
+  {
+    $build->install_prop->{mm}->{arch} = $build->meta->prop->{mm}->{arch};
+  }
+  else
+  {
+    $build->install_prop->{mm}->{arch} = 1;
+  }
   
   $self->build->load_requires('configure');
   $self->build->root;
@@ -43,6 +83,8 @@ sub new
 =head2 build
 
  my $build = $mm->build;
+
+The L<Alien::Build> instance.
 
 =cut
 
@@ -57,6 +99,8 @@ sub build
 
  my %args = $mm->mm_args(%args);
 
+Adjust the arguments passed into C<WriteMakefile> as needed by L<Alien::Build>.
+
 =cut
 
 sub mm_args
@@ -65,7 +109,8 @@ sub mm_args
   
   if($args{DISTNAME})
   {
-    $self->build->install_prop->{stage} = _path("blib/lib/auto/share/$args{DISTNAME}")->absolute->stringify;
+    $self->build->install_prop->{stage} = Path::Tiny->new("blib/lib/auto/share/$args{DISTNAME}")->absolute->stringify;
+    $self->build->install_prop->{mm}->{distname} = $args{DISTNAME};
   }
   else
   {
@@ -112,6 +157,8 @@ sub mm_args
 
  my %args = $mm->mm_args(%args);
 
+Returns the postamble for the C<Makefile> needed for L<Alien::Build>.
+
 =cut
 
 sub mm_postamble
@@ -126,10 +173,15 @@ sub mm_postamble
                 "alien_distclean:\n" .
                 "\t\$(RM_RF) _alien\n\n";
 
+  my $dirs = $self->build->install_prop->{mm}->{arch}
+    ? '$(INSTALLARCHLIB) $(INSTALLSITEARCH) $(INSTALLVENDORARCH)'
+    : '$(INSTALLPRIVLIB) $(INSTALLSITELIB) $(INSTALLVENDORLIB)'
+  ;
+
   # set prefix
   $postamble .= "alien_prefix : _alien/mm/prefix\n\n" .
                 "_alien/mm/prefix :\n" .
-                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e set_prefix \$(INSTALLDIRS) \$(INSTALLARCHLIB) \$(INSTALLSITEARCH) \$(INSTALLVENDORARCH)\n\n";
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e prefix \$(INSTALLDIRS) $dirs\n\n";
 
   # download
   $postamble .= "alien_download : _alien/mm/download\n\n" .
@@ -169,10 +221,10 @@ sub import
         $path->touch;
       };
       
-      *set_prefix = sub
+      *prefix = sub
       {
         my($build, $type, $perl, $site, $vendor) = _args();
-        $DB::single = 1;
+
         my $prefix = $type eq 'perl'
           ? $perl
           : $type eq 'site'
@@ -181,6 +233,8 @@ sub import
               ? $vendor
               : die "unknown INSTALLDIRS ($type)";
         $prefix = Path::Tiny->new($prefix)->absolute->stringify;
+
+        print "prefix $prefix\n";
         $build->set_prefix($prefix);
         $build->checkpoint;
         _touch('prefix');
@@ -202,9 +256,20 @@ sub import
       {
         my($build) = _args();
         
+        
         $build->load_requires('configure');
         $build->load_requires($build->install_type);
         $build->build;
+
+        if($build->build->install_prop->{mm}->{arch})
+        {
+          my $distname = $build->build->install_prop->{mm}->{distname};
+          my $archdir = Path::Tiny->new("blib/arch/auto/@{[ join '/', split /-/, $distname ]}");
+          $archdir->mkpath;
+          my $archfile = $archdir->child($archdir->basename . '.txt');
+          $archfile->spew('Alien based distribution with architecture specific file in share');
+        }
+        
         _touch('build');
       };
     }
@@ -212,3 +277,9 @@ sub import
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Base>, L<Alien>
+
+=cut
