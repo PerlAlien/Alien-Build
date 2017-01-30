@@ -13,6 +13,7 @@ $modules{$_} = $_ for qw(
   Alien::Base
   Capture::Tiny
   ExtUtils::MakeMaker
+  FFI::CheckLib
   File::Listing
   File::Listing::Ftpcopy
   File::ShareDir
@@ -29,6 +30,7 @@ $modules{$_} = $_ for qw(
   Sort::Versions
   Test2::Suite
   Test::More
+  Text::ParseWords
   URI
   YAML
 );
