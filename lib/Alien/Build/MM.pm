@@ -261,7 +261,7 @@ sub import
         $build->load_requires($build->install_type);
         $build->build;
 
-        if($build->build->install_prop->{mm}->{arch})
+        if($build->install_prop->{mm}->{arch})
         {
           my $distname = $build->build->install_prop->{mm}->{distname};
           my $archdir = Path::Tiny->new("blib/arch/auto/@{[ join '/', split /-/, $distname ]}");
