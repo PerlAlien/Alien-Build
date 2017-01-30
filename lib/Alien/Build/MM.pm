@@ -225,6 +225,8 @@ sub import
       {
         my($build, $type, $perl, $site, $vendor) = _args();
 
+        my $distname = $build->install_prop->{mm}->{distname};
+
         my $prefix = $type eq 'perl'
           ? $perl
           : $type eq 'site'
@@ -232,7 +234,7 @@ sub import
             : $type eq 'vendor'
               ? $vendor
               : die "unknown INSTALLDIRS ($type)";
-        $prefix = Path::Tiny->new($prefix)->absolute->stringify;
+        $prefix = Path::Tiny->new($prefix)->child("auto/share/dist/$distname")->absolute->stringify;
 
         print "prefix $prefix\n";
         $build->set_prefix($prefix);
@@ -263,7 +265,7 @@ sub import
 
         if($build->install_prop->{mm}->{arch})
         {
-          my $distname = $build->build->install_prop->{mm}->{distname};
+          my $distname = $build->install_prop->{mm}->{distname};
           my $archdir = Path::Tiny->new("blib/arch/auto/@{[ join '/', split /-/, $distname ]}");
           $archdir->mkpath;
           my $archfile = $archdir->child($archdir->basename . '.txt');

@@ -15,6 +15,7 @@ $modules{$_} = $_ for qw(
   ExtUtils::MakeMaker
   File::Listing
   File::Listing::Ftpcopy
+  File::ShareDir
   File::chdir
   HTML::LinkExtor
   HTTP::Tiny

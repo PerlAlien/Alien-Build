@@ -18,6 +18,9 @@ TODO
 
 =head1 DESCRIPTION
 
+B<NOTE>: This is still experimental, and documentation is currently highly
+incomplete.
+
 This module provides tools for building external (non-CPAN) dependencies 
 for CPAN.  It is mainly designed to be used at install time of a CPAN 
 client, and work closely with L<Alien::Base> which is used at runtime.
