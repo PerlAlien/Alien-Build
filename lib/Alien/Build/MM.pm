@@ -109,7 +109,7 @@ sub mm_args
   
   if($args{DISTNAME})
   {
-    $self->build->install_prop->{stage} = Path::Tiny->new("blib/lib/auto/share/$args{DISTNAME}")->absolute->stringify;
+    $self->build->install_prop->{stage} = Path::Tiny->new("blib/lib/auto/share/dist/$args{DISTNAME}")->absolute->stringify;
     $self->build->install_prop->{mm}->{distname} = $args{DISTNAME};
   }
   else
