@@ -6,12 +6,12 @@ use alienfile;
 # if the system already provides the library.  In addition,
 # it gets the version, cflags and libs during either a
 # "system" or "share" install.
-plugin 'PkgConfig' => 'liblzma';
+plugin 'PkgConfig' => 'libcurl';
 
 # in addition to the library, we require that the xz command
 # is also available.
 plugin 'Probe::CommandLine' => (
-  command   => 'xz',
+  command   => 'curl',
   secondary => 1,
 );
 
@@ -28,8 +28,8 @@ share {
   # tarball so that it can pick the most recent
   # version.
   plugin Download => (
-    url     => 'http://tukaani.org/xz/',
-    version => qr/^xz-([0-9\.]+)\.tar\.gz$/,
+    url     => 'https://curl.haxx.se/download/',
+    version => qr/^curl-([0-9\.]+)\.tar\.gz$/,
   );
 
   # The Extract negotiator picks the best method for
