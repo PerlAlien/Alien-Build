@@ -847,11 +847,11 @@ sub build
     $self->gather_system;
   }
   
-  $stage->child('alien')->mkpath;
-  $stage->child('alien/alien.json')->spew(JSON::PP::encode_json($self->runtime_prop));
+  $stage->child('_alien')->mkpath;
+  $stage->child('_alien/alien.json')->spew(JSON::PP::encode_json($self->runtime_prop));
   if($self->meta->filename && -r $self->meta->filename && $self->meta->filename !~ /\.(pm|pl)$/)
   {
-    _path($self->meta->filename)->copy(_path($stage->child('alien/alienfile')));
+    _path($self->meta->filename)->copy(_path($stage->child('_alien/alienfile')));
   }
   
   $self;

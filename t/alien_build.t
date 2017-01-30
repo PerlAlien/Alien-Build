@@ -693,8 +693,8 @@ subtest 'build' => sub {
     
     is $gather, 1, 'ran gather';
     
-    ok( -f $share->child('alien/alien.json'), 'has alien.json');
-    #ok( -f $share->child('alienfile'), 'has alienfile');
+    ok( -f $share->child('_alien/alien.json'), 'has alien.json');
+    #ok( -f $share->child('_alienfile'), 'has alienfile');
   };
   
   subtest 'destdir' => sub {
@@ -750,8 +750,8 @@ subtest 'build' => sub {
     
     is $gather, 1, 'ran gather';
     
-    ok( -f $share->child('alien/alien.json'), 'has alien.json');
-    ok( -f $share->child('alien/alienfile'), 'has alienfile');
+    ok( -f $share->child('_alien/alien.json'), 'has alien.json');
+    ok( -f $share->child('_alien/alienfile'), 'has alienfile');
   
   };
   
