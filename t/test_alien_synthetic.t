@@ -5,8 +5,6 @@ use Test::Alien;
 use File::Temp qw( tempdir );
 use File::Spec;
 
-plan 6;
-
 is(
   synthetic(),
   object {
@@ -23,8 +21,9 @@ is(
 is(
   synthetic({ cflags => '-DFOO=1 -I/foo/bar/baz'}),
   object {
-    prop blessed => 'Test::Alien::Synthetic';
-    call cflags  => '-DFOO=1 -I/foo/bar/baz';
+    prop blessed       => 'Test::Alien::Synthetic';
+    call cflags        => '-DFOO=1 -I/foo/bar/baz';
+    call cflags_static => '-DFOO=1 -I/foo/bar/baz';
   },
   'cflags',
 );
@@ -32,8 +31,9 @@ is(
 is(
   synthetic({ libs => '-L/foo/bar/baz -lfoo'}),
   object {
-    prop blessed => 'Test::Alien::Synthetic';
-    call libs    => '-L/foo/bar/baz -lfoo';
+    prop blessed     => 'Test::Alien::Synthetic';
+    call libs        => '-L/foo/bar/baz -lfoo';
+    call libs_static => '-L/foo/bar/baz -lfoo';
   },
   'libs',
 );
@@ -66,3 +66,17 @@ is(
   },
   'bin_dir (does not exist)',
 );
+
+is(
+  synthetic({ cflags => '-DCFLAGS=1', cflags_static => '-DCFLAGS_STATIC=1', libs => '-L/lib -lfoo', libs_static => '-L/lib -lfoo -lbar -lbaz' }),
+  object {
+    prop blessed       => 'Test::Alien::Synthetic';
+    call cflags        => '-DCFLAGS=1';
+    call cflags_static => '-DCFLAGS_STATIC=1';
+    call libs          => '-L/lib -lfoo';
+    call libs_static   => '-L/lib -lfoo -lbar -lbaz';
+  },
+  'static flags',
+);
+
+done_testing;

@@ -192,11 +192,19 @@ can contain these keys (all of which are optional):
 
 =item cflags
 
-String containing the compiler flags
+String containing the compiler flags.
+
+=item cflags_static
+
+String containing the static compiler flags (optional).
 
 =item libs
 
-String containing the linker and library flags
+String containing the linker and library flags.
+
+=item libs_static
+
+String containing the static linker flags (optional).
 
 =item dynamic_libs
 
@@ -351,6 +359,15 @@ using a generated module name.
 
 =cut
 
+sub _flags
+{
+  my($class, $method) = @_;
+  my $static = "${method}_static";
+  $class->can($static)
+    ? $class->$static
+    : $class->$method;
+}
+
 sub xs_ok
 {
   my $cb;
@@ -453,7 +470,7 @@ sub xs_ok
       my $obj = eval {
         $cb->compile(
           source               => $c_filename,
-          extra_compiler_flags => [shellwords map { $_->cflags } @aliens],
+          extra_compiler_flags => [shellwords map { _flags $_, 'cflags' } @aliens],
         );
       };
       ($obj, $@);
@@ -479,7 +496,7 @@ sub xs_ok
           $cb->link(
             objects            => [$obj],
             module_name        => $module,
-            extra_linker_flags => [shellwords map { $_->libs } @aliens],
+            extra_linker_flags => [shellwords map { _flags $_, 'libs' } @aliens],
           );
         };
         ($lib, $@);

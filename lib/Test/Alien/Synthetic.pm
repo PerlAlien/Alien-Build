@@ -41,9 +41,17 @@ L<Test::Alien#synthetic> function.
 
 String containing the compiler flags
 
+=head2 cflags_static
+
+String containing the static compiler flags
+
 =head2 libs
 
 String containing the linker and library flags
+
+=head2 libs_static
+
+String containing the static linker and library flags
 
 =head2 dynamic_libs
 
@@ -60,6 +68,22 @@ sub _def ($) { my($val) = @_; defined $val ? $val : '' }
 sub cflags       { _def shift->{cflags}             }
 sub libs         { _def shift->{libs}               }
 sub dynamic_libs { @{ shift->{dynamic_libs} || [] } }
+
+sub cflags_static
+{
+  my($self) = @_;
+  defined $self->{cflags_static}
+    ? $self->{cflags_static}
+    : $self->cflags;
+}
+
+sub libs_static
+{
+  my($self) = @_;
+  defined $self->{libs_static}
+    ? $self->{libs_static}
+    : $self->libs;
+}
 
 sub bin_dir
 {
