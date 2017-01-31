@@ -17,6 +17,12 @@ sub init
 
   $meta->add_requires('share' => 'HTTP::Tiny' => '0.044' );
   $meta->add_requires('share' => 'URI' => 0 );
+
+  if($self->url =~ /^https:/)
+  {
+    $meta->add_requires('share' => 'IO::Socket::SSL' => '1.56' );
+    $meta->add_requires('share' => 'Net::SSLeay'     => '1.49' );
+  }
   
   $meta->register_hook( fetch => sub {
     my(undef, $url) = @_;
