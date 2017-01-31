@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed interpolator bug expressed in older versions of Perl
 
 0.02      2017-01-31 13:22:29 -0500
   - Extensive documentation improvements

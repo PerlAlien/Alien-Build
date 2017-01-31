@@ -85,7 +85,7 @@ sub execute_helper
 
     # yeah we do have to eval every time in case $version is different
     # from the last load.
-    eval qq{ use $module $version (); 1 };
+    eval qq{ use $module @{[ $version ? $version : '' ]} (); 1 };
     die $@ if $@;
 
     unless($self->{classes}->{$module})
