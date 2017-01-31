@@ -1,6 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Extensive documentation improvements
+    (documentation is still fairly incomplete).
+  - Removed alienfile#prop
+  - Added alienfile#meta_prop
+  - Fixed a bug in Download::Negotiate and Prefer::SortVersions that
+    expressed itself in Perl 5.14, 5.16 (and probably older Perls).
+  - make distclean is less noisy now with Alien::Build::MM
 
 0.01      2017-01-30 22:26:05 -0500
   - initial version

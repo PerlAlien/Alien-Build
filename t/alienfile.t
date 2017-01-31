@@ -321,12 +321,10 @@ subtest 'prop' => sub {
 
   my $build = alienfile q{
     use alienfile;
-    prop 'foo1' => 'bar1';
-    prop 'foo2' => prop('foo1');
+    meta_prop->{foo1} = 'bar1';
   };
   
   is( $build->meta_prop->{foo1}, 'bar1' );
-  is( $build->meta_prop->{foo2}, 'bar1' );
 
 };
 

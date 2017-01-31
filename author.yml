@@ -32,6 +32,8 @@ pod_spelling_system:
     - sys
     - destdir
     - alienfile
+    - unstaged
+    - checkpointed
 
 pod_coverage:
   skip: 0

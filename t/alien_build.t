@@ -418,7 +418,7 @@ subtest 'gather system' => sub {
   
   if($build->install_type eq 'system')
   {
-    $build->gather_system;
+    $build->_gather_system;
   }
   
   is(
@@ -764,7 +764,7 @@ subtest 'checkpoint' => sub {
   my $alienfile = Path::Tiny->tempfile( TEMPLATE => 'alienfileXXXXXXX' );
   $alienfile->spew(q{
     use alienfile;
-    prop foo1 => 'bar1';
+    meta_prop->{foo1} = 'bar1';
   });
   
   subtest 'create checkpoint' => sub {

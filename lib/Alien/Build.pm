@@ -14,7 +14,16 @@ use Env qw( @PATH @PKG_CONFIG_PATH );
 
 =head1 SYNOPSIS
 
-TODO
+ my $build = Alien::Build->load('./alienfile');
+ $build->load_requires('configure');
+ $build->set_prefix('/usr/local');
+ $build->set_stage('/foo/mystage');  # needs to be absolute
+ $build->load_requires($build->install_type);
+ $build->download;
+ $build->build;
+ # files are now in /foo/mystage, it is your job (or
+ # ExtUtils::MakeMaker, Module::Build, etc) to copy
+ # those files into /usr/local
 
 =head1 DESCRIPTION
 
@@ -25,6 +34,11 @@ This module provides tools for building external (non-CPAN) dependencies
 for CPAN.  It is mainly designed to be used at install time of a CPAN 
 client, and work closely with L<Alien::Base> which is used at runtime.
 
+Note that you will usually not usually create a L<Alien::Build> instance
+directly, but rather be using a thin installer layer, such as
+L<Alien::Build::MM> (for use with L<ExtUtils::MakeMaker>).  One of the
+goals of this project is to remain installer agnostic.
+
 =cut
 
 sub _path { goto \&Path::Tiny::path }
@@ -34,6 +48,10 @@ sub _path { goto \&Path::Tiny::path }
 =head2 new
 
  my $build = Alien::Build->new;
+
+This creates a new empty instance of L<Alien::Build>.  Normally you will
+want to use C<load> below to create an instance of L<Alien::Build> from
+an L<alienfile> recipe.
 
 =cut
 
@@ -73,12 +91,66 @@ my $count = 0;
 
 =head1 PROPERTIES
 
+There are three main properties for L<Alien::Build>.  There are a number
+of properties documented here with a specific usage.  Note that these
+properties may need to be serialized into something primitive like JSON
+that does not support: regular expressions, code references of blessed
+objects.
+
+If you are writing a plugin (L<Alien::Build::Plugin>) you should use a 
+prefix like "plugin_I<name>" (where I<name> is the name of your plugin) 
+so that it does not interfere with other plugin or future versions of
+L<Alien::Build>.  For example, if you were writing
+C<Alien::Build::Plugin::Fetch::NewProtocol>, please use the prefix
+C<plugin_fetch_newprotocol>:
+
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
+   
+   $meta->register_hook(
+     some_hook => sub {
+       my($build) = @_;
+       $build->install_prop->{plugin_fetch_newprotocol_bar => 'some other value' );
+       $build->runtime_prop->{plugin_fetch_newprotocol_baz => 'and another value' );
+     }
+   );
+ }
+
+If you are writing a L<alienfile> recipe please use the prefix C<my_>:
+
+ use alienfile;
+ 
+ meta_prop->{my_foo} = 'some value';
+ 
+ probe sub {
+   my($build) = @_;
+   $build->install_prop->{my_bar} = 'some other value';
+   $build->install_prop->{my_baz} = 'and another value';
+ };
+
+Any property may be used from a command:
+
+ probe [ 'some command %{alien.meta.plugin_fetch_newprotocol_foo}' ];
+ probe [ 'some command %{alien.install.plugin_fetch_newprotocol_bar}' ];
+ probe [ 'some command %{alien.runtime.plugin_fetch_newprotocol_baz}' ];
+ probe [ 'some command %{alien.meta.my_foo}' ];
+ probe [ 'some command %{alien.install.my_bar}' ];
+ probe [ 'some command %{alien.runtime.my_baz}' ];
+
 =head2 meta_prop
 
  my $href = $build->meta_prop;
  my $href = Alien::Build->meta_prop;
 
-Hash of class properties.
+Meta properties have to do with the recipe itself, and not any particular
+instance that probes or builds that recipe.  Meta properties can be changed
+from within an L<alienfile> using the C<meta_prop> directive, or from
+a plugin from its C<init> method (though should NOT be modified from any
+hooks registered within that C<init> method).  This is not strictly enforced,
+but if you do not follow this rule your recipe will likely be broken.
 
 =over
 
@@ -103,10 +175,11 @@ sub meta_prop
 
  my $href = $build->install_prop;
 
-Hash of properties used during the install phase, for either a
-C<system> or C<share> install.  For most things you will want to
-use C<runtime_prop> below.  Only use C<install_prop> for properties
-that are needed ONLY during the install phase.  Standard properties:
+Install properties are used during the install phase (either
+under C<share> or C<system> install).  They are remembered for
+the entire install phase, but not kept around during the runtime
+phase.  Thus they cannot be accessed from your L<Alien::Base>
+based module.
 
 =over
 
@@ -117,8 +190,10 @@ absolute form of C<./_alien> by default.
 
 =item prefix
 
-The install time prefix.  This may or may not be the same as the 
-runtime prefix.  It may or may not be the same as stage.
+The install time prefix.  Under a C<destdir> install this is the
+same as the runtime or final install location.  Under a non-C<destdir>
+install this is the C<stage> directory (usually the appropriate
+share directory under C<blib>).
 
 =item stage
 
@@ -126,10 +201,6 @@ The stage directory where files will be copied.  This is usually the
 root of the blib share directory.
 
 =back
-
-B<NOTE>: These properties should not include any blessed objects or code
-references, because they will be serialized using a method that does
-not preserve those capabilities.
 
 =cut
 
@@ -142,9 +213,11 @@ sub install_prop
 
  my $href = $build->runtime_prop;
 
-Hash of properties used during the runtime phase.  This can include
-anything needed by your L<Alien::Base> based module, but these are
-frequently useful:
+Runtime properties are used during the install and runtime phases
+(either under C<share> or C<system> install).  This should include
+anything that you will need to know to use the library or tool
+during runtime, and shouldn't include anything that is no longer
+relevant once the install process is complete.
 
 =over 4
 
@@ -152,9 +225,23 @@ frequently useful:
 
 The compiler flags
 
+=item cflags_static
+
+The static compiler flags
+
+=item command
+
+The command name for tools where the name my differ from platform to
+platform.  For example, the GNU version of make is usually C<make> in
+Linux and C<gmake> on FreeBSD.
+
 =item libs
 
 The library flags
+
+=item libs_static
+
+The static library flags
 
 =item version
 
@@ -162,7 +249,7 @@ The version of the library or tool
 
 =item prefix
 
-The final install root.
+The final install root.  This is usually they share directory.
 
 =item install_type
 
@@ -186,10 +273,6 @@ and built.
 
 =back
 
-B<NOTE>: These properties should not include any blessed objects or code
-references, because they will be serialized using a method that does
-not preserve those capabilities.
-
 =cut
 
 sub runtime_prop
@@ -197,69 +280,14 @@ sub runtime_prop
   shift->{runtime_prop};
 }
 
-=head2 root
-
- my $dir = $build->root;
-
-This is just a shortcut for:
-
- my $root = $build->install_prop->{root};
-
-Except that it will be created if it does not already exist.  
-
-=cut
-
-sub root
-{
-  my($self) = @_;
-  my $root = $self->install_prop->{root};
-  _path($root)->mkpath unless -d $root;
-  $root;
-}
-
-=head2 install_type
-
- my $type = $build->install_type;
-
-This is just a shortcut for:
-
- my $type = $build->runtime_prop->{install_type};
- 
-=cut
-
-sub install_type
-{
-  my($self) = @_;
-  $self->{runtime_prop}->{install_type} ||= $self->probe;
-}
-
 =head1 METHODS
-
-=head2 set_prefix
-
- $build->set_prefix($prefix);
-
-=cut
-
-sub set_prefix
-{
-  my($self, $prefix) = @_;
-  
-  if($self->meta_prop->{destdir})
-  {
-    $self->runtime_prop->{prefix} = 
-    $self->install_prop->{prefix} = $prefix;
-  }
-  else
-  {
-    $self->runtime_prop->{prefix} = $prefix;
-    $self->install_prop->{prefix} = $self->install_prop->{stage};
-  }
-}
 
 =head2 load
 
  my $build = Alien::Build->load($alienfile);
+
+This creates an L<Alien::Build> instance with the given L<alienfile>
+recipe.
 
 =cut
 
@@ -312,7 +340,8 @@ sub load
  $build->checkpoint;
 
 Save any install or runtime properties so that they can be reloaded on
-a subsequent run.
+a subsequent run.  This is useful if your build needs to be done in
+multiple stages from a C<Makefile>, such as with L<ExtUtils::MakeMaker>.
 
 =cut
 
@@ -332,7 +361,10 @@ sub checkpoint
 
 =head2 resume
 
- Alien::Build->resume($alienfile, $root);
+ my $build = Alien::Build->resume($alienfile, $root);
+
+Load a checkpointed L<Alien::Build> instance.  You will need the original
+L<alienfile> and the build root (usually C<_alien>).
 
 =cut
 
@@ -344,6 +376,82 @@ sub resume
   $self->{install_prop} = $h->{install};
   $self->{runtime_prop} = $h->{runtime};
   $self;
+}
+
+=head2 root
+
+ my $dir = $build->root;
+
+This is just a shortcut for:
+
+ my $root = $build->install_prop->{root};
+
+Except that it will be created if it does not already exist.  
+
+=cut
+
+sub root
+{
+  my($self) = @_;
+  my $root = $self->install_prop->{root};
+  _path($root)->mkpath unless -d $root;
+  $root;
+}
+
+=head2 install_type
+
+ my $type = $build->install_type;
+
+This will return the install type.  (See the like named install property
+above for details).  This method will call C<probe> if it has not already
+been called.
+
+=cut
+
+sub install_type
+{
+  my($self) = @_;
+  $self->{runtime_prop}->{install_type} ||= $self->probe;
+}
+
+=head2 set_prefix
+
+ $build->set_prefix($prefix);
+
+Set the final (unstaged) prefix.  This is normally only called by L<Alien::Build::MM>
+and similar modules.  It is not intended for use from plugins or from an L<alienfile>.
+
+=cut
+
+sub set_prefix
+{
+  my($self, $prefix) = @_;
+  
+  if($self->meta_prop->{destdir})
+  {
+    $self->runtime_prop->{prefix} = 
+    $self->install_prop->{prefix} = $prefix;
+  }
+  else
+  {
+    $self->runtime_prop->{prefix} = $prefix;
+    $self->install_prop->{prefix} = $self->install_prop->{stage};
+  }
+}
+
+=head2 set_stage
+
+ $build->set_stage($dir);
+
+Sets the stage directory.  This is normally only called by L<Alien::Build::MM>
+and similar modules.  It is not intended for use from plugins or from an L<alienfile>.
+
+=cut
+
+sub set_stage
+{
+  my($self, $dir) = @_;
+  $self->install_prop->{stage} = $dir;
 }
 
 sub _merge
@@ -363,6 +471,29 @@ sub _merge
 
  my $hash = $build->requires($phase);
 
+Returns a hash reference of the modules required for the given phase.  Phases
+include:
+
+=over 4
+
+=item configure
+
+These modules must already be available when the L<alienfile> is read.
+
+=item any
+
+These modules are used during either a C<system> or C<share> install.
+
+=item share
+
+These modules are used during the build phase of a C<share> install.
+
+=item system
+
+These modules are used during the build phase of a C<system> install.
+
+=back
+
 =cut
 
 sub requires
@@ -377,7 +508,10 @@ sub requires
 
 =head2 load_requires
 
- $build->load_requires;
+ $build->load_requires($phase);
+
+This loads the appropriate modules for the given phase (see C<requires> above
+for a description of the phases).
 
 =cut
 
@@ -396,22 +530,6 @@ sub load_requires
     }
   }
   1;
-}
-
-my %meta;
-
-=head2 meta
-
- my $meta = Alien::Build->meta;
- my $meta = $build->meta;
-
-=cut
-
-sub meta
-{
-  my($class) = @_;
-  $class = ref $class if ref $class;
-  $meta{$class} ||= Alien::Build::Meta->new( class => $class );
 }
 
 sub _call_hook
@@ -437,7 +555,9 @@ then the string C<share> will be installed and the tool or
 library will be downloaded and built from source.
 
 If the environment variable C<ALIEN_INSTALL_TYPE> is set, then that
-will be used instead of the detection logic.
+will force a specific type of install.  If the detection logic
+cannot accommodate the install type requested then it will fail with
+an exception.
 
 =cut
 
@@ -500,16 +620,7 @@ sub probe
   $type;
 }
 
-=head2 gather_system
-
- $build->gather_system
-
-This method gathers the necessary properties from the system for using
-the library or tool under a system install type.
- 
-=cut
-
-sub gather_system
+sub _gather_system
 {
   my($self) = @_;
   
@@ -544,12 +655,17 @@ sub gather_system
 
  $build->download;
 
+Download the source, usually as a tarball, usually from the internet.
+
+Under a C<system> install this does not do anything.
+
 =cut
 
 sub download
 {
   my($self) = @_;
   
+  return $self unless $self->install_type eq 'share';
   return $self if $self->install_prop->{complete}->{download};
   
   if($self->meta->has_hook('download'))
@@ -687,7 +803,8 @@ sub fetch
 
  my $decoded_res = $build->decode($res);
 
-Decode the HTML or file listing returned by C<fetch>.
+Decode the HTML or file listing returned by C<fetch>.  Returns the same
+hash structure described below in the hook documentation.
 
 =cut
 
@@ -702,7 +819,8 @@ sub decode
  my $sorted_res = $build->prefer($res);
 
 Filter and sort candidates.  The preferred candidate will be returned first in the list.
-The worst candidate will be returned last.
+The worst candidate will be returned last.  Returns the same hash structure described
+below in the hook documentation.
 
 =cut
 
@@ -716,6 +834,9 @@ sub prefer
 
  my $dir = $build->extract;
  my $dir = $build->extract($archive);
+
+Extracts the given archive into a fresh directory.  This is normally called internally
+to L<Alien::Build>, and for normal usage is not needed from a plugin or L<alienfile>.
 
 =cut
 
@@ -774,6 +895,23 @@ sub extract
 =head2 build
 
  $build->build;
+
+Run the build step.  It is expected that C<probe> and C<download>
+have already been performed.  What it actually does depends on the
+type of install:
+
+=over 4
+
+=item share
+
+The source is extracted, and built as determined by the L<alienfile>
+recipe.  If there is a C<gather_share> that will be executed last.
+
+=item system
+
+The C<gather_system> hook will be executed.
+
+=back
 
 =cut
 
@@ -856,7 +994,7 @@ sub build
   
   elsif($self->install_type eq 'system')
   {
-    $self->gather_system;
+    $self->_gather_system;
   }
   
   $stage->child('_alien')->mkpath;
@@ -867,6 +1005,26 @@ sub build
   }
   
   $self;
+}
+
+=head2 meta
+
+ my $meta = Alien::Build->meta;
+ my $meta = $build->meta;
+
+Returns the meta object for your L<Alien::Build> class or instance.  The
+meta object is a way to manipulate the recipe, and so any changes to the
+meta object should be made before the C<probe>, C<download> or C<build> steps.
+
+=cut
+
+my %meta;
+
+sub meta
+{
+  my($class) = @_;
+  $class = ref $class if ref $class;
+  $meta{$class} ||= Alien::Build::Meta->new( class => $class );
 }
 
 =head1 HOOKS
@@ -1489,5 +1647,9 @@ Also kind thanks to all of the developers who have contributed to
 L<Alien::Base> over the years:
 
 L<https://metacpan.org/pod/Alien::Base#CONTRIBUTORS>
+
+=head1 SEE ALSO
+
+L<alienfile>, L<Alien::Build::MM>, L<Alien::Build::Plugin>, L<Alien::Base>, L<Alien>
 
 =cut

@@ -59,7 +59,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract build gather prop );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract build gather meta_prop );
 
 =head1 DIRECTIVES
 
@@ -460,22 +460,19 @@ sub gather
   return;;
 }
 
-=head2 prop
+=head2 meta_prop
 
- my $value = prop $key;
- prop $key => $val;
+ my $hash = meta_prop;
 
-Get or set a meta property.
+Get the meta_prop hash reference.
 
 =cut
 
-sub prop
+sub meta_prop
 {
-  my($key, $value) = @_;
   my $caller = caller;
   my $meta = $caller->meta;
-  $meta->prop->{$key} = $value if defined $value;
-  $meta->prop->{$key};
+  $meta->prop;
 }
 
 sub import
@@ -486,3 +483,9 @@ sub import
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::MM>, L<Alien::Base>
+
+=cut

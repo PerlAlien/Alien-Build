@@ -44,29 +44,14 @@ my $build = Alien::Build->load("$alienfile",
   root => $example->child('_alien')->stringify,
 );
 
-if($build->meta_prop->{destdir})
-{
-  print "$name using DESTDIR\n";
-  $build->install_prop->{prefix} = $prefix->child("perl/lib/share/Alien-$name")->absolute->stringify;
-  $build->install_prop->{stage}  = $example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify;
-  $build->runtime_prop->{prefix} = $prefix->child("perl/lib/share/Alien-$name")->absolute->stringify;
-}
-else
-{
-  print "$name using direct install\n";
-  $build->install_prop->{prefix} = $example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify;
-  $build->install_prop->{stage}  = $example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify;
-  $build->runtime_prop->{prefix} = $prefix->child("perl/lib/share/Alien-$name")->absolute->stringify;  
-}
-
 $build->load_requires('configure');
+$build->set_prefix($prefix->child("perl/lib/share/Alien-$name")->absolute->stringify);
+$build->set_stage($example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify);
+$build->load_requires($build->install_type);
+$build->download;
+$build->build;
 
-if($build->install_type eq 'share')
-{
-  $build->load_requires('share');
-  $build->download;
-  $build->build;
-
+if($build->install_type eq 'share'){
   path($build->runtime_prop->{prefix})->mkpath;
   
   _mirror(
@@ -74,12 +59,6 @@ if($build->install_type eq 'share')
     $build->runtime_prop->{prefix},
     { verbose => 1 },
   );
-}
-
-elsif($build->install_type eq 'system')
-{
-  $build->load_requires('system');
-  $build->gather_system;
 }
 
 print Dump($build->runtime_prop);

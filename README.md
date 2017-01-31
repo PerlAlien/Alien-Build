@@ -4,7 +4,16 @@ Build external dependencies for use in CPAN
 
 # SYNOPSIS
 
-TODO
+    my $build = Alien::Build->load('./alienfile');
+    $build->load_requires('configure');
+    $build->set_prefix('/usr/local');
+    $build->set_stage('/foo/mystage');  # needs to be absolute
+    $build->load_requires($build->install_type);
+    $build->download;
+    $build->build;
+    # files are now in /foo/mystage, it is your job (or
+    # ExtUtils::MakeMaker, Module::Build, etc) to copy
+    # those files into /usr/local
 
 # DESCRIPTION
 
@@ -15,20 +24,83 @@ This module provides tools for building external (non-CPAN) dependencies
 for CPAN.  It is mainly designed to be used at install time of a CPAN 
 client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base) which is used at runtime.
 
+Note that you will usually not usually create a [Alien::Build](https://metacpan.org/pod/Alien::Build) instance
+directly, but rather be using a thin installer layer, such as
+[Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) (for use with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker)).  One of the
+goals of this project is to remain installer agnostic.
+
 # CONSTRUCTOR
 
 ## new
 
     my $build = Alien::Build->new;
 
+This creates a new empty instance of [Alien::Build](https://metacpan.org/pod/Alien::Build).  Normally you will
+want to use `load` below to create an instance of [Alien::Build](https://metacpan.org/pod/Alien::Build) from
+an [alienfile](https://metacpan.org/pod/alienfile) recipe.
+
 # PROPERTIES
+
+There are three main properties for [Alien::Build](https://metacpan.org/pod/Alien::Build).  There are a number
+of properties documented here with a specific usage.  Note that these
+properties may need to be serialized into something primitive like JSON
+that does not support: regular expressions, code references of blessed
+objects.
+
+If you are writing a plugin ([Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin)) you should use a 
+prefix like "plugin\__name_" (where _name_ is the name of your plugin) 
+so that it does not interfere with other plugin or future versions of
+[Alien::Build](https://metacpan.org/pod/Alien::Build).  For example, if you were writing
+`Alien::Build::Plugin::Fetch::NewProtocol`, please use the prefix
+`plugin_fetch_newprotocol`:
+
+    sub init
+    {
+      my($self, $meta) = @_;
+      
+      $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
+      
+      $meta->register_hook(
+        some_hook => sub {
+          my($build) = @_;
+          $build->install_prop->{plugin_fetch_newprotocol_bar => 'some other value' );
+          $build->runtime_prop->{plugin_fetch_newprotocol_baz => 'and another value' );
+        }
+      );
+    }
+
+If you are writing a [alienfile](https://metacpan.org/pod/alienfile) recipe please use the prefix `my_`:
+
+    use alienfile;
+    
+    meta_prop->{my_foo} = 'some value';
+    
+    probe sub {
+      my($build) = @_;
+      $build->install_prop->{my_bar} = 'some other value';
+      $build->install_prop->{my_baz} = 'and another value';
+    };
+
+Any property may be used from a command:
+
+    probe [ 'some command %{alien.meta.plugin_fetch_newprotocol_foo}' ];
+    probe [ 'some command %{alien.install.plugin_fetch_newprotocol_bar}' ];
+    probe [ 'some command %{alien.runtime.plugin_fetch_newprotocol_baz}' ];
+    probe [ 'some command %{alien.meta.my_foo}' ];
+    probe [ 'some command %{alien.install.my_bar}' ];
+    probe [ 'some command %{alien.runtime.my_baz}' ];
 
 ## meta\_prop
 
     my $href = $build->meta_prop;
     my $href = Alien::Build->meta_prop;
 
-Hash of class properties.
+Meta properties have to do with the recipe itself, and not any particular
+instance that probes or builds that recipe.  Meta properties can be changed
+from within an [alienfile](https://metacpan.org/pod/alienfile) using the `meta_prop` directive, or from
+a plugin from its `init` method (though should NOT be modified from any
+hooks registered within that `init` method).  This is not strictly enforced,
+but if you do not follow this rule your recipe will likely be broken.
 
 - destdir
 
@@ -41,10 +113,11 @@ Hash of class properties.
 
     my $href = $build->install_prop;
 
-Hash of properties used during the install phase, for either a
-`system` or `share` install.  For most things you will want to
-use `runtime_prop` below.  Only use `install_prop` for properties
-that are needed ONLY during the install phase.  Standard properties:
+Install properties are used during the install phase (either
+under `share` or `system` install).  They are remembered for
+the entire install phase, but not kept around during the runtime
+phase.  Thus they cannot be accessed from your [Alien::Base](https://metacpan.org/pod/Alien::Base)
+based module.
 
 - root
 
@@ -53,33 +126,47 @@ that are needed ONLY during the install phase.  Standard properties:
 
 - prefix
 
-    The install time prefix.  This may or may not be the same as the 
-    runtime prefix.  It may or may not be the same as stage.
+    The install time prefix.  Under a `destdir` install this is the
+    same as the runtime or final install location.  Under a non-`destdir`
+    install this is the `stage` directory (usually the appropriate
+    share directory under `blib`).
 
 - stage
 
     The stage directory where files will be copied.  This is usually the
     root of the blib share directory.
 
-**NOTE**: These properties should not include any blessed objects or code
-references, because they will be serialized using a method that does
-not preserve those capabilities.
-
 ## runtime\_prop
 
     my $href = $build->runtime_prop;
 
-Hash of properties used during the runtime phase.  This can include
-anything needed by your [Alien::Base](https://metacpan.org/pod/Alien::Base) based module, but these are
-frequently useful:
+Runtime properties are used during the install and runtime phases
+(either under `share` or `system` install).  This should include
+anything that you will need to know to use the library or tool
+during runtime, and shouldn't include anything that is no longer
+relevant once the install process is complete.
 
 - cflags
 
     The compiler flags
 
+- cflags\_static
+
+    The static compiler flags
+
+- command
+
+    The command name for tools where the name my differ from platform to
+    platform.  For example, the GNU version of make is usually `make` in
+    Linux and `gmake` on FreeBSD.
+
 - libs
 
     The library flags
+
+- libs\_static
+
+    The static library flags
 
 - version
 
@@ -87,7 +174,7 @@ frequently useful:
 
 - prefix
 
-    The final install root.
+    The final install root.  This is usually they share directory.
 
 - install\_type
 
@@ -105,9 +192,29 @@ frequently useful:
         downloaded from the internet or retrieved in another appropriate fashion
         and built.
 
-**NOTE**: These properties should not include any blessed objects or code
-references, because they will be serialized using a method that does
-not preserve those capabilities.
+# METHODS
+
+## load
+
+    my $build = Alien::Build->load($alienfile);
+
+This creates an [Alien::Build](https://metacpan.org/pod/Alien::Build) instance with the given [alienfile](https://metacpan.org/pod/alienfile)
+recipe.
+
+## checkpoint
+
+    $build->checkpoint;
+
+Save any install or runtime properties so that they can be reloaded on
+a subsequent run.  This is useful if your build needs to be done in
+multiple stages from a `Makefile`, such as with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker).
+
+## resume
+
+    my $build = Alien::Build->resume($alienfile, $root);
+
+Load a checkpointed [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.  You will need the original
+[alienfile](https://metacpan.org/pod/alienfile) and the build root (usually `_alien`).
 
 ## root
 
@@ -123,43 +230,53 @@ Except that it will be created if it does not already exist.
 
     my $type = $build->install_type;
 
-This is just a shortcut for:
-
-    my $type = $build->runtime_prop->{install_type};
-
-# METHODS
+This will return the install type.  (See the like named install property
+above for details).  This method will call `probe` if it has not already
+been called.
 
 ## set\_prefix
 
     $build->set_prefix($prefix);
 
-## load
+Set the final (unstaged) prefix.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM)
+and similar modules.  It is not intended for use from plugins or from an [alienfile](https://metacpan.org/pod/alienfile).
 
-    my $build = Alien::Build->load($alienfile);
+## set\_stage
 
-## checkpoint
+    $build->set_stage($dir);
 
-    $build->checkpoint;
-
-Save any install or runtime properties so that they can be reloaded on
-a subsequent run.
-
-## resume
-
-    Alien::Build->resume($alienfile, $root);
+Sets the stage directory.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM)
+and similar modules.  It is not intended for use from plugins or from an [alienfile](https://metacpan.org/pod/alienfile).
 
 ## requires
 
     my $hash = $build->requires($phase);
 
+Returns a hash reference of the modules required for the given phase.  Phases
+include:
+
+- configure
+
+    These modules must already be available when the [alienfile](https://metacpan.org/pod/alienfile) is read.
+
+- any
+
+    These modules are used during either a `system` or `share` install.
+
+- share
+
+    These modules are used during the build phase of a `share` install.
+
+- system
+
+    These modules are used during the build phase of a `system` install.
+
 ## load\_requires
 
-    $build->load_requires;
+    $build->load_requires($phase);
 
-## meta
-
-    my $meta = Alien::Build->meta;
-    my $meta = $build->meta;
+This loads the appropriate modules for the given phase (see `requires` above
+for a description of the phases).
 
 ## probe
 
@@ -172,18 +289,17 @@ then the string `share` will be installed and the tool or
 library will be downloaded and built from source.
 
 If the environment variable `ALIEN_INSTALL_TYPE` is set, then that
-will be used instead of the detection logic.
-
-## gather\_system
-
-    $build->gather_system
-
-This method gathers the necessary properties from the system for using
-the library or tool under a system install type.
+will force a specific type of install.  If the detection logic
+cannot accommodate the install type requested then it will fail with
+an exception.
 
 ## download
 
     $build->download;
+
+Download the source, usually as a tarball, usually from the internet.
+
+Under a `system` install this does not do anything.
 
 ## fetch
 
@@ -197,23 +313,50 @@ described below in the hook documentation.
 
     my $decoded_res = $build->decode($res);
 
-Decode the HTML or file listing returned by `fetch`.
+Decode the HTML or file listing returned by `fetch`.  Returns the same
+hash structure described below in the hook documentation.
 
 ## prefer
 
     my $sorted_res = $build->prefer($res);
 
 Filter and sort candidates.  The preferred candidate will be returned first in the list.
-The worst candidate will be returned last.
+The worst candidate will be returned last.  Returns the same hash structure described
+below in the hook documentation.
 
 ## extract
 
     my $dir = $build->extract;
     my $dir = $build->extract($archive);
 
+Extracts the given archive into a fresh directory.  This is normally called internally
+to [Alien::Build](https://metacpan.org/pod/Alien::Build), and for normal usage is not needed from a plugin or [alienfile](https://metacpan.org/pod/alienfile).
+
 ## build
 
     $build->build;
+
+Run the build step.  It is expected that `probe` and `download`
+have already been performed.  What it actually does depends on the
+type of install:
+
+- share
+
+    The source is extracted, and built as determined by the [alienfile](https://metacpan.org/pod/alienfile)
+    recipe.  If there is a `gather_share` that will be executed last.
+
+- system
+
+    The `gather_system` hook will be executed.
+
+## meta
+
+    my $meta = Alien::Build->meta;
+    my $meta = $build->meta;
+
+Returns the meta object for your [Alien::Build](https://metacpan.org/pod/Alien::Build) class or instance.  The
+meta object is a way to manipulate the recipe, and so any changes to the
+meta object should be made before the `probe`, `download` or `build` steps.
 
 # HOOKS
 
@@ -589,6 +732,10 @@ Also kind thanks to all of the developers who have contributed to
 [Alien::Base](https://metacpan.org/pod/Alien::Base) over the years:
 
 [https://metacpan.org/pod/Alien::Base#CONTRIBUTORS](https://metacpan.org/pod/Alien::Base#CONTRIBUTORS)
+
+# SEE ALSO
+
+[alienfile](https://metacpan.org/pod/alienfile), [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM), [Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin), [Alien::Base](https://metacpan.org/pod/Alien::Base), [Alien](https://metacpan.org/pod/Alien)
 
 # AUTHOR
 

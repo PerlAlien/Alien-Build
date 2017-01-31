@@ -109,7 +109,7 @@ sub mm_args
   
   if($args{DISTNAME})
   {
-    $self->build->install_prop->{stage} = Path::Tiny->new("blib/lib/auto/share/dist/$args{DISTNAME}")->absolute->stringify;
+    $self->build->set_stage(Path::Tiny->new("blib/lib/auto/share/dist/$args{DISTNAME}")->absolute->stringify);
     $self->build->install_prop->{mm}->{distname} = $args{DISTNAME};
   }
   else
@@ -246,18 +246,14 @@ sub import
       {
         my($build) = _args();
         $build->load_requires('configure');
-        if($build->install_type eq 'share')
-        {
-          $build->load_requires($build->install_type);
-          $build->download;
-        }
+        $build->load_requires($build->install_type);
+        $build->download;
         _touch('download');
       };
       
       *build = sub
       {
         my($build) = _args();
-        
         
         $build->load_requires('configure');
         $build->load_requires($build->install_type);
