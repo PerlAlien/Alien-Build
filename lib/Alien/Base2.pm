@@ -150,7 +150,7 @@ sub _keyword
   my $flags = $config->{$keyword};
   if($keyword =~ /_static$/ && ! defined $flags)
   {
-    $keyword = s/_static$//;
+    $keyword =~ s/_static$//;
     $flags = $config->{$keyword};
   }
   
