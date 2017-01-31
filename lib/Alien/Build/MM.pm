@@ -168,9 +168,9 @@ sub mm_postamble
   my $postamble = '';
   
   # remove the _alien directory on a make realclean:
-  $postamble .= "distclean :: alien_distclean\n" .
+  $postamble .= "realclean :: alien_realclean\n" .
                 "\n" .
-                "alien_distclean:\n" .
+                "alien_realclean:\n" .
                 "\t\$(RM_RF) _alien\n\n";
 
   my $dirs = $self->build->install_prop->{mm}->{arch}
