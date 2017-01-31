@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.02      2017-01-31 13:22:29 -0500
   - Extensive documentation improvements
     (documentation is still fairly incomplete).
   - Removed alienfile#prop
