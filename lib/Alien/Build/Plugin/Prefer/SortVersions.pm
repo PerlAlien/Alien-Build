@@ -7,7 +7,7 @@ use Alien::Build::Plugin;
 # ABSTRACT: Plugin to sort candidates by most recent first
 # VERSION
 
-has 'filter'   => qr//;
+has 'filter'   => undef;
 has '+version' => qr/([0-9\.]+)/;
 
 sub init
@@ -25,7 +25,8 @@ sub init
     };
     
     my @list = sort { $cmp->($a->{filename}, $b->{filename}) }
-               grep { $_->{filename} =~ $self->filter && $_->{filename} =~ $self->version }
+               grep { $_->{filename} =~ $self->version }
+               grep { defined $self->filter ? $_->{filename} =~ $self->filter : 1 }
                @{ $res->{list} };
     
     return {

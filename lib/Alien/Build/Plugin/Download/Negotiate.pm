@@ -9,7 +9,7 @@ use Carp ();
 # VERSION
 
 has '+url' => sub { Carp::croak "url is a required property" };
-has 'filter'   => qr//;
+has 'filter'  => undef;
 has 'version' => undef;
 
 sub init
@@ -68,7 +68,10 @@ sub init
       $self->_plugin($meta, 'Decode', 'HTML');
     }
     
-    $self->_plugin($meta, 'Prefer', 'SortVersions', filter => $self->filter, version => $self->version);
+    $self->_plugin($meta, 'Prefer', 'SortVersions', 
+      (defined $self->filter ? (filter => $self->filter) : ()),
+      version => $self->version,
+    );
   }
 }
 
