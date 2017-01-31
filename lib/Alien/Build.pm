@@ -387,7 +387,7 @@ sub load_requires
   foreach my $mod (keys %$reqs)
   {
     my $ver = $reqs->{$mod};
-    eval qq{ use $mod $ver () };
+    eval qq{ use $mod @{[ $ver ? $ver : '' ]} () };
     die if $@;
   }
   1;
