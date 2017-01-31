@@ -46,6 +46,7 @@ sub new
     },
     runtime_prop => {
     },
+    bin_dir => [],
   }, $class;
   
   $self->meta->filename(
@@ -366,9 +367,9 @@ sub _merge
 
 sub requires
 {
-  my($class, $phase) = @_;
+  my($self, $phase) = @_;
   $phase ||= 'any';
-  my $meta = $class->meta;
+  my $meta = $self->meta;
   $phase =~ /^(?:any|configure)$/
   ? $meta->{require}->{$phase}
   : _merge %{ $meta->{require}->{any} }, %{ $meta->{require}->{$phase} };
@@ -382,13 +383,17 @@ sub requires
 
 sub load_requires
 {
-  my($class, $phase) = @_;
-  my $reqs = $class->requires($phase);
+  my($self, $phase) = @_;
+  my $reqs = $self->requires($phase);
   foreach my $mod (keys %$reqs)
   {
     my $ver = $reqs->{$mod};
     eval qq{ use $mod @{[ $ver ? $ver : '' ]} () };
     die if $@;
+    if($mod->can('bin_dir'))
+    {
+      push @{ $self->{bin_dir} }, $mod->bin_dir;
+    }
   }
   1;
 }
@@ -412,6 +417,10 @@ sub meta
 sub _call_hook
 {
   my $self = shift;
+  
+  local $ENV{PATH} = $ENV{PATH};
+  unshift @PATH, @{ $self->{bin_dir} };
+  
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;
   $self->meta->call_hook( $config, $name => $self, @args );
