@@ -8,6 +8,8 @@ use base qw( Exporter );
 
 our @EXPORT = qw( build_blank_alien_build alienfile path_to_tar );
 
+delete $ENV{ALIEN_INSTALL_TYPE};
+
 sub build_blank_alien_build
 {
   my(@args) = @_;
