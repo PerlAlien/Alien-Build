@@ -14,6 +14,8 @@ sub _path { Path::Tiny::path(@_) }
 
 =head1 SYNOPSIS
 
+Do-it-yourself approach:
+
  use alienfile;
  
  probe sub {
@@ -51,6 +53,22 @@ sub _path { Path::Tiny::path(@_) }
    [ 'pkg-config', '--cflags',     'libarchive', sub { pkgconfig_value 'cflags', @_ }  ],
    [ 'pkg-config', '--libs',       'libarchive', sub { pkgconfig_value 'libs', @_ }    ],
  ];
+
+With plugins (better):
+
+ use alienfile;
+ 
+ plugin 'PkgConfig' => 'libarchive';
+ 
+ share {
+   plugin Download => (
+     url => 'http://libarchive.org/downloads/',
+     filter => qr/^libarchive-.*\.tar\.gz$/,
+     version => qr/([0-9\.]+)/,
+   );
+   plugin Extract => 'tar.gz';
+   plugin 'Build::Autoconf' => ();
+ };
 
 =head1 DESCRIPTION
 
