@@ -165,7 +165,7 @@ you run C<make all>, but can be run individually if needed for debugging.
 
 =item alien_prefix
 
-Determins the final install prefix (C<%{alien.install.prefix}>).
+Determines the final install prefix (C<%{alien.install.prefix}>).
 
 =item alien_download
 

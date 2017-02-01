@@ -34,6 +34,8 @@ pod_spelling_system:
     - alienfile
     - unstaged
     - checkpointed
+    - ssl
+    - readme
 
 pod_coverage:
   skip: 0

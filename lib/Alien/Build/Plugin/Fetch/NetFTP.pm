@@ -7,10 +7,41 @@ use Carp ();
 use File::Temp ();
 use Path::Tiny qw( path );
 
-# ABSTRACT: LWP plugin for fetching files
+# ABSTRACT: Net::FTP plugin for fetching files
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Fetch::NetFTP' => (
+   url => 'ftp://ftp.gnu.org/gnu/make',
+ );
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Download::Negotiate>
+instead.  It picks the appropriate fetch plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This fetch plugin fetches files and directory listings via the C<ftp>, protocol using
+L<Net::FTP>.
+
+=head1 PROPERTIES
+
+=head2 url
+
+The initial URL to fetch.  This may be a directory or the final file.
+
+=cut
+
 has '+url' => sub { Carp::croak "url is a required property" };
+
+=head2 ssl
+
+This property is for compatibility with other fetch plugins, but is not used.
+
+=cut
+
 has ssl => 0;
 
 sub init
@@ -90,3 +121,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Download::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut

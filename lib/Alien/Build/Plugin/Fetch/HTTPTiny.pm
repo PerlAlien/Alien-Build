@@ -9,7 +9,42 @@ use Carp ();
 # ABSTRACT: LWP plugin for fetching files
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Fetch::HTTPTiny' => (
+   url => 'http://ftp.gnu.org/gnu/make',
+ );
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Download::Negotiate>
+instead.  It picks the appropriate fetch plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This fetch plugin fetches files and directory listings via the C<http> and C<https>
+protocol using L<HTTP::Tiny>.  If the URL specified uses the C<https> scheme, then
+the required SSL modules will automatically be injected as requirements.  If your
+initial URL is not C<https>, but you know that it will be needed on a subsequent
+request you can use the ssl property below.
+
+=head1 PROPERTIES
+
+=head2 url
+
+The initial URL to fetch.  This may be a directory listing (in HTML) or the final file.
+
+=cut
+
 has '+url' => sub { Carp::croak "url is a required property" };
+
+=head2 ssl
+
+If set to true, then the SSL modules required to make an C<https> connection will be
+added as prerequisites.
+
+=cut
+
 has ssl => 0;
 
 sub init
@@ -78,3 +113,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Download::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut
