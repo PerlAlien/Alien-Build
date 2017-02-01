@@ -1,8 +1,9 @@
 use Test2::Bundle::Extended;
-use Alien::Build::MM;
+use Alien::Build::MM qw( cmd ); 
 use File::chdir;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
+use Capture::Tiny qw( capture_merged );
 
 sub alienfile
 {
@@ -45,12 +46,12 @@ subtest 'basic' => sub {
 
     local $ENV{ALIEN_INSTALL_TYPE} = 'system';
 
-    my $mm = Alien::Build::MM->new;
+    my $abmm = Alien::Build::MM->new;
   
-    isa_ok $mm, 'Alien::Build::MM';
-    isa_ok $mm->build, 'Alien::Build';
+    isa_ok $abmm, 'Alien::Build::MM';
+    isa_ok $abmm->build, 'Alien::Build';
 
-    my %args = $mm->mm_args(
+    my %args = $abmm->mm_args(
       DISTNAME => 'Alien-Foo',
       CONFIGURE_REQUIRES => {
         'YAML' => '1.2',
@@ -63,8 +64,8 @@ subtest 'basic' => sub {
       },
     );
 
-    is(path($mm->build->install_prop->{stage})->basename, 'Alien-Foo', 'stage dir');
-    note "stage = @{[ $mm->build->install_prop->{stage} ]}";
+    is(path($abmm->build->install_prop->{stage})->basename, 'Alien-Foo', 'stage dir');
+    note "stage = @{[ $abmm->build->install_prop->{stage} ]}";
   
     is(
       \%args,
@@ -88,7 +89,7 @@ subtest 'basic' => sub {
       },
     );
   
-    undef $mm;
+    undef $abmm;
   
     ok( -d '_alien', "left alien directory" );
     ok( -f '_alien/alien.json', "left alien.json file" );
@@ -99,12 +100,12 @@ subtest 'basic' => sub {
 
     local $ENV{ALIEN_INSTALL_TYPE} = 'share';
 
-    my $mm = Alien::Build::MM->new;
+    my $abmm = Alien::Build::MM->new;
   
-    isa_ok $mm, 'Alien::Build::MM';
-    isa_ok $mm->build, 'Alien::Build';
+    isa_ok $abmm, 'Alien::Build::MM';
+    isa_ok $abmm->build, 'Alien::Build';
 
-    my %args = $mm->mm_args(
+    my %args = $abmm->mm_args(
       DISTNAME => 'Alien-Foo',
       CONFIGURE_REQUIRES => {
         'YAML' => '1.2',
@@ -145,22 +146,123 @@ subtest 'basic' => sub {
 
 subtest 'mm_postamble' => sub {
 
-  diag 'TODO';
-  ok 1;
+  $CWD = tempdir( CLEANUP => 1 );
+
+  my $build = alienfile q{
+    use alienfile;
+    probe sub { 'system' };
+  };
+
+  my $abmm = Alien::Build::MM->new;
+
+  $abmm->mm_args(
+    DISTNAME => 'Alien-Foo',
+  );
+
+  my $postamble = $abmm->mm_postamble;
+  
+  ok $postamble, 'returned a true value';
+  note $postamble;
 
 };
 
 subtest 'set_prefix' => sub {
+  
+  foreach my $type (qw( perl site vendor ))
+  {
 
-  diag 'TODO';
-  ok 1;
+    subtest "type = $type" => sub {
+  
+      $CWD = tempdir( CLEANUP => 1 );
 
+      alienfile q{
+        use alienfile;
+        probe sub { 'share' };
+      };
+  
+      my @dirs = map { path($CWD)->child('foo')->child($_) } qw( perl site vendor );
+      $_->mkpath for @dirs;
+ 
+      do {
+        my $abmm = Alien::Build::MM->new;
+        $abmm->mm_args(
+          DISTNAME => 'Alien-Foo',
+        );
+      };
+
+      note capture_merged {
+        local @ARGV = ($type, @dirs);
+        prefix();
+      };
+  
+      ok( -f '_alien/mm/prefix', 'touched prefix' );
+      
+      my $build = Alien::Build->resume('alienfile', '_alien');
+      my $prefix = path($build->runtime_prop->{prefix})->relative($CWD)->stringify;
+      is $prefix, "foo/$type/auto/share/dist/Alien-Foo", "correct path";
+    };
+  }
+  
 };
 
-subtest 'build' => sub {
+subtest 'download + build' => sub {
 
-  diag 'TODO';
-  ok 1;
+  $CWD = tempdir( CLEANUP => 1 );
+
+  $main::call_download = 0;
+  $main::call_build    = 0;
+
+  alienfile q{
+    use alienfile;
+
+    use Path::Tiny qw( path );
+
+    probe sub { 'share' };
+
+    share {
+      download sub {
+        path('foo.tar.gz')->spew('foo');
+        print " + IN DOWNLOAD +\n";
+        $main::call_download = 1;
+      };
+      extract sub {
+        print " + IN EXTRACT +\n";
+        path('file1')->spew('foo1');
+        path('file2')->spew('foo2');
+      };
+      build sub {
+        print " + IN BUILD +\n";
+        $main::call_build = 1;
+      };
+    };
+  };
+
+  my $abmm = Alien::Build::MM->new;
+
+  $abmm->mm_args(
+    DISTNAME => 'Alien-Foo',
+  );
+  
+  note capture_merged {
+    local @ARGV = ('perl', map { ($_,$_,$_) } tempdir( CLEANUP => 1 ));
+    prefix();
+  };
+  
+  note capture_merged {
+    local @ARGV = ();
+    download();
+  };
+
+  ok( -f '_alien/mm/download', 'touched download' );  
+  is $main::call_download, 1, 'download';
+
+  note capture_merged {
+    local @ARGV = ();
+    build();
+  };
+
+  ok( -f '_alien/mm/build', 'touched build' );  
+  is $main::call_build, 1, 'build';
 
 };
 

@@ -7,11 +7,46 @@ use Carp ();
 # ABSTRACT: Plugin base class for Alien::Build
 # VERSION
 
+=head1 SYNOPSIS
+
+Create your plugin:
+
+ package Alien::Build::Plugin::Type::MyPlugin;
+ 
+ use Alien::Build::Plugin;
+ use Carp ();
+ 
+ has prop1 => 'default value';
+ has prop2 => sub { 'default value' };
+ has prop3 => sub { Carp::croak 'prop3 is a required property' };
+ 
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->register_hook(sub {
+     build => [ '%{make}', '%{make} install' ],
+   });
+ }
+
+From your L<alienfile>
+
+ use alienfile;
+ plugin 'Type::MyPlugin' => (
+   prop2 => 'different value',
+   prop3 => 'need to provide since it is required',
+ );
+
+=head1 DESCRIPTION
+
+This document describes the L<Alien::Build> plugin base class.  For details
+on how to write a plugin, see L<Alien::Build::Manual::PluginAuthor>.
+
 =head1 CONSTRUCTOR
 
 =head2 new
 
- my $plugin = Alien::Build::Plugin->new;
+ my $plugin = Alien::Build::Plugin->new(%props);
 
 =cut
 
@@ -43,7 +78,10 @@ sub new
 
 =head2 init
 
- $plugin->init($ab->meta); # $ab isa Alien::Build
+ $plugin->init($ab_class->meta); # $ab is an Alien::Build class name
+
+You provide the implementation for this.  The intent is to register
+hooks and set meta properties on the L<Alien::Build> class.
 
 =cut
 
@@ -71,9 +109,23 @@ sub import
   { no strict 'refs'; *{ "${caller}::has" } = $has }
 }
 
+=head2 has
+
+ has $prop_name;
+ has $prop_name => $default;
+
+Specifies a property of the plugin.  You may provide a default value as either
+a string scalar, or a code reference.  The code reference will be called to
+compute the default value, and if you want the default to be a list or hash
+reference, this is how you want to do it:
+
+ has foo => sub { [1,2,3] };
+
 =head2 meta
 
  my $meta = $plugin->meta;
+
+Returns the plugin meta object.
 
 =cut
 
@@ -129,3 +181,9 @@ sub prop
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<alienfile>, L<Alien::Build::Manual::PluginAuthor>
+
+=cut

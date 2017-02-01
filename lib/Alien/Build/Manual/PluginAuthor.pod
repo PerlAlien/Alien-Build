@@ -1,0 +1,236 @@
+# PODNAME: Alien::Build::Manual::PluginAuthor
+# ABSTRACT: Alien::Build plugin author documentation
+# VERSION
+
+=head1 SYNOPSIS
+
+ perldoc Alien::Build::Manual::PluginAuthor
+
+=head1 DESCRIPTION
+
+This document explains how to write L<Alien::Build> plugins using the
+L<Alien::Build::Plugin> base class.
+
+TODO
+
+=head1 HOOKS
+
+=head2 probe hook
+
+ $meta->register_hook( probe => sub {
+   my($build) = @_;
+   return 'system' if ...; # system install
+   return 'share';         # otherwise
+ });
+ 
+ $meta->register_hook( probe => [ $command ] );
+
+This hook should return the string C<system> if the operating
+system provides the library or tool.  It should return C<share>
+otherwise.
+
+You can also use a command that returns true when the tool
+or library is available.  For example for use with C<pkg-config>:
+
+ $meta->register_hook( probe =>
+   [ '%{pkgconf} --exists libfoo' ] );
+
+Or if you needed a minimum version:
+
+ $meta->register_hook( probe =>
+   [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
+
+Note that this hook SHOULD NOT gather system properties, such as
+cflags, libs, versions, etc, because the probe hook will be skipped
+in the even the environment variable C<ALIEN_INSTALL_TYPE> is set.
+The detection of these properties should instead be done by the
+C<gather_system> hook, below.
+
+=head2 gather_system hook
+
+ $meta->register_hook( gather_system => sub {
+   my($build) = @_;
+   $build->runtime_prop->{cflags}  = ...;
+   $build->runtime_prop->{libs}    = ...;
+   $build->runtime_prop->{version} = ...;
+ });
+
+This hook is called for a system install to determine the properties
+necessary for using the library or tool.  These properties should be
+stored in the C<runtime_prop> hash as shown above.  Typical properties
+that are needed for libraries are cflags and libs.  If at all possible
+you should also try to determine the version of the library or tool.
+
+=head2 download hook
+
+ $meta->register_hook( download => sub {
+   my($build) = @_;
+   ...
+ });
+
+This hook is used to download from the internet the source.  Either as
+an archive (like tar, zip, etc), or as a directory of files (git clone,
+etc).  When the hook is called, the current working directory will be a
+new empty directory, so you can save the download to the current
+directory.  If you store a single file in the directory, L<Alien::Build>
+will assume that it is an archive, which will be processed by the 
+extract hook below.  If you store multiple files, L<Alien::Build> will
+assume the current directory is the source root.  If no files are stored
+at all, an exception with an appropriate diagnostic will be thrown.
+
+B<Note>: If you register this hook, then the fetch, decode and prefer 
+hooks will NOT be called.
+
+=head2 fetch hook
+
+ package Alien::Build::Plugin::MyPlugin;
+ 
+ use strict;
+ use warnings;
+ use Alien::Build::Plugin;
+ use Carp ();
+ 
+ has '+url' => sub { Carp::croak "url is required property" };
+
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->register_hook( fetch => sub {
+     my($build, $url) = @_;
+     ...
+   }
+ }
+ 
+ 1;
+
+Used to fetch a resource.  The first time it will be called without an
+argument, so the configuration used to find the resource should be
+specified by the plugin's properties.  On subsequent calls the first
+argument will be a URL.
+
+Normally the first fetch will be to either a file or a directory listing.
+If it is a file then the content should be returned as a hash reference
+with the following keys:
+
+ # content of file stored in Perl
+ return {
+   type     => 'file',
+   filename => $filename,
+   content  => $content,
+ };
+ 
+ # content of file stored in the filesystem
+ return {
+   type     => 'file',
+   filename => $filename,
+   path     => $path,    # full file system path to file
+ };
+
+If the URL points to a directory listing you should return it as either
+a hash reference containing a list of files:
+
+ return {
+   type => 'list',
+   list => [
+     # filename: each filename should be just the
+     #   filename portion, no path or url.
+     # url: each url should be the complete url
+     #   needed to fetch the file.
+     { filename => $filename1, url => $url1 },
+     { filename => $filename2, url => $url2 },
+   ]
+ };
+
+or if the listing is in HTML format as a hash reference containing the
+HTML information:
+
+ return {
+   type => 'html',
+   charset => $charset, # optional
+   base    => $base,    # the base URL: used for computing relative URLs
+   content => $content, # the HTML content
+ };
+
+or a directory listing (usually produced by ftp servers) as a hash
+reference:
+
+ return {
+   type    => 'dir_listing',
+   base    => $base,
+   content => $content,
+ };
+
+=head2 decode hook
+
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->register_hook( decode => sub {
+     my($build, $res) = @_;
+     ...
+   }
+ }
+
+This hook takes a response hash reference from the C<fetch> hook above
+with a type of C<html> or C<dir_listing> and converts it into a response
+hash reference of type C<list>.  In short it takes an HTML or FTP file
+listing response from a fetch hook and converts it into a list of filenames
+and links that can be used by the prefer hook to choose the correct file to
+download.  See C<fetch> for the specification of the input and response
+hash references.
+
+=head2 prefer hook
+
+ sub init
+ {
+   my($self, $meta) = @_;
+   
+   $meta->register_hook( prefer => sub {
+     my($build, $res) = @_;
+     return {
+       type => 'list',
+       list => [sort @{ $res->{list} }],
+     };
+   }
+ }
+
+This hook sorts candidates from a listing generated from either the C<fetch>
+or C<decode> hooks.  It should return a new list hash reference with the
+candidates sorted from best to worst.  It may also remove candidates
+that are totally unacceptable.
+
+=head2 extract hook
+
+ $meta->register_hook( extract => sub {
+   my($build, $archive) = @_;
+   ...
+ });
+
+=head2 patch hook
+
+ $meta->register_hook( patch => sub {
+   my($build) = @_;
+   ...
+ });
+
+This hook is completely optional.  If registered, it will be triggered after
+extraction and before build.  It allows you to apply any patches or make any
+modifications to the source if they are necessary.
+
+=head2 build hook
+
+ $meta->register_hook( build => sub {
+   my($build) = @_;
+   ...
+ });
+
+=head2 gather_share hook
+
+ $meta->register_hook( register_hook => sub {
+   my($build) = @_;
+   ... 
+ });
+
+=cut

@@ -1,0 +1,13 @@
+# PODNAME: Alien::Build::Manual::AlienUser
+# ABSTRACT: Alien user documentation
+# VERSION
+
+=head1 SYNOPSIS
+
+ perldoc Alien::Build::Manual::AlienUser
+
+=head1 DESCRIPTION
+
+TODO
+
+=cut
