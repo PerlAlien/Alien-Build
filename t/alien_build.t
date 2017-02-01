@@ -841,20 +841,6 @@ subtest 'patch' => sub {
   
 };
 
-subtest 'set_prefix + set_stage' => sub {
-
-  subtest 'basic' => sub {
-    my($build, $meta) = build_blank_alien_build;
-    ok 1;  
-  };
-  
-  subtest 'destdir' => sub {
-    my($build, $meta) = build_blank_alien_build;
-    ok 1;
-  };
-
-};
-
 done_testing;
 
 {
