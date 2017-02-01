@@ -59,7 +59,6 @@ sub new
   my $build = $self->{build} =
     Alien::Build->load('alienfile',
       root     => "_alien",
-      autosave => 1,
     )
   ;
   
@@ -150,6 +149,7 @@ sub mm_args
   #$args{META_MERGE}->{'meta-spec'}->{version} = 2;
   $args{META_MERGE}->{dynamic_config} = 1;
   
+  $self->build->checkpoint;
   %args;
 }
 
@@ -248,7 +248,8 @@ sub import
         $build->load_requires('configure');
         $build->load_requires($build->install_type);
         $build->download;
-        _touch('download');
+        $build->checkpoint;
+       _touch('download');
       };
       
       *build = sub
@@ -268,6 +269,7 @@ sub import
           $archfile->spew('Alien based distribution with architecture specific file in share');
         }
         
+        $build->checkpoint;
         _touch('build');
       };
     }

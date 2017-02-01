@@ -74,20 +74,8 @@ sub new
     }
   );
   
-  $self->{autosave} = $args{autosave};
   $self;
 }
-
-sub DESTROY
-{
-  my($self) = @_;
-  if($self->{autosave} && -d $self->install_prop->{root})
-  {
-    $self->checkpoint;
-  }
-}
-
-my $count = 0;
 
 =head1 PROPERTIES
 
@@ -290,6 +278,8 @@ This creates an L<Alien::Build> instance with the given L<alienfile>
 recipe.
 
 =cut
+
+my $count = 0;
 
 sub load
 {
