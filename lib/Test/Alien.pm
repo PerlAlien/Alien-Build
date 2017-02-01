@@ -5,7 +5,8 @@ use warnings;
 use 5.008001;
 use Env qw( @PATH );
 use File::Which 1.10 qw( which );
-use Capture::Tiny qw( capture capture_merged );
+use if $^O ne 'MSWin32', 'Capture::Tiny' => 'capture_merged';
+use Capture::Tiny qw( capture );
 use File::Temp qw( tempdir );
 use Carp qw( croak );
 use File::Spec;
@@ -15,6 +16,19 @@ use File::Copy qw( move );
 use Text::ParseWords qw( shellwords );
 use Test2::API qw( context run_subtest );
 use base qw( Exporter );
+
+BEGIN {
+  *capture_merged = sub (&;@)
+  {
+    # TODO: fix this error properly:
+    #Error in tempfile() using template C:\Users\ollisg\AppData\Local\Temp\XXXXXXXXXX: Could not create temp file C:\Users\ollisg\AppData\Local\Temp\eysiq7e9w5: Permission denied at N:/home/ollisg/perl5/straw
+    # rry/x86/5.22.1/lib/perl5/Capture/Tiny.pm line 360.
+    
+    # this seems to work more reliably on windows, at the cost of being much noisier.
+    my $code = shift;
+    wantarray ? ('', $code->(@_)) : '';
+  } if $^O eq 'MSWin32';
+}
 
 our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic );
 
