@@ -9,6 +9,27 @@ use Path::Tiny ();
 # ABSTRACT: Plugin to extract a downloaded directory to a build directory
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Extract::Directory' => ();
+
+=head1 DESCRIPTION
+
+Some Download or Fetch plugins may produce a directory instead of an archive
+file.  This plugin is used to mirror the directory from the Download step
+into a fresh directory in the Extract step.  An example of when you might use
+this plugin is if you were using the C<git> command in the Download step,
+which results in a directory hierarchy.
+
+=head1 PROPERTIES
+
+=head2 format
+
+Should always set to C<d> (for directories).
+
+=cut
+
 has '+format' => 'd';
 
 =head1 METHODS
@@ -48,3 +69,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Extract::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut

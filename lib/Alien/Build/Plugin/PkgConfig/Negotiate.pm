@@ -8,6 +8,26 @@ use Carp ();
 # ABSTRACT: Package configuration negotiation plugin
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'PkgConfig' => (
+   pkg_name => 'libfoo',
+ );
+
+=head1 DESCRIPTION
+
+This plugin provides Probe and Gather steps for pkg-config based packages.  It picks
+the best C<PkgConfig> plugin depending your platform and environment.
+
+=head1 PROPERTIES
+
+=head2 pkg_name
+
+The package name.
+
+=cut
+
 has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
@@ -50,3 +70,9 @@ sub _plugin
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut

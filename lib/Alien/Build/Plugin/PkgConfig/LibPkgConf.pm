@@ -8,9 +8,39 @@ use Carp ();
 # ABSTRACT: Probe system and determine library or tool properties using PkgConfig::LibPkgConf
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'PkgConfig::LibPkgConf' => (
+   pkg_name => 'libfoo',
+ );
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Download::Negotiate>
+instead.  It picks the appropriate fetch plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This plugin provides Probe and Gather steps for pkg-config based packages.  It uses
+L<PkgConfig::LibPkgConf> to accomplish this task.
+
+=head1 PROPERTIES
+
+=head2 pkg_name
+
+The package name.
+
+=cut
+
 has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
+
+=head2 minimum_version
+
+The minimum required version that is acceptable version as provided by the system.
+
+=cut
 
 has minimum_version => undef;
 
@@ -63,3 +93,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::PkgConfig::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut

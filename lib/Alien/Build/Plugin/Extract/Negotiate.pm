@@ -7,6 +7,30 @@ use Alien::Build::Plugin;
 # ABSTRACT: Extraction negotiation plugin
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Extract' => (
+   format => 'tar.gz',
+ );
+
+=head1 DESCRIPTION
+
+This is a negotiator plugin for extracting packages downloaded from the internet. 
+This plugin picks the best Extract plugin to do the actual work.  Which plugins are
+picked depend on the properties you specify, your platform and environment.  It is
+usually preferable to use a negotiator plugin rather than using a specific Extract
+Plugin from your L<alienfile>.
+
+=head1 PROPERTIES
+
+=head2 format
+
+The expected format for the download.  Possible values include:
+C<tar>, C<tar.gz>, C<tar.bz2>, C<tar.xz>, C<zip>, C<d>.
+
+=cut
+
 has '+format' => 'tar';
 
 sub init
@@ -55,3 +79,9 @@ sub _plugin
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut

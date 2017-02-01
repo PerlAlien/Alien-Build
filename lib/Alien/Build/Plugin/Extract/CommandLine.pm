@@ -9,21 +9,68 @@ use IPC::Cmd ();
 # ABSTRACT: Plugin to extract an archive using command line tools
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Extract::CommandLine' => (
+   format => 'tar.gz',
+ );
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Extract::Negotiate>
+instead.  It picks the appropriate Extract plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This plugin extracts from an archive in various formats using command line tools.
+
+=head1 PROPERTIES
+
+=head2 format
+
+Gives a hint as to the expected format.
+
+=cut
+
 has '+format' => 'tar';
+
+=head2 gzip_cmd
+
+The C<gzip> command, if available.  C<undef> if not available.
+
+=cut
 
 has gzip_cmd => sub {
   IPC::Cmd::can_run('gzip') ? 'gzip' : undef;
 };
+
+=head2 bzip2_cmd
+
+The C<bzip2> command, if available.  C<undef> if not available.
+
+=cut
 
 # TODO: use Alien::Libbz2 if available
 has bzip2_cmd => sub {
   IPC::Cmd::can_run('bzip2') ? 'bzip2' : undef;
 };
 
+=head2 xz_cmd
+
+The C<xz> command, if available.  C<undef> if not available.
+
+=cut
+
 # TODO: use Alien::xz if available
 has xz_cmd => sub {
   IPC::Cmd::can_run('xz') ? 'xz' : undef;
 };
+
+=head2 tar_cmd
+
+The C<tar> command, if available.  C<undef> if not available.
+
+=cut
 
 has tar_cmd => sub {
   IPC::Cmd::can_run('bsdtar')
@@ -37,6 +84,12 @@ has tar_cmd => sub {
       ? 'tar'
       : undef;
 };
+
+=head2 unzip_cmd
+
+The C<unzip> command, if available.  C<undef> if not available.
+
+=cut
 
 has unzip_cmd => sub {
   IPC::Cmd::can_run('unzip') ? 'unzip' : undef;
@@ -181,3 +234,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Extract::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut

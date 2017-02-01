@@ -20,7 +20,7 @@ use Carp ();
 =head1 DESCRIPTION
 
 This is a negotiator plugin for downloading packages from the internet.  This
-plugin picks the bets Fetch, Decode and Prefer plugins to do the actual work.
+plugin picks the best Fetch, Decode and Prefer plugins to do the actual work.
 Which plugins are picked depend on the properties you specify, your platform
 and environment.  It is usually preferable to use a negotiator plugin rather
 than the Fetch, Decode and Prefer plugins directly from your L<alienfile>.

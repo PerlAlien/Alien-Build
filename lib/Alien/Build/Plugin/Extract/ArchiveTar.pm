@@ -7,6 +7,31 @@ use Alien::Build::Plugin;
 # ABSTRACT: Plugin to extract a tarball using Archive::Tar
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Extract::ArchiveTar' => (
+   format => 'tar.gz',
+ );
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Extract::Negotiate>
+instead.  It picks the appropriate Extract plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This plugin extracts from an archive in tarball format (optionally compressed by either
+gzip or bzip2) using L<Archive::Tar>.
+
+=head1 PROPERTIES
+
+=head2 format
+
+Gives a hint as to the expected format.  This helps make sure the prerequisites are set
+correctly, since compressed archives require extra Perl modules to be installed.
+
+=cut
+
 has '+format' => 'tar';
 
 =head1 METHODS
@@ -56,3 +81,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Extract::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut
