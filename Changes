@@ -2,6 +2,14 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Fixed interpolator bug expressed in older versions of Perl
+  - Add patch hook to Alien::Build
+  - Add patch directive to alienfile
+  - Fixes for Microsoft Windows / Strawberry Perl
+  - Removed dangerous autosave option from Alien::Build
+  - Fixed error when trying to load modules without a $VERSION
+  - test suite now runs correctly if ALIEN_INSTALL_TYPE is set
+  - The Fetch::HTTPTiny and Fetch::LWP plugins now add the necessary
+    SSL modules if the URL is of the https scheme.
 
 0.02      2017-01-31 13:22:29 -0500
   - Extensive documentation improvements
