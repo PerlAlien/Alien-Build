@@ -328,4 +328,15 @@ subtest 'prop' => sub {
 
 };
 
+subtest 'patch' => sub {
+
+  my $build = alienfile q{
+    use alienfile;
+    share { patch sub { } };
+  };
+  
+  is( $build->meta->has_hook('patch'), T() );
+
+};
+
 done_testing;

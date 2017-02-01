@@ -59,7 +59,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract build gather meta_prop );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch build gather meta_prop );
 
 =head1 DIRECTIVES
 
@@ -402,6 +402,27 @@ sub extract
   _in_phase 'share';
   my $caller = caller;
   $caller->meta->register_hook(extract => $instr);
+  return;
+}
+
+=head2 patch
+
+ share {
+   patch $code;
+   patch \@commandlist;
+ };
+
+Instructions for the patch stage.  May be either a
+code reference, or a command list.
+
+=cut
+
+sub patch
+{
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(patch => $instr);
   return;
 }
 

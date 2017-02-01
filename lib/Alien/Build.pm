@@ -947,7 +947,7 @@ sub build
           $destdir = Alien::Build::TempDir->new($self, 'destdir');
           $ENV{DESTDIR} = "$destdir";
         }
-        $self->_call_hook('patch') if $self->meta->has_hook('patch');
+        $self->_call_hook({ all => 1 }, 'patch');
       },
       after => sub {
         $destdir = "$destdir" if $destdir;
@@ -1491,11 +1491,22 @@ sub call_hook
     }
     $error = $@;
     $args{after}->() if $args{after};
-    next if $error;
-    return $value;
+    if($args{all})
+    {
+      die if $error;
+    }
+    else
+    {
+      next if $error;
+      return $value;
+    }
   }
-  die $error if $error;
-  Carp::croak "No hooks registered for $name";
+  
+  unless($args{all})
+  {
+    die $error if $error;
+    Carp::croak "No hooks registered for $name";
+  }
 }
 
 sub _dump
