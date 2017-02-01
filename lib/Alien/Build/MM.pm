@@ -81,7 +81,7 @@ sub new
 
 =head2 build
 
- my $build = $mm->build;
+ my $build = $abmm->build;
 
 The L<Alien::Build> instance.
 
@@ -96,7 +96,7 @@ sub build
 
 =head2 mm_args
 
- my %args = $mm->mm_args(%args);
+ my %args = $abmm->mm_args(%args);
 
 Adjust the arguments passed into C<WriteMakefile> as needed by L<Alien::Build>.
 
@@ -155,7 +155,7 @@ sub mm_args
 
 =head2 mm_postamble
 
- my %args = $mm->mm_args(%args);
+ my %args = $abmm->mm_args(%args);
 
 Returns the postamble for the C<Makefile> needed for L<Alien::Build>.
 This adds the following C<make> targets which are normally called when
