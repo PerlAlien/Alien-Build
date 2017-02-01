@@ -1072,13 +1072,6 @@ sub prop
   shift->{prop};
 }
 
-=head2 filename
-
- my $filename = $build->meta->filename;
- my $filename = Alien::Build->meta->filename;
-
-=cut
-
 sub filename
 {
   my($self, $new) = @_;
@@ -1088,8 +1081,21 @@ sub filename
 
 =head2 add_requires
 
- $build->meta->add_requires($phase, $module => $version, ...);
  Alien::Build->meta->add_requires($phase, $module => $version, ...);
+
+Add the requirement to the given phase.  Phase should be one of:
+
+=over 4
+
+=item configure
+
+=item any
+
+=item share
+
+=item system
+
+=back
 
 =cut
 
@@ -1112,6 +1118,8 @@ sub add_requires
 
  my $interpolator = $build->meta->interpolator;
  my $interpolator = Alien::Build->interpolator;
+
+Returns the L<Alien::Build::Interpolate> instance for the L<Alien::Build> class.
 
 =cut
 
@@ -1146,6 +1154,8 @@ sub interpolator
  my $bool = $build->meta->has_hook($name);
  my $bool = Alien::Build->has_hook($name);
 
+Returns if there is a usable hook registered with the given name.
+
 =cut
 
 sub has_hook
@@ -1158,6 +1168,9 @@ sub has_hook
 
  $build->meta->register_hook($name, $instructions);
  Alien::Build->meta->register_hook($name, $instructions);
+
+Register a hook with the given name.  C<$instruction> should be either
+a code reference, or a command sequence, which is an array reference.
 
 =cut
 
@@ -1204,6 +1217,9 @@ sub register_hook
  $build->meta->default_hook($name, $instructions);
  Alien::Build->meta->default_hook($name, $instructions);
 
+Register a default hook, which will be used if the L<alienfile> does not
+register its own hook with that name.
+
 =cut
 
 sub default_hook
@@ -1217,6 +1233,28 @@ sub default_hook
 
  $build->meta->around_hook($hook, $code);
  Alien::Build->meta->around_hook($name, $code);
+
+Wrap the given hook with a code reference.  This is similar to a L<Moose>
+method modifier, except that it wraps around the given hook instead of
+a method.  For example, this will add a probe system requirement:
+
+ $build->meta->around_hook(
+   probe => sub {
+     my $orig = shift;
+     my $build = shift;
+     my $type = $orig->($build, @_);
+     return $type unless $type eq 'system';
+     # also require a configuration file
+     if(-f '/etc/foo.conf')
+     {
+       return 'system';
+     }
+     else
+     {
+       return 'share';
+     }
+   },
+ );
 
 =cut
 
@@ -1335,6 +1373,12 @@ sub DESTROY
 1;
 
 =head1 SEE ALSO
+
+L<Alien::Build::Manual::AlienAuthor>,
+L<Alien::Build::Manual::AlienUser>,
+L<Alien::Build::Manual::Contributing>,
+L<Alien::Build::Manual::FAQ>,
+L<Alien::Build::Manual::PluginAuthor>
 
 L<alienfile>, L<Alien::Build::MM>, L<Alien::Build::Plugin>, L<Alien::Base>, L<Alien>
 

@@ -384,42 +384,81 @@ meta object should be made before the `probe`, `download` or `build` steps.
 Meta properties.  This is the same as calling `meta_prop` on
 the class or [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.
 
-## filename
-
-    my $filename = $build->meta->filename;
-    my $filename = Alien::Build->meta->filename;
-
 ## add\_requires
 
-    $build->meta->add_requires($phase, $module => $version, ...);
     Alien::Build->meta->add_requires($phase, $module => $version, ...);
+
+Add the requirement to the given phase.  Phase should be one of:
+
+- configure
+- any
+- share
+- system
 
 ## interpolator
 
     my $interpolator = $build->meta->interpolator;
     my $interpolator = Alien::Build->interpolator;
 
+Returns the [Alien::Build::Interpolate](https://metacpan.org/pod/Alien::Build::Interpolate) instance for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
+
 ## has\_hook
 
     my $bool = $build->meta->has_hook($name);
     my $bool = Alien::Build->has_hook($name);
+
+Returns if there is a usable hook registered with the given name.
 
 ## register\_hook
 
     $build->meta->register_hook($name, $instructions);
     Alien::Build->meta->register_hook($name, $instructions);
 
+Register a hook with the given name.  `$instruction` should be either
+a code reference, or a command sequence, which is an array reference.
+
 ## default\_hook
 
     $build->meta->default_hook($name, $instructions);
     Alien::Build->meta->default_hook($name, $instructions);
+
+Register a default hook, which will be used if the [alienfile](https://metacpan.org/pod/alienfile) does not
+register its own hook with that name.
 
 ## around\_hook
 
     $build->meta->around_hook($hook, $code);
     Alien::Build->meta->around_hook($name, $code);
 
+Wrap the given hook with a code reference.  This is similar to a [Moose](https://metacpan.org/pod/Moose)
+method modifier, except that it wraps around the given hook instead of
+a method.  For example, this will add a probe system requirement:
+
+    $build->meta->around_hook(
+      probe => sub {
+        my $orig = shift;
+        my $build = shift;
+        my $type = $orig->($build, @_);
+        return $type unless $type eq 'system';
+        # also require a configuration file
+        if(-f '/etc/foo.conf')
+        {
+          return 'system';
+        }
+        else
+        {
+          return 'share';
+        }
+      },
+    );
+
 # SEE ALSO
+
+[Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor),
+[Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser),
+[Alien::Build::Manual::Contributing](https://metacpan.org/pod/Alien::Build::Manual::Contributing),
+[Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien::Build::Manual::FAQ),
+[Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor)
 
 [alienfile](https://metacpan.org/pod/alienfile), [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM), [Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin), [Alien::Base](https://metacpan.org/pod/Alien::Base), [Alien](https://metacpan.org/pod/Alien)
 
