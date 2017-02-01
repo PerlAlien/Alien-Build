@@ -34,7 +34,7 @@ Do-it-yourself approach:
    plugin 'Build::Autoconf';
    
    build [ 
-     '%{configure} --prefix=%{alien.runtime.prefix} --disable-shared',
+     '%{configure} --prefix=%{alien.install.autoconf_prefix} --disable-shared',
      '%{make}',
      '%{make} install',
    ];   

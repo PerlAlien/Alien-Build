@@ -36,6 +36,7 @@ pod_spelling_system:
     - checkpointed
     - ssl
     - readme
+    - toolset
 
 pod_coverage:
   skip: 0
