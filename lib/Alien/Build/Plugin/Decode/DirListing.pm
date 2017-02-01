@@ -8,6 +8,22 @@ use File::Basename ();
 # ABSTRACT: Plugin to extract links from a directory listing
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Decode::DirListing' => ();
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Download::Negotiate>
+instead.  It picks the appropriate decode plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This plugin decodes a ftp file listing into a list of candidates for your Prefer plugin.
+It is useful when fetching from an FTP server via L<Alien::Build::Plugin::Fetch::LWP>.
+
+=cut
+
 sub init
 {
   my($self, $meta) = @_;
@@ -42,3 +58,10 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Download::Negotiate>, L<Alien::Build::Plugin::Decode::DirListingFtpcopy>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut
+

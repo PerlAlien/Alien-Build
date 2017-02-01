@@ -8,6 +8,21 @@ use File::Basename ();
 # ABSTRACT: Plugin to extract links from HTML
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Decode::HTML' => ();
+
+=head1 DESCRIPTION
+
+Note: in most case you will want to use L<Alien::Build::Plugin::Download::Negotiate>
+instead.  It picks the appropriate decode plugin based on your platform and environment.
+In some cases you may need to use this plugin directly instead.
+
+This plugin decodes an HTML file listing into a list of candidates for your Prefer plugin.
+
+=cut
+
 sub init
 {
   my($self, $meta) = @_;
@@ -55,3 +70,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build::Plugin::Download::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+
+=cut
