@@ -655,6 +655,10 @@ subtest 'build' => sub {
     local $ENV{FOO2} = 'bar2';
   
     $meta->register_hook(
+      probe => sub { 'share' },
+    );
+  
+    $meta->register_hook(
       extract => sub {
         path('file1')->spew('text1');
         path('file2')->spew('text2');
@@ -701,6 +705,10 @@ subtest 'build' => sub {
   
     my($build, $meta) = build_blank_alien_build;
   
+    $meta->register_hook(
+      probe => sub { 'share' },
+    );
+
     $meta->register_hook(
       extract => sub {
         path('file1')->spew('text1');
@@ -790,11 +798,61 @@ subtest 'checkpoint' => sub {
 
 };
 
-subtest 'set_prefix' => sub {
+subtest 'patch' => sub {
 
-  ok 1;
+  my($build, $meta) = build_blank_alien_build;
+
+  my $tmp = Path::Tiny->tempdir;
+  my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
+  $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
+  $build->install_prop->{stage}    = $share->stringify;
   
-  diag 'TODO';
+  $meta->register_hook(
+    probe => sub { 'share' },
+  );
+  
+  $meta->register_hook(
+    extract => sub {
+      path('file1')->spew('The quick brown dog jumps over the lazy dog');
+      path('file2')->spew('text2');
+    },
+  );
+  
+  $meta->register_hook(
+    patch => sub {
+      # fix the saying.
+      path('file1')->edit(sub { s/dog/fox/ });
+    },
+  );
+  
+  $meta->register_hook(
+    build => sub {
+      my($build) = @_;
+      path('file1')->copy(path($build->install_prop->{stage})->child('file3'));
+    },
+  );
+  
+  $build->build;
+  
+  my $file3 = path($build->install_prop->{stage})->child('file3');
+  is(
+    $file3->slurp,
+    'The quick brown fox jumps over the lazy dog',
+  );
+  
+};
+
+subtest 'set_prefix + set_stage' => sub {
+
+  subtest 'basic' => sub {
+    my($build, $meta) = build_blank_alien_build;
+    ok 1;  
+  };
+  
+  subtest 'destdir' => sub {
+    my($build, $meta) = build_blank_alien_build;
+    ok 1;
+  };
 
 };
 

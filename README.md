@@ -418,6 +418,7 @@ you should also try to determine the version of the library or tool.
 
     $meta->register_hook( download => sub {
       my($build) = @_;
+      ...
     });
 
 This hook is used to download from the internet the source.  Either as
@@ -559,6 +560,17 @@ that are totally unacceptable.
       my($build, $archive) = @_;
       ...
     });
+
+## patch hook
+
+    $meta->register_hook( patch => sub {
+      my($build) = @_;
+      ...
+    });
+
+This hook is completely optional.  If registered, it will be triggered after
+extraction and before build.  It allows you to apply any patches or make any
+modifications to the source if they are necessary.
 
 ## build hook
 
