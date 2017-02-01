@@ -131,6 +131,14 @@ based module.
     install this is the `stage` directory (usually the appropriate
     share directory under `blib`).
 
+- autoconf\_prefix
+
+    The prefix as understood by autoconf.  This is only different on Windows
+    Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
+    which are understood by the MSYS tools, but not by Perl.  You should
+    only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
+    your [alienfile](https://metacpan.org/pod/alienfile).
+
 - stage
 
     The stage directory where files will be copied.  This is usually the

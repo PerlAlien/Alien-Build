@@ -183,6 +183,14 @@ same as the runtime or final install location.  Under a non-C<destdir>
 install this is the C<stage> directory (usually the appropriate
 share directory under C<blib>).
 
+=item autoconf_prefix
+
+The prefix as understood by autoconf.  This is only different on Windows
+Where MSYS is used and paths like C<C:/foo> are  represented as C</C/foo>
+which are understood by the MSYS tools, but not by Perl.  You should
+only use this if you are using L<Alien::Build::Plugin::Autoconf> in
+your L<alienfile>.
+
 =item stage
 
 The stage directory where files will be copied.  This is usually the

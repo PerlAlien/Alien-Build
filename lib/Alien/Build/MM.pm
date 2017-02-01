@@ -158,6 +158,25 @@ sub mm_args
  my %args = $mm->mm_args(%args);
 
 Returns the postamble for the C<Makefile> needed for L<Alien::Build>.
+This adds the following C<make> targets which are normally called when
+you run C<make all>, but can be run individually if needed for debugging.
+
+=over 4
+
+=item alien_prefix
+
+Determins the final install prefix (C<%{alien.install.prefix}>).
+
+=item alien_download
+
+Downloads the source from the internet.  Does nothing for a system install.
+
+=item alien_build
+
+Build from source (if a share install).  Gather configuration (for either
+system or share install).
+
+=back 
 
 =cut
 
