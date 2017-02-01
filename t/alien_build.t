@@ -685,7 +685,7 @@ subtest 'build' => sub {
     my $tmp = Path::Tiny->tempdir;
     my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
     $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
-    $build->install_prop->{stage}    = $share->stringify;
+    $build->set_stage($share->stringify);
 
     $build->build;
   
@@ -748,9 +748,8 @@ subtest 'build' => sub {
 
     $build->meta_prop->{destdir}       = 1;
     $build->install_prop->{download}   = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
-    $build->install_prop->{prefix}     = $tmp->child('usr/local')->stringify;
-    $build->install_prop->{stage}      = $share->stringify;
-    $build->runtime_prop->{prefix}     = $tmp->child('usr/local')->stringify;
+    $build->set_prefix($tmp->child('usr/local')->stringify);
+    $build->set_stage($share->stringify);
     
     note capture_merged { $build->build };
   
