@@ -10,6 +10,7 @@ use Carp ();
 # VERSION
 
 has '+url' => sub { Carp::croak "url is a required property" };
+has ssl => 0;
 
 sub init
 {
@@ -18,7 +19,7 @@ sub init
   $meta->add_requires('share' => 'HTTP::Tiny' => '0.044' );
   $meta->add_requires('share' => 'URI' => 0 );
 
-  if($self->url =~ /^https:/)
+  if($self->url =~ /^https:/ || $self->ssl)
   {
     $meta->add_requires('share' => 'IO::Socket::SSL' => '1.56' );
     $meta->add_requires('share' => 'Net::SSLeay'     => '1.49' );

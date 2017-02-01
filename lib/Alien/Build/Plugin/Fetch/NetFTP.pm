@@ -11,6 +11,7 @@ use Path::Tiny qw( path );
 # VERSION
 
 has '+url' => sub { Carp::croak "url is a required property" };
+has ssl => 0;
 
 sub init
 {

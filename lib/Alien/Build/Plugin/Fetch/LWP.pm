@@ -9,6 +9,7 @@ use Carp ();
 # VERSION
 
 has '+url' => sub { Carp::croak "url is a required property" };
+has ssl => 0;
 
 sub init
 {
@@ -16,6 +17,11 @@ sub init
 
   $meta->add_requires('share' => 'LWP::UserAgent' => 0 );
   
+  if($self->url =~ /^https:/ || $self->ssl)
+  {
+    $meta->add_requires('share' => 'LWP::Protocol::https' => 0 );
+  }
+
   $meta->register_hook( fetch => sub {
     my(undef, $url) = @_;
     $url ||= $self->url;

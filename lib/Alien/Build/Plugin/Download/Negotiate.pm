@@ -11,6 +11,7 @@ use Carp ();
 has '+url' => sub { Carp::croak "url is a required property" };
 has 'filter'  => undef;
 has 'version' => undef;
+has 'ssl'     => 0;
 
 sub init
 {
@@ -51,7 +52,7 @@ sub init
     die "do not know how to handle scheme $scheme for $url";
   }
   
-  $self->_plugin($meta, 'Fetch', $fetch, url => $url);
+  $self->_plugin($meta, 'Fetch', $fetch, url => $url, ssl => $self->ssl);
   
   if($self->version)
   {
