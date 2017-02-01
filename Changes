@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.03      2017-02-01 11:56:07 -0500
   - Fixed interpolator bug expressed in older versions of Perl
   - Add patch hook to Alien::Build
   - Add patch directive to alienfile
