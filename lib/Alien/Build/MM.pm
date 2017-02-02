@@ -62,17 +62,9 @@ sub new
     )
   ;
   
-  if(defined $build->meta->prop->{mm}->{arch})
-  {
-    $build->install_prop->{mm}->{arch} = $build->meta->prop->{mm}->{arch};
-  }
-  else
-  {
-    $build->install_prop->{mm}->{arch} = 1;
-  }
-  
   $self->build->load_requires('configure');
   $self->build->root;
+  $self->build->checkpoint;
 
   $self;
 }
@@ -132,13 +124,17 @@ sub mm_args
       %{ $self->build->requires('system') || {} },
     );
   }
-  else # share
+  elsif($self->build->install_type eq 'share')
   {
     $args{BUILD_REQUIRES} = Alien::Build::_merge(
       'Alien::Build::MM' => $ab_version,
       %{ $args{BUILD_REQUIRES} || {} },
       %{ $self->build->requires('share') || {} },
     );
+  }
+  else
+  {
+    die "unknown install type: @{[ $self->build->install_type ]}"
   }
   
   $args{PREREQ_PM} = Alien::Build::_merge(
@@ -192,7 +188,7 @@ sub mm_postamble
                 "alien_realclean:\n" .
                 "\t\$(RM_RF) _alien\n\n";
 
-  my $dirs = $self->build->install_prop->{mm}->{arch}
+  my $dirs = $self->build->install_prop->{arch}
     ? '$(INSTALLARCHLIB) $(INSTALLSITEARCH) $(INSTALLVENDORARCH)'
     : '$(INSTALLPRIVLIB) $(INSTALLSITELIB) $(INSTALLVENDORLIB)'
   ;
@@ -229,7 +225,10 @@ sub import
       
       *_args = sub
       {
-        (Alien::Build->resume('alienfile', '_alien'), @ARGV)
+        my $build = Alien::Build->resume('alienfile', '_alien');
+        $build->load_requires('configure');
+        $build->load_requires($build->install_type);
+        ($build, @ARGV)
       };
       
       *_touch = sub {
@@ -264,8 +263,6 @@ sub import
       *download = sub
       {
         my($build) = _args();
-        $build->load_requires('configure');
-        $build->load_requires($build->install_type);
         $build->download;
         $build->checkpoint;
        _touch('download');
@@ -275,11 +272,9 @@ sub import
       {
         my($build) = _args();
         
-        $build->load_requires('configure');
-        $build->load_requires($build->install_type);
         $build->build;
 
-        if($build->install_prop->{mm}->{arch})
+        if($build->install_prop->{arch})
         {
           my $distname = $build->install_prop->{mm}->{distname};
           my $archdir = Path::Tiny->new("blib/arch/auto/@{[ join '/', split /-/, $distname ]}");

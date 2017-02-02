@@ -339,4 +339,37 @@ subtest 'patch' => sub {
 
 };
 
+subtest 'arch' => sub {
+
+  subtest 'on' => sub {
+  
+    my $build = alienfile q{
+      use alienfile;
+      meta_prop->{arch} = 1;
+    };
+    
+    is( $build->meta_prop->{arch}, T());
+  
+  };
+  
+  subtest 'off' => sub {
+
+    my $build = alienfile q{
+      use alienfile;
+      meta_prop->{arch} = 0;
+    };
+  
+    is( $build->meta_prop->{arch}, F());
+  };
+  
+  subtest 'default' => sub {
+    my $build = alienfile q{
+      use alienfile;
+    };
+  
+    is( $build->meta_prop->{arch}, T());
+  };
+
+};
+
 done_testing;
