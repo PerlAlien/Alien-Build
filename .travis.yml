@@ -26,9 +26,9 @@ cache:
     - $HOME/mylib
 
 env:
-  - INSTALL_OPTIONAL="File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML"
-  - INSTALL_OPTIONAL=""
-
-env:
   global:
     - PERL_CPANM_OPT='--mirror https://cpan.metacpan.org/ --mirror-only'
+  matrix:
+    - INSTALL_OPTIONAL="File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML"
+    - INSTALL_OPTIONAL=""
+
