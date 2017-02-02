@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.05      2017-02-02 12:06:36 -0500
   - Fixed bug in Alien::Base2 runtime
   - Added meta property "arch"
   - install state file is now called "state.json" to differentiate
