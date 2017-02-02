@@ -153,7 +153,7 @@ but if you do not follow this rule your recipe will likely be broken.
 =item arch
 
 This is a hint to an installer like L<Alien::Build::MM> or L<Alien::Build::MB>,
-that the library or tool constains architecture dependent files and so should
+that the library or tool contains architecture dependent files and so should
 be stored in an architecture dependent location.  If not specified by your
 L<alienfile> then it will be set to true.
 
