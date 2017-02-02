@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added meta property "arch"
+  - install state file is now called "state.json" to differentiate
+    from runtime file "alien.json"
 
 0.04      2017-02-01 17:19:10 -0500
   - Improved documentation

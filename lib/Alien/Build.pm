@@ -366,7 +366,7 @@ sub checkpoint
 {
   my($self) = @_;
   my $root = $self->root;
-  _path("$root/alien.json")->spew(
+  _path("$root/state.json")->spew(
     JSON::PP::encode_json({
       install => $self->install_prop,
       runtime => $self->runtime_prop,
@@ -388,7 +388,7 @@ L<alienfile> and the build root (usually C<_alien>).
 sub resume
 {
   my(undef, $alienfile, $root) = @_;
-  my $h = JSON::PP::decode_json(_path("$root/alien.json")->slurp);
+  my $h = JSON::PP::decode_json(_path("$root/state.json")->slurp);
   my $self = Alien::Build->load("$alienfile", @{ $h->{args} });
   $self->{install_prop} = $h->{install};
   $self->{runtime_prop} = $h->{runtime};

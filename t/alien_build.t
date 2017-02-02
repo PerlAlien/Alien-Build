@@ -782,7 +782,7 @@ subtest 'checkpoint' => sub {
     $build->runtime_prop->{foo3} = 'bar3';
     $build->checkpoint;
     
-    ok( -r path($build->root, 'alien.json') );
+    ok( -r path($build->root, 'state.json') );
   
   };
   

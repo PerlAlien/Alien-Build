@@ -92,7 +92,7 @@ subtest 'basic' => sub {
     undef $abmm;
   
     ok( -d '_alien', "left alien directory" );
-    ok( -f '_alien/alien.json', "left alien.json file" );
+    ok( -f '_alien/state.json', "left alien.json file" );
 
   };
 

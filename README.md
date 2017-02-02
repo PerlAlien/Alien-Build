@@ -110,6 +110,13 @@ a plugin from its `init` method (though should NOT be modified from any
 hooks registered within that `init` method).  This is not strictly enforced,
 but if you do not follow this rule your recipe will likely be broken.
 
+- arch
+
+    This is a hint to an installer like [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) or [Alien::Build::MB](https://metacpan.org/pod/Alien::Build::MB),
+    that the library or tool constains architecture dependent files and so should
+    be stored in an architecture dependent location.  If not specified by your
+    [alienfile](https://metacpan.org/pod/alienfile) then it will be set to true.
+
 - destdir
 
     Use the `DESTDIR` environment variable to stage your install before
