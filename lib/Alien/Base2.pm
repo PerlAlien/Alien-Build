@@ -49,54 +49,6 @@ sub dist_dir
     : $class->SUPER::dist_dir;
 }
 
-=head2 install_type
-
- my $type = Alien::Base2->install_type;
-
-Returns the install type that was used when your module was installed.  Types include:
-
-=over 4
-
-=item system
-
-The library was provided by the operating system.
-
-=item share
-
-The library was not available when the module was installed, so
-it was built from source code.  Either downloaded from the internet
-or bundled with the module.
-
-=back
-
-=cut
-
-sub install_type
-{
-  my($class) = @_;
-  my $config = _alien_build_config($class);
-  $config
-    ? $config->{install_type}
-    : $class->SUPER::install_type;
-}
-
-=head2 version
-
- my $version = Alien::Base2->version;
-
-Returns the version of the library or tool.
-
-=cut
-
-sub version
-{
-  my($class) = @_;
-  my $config = _alien_build_config($class);
-  $config
-    ? $config->{version}
-    : $class->SUPER::version;
-}
-
 =head2 cflags
 
  my $cflags = Alien::Base2->cflags;
