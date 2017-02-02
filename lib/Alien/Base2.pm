@@ -202,7 +202,7 @@ sub _alien_build_config
   my($class) = @_;
   
   $alien_build_config_cache{$class} ||= do {
-    my $dist = $class;
+    my $dist = ref $class ? ref $class : $class;
     $dist =~ s/::/-/g;
     my $dist_dir = File::ShareDir::dist_dir($dist);
     my $alien_json = Path::Tiny->new($dist_dir)->child('_alien/alien.json');
