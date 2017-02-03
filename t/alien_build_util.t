@@ -66,6 +66,22 @@ subtest 'mirror' => sub {
   {
     ok(-x $tmp2->child('bin/foomake'), 'dst bin/foomake is executable');
   }
+  
+  subtest 'filter' => sub {
+  
+    my $tmp2 = Path::Tiny->tempdir("mirror_dst_XXXX");
+
+    note capture_merged {
+      _mirror "$tmp1", "$tmp2", { filter => qr/^(bin|etc)\/.*$/, verbose => 1 };
+    };
+    
+    note `ls -lR $tmp2`;
+    
+    ok( -f $tmp2->child('bin/foomake'), 'bin/foomake' );
+    ok( -f $tmp2->child('etc/foorc'), 'bin/foomake' );
+    ok( ! -f $tmp2->child('lib/libfoo.so.1.2.3'), 'lib/libfoo.so.1.2.3' );
+  
+  };
 };
 
 done_testing;

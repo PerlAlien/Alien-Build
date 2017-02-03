@@ -26,6 +26,13 @@ L<Alien::Build>
 
 our @EXPORT_OK = qw( _mirror _dump );
 
+# usage: _mirror $source_directory, $dest_direction, \%options
+#
+# options:
+#  - filter -> regex for files that should match
+#  - empty_directory -> if true, create all directories, including empty ones.
+#  - verbose -> turn on verbosity
+
 sub _mirror
 {
   my($src_root, $dst_root, $opt) = @_;
@@ -39,6 +46,7 @@ sub _mirror
     wanted => sub {
       next unless -e $File::Find::name;
       my $src = path($File::Find::name)->relative($src_root);
+      return if $opt->{filter} && "$src" !~ $opt->{filter};
       return if "$src" eq '.';
       my $dst = $dst_root->child("$src");
       $src = $src->absolute($src_root);
@@ -57,7 +65,7 @@ sub _mirror
       {
         unless(-d $dst->parent)
         {
-          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n";
+          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n" if $opt->{verbose};
           $dst->parent->mkpath;
         }
         # TODO: rmtree if a directory?
@@ -71,7 +79,7 @@ sub _mirror
       {
         unless(-d $dst->parent)
         {
-          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n";
+          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n" if $opt->{verbose};
           $dst->parent->mkpath;
         }
         # TODO: rmtree if a directory?
@@ -89,7 +97,8 @@ sub _mirror
     },
     no_chdir => 1,
   }, "$src_root");
-    
+  
+  ();
 }
 
 sub _dump
