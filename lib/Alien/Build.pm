@@ -1030,6 +1030,16 @@ sub build
   $runtime->{legacy}->{version}             = $runtime->{version};
   $runtime->{legacy}->{original_prefix}     = $runtime->{prefix};
   
+  if($runtime->{cflags} && ! defined $runtime->{cflags_static})
+  {
+    $runtime->{cflags_static} = $runtime->{cflags};
+  }
+
+  if($runtime->{libs} && ! defined $runtime->{libs_static})
+  {
+    $runtime->{libs_static} = $runtime->{libs};
+  }
+  
   $stage->child('_alien/alien.json')->spew(
     JSON::PP->new->pretty->encode($self->runtime_prop)
   );
