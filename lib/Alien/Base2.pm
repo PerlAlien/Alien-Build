@@ -98,22 +98,13 @@ of yore.  Do not use it.
 
 =cut
 
-my %alien_base_config_cache;
-
 sub config
 {
   my($class, $key) = @_;
   my $config = _alien_build_config($class);
-  return $class->SUPER::config($key) unless $config;
-  
-  my $old = $alien_base_config_cache{$class} ||= {
-    finished_installing => 1,
-    install_type        => $config->{install_type},
-    version             => $config->{version},
-    original_prefix     => $config->{prefix},
-  };
-  
-  $old->{$key};
+  defined $config
+    ? $config->{legacy}
+    : $class->SUPER::config($key) unless $config;
 }
 
 my %alien_build_config_cache;

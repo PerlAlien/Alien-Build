@@ -86,6 +86,11 @@ sub init
   {
     push @probe, [ $pkgconf, '--atleast-version=' . $self->minimum_version, $self->pkg_name ];
   }
+
+  unshift @probe, sub {
+    my($build) = @_;
+    $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
+  };
   
   $meta->register_hook(
     probe => \@probe

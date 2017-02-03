@@ -60,6 +60,9 @@ sub init
   
   $meta->register_hook(
     probe => sub {
+      my($build) = @_;
+      $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
+    
       $client ||= PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
       die "package @{[ $self->pkg_name ]} not found" unless $pkg;

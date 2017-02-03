@@ -1023,6 +1023,13 @@ sub build
   }
   
   $stage->child('_alien')->mkpath;
+
+  my $runtime = $self->runtime_prop;
+  $runtime->{legacy}->{finished_installing} = 1;
+  $runtime->{legacy}->{install_type}        = $runtime->{install_type};
+  $runtime->{legacy}->{version}             = $runtime->{version};
+  $runtime->{legacy}->{original_prefix}     = $runtime->{prefix};
+  
   $stage->child('_alien/alien.json')->spew(JSON::PP::encode_json($self->runtime_prop));
   if($self->meta->filename && -r $self->meta->filename && $self->meta->filename !~ /\.(pm|pl)$/)
   {
