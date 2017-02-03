@@ -1,0 +1,30 @@
+# PODNAME: Alien::Build::Plugin::Prefer
+# ABSTRACT: Prefer Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Download' => 'http://ftp.gnu.org/gnu/make';
+
+=head1 DESCRIPTION
+
+Prefer plugins sort 
+
+Decode plugins decode HTML and FTP file listings.  Normally you
+will want to use the L<Alien::Build::Plugin::Download::Negotiate>
+plugin which will automatically load the appropriate Prefer plugins.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Prefer::SortVersions>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

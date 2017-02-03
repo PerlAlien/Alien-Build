@@ -1,0 +1,36 @@
+# PODNAME: Alien::Build::Plugin::Fetch
+# ABSTRACT: Fetch Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Download' => 'http://ftp.gnu.org/gnu/make';
+
+=head1 DESCRIPTION
+
+Fetch plugins retrieve single resources from the internet.  The difference
+between a Fetch plugin and a Download plugin is that Download
+plugin may fetch several resources from the internet (usually using
+a Fetch plugin), before finding the final archive.  Normally you
+will not need to use Fetch plugins directly but should instead
+use the L<Alien::Build::Plugin::Download::Negotiate> plugin, which
+will pick the best plugins for your given URL.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Fetch::HTTPTiny>
+
+=item L<Alien::Build::Plugin::Fetch::LWP>
+
+=item L<Alien::Build::Plugin::Fetch::NetFTP>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

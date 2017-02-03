@@ -1,0 +1,26 @@
+# PODNAME: Alien::Build::Plugin::Download
+# ABSTRACT: Download Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile
+ plugin 'Download' => 'http://ftp.gnu.org/gnu/make';
+
+=head1 DESCRIPTION
+
+Download plugins download packages from the internet.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Download::Negotiate>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

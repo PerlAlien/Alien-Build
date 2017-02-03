@@ -1,0 +1,37 @@
+# PODNAME: Alien::Build::Plugin::Extract
+# ABSTRACT: Extract Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile
+ plugin 'Extract' => 'tar.gz';
+
+=head1 DESCRIPTION
+
+Extract plugins extract packages that have been downloaded from the internet.
+Unless you are doing something unusual you will likely want to use the 
+L<Alien::Build::Plugin::Extract::Negotiate> plugin to select the best 
+Extract plugin available.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Extract::ArchiveTar>
+
+=item L<Alien::Build::Plugin::Extract::ArchiveZip>
+
+=item L<Alien::Build::Plugin::Extract::CommandLine>
+
+=item L<Alien::Build::Plugin::Extract::Directory>
+
+=item L<Alien::Build::Plugin::Extract::Negotiate>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

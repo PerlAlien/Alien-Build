@@ -1,0 +1,46 @@
+# PODNAME: Alien::Build::Plugin::Probe
+# ABSTRACT: Probe Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+look for libraries in known location:
+
+ use alienfile;
+ plugin 'Probe::CBuilder' => (
+   cflags => '-I/opt/libfoo/include',
+   libs   => '-L/opt/libfoo/lib -lfoo',
+ );
+
+look for tools in the path:
+
+ use alienfile;
+ plugin 'Probe::CommandLine' => (
+   command => 'gzip',
+   args    => [ '--version' ],
+   match   => qr/gzip/,
+   version => qr/gzip ([0-9\.]+)/,
+ );
+
+=head1 DESCRIPTION
+
+Probe plugins try to find existing libraries and tools
+I<already> installed on the system.  If found they can
+be used instead of downloading the source from the 
+internet and building.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Probe::CBuilder>
+
+=item L<Alien::Build::Plugin::Probe::CommandLine>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

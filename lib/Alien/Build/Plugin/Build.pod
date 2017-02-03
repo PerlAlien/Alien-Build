@@ -1,0 +1,37 @@
+# PODNAME: Alien::Build::Plugin::Build
+# ABSTRACT: Build Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+For autoconf:
+
+ use alienfile;
+ plugin 'Build::Autoconf';
+
+for unixy (even on windows):
+
+ use alienfile;
+ plugin 'Build::MSYS';
+
+
+=head1 DESCRIPTION
+
+Build plugins provide tools for building your package once it has been
+downloaded and extracted.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Build::Autoconf>
+
+=item L<Alien::Build::Plugin::Build::MSYS>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut
