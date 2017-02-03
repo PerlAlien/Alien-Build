@@ -51,6 +51,7 @@ sub init
   if($self->url =~ /^file:/)
   {
     $meta->add_requires('share' => 'URI' => 0 );
+    $meta->add_requires('share' => 'URI::file' => 0 );
   }
 
   {
@@ -73,7 +74,7 @@ sub init
     
     if($path =~ /^file:/)
     {
-      my $root = URI->new($self->root, "file");
+      my $root = URI::file->new($self->root);
       my $url = URI->new_abs($path, $root);
       $path = $url->path;
     }
