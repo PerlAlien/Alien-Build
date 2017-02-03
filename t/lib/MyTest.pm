@@ -45,7 +45,11 @@ sub alienfile
   $str = '# line '. $line . ' "' . $filename . qq("\n) . $str;
   my $alienfile = Path::Tiny->tempfile;
   $alienfile->spew($str);
-  Alien::Build->load("$alienfile", root => tempdir(CLEANUP => 1));
+  require Alien::Build;
+  my $build = Alien::Build->load("$alienfile", root => tempdir(CLEANUP => 1));
+  $build->set_stage(tempdir( CLEANUP => 1 ));
+  $build->set_prefix(tempdir( CLEANUP => 1 ));
+  $build;
 }
 
 sub path_to_tar

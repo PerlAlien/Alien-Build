@@ -1,0 +1,22 @@
+# PODNAME: Alien::Build::Plugin::Core
+# ABSTRACT: Core Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ # core plugins are already loaded
+
+=head1 DESCRIPTION
+
+Core plugins are special plugins that are always loaded, usually first.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Core::Legacy>
+
+Add interoperability with L<Alien::Build::ModuleBuild>
+
+=back
+
+=cut

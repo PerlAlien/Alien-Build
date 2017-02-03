@@ -331,7 +331,7 @@ sub load
     $class->meta;
   }};
 
-  my @preload;
+  my @preload = qw( Core::Legacy );
   @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
 
@@ -998,7 +998,6 @@ sub build
       my $src = _path("$ENV{DESTDIR}/$prefix"); 
       my $dst = $stage;
     
-      if($self->meta->has_hook('gather_share'))
       {
         local $CWD = "$src";
         $gather->();
@@ -1009,11 +1008,8 @@ sub build
     }
     else
     {
-      if($self->meta->has_hook('gather_share'))
-      {
-        local $CWD = $self->install_prop->{stage};
-        $gather->();
-      }
+      local $CWD = $self->install_prop->{stage};
+      $gather->();
     }
   }
   
@@ -1023,22 +1019,6 @@ sub build
   }
   
   $stage->child('_alien')->mkpath;
-
-  my $runtime = $self->runtime_prop;
-  $runtime->{legacy}->{finished_installing} = 1;
-  $runtime->{legacy}->{install_type}        = $runtime->{install_type};
-  $runtime->{legacy}->{version}             = $runtime->{version};
-  $runtime->{legacy}->{original_prefix}     = $runtime->{prefix};
-  
-  if($runtime->{cflags} && ! defined $runtime->{cflags_static})
-  {
-    $runtime->{cflags_static} = $runtime->{cflags};
-  }
-
-  if($runtime->{libs} && ! defined $runtime->{libs_static})
-  {
-    $runtime->{libs_static} = $runtime->{libs};
-  }
   
   $stage->child('_alien/alien.json')->spew(
     JSON::PP->new->pretty->encode($self->runtime_prop)
