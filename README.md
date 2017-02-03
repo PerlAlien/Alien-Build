@@ -124,6 +124,11 @@ but if you do not follow this rule your recipe will likely be broken.
     installing libraries because it improves reliability.  This technique
     is supported by `autoconf` and others.
 
+- destdir\_filter
+
+    Regular expression for the files that should be copied from the `DESTDIR`
+    into the stage directory.  If not defined, then all files will be copied.
+
 ## install\_prop
 
     my $href = $build->install_prop;
