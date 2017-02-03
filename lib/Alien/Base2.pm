@@ -10,6 +10,10 @@ use File::ShareDir ();
 # ABSTRACT: Intermediate base class for Aliens
 # VERSION
 
+# No seriously, please do not use this class, unless you coordinate
+# with me on #native on irc.perl.org.  This class will live for
+# no more than a number of months, hopefully just a few weeks.
+
 =head1 SYNOPSIS
 
  package Alien::MyLib;
@@ -30,14 +34,6 @@ working on the bleeding edge.  If you want to use some of the advanced features 
 L<Alien::Build> please make sure you hang out on the C<#native> IRC channel for Alien
 developers.
 
-=head1 METHODS
-
-=head2 cflags_static
-
- my $cflags = Alien::Base2->cflags_static;
-
-Returns the static compiler flags used to compile against the library.
-
 =cut
 
 sub cflags_static
@@ -45,14 +41,6 @@ sub cflags_static
   my($class) = @_;
   return $class->_keyword('Cflags.private', @_);
 }
-
-=head2 libs_static
-
- my $libs = Alien::Base2->libs_static;
-
-Returns the static linker flags used to link against the library.
-
-=cut
 
 sub libs_static
 {
