@@ -477,6 +477,21 @@ a method.  For example, this will add a probe system requirement:
     semicolon separated list of plugins to automatically load before parsing
     your [alienfile](https://metacpan.org/pod/alienfile).
 
+- DESTDIR
+
+    This environment variable will be manipulated during a destdir install.
+
+- PKG\_CONFIG
+
+    This environment variable can be used to override the program name for `pkg-config`
+    for some PkgConfig plugins: [Alien::Build::Plugin::PkgConfig](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig).
+
+- ftp\_proxy, all\_proxy
+
+    If these environment variables are set, it may influence the Download negotiation
+    plugin [Alien::Build::Plugin::Downaload::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::Downaload::Negotiate).  Other proxy variables may
+    be used by some Fetch plugins, if they support it.
+
 # SEE ALSO
 
 [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor),

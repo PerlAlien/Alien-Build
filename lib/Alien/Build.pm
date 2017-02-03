@@ -1351,6 +1351,21 @@ If set to C<share> or C<system>, it will override the system detection logic.
 semicolon separated list of plugins to automatically load before parsing
 your L<alienfile>.
 
+=item DESTDIR
+
+This environment variable will be manipulated during a destdir install.
+
+=item PKG_CONFIG
+
+This environment variable can be used to override the program name for C<pkg-config>
+for some PkgConfig plugins: L<Alien::Build::Plugin::PkgConfig>.
+
+=item ftp_proxy, all_proxy
+
+If these environment variables are set, it may influence the Download negotiation
+plugin L<Alien::Build::Plugin::Downaload::Negotiate>.  Other proxy variables may
+be used by some Fetch plugins, if they support it.
+
 =back
 
 =head1 SEE ALSO
