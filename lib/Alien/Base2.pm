@@ -103,8 +103,8 @@ sub config
   my($class, $key) = @_;
   my $config = _alien_build_config($class);
   defined $config
-    ? $config->{legacy}
-    : $class->SUPER::config($key) unless $config;
+    ? $config->{legacy}->{$key}
+    : $class->SUPER::config($key);
 }
 
 my %alien_build_config_cache;
