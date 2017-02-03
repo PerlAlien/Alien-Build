@@ -34,7 +34,7 @@ Any extra options that you want to have passed into the constructor to L<ExtUtil
 
 =cut
 
-has options => {};
+has options => sub { {} };
 
 =head2 cflags
 
