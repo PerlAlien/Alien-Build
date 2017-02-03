@@ -20,3 +20,9 @@ Add interoperability with L<Alien::Build::ModuleBuild>
 =back
 
 =cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

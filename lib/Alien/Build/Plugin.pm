@@ -23,6 +23,10 @@ Create your plugin:
  sub init
  {
    my($self, $meta) = @_;
+
+   my $prop1 = $self->prop1;
+   my $prop2 = $self->prop2;
+   my $prop3 = $self->prop3;
    
    $meta->register_hook(sub {
      build => [ '%{make}', '%{make} install' ],
@@ -41,6 +45,44 @@ From your L<alienfile>
 
 This document describes the L<Alien::Build> plugin base class.  For details
 on how to write a plugin, see L<Alien::Build::Manual::PluginAuthor>.
+
+Listed are some common types of plugins:
+
+=over 4
+
+=item L<Alien::Build::Plugin::Build>
+
+Tools for building.
+
+=item L<Alien::Build::Plugin::Core>
+
+Tools already included.
+
+=item L<Alien::Build::Plugin::Download>
+
+Methods for retrieving from the internet.
+
+=item L<Alien::Build::Plugin::Decode>
+
+Normally use Download plugins which will pick the correct Decode plugins.
+
+=item L<Alien::Build::Plugin::Extract>
+
+Extract from archives that have been downloaded.
+
+=item L<Alien::Build::Plugin::Fetch>
+
+Normally use Download plugins which will pick the correct Fetch plugins.
+
+=item L<Alien::Build::Plugin::Prefer>
+
+Normally use Download plugins which will pick the correct Prefer plugins.
+
+=item L<Alien::Build::Plugin::Probe>
+
+Look for packages already installed on the system.
+
+=back
 
 =head1 CONSTRUCTOR
 

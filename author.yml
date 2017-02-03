@@ -37,6 +37,7 @@ pod_spelling_system:
     - ssl
     - readme
     - toolset
+    - unixy
 
 pod_coverage:
   skip: 0
