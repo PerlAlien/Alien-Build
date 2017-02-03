@@ -30,31 +30,6 @@ developers.
 
 =head1 METHODS
 
-=head2 dist_dir
-
- my $dir = Alien::Base2->dist_dir;
-
-The dist share directory for the L<Alien> module.  This is usually where files are installed
-when a C<share> install is performed.  It is also where the configuration files are stored
-under either a C<share> or C<system> install.
-
-=cut
-
-sub dist_dir
-{
-  my($class) = @_;
-  my $config = _alien_build_config($class);
-  $config
-    ? $config->{distdir}
-    : $class->SUPER::dist_dir;
-}
-
-=head2 cflags
-
- my $cflags = Alien::Base2->cflags;
-
-Returns the compiler flags used to compile against the library.
-
 =head2 cflags_static
 
  my $cflags = Alien::Base2->cflags_static;
@@ -68,12 +43,6 @@ sub cflags_static
   my($class) = @_;
   return $class->_keyword('Cflags.private', @_);
 }
-
-=head2 libs
-
- my $libs = Alien::Base2->libs;
-
-Returns the linker flags used to link against the library.
 
 =head2 libs_static
 
