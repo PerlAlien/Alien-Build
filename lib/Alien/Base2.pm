@@ -3,6 +3,7 @@ package Alien::Base2;
 use strict;
 use warnings;
 use base qw( Alien::Base );
+use File::Spec;
 use JSON::PP ();
 use File::ShareDir ();
 
@@ -91,9 +92,12 @@ sub import
       my $dist = ref $class ? ref $class : $class;
       $dist =~ s/::/-/g;
       my $dist_dir = File::ShareDir::dist_dir($dist);
-      my $alien_json = Path::Tiny->new($dist_dir)->child('_alien/alien.json');
+      my $alien_json = File::Spec->catfile($dist_dir, '_alien', 'alien.json');
       return unless -r $alien_json;
-      my $config = JSON::PP::decode_json($alien_json->slurp);
+      open my $fh, '<', $alien_json;
+      my $json = do { local $/; <$fh> };
+      close $fh;
+      my $config = JSON::PP::decode_json($json);
       $config->{distdir} = $dist_dir;
       $config;
     };

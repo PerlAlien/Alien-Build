@@ -1,16 +1,24 @@
 use Test2::Bundle::Extended;
 use Alien::Base2 ();
 use lib 'corpus/lib';
-use Path::Tiny qw( path );
+use File::Glob qw( bsd_glob );
+use File::chdir;
+use File::Spec;
 
 {
   package FFI::CheckLib;
+  use File::Glob qw( bsd_glob );
+  use File::chdir;
   $INC{'FFI/CheckLib.pm'} = __FILE__;
   sub find_lib {
     my %args = @_;
     if($args{libpath})
     {
-      return map { $_->stringify } sort Path::Tiny->new($args{libpath})->children(qr/\.so/);
+      return unless -d $args{libpath};
+      return sort do {
+        local $CWD = $args{libpath};
+        map { File::Spec->rel2abs($_) } bsd_glob('*.so*');
+      };
     }
     else
     {
@@ -30,7 +38,7 @@ subtest 'system' => sub {
 
   require Alien::libfoo1;
   
-  is( -f path(Alien::libfoo1->dist_dir)->child('_alien/for_libfoo1'), T(), 'dist_dir');
+  is( -f File::Spec->catfile(Alien::libfoo1->dist_dir,'_alien/for_libfoo1'), T(), 'dist_dir');
   is( Alien::libfoo1->cflags, '-DFOO=1', 'cflags' );
   is( Alien::libfoo1->cflags_static, '-DFOO=1 -DFOO_STATIC=1', 'cflags_static');
   is( Alien::libfoo1->libs, '-lfoo', 'libs' );
@@ -55,7 +63,7 @@ subtest 'share' => sub {
 
   require Alien::libfoo2;
   
-  is( -f path(Alien::libfoo2->dist_dir)->child('_alien/for_libfoo2'), T(), 'dist_dir');
+  is( -f File::Spec->catfile(Alien::libfoo2->dist_dir,'_alien/for_libfoo2'), T(), 'dist_dir');
   
   subtest 'cflags' => sub {
     is(
@@ -71,7 +79,7 @@ subtest 'share' => sub {
     my($dir) = [split /\s+/, Alien::libfoo2->cflags]->[0] =~ /^-I(.*)$/;
     
     is(
-      -f path($dir)->child('foo.h'),
+      -f File::Spec->catfile($dir,'foo.h'),
       T(),
       '-I directory points to foo.h location',
     );
@@ -90,7 +98,7 @@ subtest 'share' => sub {
     ($dir) = [split /\s+/, Alien::libfoo2->cflags_static]->[0] =~ /^-I(.*)$/;
     
     is(
-      -f path($dir)->child('foo.h'),
+      -f File::Spec->catfile($dir,'foo.h'),
       T(),
       '-I directory points to foo.h location (static)',
     );
@@ -111,7 +119,7 @@ subtest 'share' => sub {
     my($dir) = [split /\s+/, Alien::libfoo2->libs]->[0] =~ /^-L(.*)$/;
     
     is(
-      -f path($dir)->child('libfoo.a'),
+      -f File::Spec->catfile($dir,'libfoo.a'),
       T(),
       '-L directory points to libfoo.a location',
     );
@@ -132,7 +140,7 @@ subtest 'share' => sub {
     ($dir) = [split /\s+/, Alien::libfoo2->libs_static]->[0] =~ /^-L(.*)$/;
     
     is(
-      -f path($dir)->child('libfoo.a'),
+      -f File::Spec->catfile($dir,'libfoo.a'),
       T(),
       '-L directory points to libfoo.a location (static)',
     );
@@ -169,7 +177,7 @@ subtest 'share' => sub {
     'bin_dir',
   );
   
-  is( -f path(Alien::libfoo2->bin_dir)->child('foo-config'), T(), 'has a foo-config');
+  is( -f File::Spec->catfile(Alien::libfoo2->bin_dir,'foo-config'), T(), 'has a foo-config');
 
 };
 
