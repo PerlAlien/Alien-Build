@@ -21,6 +21,8 @@ will pick the best plugins for your given URL.
 
 =item L<Alien::Build::Plugin::Fetch::HTTPTiny>
 
+=item L<Alien::Build::Plugin::Fetch::Local>
+
 =item L<Alien::Build::Plugin::Fetch::LWP>
 
 =item L<Alien::Build::Plugin::Fetch::NetFTP>

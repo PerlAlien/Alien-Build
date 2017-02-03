@@ -77,7 +77,7 @@ sub init
   my($self, $meta) = @_;
   
   my $url = $self->url;
-  my($scheme) = $url =~ m!^/! ? 'file' : $url =~ m!^(.*?):!;
+  my($scheme) = $url !~ m!(ftps?|https?|file):!i ? 'file' : $url =~ m!^([a-z]+):!i;
   
   my $fetch;
   
@@ -102,9 +102,7 @@ sub init
   }
   elsif($scheme eq 'file')
   {
-    # TODO: use Fetch::File instead
-    $fetch = 'LWP';
-    $url = "file:///$url";
+    $fetch = 'Local';
   }
   else
   {
@@ -115,7 +113,7 @@ sub init
   
   if($self->version)
   {
-    if($fetch eq 'NetFTP')
+    if($fetch eq 'NetFTP' || $fetch eq 'Local')
     {
       # no decoder necessary
     }
