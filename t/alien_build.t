@@ -419,7 +419,7 @@ subtest 'gather system' => sub {
   
   if($build->install_type eq 'system')
   {
-    $build->_gather_system;
+    $build->build;
   }
   
   is(

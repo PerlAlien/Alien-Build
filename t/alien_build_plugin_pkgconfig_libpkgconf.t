@@ -68,7 +68,7 @@ subtest 'system available, okay' => sub {
   
   return unless $type eq 'system';
   
-  note capture_merged { $build->_gather_system };
+  note capture_merged { $build->build; () };
   
   is(
     $build->runtime_prop,

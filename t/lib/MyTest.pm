@@ -35,6 +35,10 @@ sub build_blank_alien_build
     @args,
   );
   my $meta = $build->meta;
+
+  $build->set_stage(tempdir( CLEANUP => 1 ));
+  $build->set_prefix(tempdir( CLEANUP => 1 ));
+
   wantarray ? ($build, $meta) : $build;
 }
 

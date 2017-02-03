@@ -7,7 +7,7 @@ use Path::Tiny ();
 use Carp ();
 use File::chdir;
 use JSON::PP ();
-use Env qw( @PATH @PKG_CONFIG_PATH );
+use Env qw( @PATH );
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -331,7 +331,7 @@ sub load
     $class->meta;
   }};
 
-  my @preload = qw( Core::Legacy );
+  my @preload = qw( Core::Gather Core::Legacy );
   @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
 
@@ -644,37 +644,6 @@ sub probe
   $type;
 }
 
-sub _gather_system
-{
-  my($self) = @_;
-  
-  return $self if $self->install_prop->{complete}->{gather_system};
-  
-  local $CWD = $self->root;
-  my $dir;
-  
-  if($self->meta->has_hook('gather_system'))
-  {
-    $self->_call_hook(
-      {
-        before => sub {
-          $dir = Alien::Build::TempDir->new($self, "gather");
-          $CWD = "$dir";
-        },
-        after  => sub {
-          $CWD = $self->root;
-        },
-      },
-      'gather_system',
-    );
-  }
-  
-  $self->install_prop->{finished} = 1;
-  $self->install_prop->{complete}->{gather_system} = 1;
-  
-  $self;
-}
-
 =head2 download
 
  $build->download;
@@ -959,10 +928,10 @@ sub build
       delete $ENV{DESTDIR};
     }
   
-    my $destdir;
-  
     %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
     %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
+  
+    my $destdir;
   
     $self->_call_hook(
     {
@@ -980,53 +949,30 @@ sub build
       },
     }, 'build');
   
-    my $gather = sub {
-      local $ENV{PATH} = $ENV{PATH};
-      local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
-      unshift @PATH, _path('bin')->absolute->stringify
-        if -d 'bin';
-      unshift @PKG_CONFIG_PATH, _path('lib/pkgconfig')->absolute->stringify
-        if -d 'lib/pkgconfig';
-      $self->_call_hook('gather_share');
-    };
   
-    if($destdir)
-    {
-      die "nothing was installed into destdir" unless -d $destdir;
-      my $prefix = $self->install_prop->{prefix};
-      $prefix =~ s!^([a-z]):!$1!i;
-      my $src = _path("$ENV{DESTDIR}/$prefix"); 
-      my $dst = $stage;
-    
-      {
-        local $CWD = "$src";
-        $gather->();
-      }
-    
-      $dst->mkpath;
-      Alien::Build::Util::_mirror("$src", "$dst", { verbose => 1 });
-    }
-    else
-    {
-      local $CWD = $self->install_prop->{stage};
-      $gather->();
-    }
+    $self->_call_hook('gather_share');
   }
   
   elsif($self->install_type eq 'system')
   {
-    $self->_gather_system;
-  }
+    local $CWD = $self->root;
+    my $dir;
   
-  $stage->child('_alien')->mkpath;
+    $self->_call_hook(
+      {
+        before => sub {
+          $dir = Alien::Build::TempDir->new($self, "gather");
+          $CWD = "$dir";
+        },
+        after  => sub {
+          $CWD = $self->root;
+        },
+      },
+      'gather_system',
+    );
   
-  $stage->child('_alien/alien.json')->spew(
-    JSON::PP->new->pretty->encode($self->runtime_prop)
-  );
-  
-  if($self->meta->filename && -r $self->meta->filename && $self->meta->filename !~ /\.(pm|pl)$/)
-  {
-    _path($self->meta->filename)->copy(_path($stage->child('_alien/alienfile')));
+    $self->install_prop->{finished} = 1;
+    $self->install_prop->{complete}->{gather_system} = 1;  
   }
   
   $self;

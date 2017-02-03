@@ -13,6 +13,8 @@ Core plugins are special plugins that are always loaded, usually first.
 
 =over 4
 
+=item L<Alien::Build::Plugin::Core::Gather>
+
 =item L<Alien::Build::Plugin::Core::Legacy>
 
 Add interoperability with L<Alien::Build::ModuleBuild>

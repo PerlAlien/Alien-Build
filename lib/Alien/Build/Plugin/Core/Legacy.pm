@@ -27,10 +27,6 @@ sub init
 {
   my($self, $meta) = @_;
   
-  $meta->default_hook(
-    $_ => sub {},
-  ) for qw( gather_system gather_share );
-  
   $meta->around_hook(
     $_ => sub {
       my($orig, $build) = @_;
