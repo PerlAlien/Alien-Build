@@ -12,5 +12,6 @@
    "cflags_static" : "-DFOO=1 -DFOO_STATIC=1 ",
    "cflags" : "-DFOO=1 ",
    "libs_static" : "-lfoo -lbar -lbaz ",
-   "prefix" : "/foo/bar/baz/auto/share/dist/Alien-libfoo1"
+   "prefix" : "/foo/bar/baz/auto/share/dist/Alien-libfoo1",
+   "arbitrary" : "one"
 }

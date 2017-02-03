@@ -57,6 +57,8 @@ subtest 'system' => sub {
   is( [Alien::libfoo1->dynamic_libs], ['/usr/lib/libfoo.so','/usr/lib/libfoo.so.1'], 'dynamic_libs' );
   
   is( [Alien::libfoo1->bin_dir], [], 'bin_dir' );
+  
+  is( Alien::libfoo1->runtime_prop->{arbitrary}, 'one', 'runtime_prop' );
 };
 
 subtest 'share' => sub {
@@ -178,6 +180,8 @@ subtest 'share' => sub {
   );
   
   is( -f File::Spec->catfile(Alien::libfoo2->bin_dir,'foo-config'), T(), 'has a foo-config');
+
+  is( Alien::libfoo2->runtime_prop->{arbitrary}, 'two', 'runtime_prop' );
 
 };
 

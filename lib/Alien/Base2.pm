@@ -45,7 +45,7 @@ sub _flags
 {
   my($class, $key) = @_;
   
-  my $config = _alien_build_config($class);
+  my $config = runtime_prop($class);
   my $flags = $config->{$key};
 
   my $prefix = $config->{prefix};
@@ -68,7 +68,7 @@ sub _flags
 sub config
 {
   my($class, $key) = @_;
-  my $config = _alien_build_config($class);
+  my $config = runtime_prop($class);
   defined $config
     ? $config->{legacy}->{$key}
     : $class->SUPER::config($key);
@@ -77,14 +77,14 @@ sub config
 sub import
 {
   my($class) = @_;
-  my $config = _alien_build_config($class);
+  my $config = runtime_prop($class);
   goto \&Alien::Base::import unless $config;
 }
 
 {
   my %alien_build_config_cache;
 
-  sub _alien_build_config
+  sub runtime_prop
   {
     my($class) = @_;
   
