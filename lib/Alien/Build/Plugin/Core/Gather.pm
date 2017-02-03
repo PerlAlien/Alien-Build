@@ -62,7 +62,10 @@ sub init
         };
         
         $dst->mkpath;
-        _mirror("$src", "$dst", { verbose => 1 });
+        _mirror("$src", "$dst", {
+          verbose => 1,
+          filter => $build->meta_prop->{destdir_filter},
+        });
         
         return $res;
       }

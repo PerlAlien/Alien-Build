@@ -164,6 +164,11 @@ copying the files into C<blib>.  This is the preferred method of
 installing libraries because it improves reliability.  This technique
 is supported by C<autoconf> and others.
 
+=item destdir_filter
+
+Regular expression for the files that should be copied from the C<DESTDIR>
+into the stage directory.  If not defined, then all files will be copied.
+
 =back
 
 =cut
