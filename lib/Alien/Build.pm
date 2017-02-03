@@ -330,14 +330,21 @@ sub load
     $class =~ s{::Alienfile$}{};
     $class->meta;
   }};
-    
+
+  my @preload;
+  @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
+    if defined $ENV{ALIEN_BUILD_PRELOAD};
+
   my $self = $class->new(
     filename => $file->absolute->stringify,
     @args,
   );
+  
+  require alienfile;
 
   eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
     package ${class}::Alienfile;
+    alienfile::plugin(\$_) for \@preload;
     do '@{[ $file->absolute->stringify ]}';
     die \$\@ if \$\@;
   };
@@ -1382,6 +1389,23 @@ sub DESTROY
 }
 
 1;
+
+=head1 ENVIRONMENT
+
+L<Alien::Build> responds to these environment variables:
+
+=over 4
+
+=item ALIEN_INSTALL_TYPE
+
+If set to C<share> or C<system>, it will override the system detection logic.
+
+=item ALIEN_BUILD_PRELOAD
+
+semicolon separated list of plugins to automatically load before parsing
+your L<alienfile>.
+
+=back
 
 =head1 SEE ALSO
 

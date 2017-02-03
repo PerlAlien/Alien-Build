@@ -901,6 +901,35 @@ subtest 'patch' => sub {
 
 };
 
+subtest 'preload' => sub {
+
+  { package Alien::Build::Plugin::Preload1;
+    $INC{'Alien/Build/Plugin/Preload1.pm'} = __FILE__;
+    use Alien::Build::Plugin;
+    sub init
+    {
+      my($self, $meta) = @_;
+      $meta->register_hook('preload1' => sub {});
+    }
+  }
+  { package Alien::Build::Plugin::Preload1::Preload2;
+    $INC{'Alien/Build/Plugin/Preload1/Preload2.pm'} = __FILE__;
+    use Alien::Build::Plugin;
+    sub init
+    {
+      my($self, $meta) = @_;
+      $meta->register_hook('preload2' => sub {});
+    }
+  }
+  
+  local $ENV{ALIEN_BUILD_PRELOAD} = join ';', qw( Preload1 Preload1::Preload2 );
+  
+  my($build, $meta) = build_blank_alien_build;
+  
+  ok( $meta->has_hook($_), "has hook $_" ) for qw( preload1 preload2 );
+
+};
+
 done_testing;
 
 {
