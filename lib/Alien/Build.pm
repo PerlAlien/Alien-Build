@@ -1063,13 +1063,15 @@ meta object should be made before the C<probe>, C<download> or C<build> steps.
 
 =cut
 
-my %meta;
-
-sub meta
 {
-  my($class) = @_;
-  $class = ref $class if ref $class;
-  $meta{$class} ||= Alien::Build::Meta->new( class => $class );
+  my %meta;
+
+  sub meta
+  {
+    my($class) = @_;
+    $class = ref $class if ref $class;
+    $meta{$class} ||= Alien::Build::Meta->new( class => $class );
+  }
 }
 
 package Alien::Build::Meta;
