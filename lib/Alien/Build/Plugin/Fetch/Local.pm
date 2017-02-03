@@ -74,7 +74,7 @@ sub init
     
     if($path =~ /^file:/)
     {
-      my $root = $^O eq 'MSWin32' ? URI::file->new($self->root, "win32") : URI::file->new($self->root);
+      my $root = URI::file->new($self->root);
       my $url = URI->new_abs($path, $root);
       $path = $url->path;
     }
