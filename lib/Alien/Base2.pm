@@ -22,6 +22,8 @@ use File::ShareDir ();
 
 =head1 DESCRIPTION
 
+B<Note>: This class is going to go away!  Do not use it.
+
 This is an I<experimental> subclass of L<Alien::Base> for use with L<Alien::Build>.  The
 intention is for this class to eventually go away, and thus only of use for Alien developers
 working on the bleeding edge.  If you want to use some of the advanced features of
@@ -74,7 +76,7 @@ sub _keyword
     $keyword =~ s/_static$//;
     $flags = $config->{$keyword};
   }
-  
+
   if($config->{prefix} ne $config->{distdir})
   {
     my $prefix  = $config->{prefix};
