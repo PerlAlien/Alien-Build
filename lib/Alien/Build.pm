@@ -6,7 +6,7 @@ use Alien::Build::Util;
 use Path::Tiny ();
 use Carp ();
 use File::chdir;
-use JSON::PP;
+use JSON::PP ();
 use Env qw( @PATH @PKG_CONFIG_PATH );
 
 # ABSTRACT: Build external dependencies for use in CPAN
@@ -374,7 +374,7 @@ sub checkpoint
   my($self) = @_;
   my $root = $self->root;
   _path("$root/state.json")->spew(
-    JSON::PP::encode_json({
+    JSON::PP->new->pretty->encode({
       install => $self->install_prop,
       runtime => $self->runtime_prop,
       args    => $self->{args},
@@ -1030,7 +1030,10 @@ sub build
   $runtime->{legacy}->{version}             = $runtime->{version};
   $runtime->{legacy}->{original_prefix}     = $runtime->{prefix};
   
-  $stage->child('_alien/alien.json')->spew(JSON::PP::encode_json($self->runtime_prop));
+  $stage->child('_alien/alien.json')->spew(
+    JSON::PP->new->pretty->encode($self->runtime_prop)
+  );
+  
   if($self->meta->filename && -r $self->meta->filename && $self->meta->filename !~ /\.(pm|pl)$/)
   {
     _path($self->meta->filename)->copy(_path($stage->child('_alien/alienfile')));
