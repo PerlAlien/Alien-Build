@@ -6,6 +6,7 @@ use Path::Tiny qw( path );
 use MyTest::HTTP;
 use MyTest::FTP;
 use MyTest::File;
+use Alien::Build::Util qw( _dump );
 
 subtest 'updates requires' => sub {
 
@@ -17,7 +18,7 @@ subtest 'updates requires' => sub {
   
   is( $build->requires('share')->{'LWP::UserAgent'}, 0 );
 
-  note $meta->_dump;
+  note _dump $meta;
 
 };
 

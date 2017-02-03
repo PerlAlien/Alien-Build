@@ -3,6 +3,7 @@ use Alien::Build::Plugin::Decode::HTML;
 use lib 't/lib';
 use MyTest;
 use Path::Tiny;
+use Alien::Build::Util qw( _dump );
 
 subtest 'updates requires' => sub {
 
@@ -15,7 +16,7 @@ subtest 'updates requires' => sub {
   is( $build->requires('share')->{'HTML::LinkExtor'}, 0 );
   is( $build->requires('share')->{'URI'}, 0 );
 
-  note $meta->_dump;
+  note _dump $meta;
 
 };
 

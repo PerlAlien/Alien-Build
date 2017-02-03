@@ -3,6 +3,7 @@ use Alien::Build::Plugin::Prefer::SortVersions;
 use lib 't/lib';
 use MyTest;
 use Path::Tiny qw( path );
+use Alien::Build::Util qw( _dump );
 
 subtest 'updates requires' => sub {
 
@@ -14,7 +15,7 @@ subtest 'updates requires' => sub {
   
   is( $build->requires('share')->{'Sort::Versions'}, 0 );
 
-  note $meta->_dump;
+  note _dump $meta;
 
 };
 

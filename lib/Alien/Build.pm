@@ -1371,13 +1371,6 @@ sub call_hook
   }
 }
 
-sub _dump
-{
-  my($self) = @_;
-  require Alien::Build::Util;
-  Alien::Build::Util::_dump($self);
-}
-
 package Alien::Build::TempDir;
 
 use Path::Tiny qw( path );

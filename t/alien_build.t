@@ -7,6 +7,7 @@ use MyTest::System2;
 use Capture::Tiny qw( capture_merged );
 use File::chdir;
 use Path::Tiny qw( path );
+use Alien::Build::Util qw( _dump );
 
 subtest 'simple new' => sub {
   my $build = MyBuild->new;
@@ -15,7 +16,7 @@ subtest 'simple new' => sub {
 
   isa_ok( $build->meta, 'Alien::Build::Meta' );
   isa_ok( MyBuild->meta, 'Alien::Build::Meta' );
-  note($build->meta->_dump);
+  note(_dump $build->meta);
 
 };
 
@@ -27,7 +28,7 @@ subtest 'from file' => sub {
 
   isa_ok( $build->meta, 'Alien::Build::Meta' );
 
-  note($build->meta->_dump);
+  note(_dump $build->meta);
 
   is( $build->requires,              { Foo => '1.00' },                'any'       );
   is( $build->requires('share'),     { Foo => '1.00', Bar => '2.00' }, 'share'     );
@@ -50,7 +51,7 @@ subtest 'load requires' => sub {
 
   my($build, $meta) = build_blank_alien_build;
   
-  note($meta->_dump);
+  note(_dump $meta);
   
   is( $build->load_requires, 1, 'empty loads okay' );
 

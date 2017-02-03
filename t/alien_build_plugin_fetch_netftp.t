@@ -4,6 +4,7 @@ use lib 't/lib';
 use MyTest;
 use MyTest::FTP;
 use Path::Tiny qw( path );
+use Alien::Build::Util qw( _dump );
 
 subtest 'updates requires' => sub {
 
@@ -16,7 +17,7 @@ subtest 'updates requires' => sub {
   is( $build->requires('share')->{'Net::FTP'}, 0 );
   is( $build->requires('share')->{'URI'}, 0 );
 
-  note $meta->_dump;
+  note _dump $meta;
 
 };
 
