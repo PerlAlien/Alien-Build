@@ -459,6 +459,19 @@ a method.  For example, this will add a probe system requirement:
       },
     );
 
+# ENVIRONMENT
+
+[Alien::Build](https://metacpan.org/pod/Alien::Build) responds to these environment variables:
+
+- ALIEN\_INSTALL\_TYPE
+
+    If set to `share` or `system`, it will override the system detection logic.
+
+- ALIEN\_BUILD\_PRELOAD
+
+    semicolon separated list of plugins to automatically load before parsing
+    your [alienfile](https://metacpan.org/pod/alienfile).
+
 # SEE ALSO
 
 [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor),

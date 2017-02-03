@@ -1,8 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.06      2017-02-02 22:00:38 -0500
   - Added support for ALIEN_BUILD_PRELOAD
-  - Legacy Alien::Build compatibility bug fixes
+  - Legacy Alien::Base compatibility bug fixes
   - json files now use pretty formatting which is much easier
     to read
 
