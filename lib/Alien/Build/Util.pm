@@ -44,14 +44,22 @@ sub _mirror
       $src = $src->absolute($src_root);
       if(-d "$src")
       {
-        unless(-d $dst)
+        if($opt->{empty_directory})
         {
-          print "Alien::Build> mkdir $dst\n" if $opt->{verbose};
-          mkdir($dst) || die "unable to create directory $dst: $!";
+          unless(-d $dst)
+          {
+            print "Alien::Build> mkdir $dst\n" if $opt->{verbose};
+            mkdir($dst) || die "unable to create directory $dst: $!";
+          }
         }
       }
       elsif(-l "$src")
       {
+        unless(-d $dst->parent)
+        {
+          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n";
+          $dst->parent->mkpath;
+        }
         # TODO: rmtree if a directory?
         if(-e "$dst")
         { unlink "$dst" }
@@ -61,6 +69,11 @@ sub _mirror
       }
       elsif(-f "$src")
       {
+        unless(-d $dst->parent)
+        {
+          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n";
+          $dst->parent->mkpath;
+        }
         # TODO: rmtree if a directory?
         if(-e "$dst")
         { unlink "$dst" }

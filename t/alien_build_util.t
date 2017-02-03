@@ -54,7 +54,7 @@ subtest 'mirror' => sub {
     
   my $tmp2 = Path::Tiny->tempdir("mirror_dst_XXXX");
 
-  _mirror "$tmp1", "$tmp2";
+  _mirror "$tmp1", "$tmp2", { empty_directory => 1 };
     
   my($out, $exit) = capture_merged { system 'diff', '-r', "$tmp1", "$tmp2" };
   
