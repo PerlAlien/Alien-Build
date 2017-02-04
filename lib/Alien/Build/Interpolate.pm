@@ -133,11 +133,11 @@ sub interpolate
   
   my $get_prop;
   $get_prop = sub {
-    my($name, $prop) = @_;
+    my($name, $prop, $orig) = @_;
     if($name =~ /^(.*?)\.(.*)$/)
     {
       my($key,$rest) = ($1,$2);
-      return $get_prop->($rest, $prop->{$key});
+      return $get_prop->($rest, $prop->{$key}, $orig);
     }
     elsif(exists $prop->{$name})
     {
@@ -145,12 +145,13 @@ sub interpolate
     }
     else
     {
-      return '';
+      require Carp;
+      Carp::croak "No property $orig is defined";
     }
   };
   
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
-  $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9\.]+)\}}{$get_prop->($1,$prop)}eg;
+  $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9\.]+)\}}{$get_prop->($1,$prop,$1)}eg;
   $string =~ s/\%(?=\%)//g;
   $string;
 }

@@ -79,10 +79,11 @@ subtest 'property' => sub {
     'baz',
   );
 
-  is(
+  eval {
     $intr->interpolate("'%{foo.bar}'", { foo => { bar1 => 'baz' } }),
-    "''",
-  );
+  };
+  
+  like $@, qr/No property foo.bar is defined/;
   
   is(
     $intr->interpolate("%{foo.bar.baz}", { foo => { bar => { baz => 'starscream' } } }),
