@@ -27,11 +27,11 @@ sub init
 {
   my($self, $meta) = @_;
   
-  $meta->around_hook(
+  $meta->after_hook(
     $_ => sub {
-      my($orig, $build) = @_;
+      my($build) = @_;
       
-      my $ret = $orig->($build);
+      print "Alien::Build::Plugin::Core::Legavy> adding legacy hash to config\n";
       
       my $runtime = $build->runtime_prop;
       
@@ -49,8 +49,6 @@ sub init
       $runtime->{legacy}->{install_type}        = $runtime->{install_type};
       $runtime->{legacy}->{version}             = $runtime->{version};
       $runtime->{legacy}->{original_prefix}     = $runtime->{prefix};
-      
-      $ret;
     }
   ) for qw( gather_system gather_share );
 }

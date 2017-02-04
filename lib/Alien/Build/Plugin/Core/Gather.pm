@@ -35,7 +35,6 @@ sub init
     $_ => sub {},
   ) for qw( gather_system gather_share );
 
-
   $meta->around_hook(
     gather_share => sub {
       my($orig, $build) = @_;
@@ -46,6 +45,14 @@ sub init
         if -d 'bin';
       unshift @PKG_CONFIG_PATH, Path::Tiny->new('lib/pkgconfig')->absolute->stringify
         if -d 'lib/pkgconfig';
+      
+      $orig->($build) 
+    }
+  );
+
+  $meta->around_hook(
+    gather_share => sub {
+      my($orig, $build) = @_;
         
       if($build->meta_prop->{destdir})
       {
@@ -58,6 +65,8 @@ sub init
           local $CWD = "$src";
           $orig->($build);
         };
+        
+        print "Alien::Build::Plugin::Core::Gather> mirror $src => $dst\n";
         
         $dst->mkpath;
         _mirror("$src", "$dst", {
@@ -75,16 +84,15 @@ sub init
     }
   );
   
-  $meta->around_hook(
+  $meta->after_hook(
     $_ => sub {
-      my($orig, $build) = @_;
-      
-      my $res = $orig->($build);
+      my($build) = @_;
 
       die "stage is not defined.  be sure to call set_stage on your Alien::Build instance"
         unless $build->install_prop->{stage};
       
       my $stage = Path::Tiny->new($build->install_prop->{stage});
+      print "Alien::Build::Plugin::Core::Gather> mkdir -p $stage/_alien\n";
       $stage->child('_alien')->mkpath;
       
       # drop a alien.json file for the runtime properties
@@ -100,9 +108,7 @@ sub init
         Path::Tiny->new($build->meta->filename)
                   ->copy($stage->child('_alien/alienfile'));
       }
-      
-      $res;
-      
+    
     },
   ) for qw( gather_share gather_system );
 }

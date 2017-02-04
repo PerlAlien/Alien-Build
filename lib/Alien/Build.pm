@@ -335,9 +335,13 @@ sub load
     $class->meta;
   }};
 
-  my @preload = qw( Core::Gather Core::Legacy );
+  my @preload = (  );
   @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
+  
+  my @postload = qw( Core::Legacy Core::Gather );
+  @postload = split ';', $ENV{ALIEN_BUILD_POSTLOAD}
+    if defined $ENV{ALIEN_BUILD_POSTLOAD};
 
   my $self = $class->new(
     filename => $file->absolute->stringify,
@@ -350,6 +354,7 @@ sub load
     package ${class}::Alienfile;
     alienfile::plugin(\$_) for \@preload;
     do '@{[ $file->absolute->stringify ]}';
+    alienfile::plugin(\$_) for \@postload;
     die \$\@ if \$\@;
   };
   die $@ if $@;
@@ -1245,6 +1250,33 @@ sub around_hook
     $self->{around}->{$name} = $code;
   }
 }
+
+sub after_hook
+{
+  my($self, $name, $code) = @_;
+  $self->around_hook(
+    $name => sub {
+      my $orig = shift;
+      my $ret = $orig->(@_);
+      $code->(@_);
+      $ret;
+    }
+  );
+}
+
+sub before_hook
+{
+  my($self, $name, $code) = @_;
+  $self->around_hook(
+    $name => sub {
+      my $orig = shift;
+      $code->(@_);
+      my $ret = $orig->(@_);
+      $ret;
+    }
+  );
+}
+
 
 sub call_hook
 {
