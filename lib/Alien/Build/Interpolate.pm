@@ -146,7 +146,7 @@ sub interpolate
     else
     {
       require Carp;
-      Carp::croak "No property $orig is defined";
+      Carp::croak("No property $orig is defined");
     }
   };
   

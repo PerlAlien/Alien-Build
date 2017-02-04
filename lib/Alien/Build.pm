@@ -67,7 +67,8 @@ sub new
   my($class, %args) = @_;
   my $self = bless {
     install_prop => {
-      root => _path($args{root} || "_alien")->absolute->stringify,
+      root  => _path($args{root} || "_alien")->absolute->stringify,
+      patch => (defined $args{patch}) ? _path($args{patch})->absolute->stringify : undef,
     },
     runtime_prop => {
     },
@@ -194,6 +195,10 @@ based module.
 
 The build root directory.  This will be an absolute path.  It is the
 absolute form of C<./_alien> by default.
+
+=item patch
+
+Directory with patches.
 
 =item prefix
 

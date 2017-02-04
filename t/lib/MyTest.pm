@@ -36,8 +36,9 @@ sub build_blank_alien_build
   );
   my $meta = $build->meta;
 
-  $build->set_stage(tempdir( CLEANUP => 1 ));
-  $build->set_prefix(tempdir( CLEANUP => 1 ));
+  my $tmp = path(tempdir( CLEANUP => 1 ));
+  $build->set_stage($tmp->child('stage')->stringify);
+  $build->set_prefix($tmp->child('prefix')->stringify);
 
   wantarray ? ($build, $meta) : $build;
 }
@@ -51,8 +52,11 @@ sub alienfile
   $alienfile->spew($str);
   require Alien::Build;
   my $build = Alien::Build->load("$alienfile", root => tempdir(CLEANUP => 1));
-  $build->set_stage(tempdir( CLEANUP => 1 ));
-  $build->set_prefix(tempdir( CLEANUP => 1 ));
+
+  my $tmp = path(tempdir( CLEANUP => 1 ));
+  $build->set_stage($tmp->child('stage')->stringify);
+  $build->set_prefix($tmp->child('prefix')->stringify);
+
   $build;
 }
 

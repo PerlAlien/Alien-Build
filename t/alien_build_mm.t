@@ -20,7 +20,7 @@ sub alienfile
 
 subtest 'basic' => sub {
 
-  $CWD = tempdir( CLEANUP => 1 );
+  local $CWD = tempdir( CLEANUP => 1 );
 
   alienfile q{
     use alienfile;
@@ -146,7 +146,7 @@ subtest 'basic' => sub {
 
 subtest 'mm_postamble' => sub {
 
-  $CWD = tempdir( CLEANUP => 1 );
+  local $CWD = tempdir( CLEANUP => 1 );
 
   my $build = alienfile q{
     use alienfile;
@@ -173,7 +173,7 @@ subtest 'set_prefix' => sub {
 
     subtest "type = $type" => sub {
   
-      $CWD = tempdir( CLEANUP => 1 );
+      local $CWD = tempdir( CLEANUP => 1 );
 
       alienfile q{
         use alienfile;
@@ -207,7 +207,7 @@ subtest 'set_prefix' => sub {
 
 subtest 'download + build' => sub {
 
-  $CWD = tempdir( CLEANUP => 1 );
+  local $CWD = tempdir( CLEANUP => 1 );
 
   $main::call_download = 0;
   $main::call_build    = 0;
@@ -264,6 +264,24 @@ subtest 'download + build' => sub {
   ok( -f '_alien/mm/build', 'touched build' );  
   is $main::call_build, 1, 'build';
 
+};
+
+subtest 'patch' => sub {
+
+  local $CWD = tempdir( CLEANUP => 1 );
+  
+  alienfile q{
+    use alienfile;
+  };
+  
+  path('patch')->mkpath;
+  path('patch/foo.txt')->touch;
+  
+  my $abmm = Alien::Build::MM->new;
+  
+  ok( $abmm->build->install_prop->{patch}, 'patch is defined' );
+  
+  ok( -f path($abmm->build->install_prop->{patch})->child('foo.txt'), 'got the correct directory' );  
 };
 
 done_testing;

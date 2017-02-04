@@ -59,6 +59,7 @@ sub new
   my $build = $self->{build} =
     Alien::Build->load('alienfile',
       root     => "_alien",
+      (-d 'patch' ? (patch => 'patch') : ()),
     )
   ;
   

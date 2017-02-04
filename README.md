@@ -144,6 +144,10 @@ based module.
     The build root directory.  This will be an absolute path.  It is the
     absolute form of `./_alien` by default.
 
+- patch
+
+    Directory with patches.
+
 - prefix
 
     The install time prefix.  Under a `destdir` install this is the

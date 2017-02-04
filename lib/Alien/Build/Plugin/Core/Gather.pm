@@ -108,6 +108,12 @@ sub init
         Path::Tiny->new($build->meta->filename)
                   ->copy($stage->child('_alien/alienfile'));
       }
+      
+      if($build->install_prop->{patch} && -d $build->install_prop->{patch})
+      {
+        _mirror($build->install_prop->{patch},
+                $stage->child('_alien/patch')->stringify);
+      }
     
     },
   ) for qw( gather_share gather_system );
