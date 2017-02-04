@@ -42,7 +42,7 @@ sub _pick
   }
   
   require Alien::Build::Plugin::PkgConfig::CommandLine;
-  if(Alien::Build::Plugin::PkgConfig::CommandLine->new->bin_name)
+  if(Alien::Build::Plugin::PkgConfig::CommandLine->new(pkg_name => 'foo')->bin_name)
   {
     return 'CommandLine';
   }
