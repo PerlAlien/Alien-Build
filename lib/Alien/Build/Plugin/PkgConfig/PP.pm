@@ -56,7 +56,12 @@ sub init
 {
   my($self, $meta) = @_;
   
-  $meta->add_requires('configure' => 'PkgConfig' => '0.14026');
+  my $caller = caller;
+  
+  if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
+  {
+    $meta->add_requires('configure' => 'PkgConfig' => '0.14026');
+  }
 
   $meta->register_hook(
     probe => sub {

@@ -6,6 +6,11 @@ Revision history for {{$dist->name}}
   - Major refactor of Alien::Base2.  Please do not use it.
   - Improved documentation
   - Added Alien::Build::Plugin::Fetch::Local
+  - Added support for ALIEN_BUILD_POSTLOAD
+  - Fixed bug where PkgConfig negotiator plugin could cause prereqs
+    to get added inappropriately
+  - Make PkgConfig.pm a prereq on platforms that do not provide
+    pkg-config or pkgconf.
 
 0.06      2017-02-02 22:00:38 -0500
   - Added support for ALIEN_BUILD_PRELOAD

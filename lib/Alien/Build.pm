@@ -1382,6 +1382,11 @@ If set to C<share> or C<system>, it will override the system detection logic.
 semicolon separated list of plugins to automatically load before parsing
 your L<alienfile>.
 
+=item ALIEN_BUILD_PRELOAD
+
+semicolon separated list of plugins to automatically load after parsing
+your L<alienfile>.
+
 =item DESTDIR
 
 This environment variable will be manipulated during a destdir install.

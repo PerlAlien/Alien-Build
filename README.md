@@ -477,6 +477,11 @@ a method.  For example, this will add a probe system requirement:
     semicolon separated list of plugins to automatically load before parsing
     your [alienfile](https://metacpan.org/pod/alienfile).
 
+- ALIEN\_BUILD\_PRELOAD
+
+    semicolon separated list of plugins to automatically load after parsing
+    your [alienfile](https://metacpan.org/pod/alienfile).
+
 - DESTDIR
 
     This environment variable will be manipulated during a destdir install.

@@ -74,7 +74,6 @@ sub init
     
     if($path =~ /^file:/)
     {
-      $DB::single = 1;
       my $root = URI::file->new($self->root);
       my $url = URI->new_abs($path, $root);
       $path = $url->path;

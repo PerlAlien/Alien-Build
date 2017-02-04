@@ -48,12 +48,17 @@ sub init
 {
   my($self, $meta) = @_;
 
-  # Also update in Neotiate.pm  
-  $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => '0.04');
+  my $caller = caller;
   
-  if(defined $self->minimum_version)
+  if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
   {
-    $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => '0.04');
+    # Also update in Neotiate.pm
+    $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => '0.04');
+  
+    if(defined $self->minimum_version)
+    {
+      $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => '0.04');
+    }
   }
   
   my $client;
