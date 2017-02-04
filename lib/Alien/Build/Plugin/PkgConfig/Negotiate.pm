@@ -32,32 +32,31 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
+sub _pick
+{
+  my($class) = @_;
+  
+  if(eval q{ use PkgConfig::LibPkgConf 0.04; 1 })
+  {
+    return 'LibPkgConf';
+  }
+  
+  require Alien::Build::Plugin::PkgConfig::CommandLine;
+  if(Alien::Build::Plugin::PkgConfig::CommandLine->new->bin_name)
+  {
+    return 'CommandLine';
+  }
+  
+  return 'PP';
+}
+
 sub init
 {
   my($self, $meta) = @_;
   
-  if(eval q{ use PkgConfig::LibPkgConf 0.04; 1 })
-  {
-    my $plugin = _plugin('LibPkgConf', pkg_name => $self->pkg_name);
-    $plugin->init($meta);
-    return $self;
-  }
-
-  {
-    my $plugin = _plugin('CommandLine', pkg_name => $self->pkg_name);
-    if($plugin->bin_name)
-    {
-      $plugin->init($meta);
-      return $self;
-    }
-  }
-
-  # Q: should PkgConfig.pm be before or after CommandLine?
-  {
-    my $plugin = _plugin('PP', pkg_name => $self->pkg_name);
-    $plugin->init($meta);
-    return $self;
-  }
+  my $plugin = _plugin($self->_pick, pkg_name => $self->pkg_name);
+  $plugin->init($meta);
+  $self;
 }
 
 sub _plugin

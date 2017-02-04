@@ -1,8 +1,15 @@
 use Test2::Bundle::Extended;
 use Alien::Build::Plugin::PkgConfig::Negotiate;
+use lib 't/lib';
+use MyTest;
 
-ok 1;
+subtest 'pick' => sub {
 
-diag "TODO";
+  my $pick = Alien::Build::Plugin::PkgConfig::Negotiate->_pick;
+  
+  ok $pick, 'has a pick';
+  note "pick = $pick";
+
+};
 
 done_testing;
