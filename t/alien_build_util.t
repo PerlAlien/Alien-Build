@@ -1,10 +1,11 @@
 use Test2::Bundle::Extended;
-use Alien::Build::Util qw( _dump _mirror );
-use Path::Tiny;
+use Alien::Build::Util qw( _dump _mirror _destdir_prefix );
+use Path::Tiny qw( path );
 use IPC::Cmd qw( can_run );
 use Capture::Tiny qw( capture_merged );
 use Env qw( @PATH );
 use Config;
+use File::Temp qw( tempdir );
 
 subtest 'dump' => sub {
 
@@ -82,6 +83,18 @@ subtest 'mirror' => sub {
     ok( ! -f $tmp2->child('lib/libfoo.so.1.2.3'), 'lib/libfoo.so.1.2.3' );
   
   };
+};
+
+subtest 'destdir_prefix' => sub {
+
+  my($destdir) = tempdir( CLEANUP => 1 );
+  my($prefix) = tempdir( CLEANUP => 1 );
+  
+  my $destdir_prefix = path _destdir_prefix($destdir, $prefix);
+  note "destdir_prefix = $destdir_prefix";
+  eval { $destdir_prefix->mkpath };
+  is $@, '';
+
 };
 
 done_testing;

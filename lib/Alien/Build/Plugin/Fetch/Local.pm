@@ -74,10 +74,11 @@ sub init
     
     if($path =~ /^file:/)
     {
+      $DB::single = 1;
       my $root = URI::file->new($self->root);
       my $url = URI->new_abs($path, $root);
       $path = $url->path;
-      $path =~ s{^/([a-z]:)}{$1} if $^O eq 'MSWin32';
+      $path =~ s{^/([a-z]:)}{$1}i if $^O eq 'MSWin32';
     }
     
     $path = Path::Tiny->new($path)->absolute($self->root);

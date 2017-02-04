@@ -6,7 +6,7 @@ use Alien::Build::Plugin;
 use Env qw( @PATH @PKG_CONFIG_PATH );
 use Path::Tiny ();
 use File::chdir;
-use Alien::Build::Util qw( _mirror );
+use Alien::Build::Util qw( _mirror _destdir_prefix );
 use JSON::PP ();
 
 # ABSTRACT: Core gather plugin
@@ -51,9 +51,7 @@ sub init
       {
         my $destdir = $ENV{DESTDIR};
         die "nothing was installed into destdir" unless -d $destdir;
-        my $prefix = $build->install_prop->{prefix};
-        $prefix =~ s!^([a-z]):!$1!i;
-        my $src = Path::Tiny->new("$ENV{DESTDIR}/$prefix");
+        my $src = Path::Tiny->new(_destdir_prefix($ENV{DESTDIR}, $build->install_prop->{prefix}));
         my $dst = Path::Tiny->new($build->install_prop->{stage});
         
         my $res = do {

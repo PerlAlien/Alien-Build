@@ -2,7 +2,6 @@ package Alien::Build;
 
 use strict;
 use warnings;
-use Alien::Build::Util;
 use Path::Tiny ();
 use Carp ();
 use File::chdir;

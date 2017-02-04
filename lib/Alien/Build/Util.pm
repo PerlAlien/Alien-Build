@@ -24,7 +24,7 @@ L<Alien::Build>
 
 =cut
 
-our @EXPORT_OK = qw( _mirror _dump );
+our @EXPORT_OK = qw( _mirror _dump _destdir_prefix );
 
 # usage: _mirror $source_directory, $dest_direction, \%options
 #
@@ -112,6 +112,13 @@ sub _dump
     require Data::Dumper;
     return Data::Dumper::Dumper(@_);
   }
+}
+
+sub _destdir_prefix
+{
+  my($destdir, $prefix) = @_;
+  $prefix =~ s{^/?([a-z]):}{$1}i if $^O eq 'MSWin32';
+  path($destdir)->child($prefix)->stringify;
 }
 
 1;

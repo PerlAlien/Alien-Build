@@ -3,7 +3,7 @@ use Alien::Build::Plugin::Core::Gather;
 use lib 't/lib';
 use MyTest;
 use Capture::Tiny qw( capture_merged );
-use Alien::Build::Util qw( _dump );
+use Alien::Build::Util qw( _dump _destdir_prefix );
 use Path::Tiny qw( path );
 
 subtest 'destdir filter' => sub {
@@ -19,11 +19,13 @@ subtest 'destdir filter' => sub {
       extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
         my($build) = @_;
-        my $prefix = path($ENV{DESTDIR})->child($build->install_prop->{prefix});
-        $prefix->child($_)->mkpath for qw( bin lib etc );
-        $prefix->child('bin/foo.exe')->touch;
-        $prefix->child('lib/libfoo.a')->touch;
-        $prefix->child('etc/foorc')->touch;
+        my $prefix = $build->install_prop->{prefix};
+        $prefix =~ s{^([a-z]):}{$1}i if $^O eq 'MSWin32';
+        my $destdir_prefix = path(Alien::Build::Util::_destdir_prefix($ENV{DESTDIR}, $prefix));
+        $destdir_prefix->child($_)->mkpath for qw( bin lib etc );
+        $destdir_prefix->child('bin/foo.exe')->touch;
+        $destdir_prefix->child('lib/libfoo.a')->touch;
+        $destdir_prefix->child('etc/foorc')->touch;
       };
     };
   };
