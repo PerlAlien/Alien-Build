@@ -129,6 +129,26 @@ but if you do not follow this rule your recipe will likely be broken.
     Regular expression for the files that should be copied from the `DESTDIR`
     into the stage directory.  If not defined, then all files will be copied.
 
+- platform
+
+    Hash reference.  Contains information about the platform beyond just `$^O`.
+
+    - compiler\_type
+
+        Refers to the type of flags that the compiler accepts.  May be expanded in the
+        future, but for now, will be one of:
+
+        - microsoft
+
+            On Windows when using Microsoft Visual C++
+
+        - unix
+
+            Virtually everything else, including gcc on windows.
+
+        The main difference is that with Visual C++ `-LIBPATH` should be used instead
+        of `-L`, and static libraries should have the `.LIB` suffix instead of `.a`.
+
 ## install\_prop
 
     my $href = $build->install_prop;

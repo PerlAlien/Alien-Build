@@ -169,6 +169,34 @@ is supported by C<autoconf> and others.
 Regular expression for the files that should be copied from the C<DESTDIR>
 into the stage directory.  If not defined, then all files will be copied.
 
+=item platform
+
+Hash reference.  Contains information about the platform beyond just C<$^O>.
+
+=over 4
+
+=item compiler_type
+
+Refers to the type of flags that the compiler accepts.  May be expanded in the
+future, but for now, will be one of:
+
+=over 4
+
+=item microsoft
+
+On Windows when using Microsoft Visual C++
+
+=item unix
+
+Virtually everything else, including gcc on windows.
+
+=back
+
+The main difference is that with Visual C++ C<-LIBPATH> should be used instead
+of C<-L>, and static libraries should have the C<.LIB> suffix instead of C<.a>.
+
+=back
+
 =back
 
 =cut
@@ -340,7 +368,7 @@ sub load
     $class->meta;
   }};
 
-  my @preload = (  );
+  my @preload = qw( Core::Setup );
   @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
   

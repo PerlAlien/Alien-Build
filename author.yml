@@ -38,6 +38,7 @@ pod_spelling_system:
     - readme
     - toolset
     - unixy
+    - microsoft
 
 pod_coverage:
   skip: 0
