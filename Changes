@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.08      2017-02-04 11:33:01 -0500
+  - Fixed prereq bug introduced in 0.07
+
 0.07      2017-02-04 11:21:13 -0500
   - The namespace Alien::Build::Plugin::Core is reserved for plugins
     that are automatically loaded for all instances of Alien::Build
