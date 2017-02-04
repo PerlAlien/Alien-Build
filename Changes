@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.09      2017-02-04 17:31:00 -0500
   - Using an undefined property in command interpolation is now an
     error.
   - Added patch support.
