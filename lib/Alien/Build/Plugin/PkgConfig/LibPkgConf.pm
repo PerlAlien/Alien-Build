@@ -68,11 +68,13 @@ sub init
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
     
+      require PkgConfig::LibPkgConf::Client;
       $client ||= PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
       die "package @{[ $self->pkg_name ]} not found" unless $pkg;
       if(defined $self->minimum_version)
       {
+        require PkgConfig::LibPkgConf::Util;
         if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->minimum_version) == -1)
         {
           die "package @{[ $self->pkg_name ]} is not recent enough";
@@ -85,6 +87,7 @@ sub init
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
+      require PkgConfig::LibPkgConf::Client;
       $client ||= PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
       die "reload of package failed" unless defined $pkg;

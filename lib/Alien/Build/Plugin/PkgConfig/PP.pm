@@ -68,6 +68,7 @@ sub init
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
 
+      require PkgConfig;
       my $pkg = PkgConfig->find($self->pkg_name);
       die "package @{[ $self->pkg_name ]} not found" if $pkg->errmsg;
       if(defined $self->minimum_version)
@@ -85,6 +86,7 @@ sub init
 
   my $gather = sub {
     my($build) = @_;
+    require PkgConfig;
     my $pkg = PkgConfig->find($self->pkg_name, search_path => [@PKG_CONFIG_PATH]);
     die "second load of PkgConfig.pm @{[ $self->pkg_name ]} failed: @{[ $pkg->errmsg ]}"
       if $pkg->errmsg;
