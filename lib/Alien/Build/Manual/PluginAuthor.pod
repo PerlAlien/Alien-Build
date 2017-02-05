@@ -118,6 +118,7 @@ with the following keys:
    type     => 'file',
    filename => $filename,
    content  => $content,
+   version  => $version,  # optional, if known
  };
  
  # content of file stored in the filesystem
@@ -125,6 +126,7 @@ with the following keys:
    type     => 'file',
    filename => $filename,
    path     => $path,    # full file system path to file
+   version  => $version,  # optional, if known
  };
 
 If the URL points to a directory listing you should return it as either
