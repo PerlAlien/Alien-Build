@@ -49,7 +49,7 @@ reasonable.
 
 =cut
 
-has '+version' => qr/([0-9\.]+)/;
+has '+version' => qr/([0-9](?:[0-9\.]*[0-9])?)/;
 
 sub init
 {
@@ -66,6 +66,9 @@ sub init
     };
     
     my @list = sort { $cmp->($a->{filename}, $b->{filename}) }
+               map {
+                 ($_->{version}) = $_->{filename} =~ $self->version;
+                 $_ }
                grep { $_->{filename} =~ $self->version }
                grep { defined $self->filter ? $_->{filename} =~ $self->filter : 1 }
                @{ $res->{list} };

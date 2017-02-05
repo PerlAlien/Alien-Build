@@ -40,6 +40,21 @@ subtest 'prefer' => sub {
     };
   };
 
+  my $make_cmp = sub {
+    return {
+      type => 'list',
+      list => [
+        map {
+          hash {
+            field filename => $_;
+            field url => "http://example.test/foo/bar/$_";
+            field version => T();
+          },
+        } @_
+      ],
+    };
+  };
+
   skip_all 'test requires Sort::Versions' unless $builder->();
 
   subtest 'default settings' => sub {
@@ -47,7 +62,7 @@ subtest 'prefer' => sub {
     my $build = $builder->();
     
     my $res = $build->prefer($make_list->(qw(roger-0.0.0.tar.gz abc-2.3.4.tar.gz xyz-1.0.0.tar.gz)));
-    is( $res, $make_list->(qw( abc-2.3.4.tar.gz xyz-1.0.0.tar.gz roger-0.0.0.tar.gz )) );
+    is( $res, $make_cmp->(qw( abc-2.3.4.tar.gz xyz-1.0.0.tar.gz roger-0.0.0.tar.gz )) );
   
   };
   
@@ -55,15 +70,15 @@ subtest 'prefer' => sub {
   
     my $build = $builder->(filter => qr/abc|xyz/);
     my $res = $build->prefer($make_list->(qw(roger-0.0.0.tar.gz abc-2.3.4.tar.gz xyz-1.0.0.tar.gz)));
-    is( $res, $make_list->(qw( abc-2.3.4.tar.gz xyz-1.0.0.tar.gz )) );
+    is( $res, $make_cmp->(qw( abc-2.3.4.tar.gz xyz-1.0.0.tar.gz )) );
   
   };
   
   subtest 'version regex' => sub {
   
-    my $build = $builder->(qr/^foo-[0-9\.]+-bar-([0-9\.])/);
+    my $build = $builder->(qr/^foo-[0-9\.]+-bar-([0-9\.](?:[0-9\.]*[0-9])?)/);
     my $res = $build->prefer($make_list->(qw( foo-10.0-bar-0.1.0.tar.gz foo-5-bar-2.1.0.tar.gz bogus.tar.gz )));
-    is( $res, $make_list->(qw( foo-5-bar-2.1.0.tar.gz foo-10.0-bar-0.1.0.tar.gz )) );
+    is( $res, $make_cmp->(qw( foo-5-bar-2.1.0.tar.gz foo-10.0-bar-0.1.0.tar.gz )) );
     
   };
 
