@@ -1197,6 +1197,7 @@ sub _instr
       decode        => 'share',
       prefer        => 'share',
       extract       => 'share',
+      patch         => 'share',
       build         => 'share',
       stage         => 'share',
       gather_share  => 'share',
