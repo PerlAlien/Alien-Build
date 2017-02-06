@@ -387,8 +387,8 @@ sub load
     package ${class}::Alienfile;
     alienfile::plugin(\$_) for \@preload;
     do '@{[ $file->absolute->stringify ]}';
-    alienfile::plugin(\$_) for \@postload;
     die \$\@ if \$\@;
+    alienfile::plugin(\$_) for \@postload;
   };
   die $@ if $@;
   

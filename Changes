@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix bug where compile error wouldn't throw exception from
+    Alien::Build->load
 
 0.10      2017-02-06 05:24:25 -0500
   - Add heuristic to determine version from filename using
