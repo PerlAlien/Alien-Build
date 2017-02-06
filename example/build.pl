@@ -45,8 +45,8 @@ my $build = Alien::Build->load("$alienfile",
 );
 
 $build->load_requires('configure');
-$build->set_prefix($prefix->child("perl/lib/share/Alien-$name")->absolute->stringify);
 $build->set_stage($example->child("blib/lib/auto/share/Alien-$name")->absolute->stringify);
+$build->set_prefix($prefix->child("perl/lib/share/Alien-$name")->absolute->stringify);
 $build->load_requires($build->install_type);
 $build->download;
 $build->build;

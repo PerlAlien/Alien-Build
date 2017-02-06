@@ -1,0 +1,56 @@
+use alienfile;
+
+# see xz.alienfile for a more reliable and portable
+# example that uses plugins.
+
+# Use pkg-config to check if the library exists.
+# also, use which to check that the xz command is
+# in the path.
+probe [ 
+  'pkg-config --exists liblzma',
+  'which xz',
+];
+
+share {
+
+  # the first one which succeeds will be used
+  download [ 'wget http://tukaani.org/xz/xz-5.2.3.tar.gz' ];
+  download [ 'curl -o http://tukaani.org/xz/xz-5.2.3.tar.gz' ];
+
+  # use tar to extract the tarball
+  extract [ 'tar zxf %{alien.install.download}' ];
+  
+  # use the standard build process
+  build [
+    './configure --prefix=%{alien.install.prefix} --disable-shared',
+    '%{make}',
+    '%{make} install',
+  ];
+
+};
+
+# this function takes the output from the pkg-config commands below
+# and puts the appropriate values into the runtime_prop hash.
+sub flags
+{
+  my($build, $args) = @_;
+
+  die 'command failed' if $args->{'exit'};
+
+  my $name = $args->{command}->[1];
+  $name =~ s/^--(mod)?//;
+
+  my $value = $args->{out}; # stdout from the pkg-config command
+  chomp $value;
+
+  $build->runtime_prop->{$name} = $value;
+}
+
+# You can specify individual gather steps in share {} or
+# sys {} too, but for many cases the same procedure can
+# be used for both.
+gather [
+  [ 'pkg-config', '--modversion', 'liblzma', \&flags ],
+  [ 'pkg-config', '--cflags',     'liblzma', \&flags ],
+  [ 'pkg-config', '--libs',       'liblzma', \&flags ],
+];
