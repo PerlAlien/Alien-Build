@@ -44,6 +44,14 @@ The directory from which the URL should be relative.  The default is usually rea
 
 has root => undef;
 
+=head2 ssl
+
+This property is for compatibility with other fetch plugins, but is not used.
+
+=cut
+
+has ssl => 0;
+
 sub init
 {
   my($self, $meta) = @_;

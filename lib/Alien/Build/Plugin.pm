@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use Carp ();
 
+our @CARP_NOT = qw( alienfile );
+
 # ABSTRACT: Plugin base class for Alien::Build
 # VERSION
 

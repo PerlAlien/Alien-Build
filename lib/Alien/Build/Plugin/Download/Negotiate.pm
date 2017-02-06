@@ -3,6 +3,7 @@ package Alien::Build::Plugin::Download::Negotiate;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use Module::Load ();
 use Carp ();
 
 # ABSTRACT: Download negotiation plugin
@@ -71,45 +72,50 @@ Perl SSL modules will be loaded.
 =cut
 
 has 'ssl'     => 0;
+has 'scheme'  => undef;
+
+sub _pick_fetch
+{
+  my($self) = @_;
+  
+  $self->scheme(
+    $self->url !~ m!(ftps?|https?|file):!i
+      ? 'file'
+      : $self->url =~ m!^([a-z]+):!i
+  ) unless defined $self->scheme;
+  
+  if($self->scheme =~ /^https?$/)
+  {
+    return 'HTTPTiny';
+  }
+  elsif($self->scheme eq 'ftp')
+  {
+    if($ENV{ftp_proxy} || $ENV{all_proxy})
+    {
+      return 'LWP';
+    }
+    else
+    {
+      return 'NetFTP';
+    }
+  }
+  elsif($self->scheme eq 'file')
+  {
+    return 'Local';
+  }
+  else
+  {
+    die "do not know how to handle scheme @{[ $self->scheme ]} for @{[ $self->url ]}";
+  }
+}
 
 sub init
 {
   my($self, $meta) = @_;
   
-  my $url = $self->url;
-  my($scheme) = $url !~ m!(ftps?|https?|file):!i ? 'file' : $url =~ m!^([a-z]+):!i;
+  my $fetch = $self->_pick_fetch;
   
-  my $fetch;
-  
-  if($scheme =~ /^https?$/)
-  {
-    $fetch = 'HTTPTiny';
-  }
-  elsif($scheme eq 'ftp')
-  {
-    if($ENV{ftp_proxy} || $ENV{all_proxy})
-    {
-      $fetch = 'LWP';
-    }
-    else
-    {
-      $fetch = 'NetFTP';
-    }
-  }
-  elsif($scheme eq 'ftps')
-  {
-    $fetch = 'LWP';
-  }
-  elsif($scheme eq 'file')
-  {
-    $fetch = 'Local';
-  }
-  else
-  {
-    die "do not know how to handle scheme $scheme for $url";
-  }
-  
-  $self->_plugin($meta, 'Fetch', $fetch, url => $url, ssl => $self->ssl);
+  $self->_plugin($meta, 'Fetch', $fetch, url => $self->url, ssl => $self->ssl);
   
   if($self->version)
   {
@@ -117,7 +123,7 @@ sub init
     {
       # no decoder necessary
     }
-    elsif($fetch eq 'LWP' && $scheme =~ /^ftps?/)
+    elsif($fetch eq 'LWP' && $self->scheme =~ /^ftps?/)
     {
       $self->_plugin($meta, 'Decode', 'DirListing');
     }
@@ -137,11 +143,9 @@ sub _plugin
 {
   my($self, $meta, $type, $name, @args) = @_;
   my $class = "Alien::Build::Plugin::${type}::$name";
-  my $pm    = "Alien/Build/Plugin/$type/$name.pm";
-  require $pm;
+  Module::Load::load($class);
   my $plugin = $class->new(@args);
   $plugin->init($meta);
-  
 }
 
 1;

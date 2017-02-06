@@ -771,6 +771,7 @@ sub download
     if($res->{type} eq 'list')
     {
       $res = $self->prefer($res);
+      my $version = $res->{list}->[0]->{version};
       die "no matching files in listing" if @{ $res->{list} } == 0;
       my($pick, @other) = map { $_->{url} } @{ $res->{list} };
       if(@other > 8)
@@ -781,6 +782,13 @@ sub download
       print "Alien::Build> candidate *$pick\n";
       print "Alien::Build> candidate  $_\n" for @other;
       $res = $self->fetch($pick);
+      
+      if($version)
+      {
+        $version =~ s/\.+$//;
+        print "Alien::Build> setting version based on archive to $version\n";
+        $self->install_prop->{version} = $version;
+      }
     }
 
     my $tmp = Alien::Build::TempDir->new($self, "download");
