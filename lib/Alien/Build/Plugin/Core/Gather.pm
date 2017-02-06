@@ -66,7 +66,7 @@ sub init
           $orig->($build);
         };
         
-        print "Alien::Build::Plugin::Core::Gather> mirror $src => $dst\n";
+        $build->log("mirror $src => $dst");
         
         $dst->mkpath;
         _mirror("$src", "$dst", {
@@ -92,7 +92,7 @@ sub init
         unless $build->install_prop->{stage};
       
       my $stage = Path::Tiny->new($build->install_prop->{stage});
-      print "Alien::Build::Plugin::Core::Gather> mkdir -p $stage/_alien\n";
+      $build->log("mkdir -p $stage/_alien");
       $stage->child('_alien')->mkpath;
       
       # drop a alien.json file for the runtime properties

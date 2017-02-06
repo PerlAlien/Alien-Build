@@ -39,6 +39,7 @@ sub _mirror
   ($src_root, $dst_root) = map { path($_) } ($src_root, $dst_root);
   $opt ||= {};
 
+  require Alien::Build;
   require File::Find;
   require File::Copy;
   
@@ -56,7 +57,7 @@ sub _mirror
         {
           unless(-d $dst)
           {
-            print "Alien::Build> mkdir $dst\n" if $opt->{verbose};
+            Alien::Build->log("mkdir $dst") if $opt->{verbose};
             mkdir($dst) || die "unable to create directory $dst: $!";
           }
         }
@@ -65,27 +66,27 @@ sub _mirror
       {
         unless(-d $dst->parent)
         {
-          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n" if $opt->{verbose};
+          Alien::Build->log("mkdir -p @{[ $dst->parent ]}") if $opt->{verbose};
           $dst->parent->mkpath;
         }
         # TODO: rmtree if a directory?
         if(-e "$dst")
         { unlink "$dst" }
         my $target = readlink "$src";
-        print "Alien::Build> ln -s $target $dst\n" if $opt->{verbose};
+        Alien::Build->log("ln -s $target $dst") if $opt->{verbose};
         symlink($target, $dst) || die "unable to symlink $target => $dst";
       }
       elsif(-f "$src")
       {
         unless(-d $dst->parent)
         {
-          print "Alien::Build> mkdir -p @{[ $dst->parent ]}\n" if $opt->{verbose};
+          Alien::Build->log("mkdir -p @{[ $dst->parent ]}") if $opt->{verbose};
           $dst->parent->mkpath;
         }
         # TODO: rmtree if a directory?
         if(-e "$dst")
         { unlink "$dst" }
-        print "Alien::Build> cp $src $dst\n" if $opt->{verbose};
+        Alien::Build->log("Alien::Build> cp $src $dst") if $opt->{verbose};
         File::Copy::cp("$src", "$dst") || die "copy error $src => $dst: $!";
         if($] < 5.012 && -x "$src" && $^O ne 'MSWin32')
         {

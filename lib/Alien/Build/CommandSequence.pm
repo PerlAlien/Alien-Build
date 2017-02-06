@@ -58,8 +58,8 @@ sub apply_requirements
 
 sub _run
 {
-  my(undef, @cmd) = @_;
-  print "+@cmd\n";
+  my($build, @cmd) = @_;
+  $build->log("+ @cmd");
   system @cmd;
   die "external command failed" if $?;
 }
@@ -68,12 +68,12 @@ sub _run_with_code
 {
   my($build, @cmd) = @_;
   my $code = pop @cmd;
-  print "+@cmd\n";
+  $build->log("+ @cmd");
   my %args = ( command => \@cmd );
   ($args{out}, $args{err}, $args{exit}) = capture {
     system @cmd; $?
   };
-  print "[output consumed by Alien::Build]\n";
+  $build->log("[output consumed by Alien::Build recipe]");
   $code->($build, \%args);
 }
 

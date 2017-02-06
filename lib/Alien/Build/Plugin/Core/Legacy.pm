@@ -31,7 +31,7 @@ sub init
     $_ => sub {
       my($build) = @_;
       
-      print "Alien::Build::Plugin::Core::Legavy> adding legacy hash to config\n";
+      $build->log("adding legacy hash to config");
       
       my $runtime = $build->runtime_prop;
       

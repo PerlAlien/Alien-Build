@@ -84,7 +84,7 @@ sub init
       print $fh $self->program;
       close $fh;
       
-      print "Alien::Build::Plugin::Probe::CBuilder> trying: cflags=@{[ $self->cflags ]} libs=@{[ $self->libs ]}\n";
+      $build->log("trying: cflags=@{[ $self->cflags ]} libs=@{[ $self->libs ]}");
       
       my $b = ExtUtils::CBuilder->new(%{ $self->options });
 

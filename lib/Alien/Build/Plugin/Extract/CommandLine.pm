@@ -97,24 +97,24 @@ has unzip_cmd => sub {
 
 sub _run
 {
-  my(@cmd) = @_;
-  print "+@cmd\n";
+  my(undef, $build, @cmd) = @_;
+  $build->log("+ @cmd");
   system @cmd;
   die "execute failed" if $?;
 }
 
 sub _cp
 {
-  my($from, $to) = @_;
+  my(undef, $build, $from, $to) = @_;
   require File::Copy;
-  print "+cp $from $to\n";
+  $build->log("copy $from => $to");
   File::Copy::cp($from, $to) || die "unable to copy: $!";
 }
 
 sub _mv
 {
-  my($from, $to) = @_;
-  print "+mv $from $to\n";
+  my(undef, $build, $from, $to) = @_;
+  $build->log("move $from => $to");
   rename($from, $to) || die "unable to rename: $!";
 }
 
@@ -210,20 +210,20 @@ sub init
           my $dcon_tmp = Path::Tiny::path($dcon_name)
             ->parent
             ->child('x'.Path::Tiny::path($dcon_name)->basename);
-          _cp($src, $src_tmp);
-          _run($dcon_cmd, "-d", $src_tmp);
-          _mv($dcon_tmp, $dcon_name);
+          $self->_cp($build, $src, $src_tmp);
+          $self->_run($build, $dcon_cmd, "-d", $src_tmp);
+          $self->_mv($build, $dcon_tmp, $dcon_name);
         }
         $src = $dcon_name;
       }
       
       if($src =~ /\.tar$/i)
       {
-        _run $self->tar_cmd, 'xf', $src;
+        $self->_run($build, $self->tar_cmd, 'xf', $src);
       }
       elsif($src =~ /\.zip$/i)
       {
-        _run $self->unzip_cmd, $src;
+        $self->_run($build, $self->unzip_cmd, $src);
       }
       else
       {

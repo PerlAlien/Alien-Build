@@ -729,11 +729,11 @@ sub download
             my($archive) = $list[0];
             if(-d $archive)
             {
-              print "Alien::Build> single dir, assuming directory\n";
+              $self->log("single dir, assuming directory");
             }
             else
             {
-              print "Alien::Build> single file, assuming archive\n";
+              $self->log("single file, assuming archive");
             }
             $self->install_prop->{download} = $archive->absolute->stringify;
             $self->install_prop->{complete}->{download} = 1;
@@ -741,7 +741,7 @@ sub download
           }
           else
           {
-            print "Alien::Build> multiple files, assuming directoryn";
+            $self->log("multiple files, assuming directoryn");
             $self->install_prop->{complete}->{download} = 1;
             $self->install_prop->{download} = _path('.')->absolute->stringify;
             $valid = 1;
@@ -764,7 +764,7 @@ sub download
     {
       my $type = $res->{type};
       $type =~ s/_/ /;
-      print "Alien::Build> decoding $type\n";
+      $self->log("decoding $type");
       $res = $self->decode($res);
     }
     
@@ -779,14 +779,14 @@ sub download
         splice @other, 7;
         push @other, '...';
       }
-      print "Alien::Build> candidate *$pick\n";
-      print "Alien::Build> candidate  $_\n" for @other;
+      $self->log("candidate *$pick");
+      $self->log("candidate  $_") for @other;
       $res = $self->fetch($pick);
       
       if($version)
       {
         $version =~ s/\.+$//;
-        print "Alien::Build> setting version based on archive to $version\n";
+        $self->log("setting version based on archive to $version");
         $self->install_prop->{version} = $version;
       }
     }
@@ -796,7 +796,7 @@ sub download
     if($res->{type} eq 'file')
     {
       my $alienfile = $res->{filename};
-      print "Alien::Build> downloaded $alienfile\n";
+      $self->log("downloaded $alienfile");
       if($res->{content})
       {
         my $path = _path("$tmp/$alienfile");
@@ -1026,6 +1026,22 @@ sub build
   }
   
   $self;
+}
+
+=head2 log
+
+ $build->log($message);
+
+Send a message to the log.  By default this prints to C<STDOUT>.
+
+=cut
+
+sub log
+{
+  my(undef, $message) = @_;
+  my $caller = caller;
+  chomp $message;
+  print "$caller> $message\n";
 }
 
 =head2 meta

@@ -255,7 +255,7 @@ sub import
               : die "unknown INSTALLDIRS ($type)";
         $prefix = Path::Tiny->new($prefix)->child("auto/share/dist/$distname")->absolute->stringify;
 
-        print "prefix $prefix\n";
+        $build->log("prefix $prefix");
         $build->set_prefix($prefix);
         $build->checkpoint;
         _touch('prefix');
