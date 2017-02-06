@@ -401,6 +401,12 @@ type of install:
 
     The `gather_system` hook will be executed.
 
+## log
+
+    $build->log($message);
+
+Send a message to the log.  By default this prints to `STDOUT`.
+
 ## meta
 
     my $meta = Alien::Build->meta;

@@ -23,6 +23,7 @@ $modules{$_} = $_ for qw(
   IPC::Cmd
   JSON::PP
   LWP
+  Module::Load
   Net::FTP
   Path::Tiny
   PkgConfig

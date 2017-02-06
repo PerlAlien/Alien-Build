@@ -646,19 +646,21 @@ sub probe
     $type = eval {
       $self->_call_hook(
         {
-          before => sub {
+          before   => sub {
             $dir = Alien::Build::TempDir->new($self, "probe");
             $CWD = "$dir";
           },
-          after  => sub {
+          after    => sub {
             $CWD = $self->root;
           },
-          ok     => 'system',
+          ok       => 'system',
+          continue => sub { $_[0] ne 'system' },
         },
         'probe',
       );
     };
     $error = $@;
+    $type = 'share' unless defined $type;
   }
   
   if($error)
@@ -667,7 +669,7 @@ sub probe
     {
       die $error;
     }
-    warn "error in probe (will do a share install): $@";
+    $self->log("error in probe (will do a share install): $@");
     $type = 'share';
   }
   
@@ -1345,11 +1347,20 @@ sub call_hook
   
   my @hooks = @{ $self->{hook}->{$name} || []};
   
-  if(@hooks == 0 && defined $self->{default_hook}->{$name})
+  if(@hooks == 0)
   {
-    @hooks = ($self->{default_hook}->{$name})
+    if(defined $self->{default_hook}->{$name})
+    {
+      @hooks = ($self->{default_hook}->{$name})
+    }
+    elsif(!$args{all})
+    {
+      Carp::croak "No hooks registered for $name";
+    }
   }
-    
+  
+  my $value;
+
   foreach my $hook (@hooks)
   {
     my $wrapper = $self->{around}->{$name} || sub { my $code = shift; $code->(@_) };
@@ -1382,15 +1393,14 @@ sub call_hook
     else
     {
       next if $error;
+      next if $args{continue} && $args{continue}->($value);
       return $value;
     }
   }
   
-  unless($args{all})
-  {
-    die $error if $error;
-    Carp::croak "No hooks registered for $name";
-  }
+  die $error if $error && ! $args{all};
+  
+  $value;
 }
 
 package Alien::Build::TempDir;

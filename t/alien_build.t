@@ -419,7 +419,9 @@ subtest 'gather system' => sub {
   
   if($build->install_type eq 'system')
   {
-    $build->build;
+    note capture_merged {
+      $build->build;
+    };
   }
   
   is(
@@ -688,7 +690,10 @@ subtest 'build' => sub {
     $build->install_prop->{download} = path("corpus/dist/foo-1.00.tar")->absolute->stringify;
     $build->set_stage($share->stringify);
 
-    $build->build;
+    note capture_merged {
+      $build->build;
+      ();
+    };
   
     is(
       \@data,
@@ -834,7 +839,10 @@ subtest 'patch' => sub {
       },
     );
   
-    $build->build;
+    note capture_merged {
+      $build->build;
+      ();
+    };
   
     my $file3 = path($build->install_prop->{stage})->child('file3');
     is(
@@ -885,7 +893,10 @@ subtest 'patch' => sub {
       },
     );
   
-    $build->build;
+    note capture_merged {
+      $build->build;
+      ();
+    };
   
     my $file3 = path($build->install_prop->{stage})->child('file3');
     is(
@@ -928,6 +939,22 @@ subtest 'preload' => sub {
   my($build, $meta) = build_blank_alien_build;
   
   ok( $meta->has_hook($_), "has hook $_" ) for qw( preload1 preload2 );
+
+};
+
+subtest 'first probe returns share' => sub {
+
+  my $build = alienfile q{
+    use alienfile;
+    probe sub { 'share' };
+    probe sub { 'system' };
+  };
+  
+  note capture_merged {
+    $build->probe;
+  };
+  
+  is( $build->install_type, 'system' );
 
 };
 
