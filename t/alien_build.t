@@ -944,17 +944,60 @@ subtest 'preload' => sub {
 
 subtest 'first probe returns share' => sub {
 
-  my $build = alienfile q{
-    use alienfile;
-    probe sub { 'share' };
-    probe sub { 'system' };
+  subtest 'share, system' => sub {
+
+    my $build = alienfile q{
+      use alienfile;
+      probe sub { 'share' };
+      probe sub { 'system' };
+    };
+  
+    note capture_merged {
+      $build->probe;
+    };
+  
+    is( $build->install_type, 'system' );
   };
   
-  note capture_merged {
-    $build->probe;
-  };
+  subtest 'command ok' => sub {
   
-  is( $build->install_type, 'system' );
+    my $guard = system_fake
+      'pkg-config' => sub { 0 }
+    ;
+  
+    my $build = alienfile q{
+      use alienfile;
+      probe [ [ 'pkg-config', '--exists', 'libfoo' ] ];
+    };
+    
+    note capture_merged {
+      $build->probe;
+      ();
+    };
+    
+    is($build->install_type, 'system');
+  
+  };
+
+  subtest 'command bad' => sub {
+  
+    my $guard = system_fake
+      'pkg-config' => sub { 1 }
+    ;
+  
+    my $build = alienfile q{
+      use alienfile;
+      probe [ [ 'pkg-config', '--exists', 'libfoo' ] ];
+    };
+    
+    note capture_merged {
+      $build->probe;
+      ();
+    };
+    
+    is($build->install_type, 'share');
+  
+  };
 
 };
 
