@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed regression in architecture logic for Alien::Build::MM
   - Fix bug where compile error wouldn't throw exception from
     Alien::Build->load
 

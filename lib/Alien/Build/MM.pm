@@ -189,7 +189,7 @@ sub mm_postamble
                 "alien_realclean:\n" .
                 "\t\$(RM_RF) _alien\n\n";
 
-  my $dirs = $self->build->install_prop->{arch}
+  my $dirs = $self->build->meta_prop->{arch}
     ? '$(INSTALLARCHLIB) $(INSTALLSITEARCH) $(INSTALLVENDORARCH)'
     : '$(INSTALLPRIVLIB) $(INSTALLSITELIB) $(INSTALLVENDORLIB)'
   ;
@@ -275,7 +275,7 @@ sub import
         
         $build->build;
 
-        if($build->install_prop->{arch})
+        if($build->meta_prop->{arch})
         {
           my $distname = $build->install_prop->{mm}->{distname};
           my $archdir = Path::Tiny->new("blib/arch/auto/@{[ join '/', split /-/, $distname ]}");
