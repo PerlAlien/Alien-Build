@@ -39,6 +39,7 @@ pod_spelling_system:
     - toolset
     - unixy
     - microsoft
+    - GnuWin
 
 pod_coverage:
   skip: 0
