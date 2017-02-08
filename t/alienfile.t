@@ -372,4 +372,17 @@ subtest 'arch' => sub {
 
 };
 
+subtest 'meta' => sub {
+
+  my $build = alienfile q{
+    use alienfile;
+    meta->prop->{foo} = 1;
+    probe sub { 'system' };
+  
+  };
+  
+  is $build->meta_prop->{foo}, 1;
+
+};
+
 done_testing;

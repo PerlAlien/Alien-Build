@@ -514,6 +514,14 @@ sub meta_prop
   $meta->prop;
 }
 
+=head2 meta
+
+ my $meta = meta;
+
+Returns the meta object for your L<alienfile>.
+
+=cut
+
 sub import
 {
   strict->import;

@@ -363,7 +363,6 @@ sub load
   { no strict 'refs';  
   @{ "${class}::ISA" } = ('Alien::Build');
   *{ "${class}::Alienfile::meta" } = sub {
-    my($class) = @_;
     $class =~ s{::Alienfile$}{};
     $class->meta;
   }};
