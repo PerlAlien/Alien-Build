@@ -3,8 +3,6 @@
 *.swp
 /t/bin/*.json
 /t/bin/*.log
-/example/_alien
-/example/blib
 /example/Alien-*/*.bak
 /example/Alien-*/Makefile
 /example/Alien-*/_alien
