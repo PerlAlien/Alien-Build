@@ -109,7 +109,7 @@ sub mm_args
     Carp::croak "DISTNAME is required";
   }
   
-  my $ab_version = '0.10';
+  my $ab_version = '0.11';
   
   $args{CONFIGURE_REQUIRES} = Alien::Build::_merge(
     'Alien::Build::MM' => $ab_version,
