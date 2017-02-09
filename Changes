@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.15      2017-02-09 14:08:46 -0500
+  - Fixed bug where requires sometimes did not return a hash reference
+
 0.14      2017-02-09 02:07:09 -0500
   - Add meta directive to alienfile.
   - Use .pc files from dependant Aliens that used Alien::Build
