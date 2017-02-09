@@ -7,6 +7,7 @@ use Carp ();
 use File::chdir;
 use JSON::PP ();
 use Env qw( @PATH );
+use Env qw( @PKG_CONFIG_PATH );
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -73,6 +74,7 @@ sub new
     runtime_prop => {
     },
     bin_dir => [],
+    pkg_config_path => [],
   }, $class;
   
   $self->meta->filename(
@@ -593,6 +595,14 @@ sub load_requires
     {
       push @{ $self->{bin_dir} }, $mod->bin_dir;
     }
+    if($mod->can('runtime_prop') && $mod->runtime_prop)
+    {
+      my $path = _path($mod->dist_dir)->child('lib/pkgconfig');
+      if(-d $path)
+      {
+        push @{ $self->{pkg_config_path} }, $path->stringify;
+      }
+    }
   }
   1;
 }
@@ -603,6 +613,9 @@ sub _call_hook
   
   local $ENV{PATH} = $ENV{PATH};
   unshift @PATH, @{ $self->{bin_dir} };
+  
+  local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
+  unshift @PKG_CONFIG_PATH, @{ $self->{pkg_config_path} };
   
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;
