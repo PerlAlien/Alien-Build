@@ -569,7 +569,7 @@ sub requires
   $phase ||= 'any';
   my $meta = $self->meta;
   $phase =~ /^(?:any|configure)$/
-  ? $meta->{require}->{$phase}
+  ? $meta->{require}->{$phase} || {}
   : _merge %{ $meta->{require}->{any} }, %{ $meta->{require}->{$phase} };
 }
 
