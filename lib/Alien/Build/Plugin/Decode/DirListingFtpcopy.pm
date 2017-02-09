@@ -49,8 +49,10 @@ sub init
       list => [
         map {
           my($name) = @$_;
+          my $basename = $name;
+          $basename =~ s{/$}{};
           my %h = (
-            filename => File::Basename::basename($name),
+            filename => File::Basename::basename($basename),
             url      => URI->new_abs($name, $base)->as_string,
           );
           \%h;

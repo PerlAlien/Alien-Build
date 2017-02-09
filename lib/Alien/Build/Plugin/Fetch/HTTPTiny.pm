@@ -77,7 +77,7 @@ sub init
     my($type) = split ';', $res->{headers}->{'content-type'};
     $type = lc $type;
     my $base            = URI->new($res->{url});
-    my $filename        = File::Basename::basename $base->path;
+    my $filename        = File::Basename::basename do { my $name = $base->path; $name =~ s{/$}{}; $name };
 
     # TODO: this doesn't get exercised by t/bin/httpd
     if(my $disposition = $res->{headers}->{"content-disposition"})

@@ -51,8 +51,10 @@ sub init
         my $href = $links{href};
         return if $href =~ m!^\.\.?/?$!;
         my $url = URI->new_abs($href, $base);
+        my $path = $url->path;
+        $path =~ s{/$}{}; # work around for Perl 5.8.7- gh#8
         push @list, {
-          filename => File::Basename::basename($url->path),
+          filename => File::Basename::basename($path),
           url      => $url->as_string,
         };
       }

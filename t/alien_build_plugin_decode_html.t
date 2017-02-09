@@ -55,7 +55,8 @@ subtest 'decode' => sub {
           };
         },
       );
-      note "url = $_" for map { $_->{url} } @{ $res2->{list} }
+      note "filename = $_" for map { $_->{filename} } @{ $res2->{list} };
+      note "url = $_" for map { $_->{url} } @{ $res2->{list} };
     };
   }
 
