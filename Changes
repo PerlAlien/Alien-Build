@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add prefix to %{configure} helper for Build::Autoconf plugin
 
 0.15      2017-02-09 14:08:46 -0500
   - Fixed bug where requires sometimes did not return a hash reference

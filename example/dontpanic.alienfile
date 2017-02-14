@@ -17,7 +17,7 @@ share {
   build [
     'git checkout v1.00',
     'bash autogen.sh',
-    '%{configure} --disable-shared --prefix=%{alien.install.autoconf_prefix}',
+    '%{configure} --disable-shared',
     '%{make}',
     '%{make} install',
   ];

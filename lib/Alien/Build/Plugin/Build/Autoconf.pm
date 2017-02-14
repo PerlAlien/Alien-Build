@@ -20,7 +20,7 @@ This plugin provides some tools for building projects that use autoconf.  The ma
 this provides is a C<configure> helper, documented below and the default build stage,
 which is:
 
- '%{configure} --prefix=%{alien.install.autoconf_prefix} --disable-shared',
+ '%{configure} --disable-shared',
  '%{make}',
  '%{make} install',
 
@@ -74,6 +74,15 @@ sub init
         $prefix =~ s!^([a-z]):!/$1!i if _win;
       }
       $build->install_prop->{autoconf_prefix} = $prefix;
+      
+      $intr->replace_helper(
+        configure => sub {
+          my $configure = _win ? 'sh configure' : './configure';
+          $configure .= ' --prefix=' . $prefix;
+          $configure .= ' --with-pic' if $self->with_pic;
+          $configure;
+        }
+      );
 
       my $ret = $orig->($build, @_);
 
@@ -118,7 +127,7 @@ Some reasonable default flags will be provided.
   
   $meta->default_hook(
     build => [
-      '%{configure} --prefix=%{alien.install.autoconf_prefix} --disable-shared',
+      '%{configure} --disable-shared',
       '%{make}',
       '%{make} install',
     ]
