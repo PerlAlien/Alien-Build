@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.16      2017-02-15 20:07:05 +1100
   - Add prefix to %{configure} helper for Build::Autoconf plugin
   - Add hook_prop to Alien::Build
   - Add system method to Alien::Build
