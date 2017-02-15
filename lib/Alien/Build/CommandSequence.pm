@@ -82,6 +82,19 @@ sub _run_with_code
 
 =cut
 
+sub _apply
+{
+  my($where, $prop, $value) = @_;
+  if($where =~ /^(.*?)\.(.*?)$/)
+  {
+    _apply($2, $prop->{$1}, $value);
+  }
+  else
+  {
+    $prop->{$where} = $value;
+  }
+}
+
 sub execute
 {
   my($self, $build) = @_;
@@ -99,6 +112,27 @@ sub execute
     {
       my($command, @args) = @$command;
       my $code = pop @args if $args[-1] && ref($args[-1]) eq 'CODE';
+      
+      if($args[-1] && ref($args[-1]) eq 'SCALAR')
+      {
+        my $dest = ${ pop @args };
+        if($dest =~ /^\%\{(alien\.(?:install|runtime|hook)\.[a-z\.]+)\}$/)
+        {
+          $dest = $1;
+          $code = sub {
+            my($build, $args) = @_;
+            die "external command failed" if $args->{exit};
+            my $out = $args->{out};
+            chomp $out;
+            _apply($dest, $prop, $out);
+          };
+        }
+        else
+        {
+          die "illegal destination: $dest";
+        }
+      }
+      
       ($command, @args) = map { $intr->interpolate($_, $prop) } ($command, @args);
       
       if($code)

@@ -40,18 +40,10 @@ Do-it-yourself approach:
    ];   
  }
  
- sub pkgconfig_value
- {
-   my($name, $build, $args) = @_;
-   my $value = $args->{out}; # stdout from the pkg-config command
-   chomp $value; # probably has \n
-   $build->runtime_prop->{$name} = $value;
- }
- 
  gather [
-   [ 'pkg-config', '--modversion', 'libarchive', sub { pkgconfig_value 'version', @_ } ],
-   [ 'pkg-config', '--cflags',     'libarchive', sub { pkgconfig_value 'cflags', @_ }  ],
-   [ 'pkg-config', '--libs',       'libarchive', sub { pkgconfig_value 'libs', @_ }    ],
+   [ 'pkg-config', '--modversion', 'libarchive', \'%{alien.runtime.version}' ],
+   [ 'pkg-config', '--cflags',     'libarchive', \'%{alien.runtime.cflags}'  ],
+   [ 'pkg-config', '--libs',       'libarchive', \'%{alien.runtime.libs}'    ],
  ];
 
 With plugins (better):

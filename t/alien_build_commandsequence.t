@@ -85,6 +85,7 @@ subtest 'execute' => sub {
     print STDERR "stuff error";
   };
   
+
   my @cap;
   
   note capture_merged {
@@ -137,6 +138,21 @@ subtest 'execute' => sub {
       };
     },
   );
+  
+  system_hook stuff2 => sub {
+    print "single line\n";
+    print STDERR "stuff error\n";
+    print STDERR "stuff error\n";
+  };
+  
+  note capture_merged {
+    Alien::Build::CommandSequence->new(
+      [ 'stuff2', '%{foo}', \'%{alien.runtime.foo}' ],
+    )->execute($build);
+  };
+  
+  is($build->runtime_prop->{foo}, 'single line');
+  
 };
 
 done_testing;

@@ -29,28 +29,12 @@ share {
 
 };
 
-# this function takes the output from the pkg-config commands below
-# and puts the appropriate values into the runtime_prop hash.
-sub flags
-{
-  my($build, $args) = @_;
-
-  die 'command failed' if $args->{'exit'};
-
-  my $name = $args->{command}->[1];
-  $name =~ s/^--(mod)?//;
-
-  my $value = $args->{out}; # stdout from the pkg-config command
-  chomp $value;
-
-  $build->runtime_prop->{$name} = $value;
-}
-
 # You can specify individual gather steps in share {} or
 # sys {} too, but for many cases the same procedure can
 # be used for both.
 gather [
-  [ 'pkg-config', '--modversion', 'liblzma', \&flags ],
-  [ 'pkg-config', '--cflags',     'liblzma', \&flags ],
-  [ 'pkg-config', '--libs',       'liblzma', \&flags ],
+  # store the (chomped) output into the appropriate runtime properties
+  [ 'pkg-config', '--modversion', 'liblzma', \'%{alien.runtime.version}' ],
+  [ 'pkg-config', '--cflags',     'liblzma', \'%{alien.runtime.cflags}'  ],
+  [ 'pkg-config', '--libs',       'liblzma', \'%{alien.runtime.libs}'    ],
 ];
