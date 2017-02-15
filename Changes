@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.17      2017-02-16 08:28:19 +1100
   - Can now store the output of a command into a property using
     a scalar reference, like this:
     [ 'command', '--flags', \'%{alien.runtime.foo}' ]
