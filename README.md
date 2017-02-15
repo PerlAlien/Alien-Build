@@ -244,6 +244,18 @@ relevant once the install process is complete.
         downloaded from the internet or retrieved in another appropriate fashion
         and built.
 
+## hook\_prop
+
+    my $href = $build->hook_prop;
+
+Hook properties are for the currently running (if any) hook.  They are
+used only during the execution of each hook and are discarded after.
+If no hook is currently running then `hook_prop` will return `undef`.
+
+- name
+
+    The name of the currently running hook.
+
 # METHODS
 
 ## load

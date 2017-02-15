@@ -74,15 +74,31 @@ subtest 'hook' => sub {
   subtest 'simple single working hook' => sub {
   
     my @foo1;
+    my $props;
   
     $meta->register_hook(
       foo1 => sub {
         @foo1 = @_;
+        my($build) = @_;
+        $props = $build->hook_prop;
         return 42;
       }
     );
   
+    is( $build->hook_prop, undef );  
+  
     is( $build->_call_hook(foo1 => ('roger', 'ramjet')), 42);
+
+    is(
+      $props,
+      hash {
+        field name => 'foo1';
+        etc;
+      },
+    );
+
+    is( $build->hook_prop, undef );  
+
     is(
       \@foo1,
       array {

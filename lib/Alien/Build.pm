@@ -330,6 +330,30 @@ sub runtime_prop
   shift->{runtime_prop};
 }
 
+=head2 hook_prop
+
+ my $href = $build->hook_prop;
+
+Hook properties are for the currently running (if any) hook.  They are
+used only during the execution of each hook and are discarded after.
+If no hook is currently running then C<hook_prop> will return C<undef>.
+
+=over 4
+
+=item name
+
+The name of the currently running hook.
+
+=back
+
+=cut
+
+sub hook_prop
+{
+  shift->{hook_prop};
+}
+
+
 =head1 METHODS
 
 =head2 load
@@ -619,6 +643,11 @@ sub _call_hook
   
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;
+  
+  local $self->{hook_prop} = {
+    name => $name,
+  };
+  
   $self->meta->call_hook( $config, $name => $self, @args );
 }
 
