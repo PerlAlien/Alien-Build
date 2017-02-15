@@ -8,6 +8,7 @@ use File::chdir;
 use JSON::PP ();
 use Env qw( @PATH );
 use Env qw( @PKG_CONFIG_PATH );
+use Config ();
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -353,6 +354,22 @@ sub hook_prop
   shift->{hook_prop};
 }
 
+sub _command_prop
+{
+  my($self) = @_;
+
+  return {
+    alien => {
+      install => $self->install_prop,
+      runtime => $self->runtime_prop,
+      hook    => $self->hook_prop,
+      meta    => $self->meta_prop,
+    },
+    perl    => {
+      config => \%Config::Config,
+    },
+  };
+}
 
 =head1 METHODS
 
@@ -1085,8 +1102,10 @@ sub system
 {
   my($self, $command, @args) = @_;
   
+  my $prop = $self->_command_prop;
+  
   ($command, @args) = map { 
-    $self->meta->interpolator->interpolate($_)
+    $self->meta->interpolator->interpolate($_, $prop)
   } ($command, @args);
   
   scalar @args

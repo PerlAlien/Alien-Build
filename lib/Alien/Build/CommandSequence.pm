@@ -3,7 +3,6 @@ package Alien::Build::CommandSequence;
 use strict;
 use warnings;
 use Capture::Tiny qw( capture );
-use Config ();
 
 # ABSTRACT: Alien::Build command sequence
 # VERSION
@@ -88,16 +87,7 @@ sub execute
   my($self, $build) = @_;
   my $intr = $build->meta->interpolator;
 
-  my $prop = {
-    alien => {
-      install => $build->install_prop,
-      runtime => $build->runtime_prop,
-      meta    => $build->meta_prop,
-    },
-    perl    => {
-      config => \%Config::Config,
-    },
-  };
+  my $prop = $build->_command_prop;
   
   foreach my $command (@{ $self->{commands} })
   {

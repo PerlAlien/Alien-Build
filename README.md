@@ -413,6 +413,14 @@ type of install:
 
     The `gather_system` hook will be executed.
 
+## system
+
+    $build->system($command);
+    $build->system($command, @args);
+
+Interpolates the command and arguments and run the results using
+the Perl `system` command.
+
 ## log
 
     $build->log($message);
