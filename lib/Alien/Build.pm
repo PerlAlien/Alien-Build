@@ -1071,6 +1071,29 @@ sub build
   $self;
 }
 
+=head2 system
+
+ $build->system($command);
+ $build->system($command, @args);
+
+Interpolates the command and arguments and run the results using
+the Perl C<system> command.
+
+=cut
+
+sub system
+{
+  my($self, $command, @args) = @_;
+  
+  ($command, @args) = map { 
+    $self->meta->interpolator->interpolate($_)
+  } ($command, @args);
+  
+  scalar @args
+    ? system $command, @args
+    : system $command;
+}
+
 =head2 log
 
  $build->log($message);

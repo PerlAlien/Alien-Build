@@ -1,9 +1,9 @@
 use Test2::Bundle::Extended;
-use Alien::Build;
 use lib 't/lib';
 use lib 'corpus/lib';
 use MyTest;
 use MyTest::System2;
+use Alien::Build;
 use Capture::Tiny qw( capture_merged );
 use File::chdir;
 use Path::Tiny qw( path );
@@ -1014,6 +1014,47 @@ subtest 'first probe returns share' => sub {
     is($build->install_type, 'share');
   
   };
+
+};
+
+subtest 'system' => sub {
+
+  my @args;
+
+  my $guard = system_fake
+    frooble => sub {
+      @args = ('frooble', @_);
+    },
+    xor => sub {
+      @args = ('xor', @_);
+    },
+  ;
+
+  my $build = alienfile q{
+    use alienfile;
+  };
+  
+  $build->meta->interpolator->add_helper(
+    foo => sub { '1234' },
+  );
+
+  $build->meta->interpolator->add_helper(
+    bar => sub { 'xor' },
+  );
+  
+  $build->system('frooble', '%{foo}');
+  
+  is(
+    \@args,
+    [ 'frooble', '1234' ],
+  );
+  
+  $build->system('%{bar}');
+  
+  is(
+    \@args,
+    [ 'xor' ],
+  );
 
 };
 
