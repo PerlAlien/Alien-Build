@@ -126,32 +126,32 @@ sub execute_helper
 
 =cut
 
+sub _get_prop
+{
+  my($name, $prop, $orig) = @_;
+  if($name =~ /^(.*?)\.(.*)$/)
+  {
+    my($key,$rest) = ($1,$2);
+    return _get_prop($rest, $prop->{$key}, $orig);
+  }
+  elsif(exists $prop->{$name})
+  {
+    return $prop->{$name};
+  }
+  else
+  {
+    require Carp;
+    Carp::croak("No property $orig is defined");
+  }
+}
+
 sub interpolate
 {
   my($self, $string, $prop) = @_;
   $prop ||= {};
   
-  my $get_prop;
-  $get_prop = sub {
-    my($name, $prop, $orig) = @_;
-    if($name =~ /^(.*?)\.(.*)$/)
-    {
-      my($key,$rest) = ($1,$2);
-      return $get_prop->($rest, $prop->{$key}, $orig);
-    }
-    elsif(exists $prop->{$name})
-    {
-      return $prop->{$name};
-    }
-    else
-    {
-      require Carp;
-      Carp::croak("No property $orig is defined");
-    }
-  };
-  
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
-  $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9\.]+)\}}{$get_prop->($1,$prop,$1)}eg;
+  $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9\.]+)\}}{_get_prop($1,$prop,$1)}eg;
   $string =~ s/\%(?=\%)//g;
   $string;
 }
