@@ -159,7 +159,7 @@ Examples:
 
  # explicitly loads Alien::Build::Plugin::Prefer::SortVersions
  plugin 'Prefer::SortVersions => (
-   filter => qr/^gcc-.*\.tar.gz$/,
+   filter => qr/^gcc-.*\.tar\.gz$/,
    version => qr/([0-9\.]+)/,
  );
  
