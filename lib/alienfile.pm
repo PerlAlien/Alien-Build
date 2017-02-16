@@ -222,7 +222,7 @@ sub plugin
 
 =head2 probe
 
- probe $code;
+ probe \&code;
  probe \@commandlist;
 
 Instructions for the probe stage.  May be either a
@@ -302,7 +302,7 @@ sub share (&)
 =head2 download
 
  share {
-   download $code;
+   download \&code;
    download \@commandlist;
  };
 
@@ -334,7 +334,7 @@ sub download
 =head2 fetch
 
  share {
-   fetch $code;
+   fetch \&code;
    fetch \@commandlist;
  };
 
@@ -355,7 +355,7 @@ sub fetch
 =head2 decode
 
  share {
-   decode $code;
+   decode \&code;
    decode \@commandlist;
  };
 
@@ -376,7 +376,7 @@ sub decode
 =head2 prefer
 
  share {
-   prefer $code;
+   prefer \&code;
    prefer \@commandlist;
  };
 
@@ -397,7 +397,7 @@ sub prefer
 =head2 extract
 
  share {
-   extract $code;
+   extract \&code;
    extract \@commandlist;
  };
 
@@ -418,7 +418,7 @@ sub extract
 =head2 patch
 
  share {
-   patch $code;
+   patch \&code;
    patch \@commandlist;
  };
 
@@ -439,7 +439,7 @@ sub patch
 =head2 build
 
  share {
-   build $code;
+   build \&code;
    build \@commandlist;
  };
 
@@ -459,16 +459,16 @@ sub build
 
 =head2 gather
 
- gather $code;
+ gather \&code;
  gather \@commandlist;
  
  share {
-   gather $code;
+   gather \&code;
    gather \@commandlist;
  };
  
  sys {
-   gather $code;
+   gather \&code;
    gather \@commandlist;
  };
 
