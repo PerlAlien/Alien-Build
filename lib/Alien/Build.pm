@@ -410,7 +410,7 @@ sub load
     $class->meta;
   }};
 
-  my @preload = qw( Core::Setup );
+  my @preload = qw( Core::Setup Core::Download );
   @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
   
@@ -818,69 +818,10 @@ sub download
   }
   else
   {
-    my $res = $self->fetch;
-
-    if($res->{type} =~ /^(?:html|dir_listing)$/)
-    {
-      my $type = $res->{type};
-      $type =~ s/_/ /;
-      $self->log("decoding $type");
-      $res = $self->decode($res);
-    }
-    
-    if($res->{type} eq 'list')
-    {
-      $res = $self->prefer($res);
-      my $version = $res->{list}->[0]->{version};
-      die "no matching files in listing" if @{ $res->{list} } == 0;
-      my($pick, @other) = map { $_->{url} } @{ $res->{list} };
-      if(@other > 8)
-      {
-        splice @other, 7;
-        push @other, '...';
-      }
-      $self->log("candidate *$pick");
-      $self->log("candidate  $_") for @other;
-      $res = $self->fetch($pick);
-      
-      if($version)
-      {
-        $version =~ s/\.+$//;
-        $self->log("setting version based on archive to $version");
-        $self->install_prop->{version} = $version;
-      }
-    }
-
-    my $tmp = Alien::Build::TempDir->new($self, "download");
-    
-    if($res->{type} eq 'file')
-    {
-      my $alienfile = $res->{filename};
-      $self->log("downloaded $alienfile");
-      if($res->{content})
-      {
-        my $path = _path("$tmp/$alienfile");
-        $path->spew_raw($res->{content});
-        $self->install_prop->{download} = $path->stringify;
-        $self->install_prop->{complete}->{download} = 1;
-        return $self;
-      }
-      elsif($res->{path})
-      {
-        require File::Copy;
-        my $from = _path $res->{path};
-        my $to   = _path("$tmp/@{[ $from->basename ]}");
-        File::Copy::copy(
-          "$from" => "$to",
-        ) || die "copy $from => $to failed: $!";
-        $self->install_prop->{download} = $to->stringify;
-        $self->install_prop->{complete}->{download} = 1;
-        return $self;
-      }
-      die "file without content or path";
-    }
-    
-    die "unknown fetch response type: @{[ $res->{type} ]}";
+    # This will call the default download hook
+    # defined in Core::Download since the recipe
+    # does not provide a download hook
+    return $self->_call_hook('download');  
   }
   
   die "download failed";

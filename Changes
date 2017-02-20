@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - download hook gets called, even if you are using the fetch,
+    decode, prefer hooks.
 
 0.17      2017-02-16 08:28:19 +1100
   - Can now store the output of a command into a property using
