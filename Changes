@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.19      2017-03-01 08:53:14 +1100
+  - Fix some platform and environment specific bugs in the test suite
+
 0.18      2017-02-21 18:12:28 +1100
   - download hook gets called, even if you are using the fetch,
     decode, prefer hooks.
