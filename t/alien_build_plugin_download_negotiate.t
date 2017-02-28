@@ -6,6 +6,8 @@ use Path::Tiny;
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _dump );
 
+delete $ENV{$_} for qw( ftp_proxy all_proxy );
+
 subtest 'pick fetch' => sub {
 
   local %ENV = %ENV;
