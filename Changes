@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Remove experimental Alien::Base2.  Use Alien::Base 0.036 or better
+    instead!
 
 0.19      2017-03-01 08:53:14 +1100
   - Fix some platform and environment specific bugs in the test suite

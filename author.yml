@@ -47,5 +47,4 @@ pod_coverage:
   # for either Class or method.
   private:
     - Alien::Build::Plugin::.*#init
-    - Alien::Base2
 

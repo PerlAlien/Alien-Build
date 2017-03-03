@@ -16,7 +16,6 @@ $modules{$_} = $_ for qw(
   FFI::CheckLib
   File::Listing
   File::Listing::Ftpcopy
-  File::ShareDir
   File::chdir
   HTML::LinkExtor
   HTTP::Tiny
