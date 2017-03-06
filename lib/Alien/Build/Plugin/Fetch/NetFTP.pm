@@ -98,6 +98,8 @@ sub init
     my @list = $ftp->ls;
     
     die "no files found at $url" unless @list;
+
+    $path .= '/' unless $path =~ /\/$/;
     
     return {
       type => 'list',
