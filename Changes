@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add subplugin method to Alien::Build::Plugin
+  - Filled out the FAQ
 
 0.21      2017-03-06 00:09:33 -0500
   - Net::FTP plugin doesn't require trailing / in URL

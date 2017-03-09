@@ -24,19 +24,71 @@ download, build and install a package.
 
 =head2 How do I specify a minimum or exact version requirement for packages that use pkg-config?
 
-TODO
+The various pkg-config plugins all support a minimum_version field:
+
+ use alienfile;
+ 
+ plugin 'PkgConfig', pkg_name => foo, minimum_version => '1.2.3';
 
 =head2 How to create an Alien module for a packages that do not support pkg-config?
 
-TODO
+Depends on how you probe for and build for a package.  Most things can be done by providing
+commands.  For example if you have a C<foo> package that provides a C<foo-config> program
+to provide the normal C<pkg-config> fileds then you could do something like this:
+
+ use alienfile;
+ 
+ probe [ 'foo-config --version' ];
+ 
+ share {
+   ...
+ 
+   build [
+     '%{make} PREFIX=%{alien.runtime.prefix}',
+     '%{amek} install PREFIX=%{alien.runtime.prefix}',
+   ];
+ };
+ 
+ gather [
+   [ 'foo-config', '--version', \'%{alien.runtime.version}' ],
+   [ 'foo-config', '--cflags',  \'%{alien.runtime.cflags}'  ],
+   [ 'foo-config', '--libs',    \'%{alien.runtime.libs}'    ],
+ ];
 
 =head2 How do I test my package once it is built (before it is installed)?
 
-TODO
+Use L<Test::Alien>.  It has extensive documentation, and integrates nicely with L<Alien::Base>.
 
 =head2 How do I patch packages that need alterations?
 
-TODO
+If you have a patch file you can use diff:
+
+ use alienfile;
+ 
+ ...
+ 
+ share {
+   ...
+   patch [ '%{patch} -p1 < %{alien.install.patch}/mypatch.diff' ];
+   build [ ... ] ;
+ }
+ 
+ ...
+
+You can also patch using Perl if that is easier:
+
+ use alienfile;
+ 
+ ...
+ 
+ share {
+   ...
+   patch sub {
+     my($build) = @_;
+     # make changes to source prior to build
+   };
+   build [ ... ];
+ };
 
 =head2 How do I build a package that uses I<build system>
 
@@ -103,7 +155,9 @@ MSYS plugin and use a command sequence to do the build like this:
 
 =head3 CMAKE
 
-TODO
+There is an L<Alien> for cmake: L<Alien::CMake>, and a helper C<%{cmake}> which will
+automatically pull it in as needed.  (Help wanted, an actual working example for this
+FAQ).
 
 =head3 vanilla Makefiles
 
@@ -134,10 +188,6 @@ to use the 'Probe::CommandLine':
 
 For creating L<Alien::Base> and L<Alien::Build> based dist from L<Dist::Zilla> you can use the
 dzil plugin L<Dist::Zilla::Plugin::AlienBuild>.
-
-=head2 How to check the share install if my library doesn't provide a C<.pc> file.
-
-TODO
 
 =head2 I have a question not listed here!
 

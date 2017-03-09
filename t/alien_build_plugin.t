@@ -47,4 +47,30 @@ subtest 'properties' => sub {
 
 };
 
+subtest 'subplugin' => sub {
+
+  {
+    package
+      Alien::Build::Plugin::Foo::Bar;
+    use Alien::Build::Plugin;
+    
+    has foo => undef;
+    has bar => 2;
+    
+    sub init
+    {
+      my($self,$meta) = @_;
+    }
+  }
+  
+  my $plugin1 = Alien::Build::Plugin::RogerRamjet->new;
+  my $plugin2 = $plugin1->subplugin('Foo::Bar', foo => 1, bar => undef);
+  isa_ok $plugin2, 'Alien::Build::Plugin';
+  isa_ok $plugin2, 'Alien::Build::Plugin::Foo::Bar';
+  is $plugin2->foo, 1;
+  is $plugin2->bar, 2;
+
+};
+
 done_testing;
+

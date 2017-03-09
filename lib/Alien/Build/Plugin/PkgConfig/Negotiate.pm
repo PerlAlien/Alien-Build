@@ -32,40 +32,42 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
+=head2 minimum_version
+
+The minimum required version that is acceptable version as provided by the system.
+
+=cut
+
+has minimum_version => undef;
+
 sub _pick
 {
   my($class) = @_;
   
   if(eval q{ use PkgConfig::LibPkgConf 0.04; 1 })
   {
-    return 'LibPkgConf';
+    return 'PkgConfig::LibPkgConf';
   }
   
   require Alien::Build::Plugin::PkgConfig::CommandLine;
   if(Alien::Build::Plugin::PkgConfig::CommandLine->new(pkg_name => 'foo')->bin_name)
   {
-    return 'CommandLine';
+    return 'PkgConfig::CommandLine';
   }
   
-  return 'PP';
+  return 'PkgConfig::PP';
 }
 
 sub init
 {
   my($self, $meta) = @_;
-  
-  my $plugin = _plugin($self->_pick, pkg_name => $self->pkg_name);
-  $plugin->init($meta);
-  $self;
-}
+    
+  $self->subplugin($self->_pick,
+    pkg_name        => $self->pkg_name,
+    minimum_version => $self->minimum_version,
+  )->init($meta);
 
-sub _plugin
-{
-  my($name, @args) = @_;
-  my $class = "Alien::Build::Plugin::PkgConfig::$name";
-  my $pm    = "Alien/Build/Plugin/PkgConfig/$name.pm";
-  require $pm;
-  $class->new(@args);
+  $self;
 }
 
 1;
