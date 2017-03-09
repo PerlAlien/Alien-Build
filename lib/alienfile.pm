@@ -28,10 +28,10 @@ Do-it-yourself approach:
    
    extract [ 'tar xf %{alien.install.download}' ];
    
-   plugin 'Build::Autoconf';
-   
    build [ 
-     '%{configure} --disable-shared',
+     # Note: will not work on Windows, better to use Build::Autoconf plugin
+     # if you need windows support
+     './configure --prefix=%{alien.install.prefix} --disable-shared',
      '%{make}',
      '%{make} install',
    ];   
@@ -57,6 +57,11 @@ With plugins (better):
    );
    plugin Extract => 'tar.gz';
    plugin 'Build::Autoconf' => ();
+   build [
+     '%{configure} --disable-shared',
+     '%{make}',
+     '%{make} install',
+   ];
  };
 
 =head1 DESCRIPTION
