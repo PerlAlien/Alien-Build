@@ -61,7 +61,7 @@ Use L<Test::Alien>.  It has extensive documentation, and integrates nicely with 
 
 =head2 How do I patch packages that need alterations?
 
-If you have a patch file you can use diff:
+If you have a diff file you can use patch:
 
  use alienfile;
  
