@@ -387,4 +387,106 @@ which can sometimes be useful:
 There are a lot of other useful things that you can do with the C<af> 
 command.  See L<af> for details.
 
+=head2 Integrating with MakeMaker
+
+Once you have a working L<alienfile> you can write your C<Makefile.PL>.
+
+ use ExtUtils::MakeMaker;
+ use Alien::Build::MM;
+ 
+ my $abmm = Alien::Build::MM->new;
+ 
+ WriteMakefile($abmm->mm_args(
+   ABSTRACT => 'Discover or download and install libfoo',
+   DISTNAME => 'Alien-Libfoo',
+   NAME     => 'Alien::Libfoo',
+   VERSION_FROM => 'lib/Alien/Libfoo.pm',
+ ));
+ 
+ sub MY::postamble {
+   $abmm->mm_postamble;
+ }
+
+The C<lib/Alien/Libfoo.pm> that goes along with it is very simple:
+
+ package Alien::Libfoo;
+ 
+ use strict;
+ use warnings;
+ use base qw( Alien::Base );
+ 
+ 1;
+
+You are done and can install it normally:
+
+ % perl Makefile.PL
+ % make
+ % make test
+ % make install
+
+=head2 Testing
+
+(optional, but highly recommended)
+
+You should write a test using L<Test::Alien> to make sure that your 
+alien will work with any XS modules that are going to use it:
+
+ use Test2::Bundle::Extended;
+ use Test::Alien;
+ use Alien::Libfoo;
+ 
+ alien_ok 'Alien::Libfoo';
+ 
+ xs_ok { local $/; <DATA> }, with_subtest {
+   is Foo::something(), 1, 'Foo::something() returns 1';
+ };
+ 
+ done_testing;
+ 
+ __DATA__
+ #include "EXTERN.h"
+ #include "perl.h"
+ #include "XSUB.h"
+ #include <libdontpanic.h>
+ 
+ MODULE = Foo PACKAGE = Foo
+ 
+ int something(class)
+
+You can also use L<Test::Alien> to test tools instead of libraries:
+
+ use Test2::Bundle::Extended;
+ use Test::Alien;
+ use Alien::Libfoo;
+ 
+ alien_ok 'Alien::Libfoo';
+ run_ok('foo', '--version')
+   ->exit_is(0);
+ 
+ done_testing;
+
+More details on testing L<Alien> modules can be found in the 
+L<Test::Alien> documentation.
+
+=head2 Dist::Zilla
+
+(optional, mildly recommended)
+
+You can also use the L<Alien::Build> L<Dist::Zilla> plugin
+L<Dist::Zilla::Plugin::AlienBuild>:
+
+ name    = Alien-Libfoo
+ author  = E. Xavier Ample <example@cpan.org>
+ license = Perl_5
+ copyright_holder = E. Xavier Ample <example@cpan.org>
+ copyright_year   = 2017
+ version = 0.01
+
+ [@Basic]
+ [AlienBuild]
+
+The plugin takes care of a lot of details like making sure that the 
+correct minimum versions of L<Alien::Build> and L<Alien::Base> are used.  
+See the plugin documentation for additional details.
+
 =cut
