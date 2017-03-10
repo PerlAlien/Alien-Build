@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.25      2017-03-10 15:05:03 -0500
   - You may now abreviate %{alien.foo.bar} as %{.foo.bar}
 
 0.24      2017-03-10 02:23:40 -0500
