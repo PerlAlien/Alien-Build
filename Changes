@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added Alien::Build::Wrapper
 
 0.23      2017-03-09 22:02:41 -0500
   - Can store values using \'%{alien.install.foo}' notation
