@@ -9,7 +9,7 @@ share {
   ];
 
   extract [
-    [ "git clone %{alien.install.download}" ]
+    [ "git clone %{.install.download}" ]
   ];
 
   plugin 'Build::Autoconf' => ();

@@ -72,7 +72,7 @@ share {
   # same compiler as was used to build Perl.
   build [
     [ '%{make}', 'all', "CC=%{perl.config.cc}", "CFLAGS=%{perl.config.cccdlflags} %{perl.config.optimize}", ],
-    [ '%{make}', 'install', 'PREFIX=%{alien.install.prefix}',                    ],
+    [ '%{make}', 'install', 'PREFIX=%{.install.prefix}',                                                    ],
     
     # we can use a code ref here to determine the version number of
     # bzip2 from the directory that is extracted from the tarball.

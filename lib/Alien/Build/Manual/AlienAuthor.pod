@@ -76,10 +76,10 @@ Here is the L<alienfile> that you might have:
    
    download [ 'wget http://www.libfoo.org/src/libfoo-1.00.tar.gz' ];
    
-   extract [ 'tar zxf %{alien.install.download}' ];
+   extract [ 'tar zxf %{.install.download}' ];
    
    build [
-     [ './configure --prefix=%{alien.install.prefix} --disable-shared' ],
+     [ './configure --prefix=%{.install.prefix} --disable-shared' ],
      [ '%{make}' ],
      [ '%{make} install ],
    ];
@@ -87,9 +87,9 @@ Here is the L<alienfile> that you might have:
  };
  
  gather [
-   [ 'pkg-config --modversion libfoo', \'%{alien.runtime.version}' ],
-   [ 'pkg-config --cflags     libfoo', \'%{alien.runtime.cflags}'  ],
-   [ 'pkg-config --libs       libfoo', \'%{alien.runtime.libs}'    ],
+   [ 'pkg-config --modversion libfoo', \'%{.runtime.version}' ],
+   [ 'pkg-config --cflags     libfoo', \'%{.runtime.cflags}'  ],
+   [ 'pkg-config --libs       libfoo', \'%{.runtime.libs}'    ],
  ];
 
 There is a lot going on here, so lets decode it a little bit.  An 
@@ -147,9 +147,9 @@ library or tool in the event that it is not already installed.
 
  share {
    download [ 'wget http://www.libfoo.org/src/libfoo-1.00.tar.gz' ];
-   extract [ 'tar zxf %{alien.install.download}' ];
+   extract [ 'tar zxf %{.install.download}' ];
    build [
-     [ './configure --prefix=%{alien.install.prefix} --disable-shared' ],
+     [ './configure --prefix=%{.install.prefix} --disable-shared' ],
      [ '%{make}' ],
      [ '%{make} install ],
    ];
@@ -158,7 +158,7 @@ library or tool in the event that it is not already installed.
 The download directive as you might imagine specifies how to download 
 the library or tool.  The extract directive specifies how to extract the 
 archive once it is downloaded.  In the extract step, you can use the 
-variable C<%{alien.install.download> as a placeholder for the archive 
+variable C<%{.install.download> as a placeholder for the archive 
 that was downloaded in the download step.  This is also accessible if 
 you use a code reference from the L<Alien::Build> instance:
 
@@ -177,7 +177,7 @@ you use a code reference from the L<Alien::Build> instance:
 
 The build directive specifies how to build the library or tool once it 
 has been downloaded and extracted.  Note the special variable 
-C<%{alien.install.prefix}> is the location where the library should be 
+C<%{.install.prefix}> is the location where the library should be 
 installed.  C<%{make}> is a helper which will be replaced by the 
 appropriate C<make>, which may be called something different on some 
 platforms (on Windows for example, it frequently may be called C<nmake> 
@@ -188,9 +188,9 @@ specifies how to get the details on how to compile and link against the
 library.  For this, once again we use the C<pkg-config> command:
 
  gather [
-   [ 'pkg-config --modversion libfoo', \'%{alien.runtime.version}' ],
-   [ 'pkg-config --cflags     libfoo', \'%{alien.runtime.cflags}'  ],
-   [ 'pkg-config --libs       libfoo', \'%{alien.runtime.libs}'    ],
+   [ 'pkg-config --modversion libfoo', \'%{.runtime.version}' ],
+   [ 'pkg-config --cflags     libfoo', \'%{.runtime.cflags}'  ],
+   [ 'pkg-config --libs       libfoo', \'%{.runtime.libs}'    ],
  ];
 
 The scalar reference as the final item in the command list tells 
@@ -208,17 +208,17 @@ example, the above is equivalent to:
  build {
    ...
    gather [
-     [ 'pkg-config --modversion libfoo', \'%{alien.runtime.version}' ],
-     [ 'pkg-config --cflags     libfoo', \'%{alien.runtime.cflags}'  ],
-     [ 'pkg-config --libs       libfoo', \'%{alien.runtime.libs}'    ],
+     [ 'pkg-config --modversion libfoo', \'%{.runtime.version}' ],
+     [ 'pkg-config --cflags     libfoo', \'%{.runtime.cflags}'  ],
+     [ 'pkg-config --libs       libfoo', \'%{.runtime.libs}'    ],
    ];
  };
  
  sys {
    gather [
-     [ 'pkg-config --modversion libfoo', \'%{alien.runtime.version}' ],
-     [ 'pkg-config --cflags     libfoo', \'%{alien.runtime.cflags}'  ],
-     [ 'pkg-config --libs       libfoo', \'%{alien.runtime.libs}'    ],
+     [ 'pkg-config --modversion libfoo', \'%{.runtime.version}' ],
+     [ 'pkg-config --cflags     libfoo', \'%{.runtime.cflags}'  ],
+     [ 'pkg-config --libs       libfoo', \'%{.runtime.libs}'    ],
    ];
  };
 
@@ -438,11 +438,11 @@ L<alienfile> into the runtime properties:
 
  gather [
    # standard:
-   [ 'foo-config --version libfoo', \'%{alien.runtime.version}' ],
-   [ 'foo-config --cflags  libfoo', \'%{alien.runtime.cflags}'  ],
-   [ 'foo-config --libs    libfoo', \'%{alien.runtime.libs}'    ],
+   [ 'foo-config --version libfoo', \'%{.runtime.version}' ],
+   [ 'foo-config --cflags  libfoo', \'%{.runtime.cflags}'  ],
+   [ 'foo-config --libs    libfoo', \'%{.runtime.libs}'    ],
    # non-standard
-   [ 'foo-config --bar-baz libfoo', \'%{alien.runtime.bar_baz}' ],
+   [ 'foo-config --bar-baz libfoo', \'%{.runtime.bar_baz}' ],
  ];
 
 then you can expose them in your L<Alien::Base> subclass:

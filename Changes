@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - You may now abreviate %{alien.foo.bar} as %{.foo.bar}
 
 0.24      2017-03-10 02:23:40 -0500
   - Added Alien::Build::Wrapper

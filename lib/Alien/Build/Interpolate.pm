@@ -129,6 +129,9 @@ sub execute_helper
 sub _get_prop
 {
   my($name, $prop, $orig) = @_;
+  
+  $name =~ s/^\./alien./;
+  
   if($name =~ /^(.*?)\.(.*)$/)
   {
     my($key,$rest) = ($1,$2);
@@ -151,7 +154,7 @@ sub interpolate
   $prop ||= {};
   
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
-  $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9\.]+)\}}{_get_prop($1,$prop,$1)}eg;
+  $string =~ s{(?<!\%)\%\{([a-zA-Z_\.][a-zA-Z_0-9\.]+)\}}{_get_prop($1,$prop,$1)}eg;
   $string =~ s/\%(?=\%)//g;
   $string;
 }

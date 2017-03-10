@@ -26,21 +26,21 @@ Do-it-yourself approach:
    download [ 'wget http://libarchive.org/downloads/libarchive-3.2.2.tar.gz' ];
    download [ 'curl -o http://libarchive.org/downloads/libarchive-3.2.2.tar.gz' ];
    
-   extract [ 'tar xf %{alien.install.download}' ];
+   extract [ 'tar xf %{.install.download}' ];
    
    build [ 
      # Note: will not work on Windows, better to use Build::Autoconf plugin
      # if you need windows support
-     './configure --prefix=%{alien.install.prefix} --disable-shared',
+     './configure --prefix=%{.install.prefix} --disable-shared',
      '%{make}',
      '%{make} install',
    ];   
  }
  
  gather [
-   [ 'pkg-config', '--modversion', 'libarchive', \'%{alien.runtime.version}' ],
-   [ 'pkg-config', '--cflags',     'libarchive', \'%{alien.runtime.cflags}'  ],
-   [ 'pkg-config', '--libs',       'libarchive', \'%{alien.runtime.libs}'    ],
+   [ 'pkg-config', '--modversion', 'libarchive', \'%{.runtime.version}' ],
+   [ 'pkg-config', '--cflags',     'libarchive', \'%{.runtime.cflags}'  ],
+   [ 'pkg-config', '--libs',       'libarchive', \'%{.runtime.libs}'    ],
  ];
 
 With plugins (better):

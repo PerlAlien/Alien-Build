@@ -116,9 +116,10 @@ sub execute
       if($args[-1] && ref($args[-1]) eq 'SCALAR')
       {
         my $dest = ${ pop @args };
-        if($dest =~ /^\%\{(alien\.(?:install|runtime|hook)\.[a-z\.0-9_]+)\}$/)
+        if($dest =~ /^\%\{((?:alien|)\.(?:install|runtime|hook)\.[a-z\.0-9_]+)\}$/)
         {
           $dest = $1;
+          $dest =~ s/^\./alien./;
           $code = sub {
             my($build, $args) = @_;
             die "external command failed" if $args->{exit};

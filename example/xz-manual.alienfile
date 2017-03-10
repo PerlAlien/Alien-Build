@@ -18,11 +18,11 @@ share {
   download [ 'curl -O http://tukaani.org/xz/xz-5.2.3.tar.gz' ];
 
   # use tar to extract the tarball
-  extract [ 'tar zxf %{alien.install.download}' ];
+  extract [ 'tar zxf %{.install.download}' ];
   
   # use the standard build process
   build [
-    './configure --prefix=%{alien.install.prefix} --disable-shared',
+    './configure --prefix=%{.install.prefix} --disable-shared',
     '%{make}',
     '%{make} install',
   ];
@@ -34,7 +34,7 @@ share {
 # be used for both.
 gather [
   # store the (chomped) output into the appropriate runtime properties
-  [ 'pkg-config', '--modversion', 'liblzma', \'%{alien.runtime.version}' ],
-  [ 'pkg-config', '--cflags',     'liblzma', \'%{alien.runtime.cflags}'  ],
-  [ 'pkg-config', '--libs',       'liblzma', \'%{alien.runtime.libs}'    ],
+  [ 'pkg-config', '--modversion', 'liblzma', \'%{.runtime.version}' ],
+  [ 'pkg-config', '--cflags',     'liblzma', \'%{.runtime.cflags}'  ],
+  [ 'pkg-config', '--libs',       'liblzma', \'%{.runtime.libs}'    ],
 ];

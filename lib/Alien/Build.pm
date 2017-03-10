@@ -129,12 +129,12 @@ If you are writing a L<alienfile> recipe please use the prefix C<my_>:
 
 Any property may be used from a command:
 
- probe [ 'some command %{alien.meta.plugin_fetch_newprotocol_foo}' ];
- probe [ 'some command %{alien.install.plugin_fetch_newprotocol_bar}' ];
- probe [ 'some command %{alien.runtime.plugin_fetch_newprotocol_baz}' ];
- probe [ 'some command %{alien.meta.my_foo}' ];
- probe [ 'some command %{alien.install.my_bar}' ];
- probe [ 'some command %{alien.runtime.my_baz}' ];
+ probe [ 'some command %{.meta.plugin_fetch_newprotocol_foo}' ];
+ probe [ 'some command %{.install.plugin_fetch_newprotocol_bar}' ];
+ probe [ 'some command %{.runtime.plugin_fetch_newprotocol_baz}' ];
+ probe [ 'some command %{.meta.my_foo}' ];
+ probe [ 'some command %{.install.my_bar}' ];
+ probe [ 'some command %{.runtime.my_baz}' ];
 
 =head2 meta_prop
 

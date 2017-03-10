@@ -92,4 +92,16 @@ subtest 'property' => sub {
   
 };
 
+subtest 'property, default to alien' => sub {
+
+  my $intr = Alien::Build::Interpolate->new;
+  isa_ok $intr, 'Alien::Build::Interpolate';
+
+  is(
+    $intr->interpolate('%{.foo.bar}', { alien => { foo => { bar => 'baz' } } }),
+    'baz',
+  );
+
+};
+
 done_testing;

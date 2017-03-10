@@ -171,6 +171,24 @@ subtest 'execute' => sub {
 
   is($build->runtime_prop->{foo2}, 'single line2');
   is system_last, [['stuff2 myfoo']];
+
+  system_clear;
+
+  system_hook 'stuff2 myfoo' => sub {
+    print "single line2\n";
+    print STDERR "stuff error\n";
+    print STDERR "stuff error\n";
+  };
+
+  note capture_merged {
+    Alien::Build::CommandSequence->new(
+      [ 'stuff2 %{foo}', \'%{.runtime.foo2}' ],
+    )->execute($build);
+  };
+
+  is($build->runtime_prop->{foo2}, 'single line2');
+  is system_last, [['stuff2 myfoo']];
+
 };
 
 done_testing;
