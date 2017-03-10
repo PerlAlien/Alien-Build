@@ -34,7 +34,7 @@ The various pkg-config plugins all support a minimum_version field:
 
 Depends on how you probe for and build for a package.  Most things can be done by providing
 commands.  For example if you have a C<foo> package that provides a C<foo-config> program
-to provide the normal C<pkg-config> fileds then you could do something like this:
+to provide the normal C<pkg-config> fields then you could do something like this:
 
  use alienfile;
  

@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Can store values using \'%{alien.install.foo}' notation
     with scalar command sequence
+  - Filled out the AlienAuthor manual
 
 0.22      2017-03-09 14:18:39 -0500
   - Add subplugin method to Alien::Build::Plugin

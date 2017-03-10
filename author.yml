@@ -40,6 +40,10 @@ pod_spelling_system:
     - unixy
     - microsoft
     - GnuWin
+    - subplugin
+    - alienizing
+    - libfoo
+    - libpkgconf
 
 pod_coverage:
   skip: 0

@@ -61,8 +61,8 @@ Makefiles.  It is the C equivalent to L<ExtUtils::MakeMaker>, if you
 will.  Basically, if your library or tool instructions start with 
 './configure' it is most likely an autoconf based library or tool).
 
-(Aside2, C<pkg-config> is a stadard-ish way to provide the compiler and 
-linker flags needed for compiling and linking aginst the library.  If 
+(Aside2, C<pkg-config> is a standard-ish way to provide the compiler and 
+linker flags needed for compiling and linking against the library.  If 
 your tool installs a C<.pc> file, usually in C<$PREFIX/lib/pkgconfig> 
 then, your tool uses C<pkg-config>).
 
@@ -224,5 +224,79 @@ example, the above is equivalent to:
 
 (Aside3, the reason it is called C<sys> and not C<system> is so that it 
 does not conflict with the built in C<system> function)!
+
+=head2 Using plugins
+
+The first example is a good way of showing the full manual path that you 
+can choose, but there is a lot of repetition, if you are doing many 
+L<Alien>s that use autoconf and C<pkg-config> (which are quite common.  
+L<alienfile> allows you to use plugins.  See L<Alien::Build::Plugin> for
+a list of some of the plugin categories.
+
+For now, I will just show you how to write the L<alienfile> for libfoo 
+above using L<Alien::Build::Plugin::Build::Autoconf>, 
+L<Alien::Build::Plugin::PkgConfig::Negotiate>, 
+L<Alien::Buld::Plugin::Download::Negotiate>, and
+L<Alien::Build::Plugin::Extract::Negotiate>
+
+ use alienfile;
+ 
+ plugin 'PkgConfig' => (
+   pkg_name => 'libfoo',
+ );
+ 
+ share {
+   plugin 'Download' => (
+     url => 'http://www.libfoo.com/src',
+     match => qr/^libfoo-[0-9\.]+\.tar\.gz$/,
+     version => qr/^libfoo-([0-9\.]+)\.tar\.gz$/,
+   );
+   plugin 'Extract' => 'tar.gz';
+   plugin 'Build::Autoconf' => ();
+   build [
+     '%{configure} --disable-shared',
+     '%{make}',
+     '%{make} install',
+   ];
+ };
+
+The first plugin that we use is the C<pkg-config> negotiation plugin.  A 
+negotiation plugin is one which doesn't do the actual work but selects 
+the best one from a set of plugins depending on your platform and 
+environment.  (In the case of 
+L<Alien::Build::Plugin::PkgConfig::Negotiate>, it may choose to use 
+command line tools, a pure Perl implementation (L<PkgConfig>), or 
+libpkgconf, depending on what is available).  When using negotiation 
+plugins you may omit the C<::Negotiate> suffix.  So as you can see using 
+the plugin here is an advantage because it is more reliable that just 
+specifying a command which may not be installed!
+
+Next we use the download negotiation plugin.  This is also better than 
+the version above, because again, C<wget> my not be installed on the 
+target system.  Also you can specify a URL which will be scanned for 
+links, and use the most recent version.
+
+We use the Extract negotiation plugin to use either command line tools, 
+or Perl libraries to extract from the archive once it is downloaded.
+
+Finally we use the Autoconf plugin 
+(L<Alien::Build::Plugin::Build::Autoconf>).  This is a lot more 
+sophisticated and reliable than in the previous example, for a number of 
+reasons.  This version will even work on Windows assuming the library or 
+tool you are alienizing supports that platform!
+
+Strictly speaking the build directive is not necessary, because the 
+autoconf plugin provides a default which is reasonable.  The only reason 
+that you would want to include it is if you need to provide additional 
+flags to the configure step.
+
+ share {
+   ...
+   build [
+     '%{configure} --enable-bar --enable-baz --disable-shared',
+     '%{make}',
+     '%{make} install',
+   ];
+ };
 
 =cut
