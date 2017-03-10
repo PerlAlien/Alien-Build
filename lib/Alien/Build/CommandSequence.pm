@@ -116,7 +116,7 @@ sub execute
       if($args[-1] && ref($args[-1]) eq 'SCALAR')
       {
         my $dest = ${ pop @args };
-        if($dest =~ /^\%\{(alien\.(?:install|runtime|hook)\.[a-z\.]+)\}$/)
+        if($dest =~ /^\%\{(alien\.(?:install|runtime|hook)\.[a-z\.0-9_]+)\}$/)
         {
           $dest = $1;
           $code = sub {
