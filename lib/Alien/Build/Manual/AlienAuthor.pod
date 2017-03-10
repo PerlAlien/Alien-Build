@@ -74,7 +74,7 @@ Here is the L<alienfile> that you might have:
  
  share {
    
-   download [ 'wget http://www.libfoo.com/src/libfoo-1.00.tar.gz' ];
+   download [ 'wget http://www.libfoo.org/src/libfoo-1.00.tar.gz' ];
    
    extract [ 'tar zxf %{alien.install.download}' ];
    
@@ -146,7 +146,7 @@ to group the directives which are used to download and install the
 library or tool in the event that it is not already installed.
 
  share {
-   download [ 'wget http://www.libfoo.com/src/libfoo-1.00.tar.gz' ];
+   download [ 'wget http://www.libfoo.org/src/libfoo-1.00.tar.gz' ];
    extract [ 'tar zxf %{alien.install.download}' ];
    build [
      [ './configure --prefix=%{alien.install.prefix} --disable-shared' ],
@@ -247,7 +247,7 @@ L<Alien::Build::Plugin::Extract::Negotiate>
  
  share {
    plugin 'Download' => (
-     url => 'http://www.libfoo.com/src',
+     url => 'http://www.libfoo.org/src',
      match => qr/^libfoo-[0-9\.]+\.tar\.gz$/,
      version => qr/^libfoo-([0-9\.]+)\.tar\.gz$/,
    );
@@ -298,5 +298,93 @@ flags to the configure step.
      '%{make} install',
    ];
  };
+
+=head2 Testing your alienfile
+
+You could feed your alienfile directly into L<Alien::Build>, or 
+L<Alien::Build::MM>, but it is sometimes useful to test your alienfile 
+using the C<af> command (it does not come with L<Alien::Build>, you need 
+to install L<App::af>).  By default C<af> will use the C<alienfile> in 
+the current directly (just as C<make> uses the C<Makefile> in the 
+current directory; just like C<make> you can use the C<-f> option to 
+specify a different L<alienfile>).
+
+You can test your L<alienfile> in dry run mode:
+
+ % af install --dry-run
+ Alien::Build::Plugin::Core::Legacy> adding legacy hash to config
+ Alien::Build::Plugin::Core::Gather> mkdir -p /tmp/I2YXRyxb0r/_alien
+ ---
+ cflags: ''
+ cflags_static: ''
+ install_type: system
+ legacy:
+   finished_installing: 1
+   install_type: system
+   name: libfoo
+   original_prefix: /tmp/7RtAusykNN
+   version: 1.2.3
+ libs: '-lfoo '
+ libs_static: '-lfoo '
+ prefix: /tmp/7RtAusykNN
+ version: 1.2.3
+
+You can use the C<--type> option to force a share install (download and 
+build from source):
+
+ % af install --dry-run
+ Alien::Build::Plugin::Core::Download> decoding html
+ Alien::Build::Plugin::Core::Download> candidate *https://www.libfoo.org/download/libfoo-1.2.4.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.3.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.2.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.1.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.0.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.1.9.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.1.8.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.1.7.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  ...
+ Alien::Build::Plugin::Core::Download> setting version based on archive to 1.2.4
+ Alien::Build::Plugin::Core::Download> downloaded libfoo-1.2.4.tar.gz
+ Alien::Build::CommandSequence> + ./configure --prefix=/tmp/P22WEXj80r --with-pic --disable-shared
+ ... snip ...
+ Alien::Build::Plugin::Core::Gather> mkdir -p /tmp/WsoLAQ889w/_alien
+ ---
+ cflags: ''
+ cflags_static: ''
+ install_type: share
+ legacy:
+   finished_installing: 1
+   install_type: share
+   original_prefix: /tmp/P22WEXj80r
+   version: 1.2.4
+ libs: '-L/tmp/P22WEXj80r/lib -lfoo '
+ libs_static: '-L/tmp/P22WEXj80r/lib -lfoo '
+ prefix: /tmp/P22WEXj80r
+ version: 1.2.4
+
+You can also use the C<--before> and C<--after> options to take a peek 
+at what the build environment looks like at different stages as well, 
+which can sometimes be useful:
+
+ % af install --dry-run --before build bash
+ Alien::Build::Plugin::Core::Download> decoding html
+ Alien::Build::Plugin::Core::Download> candidate *https://www.libfoo.org/download/libfoo-1.2.4.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.3.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.2.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.1.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.0.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.1.9.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.1.8.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.1.7.tar.gz
+ Alien::Build::Plugin::Core::Download> candidate  ...
+ Alien::Build::Plugin::Core::Download> setting version based on archive to 1.2.4
+ Alien::Build::Plugin::Core::Download> downloaded libfoo-1.2.4.tar.gz
+ App::af::install>  [ before build ] + bash
+ /tmp/fbVPu4LRTs/build_5AVn/libfoo-1.2.4$ ls
+ CHANGES Makefile autoconf.ac lib
+ /tmp/fbVPu4LRTs/build_5AVn/libfoo-1.2.4$ 
+
+There are a lot of other useful things that you can do with the C<af> 
+command.  See L<af> for details.
 
 =cut
