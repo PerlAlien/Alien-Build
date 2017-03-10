@@ -120,6 +120,18 @@ sub import
 
 1;
 
+=head1 ENVIRONMENT
+
+Alien::Build::Wrapper responds to these environment variables:
+
+=over 4
+
+=item ALIEN_BUILD_WRAPPER_QUIET
+
+Do not print the command before executing
+
+=back
+
 =head1 SEE ALSO
 
 L<Alien::Build>, L<Alien::Base>
