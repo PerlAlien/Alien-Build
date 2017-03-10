@@ -299,7 +299,7 @@ flags to the configure step.
    ];
  };
 
-=head2 Testing your alienfile
+=head2 Verifying and debugging your alienfile
 
 You could feed your alienfile directly into L<Alien::Build>, or 
 L<Alien::Build::MM>, but it is sometimes useful to test your alienfile 
@@ -424,6 +424,42 @@ You are done and can install it normally:
  % make test
  % make install
 
+=head2 Integrating with Module::Build
+
+Please don't!  Okay if you have to there is L<Alien::Build::MB>.
+
+=head2 Non standard configuration
+
+L<Alien::Base> support most of the things that your L<Alien> will need, 
+like compiler flags (cflags), linker flags (libs) and binary directory 
+(bin_dir).  Your library or tool may have other configuration items 
+which are not supported by default.  You can store the values in the 
+L<alienfile> into the runtime properties:
+
+ gather [
+   # standard:
+   [ 'foo-config --version libfoo', \'%{alien.runtime.version}' ],
+   [ 'foo-config --cflags  libfoo', \'%{alien.runtime.cflags}'  ],
+   [ 'foo-config --libs    libfoo', \'%{alien.runtime.libs}'    ],
+   # non-standard
+   [ 'foo-config --bar-baz libfoo', \'%{alien.runtime.bar_baz}' ],
+ ];
+
+then you can expose them in your L<Alien::Base> subclass:
+
+ package Alien::Libfoo;
+ 
+ use strict;
+ use warnings;
+ use base qw( Alien::Base );
+ 
+ sub bar_baz {
+   my($self) = @_;
+   $self->runtime_prop->{bar_baz},
+ };
+ 
+ 1;
+
 =head2 Testing
 
 (optional, but highly recommended)
@@ -488,5 +524,10 @@ L<Dist::Zilla::Plugin::AlienBuild>:
 The plugin takes care of a lot of details like making sure that the 
 correct minimum versions of L<Alien::Build> and L<Alien::Base> are used.  
 See the plugin documentation for additional details.
+
+=head2 Using your Alien
+
+Once you have installed you can use your Alien.  See 
+L<Alien::Build::Manual::AlienUser> for guidance on that.
 
 =cut
