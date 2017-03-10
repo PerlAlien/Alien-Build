@@ -332,7 +332,7 @@ You can test your L<alienfile> in dry run mode:
 You can use the C<--type> option to force a share install (download and 
 build from source):
 
- % af install --dry-run
+ % af install --type=share --dry-run
  Alien::Build::Plugin::Core::Download> decoding html
  Alien::Build::Plugin::Core::Download> candidate *https://www.libfoo.org/download/libfoo-1.2.4.tar.gz
  Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.3.tar.gz
@@ -366,7 +366,7 @@ You can also use the C<--before> and C<--after> options to take a peek
 at what the build environment looks like at different stages as well, 
 which can sometimes be useful:
 
- % af install --dry-run --before build bash
+ % af install --dry-run --type=share --before build bash
  Alien::Build::Plugin::Core::Download> decoding html
  Alien::Build::Plugin::Core::Download> candidate *https://www.libfoo.org/download/libfoo-1.2.4.tar.gz
  Alien::Build::Plugin::Core::Download> candidate  https://www.libfoo.org/download/libfoo-1.2.3.tar.gz
