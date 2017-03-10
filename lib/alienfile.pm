@@ -18,7 +18,7 @@ Do-it-yourself approach:
 
  use alienfile;
  
- probe sub [ 'pkg-config --exists libarchive' ];
+ probe [ 'pkg-config --exists libarchive' ];
  
  share {
 
