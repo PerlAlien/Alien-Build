@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug where LWP FTP download could require either DirListing or HTML
+    for decode.
 
 0.25      2017-03-10 15:05:03 -0500
   - You may now abreviate %{alien.foo.bar} as %{.foo.bar}

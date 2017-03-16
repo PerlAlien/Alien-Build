@@ -125,7 +125,9 @@ sub init
     }
     elsif($fetch eq 'LWP' && $self->scheme =~ /^ftps?/)
     {
+      # could be either a DirListing or HTML !
       $self->_plugin($meta, 'Decode', 'DirListing');
+      $self->_plugin($meta, 'Decode', 'HTML');
     }
     else
     {
