@@ -19,4 +19,15 @@ subtest 'basic usage' => sub {
 
 };
 
+subtest 'cwd' => sub {
+
+  my $intr = Alien::Build::Interpolate::Default->new;
+  
+  my $val = $intr->interpolate('%{cwd}');
+  
+  ok $val, "%{cwd} is okay";
+  note "val = $val";
+
+};
+
 done_testing;

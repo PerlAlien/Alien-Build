@@ -3,6 +3,7 @@ package Alien::Build::Interpolate::Default;
 use strict;
 use warnings;
 use base qw( Alien::Build::Interpolate );
+use File::chdir;
 
 # ABSTRACT: Default interpolator for Alien::Build
 # VERSION
@@ -200,6 +201,14 @@ Requires: L<Alien::pkgconf> 0.06
 =cut
 
   $self->add_helper( pkgconf => undef, 'Alien::pkgconf' => 0.06 );
+
+=head2 cwd
+
+ %{cwd}
+
+=cut
+
+  $self->add_helper( cwd => sub { "$CWD" } );
 
 =head2 sh
 
