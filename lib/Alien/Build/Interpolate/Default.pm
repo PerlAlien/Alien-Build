@@ -208,7 +208,11 @@ Requires: L<Alien::pkgconf> 0.06
 
 =cut
 
-  $self->add_helper( cwd => sub { "$CWD" } );
+  $self->add_helper( cwd => sub {
+    my $cwd = "$CWD";
+    $cwd =~ s{\\}{/}g if $^O eq 'MSWin32';
+    $cwd;
+  } );
 
 =head2 sh
 
