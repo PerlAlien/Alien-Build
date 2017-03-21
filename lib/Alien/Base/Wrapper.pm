@@ -35,8 +35,8 @@ From Makefile.PL:
  }
  else
  {
-   $cc = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Libfoo -e cc --';
-   $ld = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Libfoo -e ld --';
+   $cc = '$(FULLPERL) -MAlien::Base::Wrapper=Alien::Libfoo -e cc --';
+   $ld = '$(FULLPERL) -MAlien::Base::Wrapper=Alien::Libfoo -e ld --';
    $build_requires{'Alien::Libfoo'} = 0;
    $build_requires{'Alien::Base::Wrapper'} = 0;
  }
@@ -67,9 +67,13 @@ flags to the build stage, and only if necessary.
 The author of this module believes it to be somewhat unnecessary.  L<Alien> modules based on 
 L<Alien::Base> have a number of prerequisites, but they well maintained and reliable, so 
 while there is a small cost in terms of extra dependencies, this is more than made up for 
-in reliability on systems where libraries that are do not typcially come with commonly used 
+in reliability on systems where libraries that are do not typically come with commonly used 
 open source libraries.  Operating system vendors that are packaging XS perl modules may 
 disagree.
+
+If you wish to be extra minimal in your prerequisites you can bundle this module with
+your XS module, and use C<-Iinc>.  This module has no non-core prerequisites on Perl
+5.8.1 and better.
 
 For a working example, please see the C<Makefile.PL> that comes with L<Term::EditLine>.
 
