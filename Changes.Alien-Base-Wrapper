@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Documentation only changes
 
 0.01      2017-03-21 15:10:19 -0400
   - initial version

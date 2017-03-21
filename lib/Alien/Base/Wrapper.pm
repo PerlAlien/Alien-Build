@@ -32,8 +32,6 @@ From Makefile.PL:
  {
    $ccflags = `pkg-config --cflags libfoo` . " $ccflags";
    $libs    = `pkg-config --libs   libfoo`;
-   delete $build_requires{'Alien::Libfoo'};
-   delete $build_requires{'Alien::Base::Wrapper'};
  }
  else
  {
