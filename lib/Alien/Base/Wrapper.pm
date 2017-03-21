@@ -25,24 +25,27 @@ From Makefile.PL:
  my $ld      = $Config{ld};
  my $libs    = '';
  my $ccflags = $Config{ccflags};
- my $build_requires = { 'Alien::Libfoo' => 0 };
+ my %build_requires;
  
  system 'pkg-config', '--exists', 'libfoo';
  if($? == 0)
  {
-   $ccflags = `pkg-config --cflags libsfoo` . " $ccflags";
+   $ccflags = `pkg-config --cflags libfoo` . " $ccflags";
    $libs    = `pkg-config --libs   libfoo`;
    delete $build_requires{'Alien::Libfoo'};
+   delete $build_requires{'Alien::Base::Wrapper'};
  }
  else
  {
    $cc = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Libfoo -e cc --';
    $ld = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Libfoo -e ld --';
+   $build_requires{'Alien::Libfoo'} = 0;
+   $build_requires{'Alien::Base::Wrapper'} = 0;
  }
  
  WriteMakefile(
    NAME => 'Foo::XS',
-   BUILD_REQUIRES => $build_requires,
+   BUILD_REQUIRES => \%build_requires,
    CC             => $cc,
    LD             => $ld,
    CCFLAGS        => $ccflags,
@@ -61,6 +64,9 @@ Historically an XS module that wanted to use an L<Alien> had to I<always> have
 it as a prerequisite.
 
 For a working example, please see the C<Makefile.PL> that comes with L<Term::EditLine>.
+
+For a more custom, non L<Alien::Base> based example, see the C<Makefile.PL> that
+comes with L<PkgConfig::LibPkgConf>.
 
 =cut
 
