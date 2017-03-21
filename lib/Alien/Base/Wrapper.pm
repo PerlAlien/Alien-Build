@@ -42,7 +42,7 @@ From Makefile.PL:
  }
  
  WriteMakefile(
-   NAME => 'Foo::XS',
+   NAME           => 'Foo::XS',
    BUILD_REQUIRES => \%build_requires,
    CC             => $cc,
    LD             => $ld,
