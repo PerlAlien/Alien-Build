@@ -72,8 +72,8 @@ open source libraries.  Operating system vendors that are packaging XS perl modu
 disagree.
 
 If you wish to be extra minimal in your prerequisites you can bundle this module with
-your XS module, and use C<-Iinc>.  This module has no non-core prerequisites on Perl
-5.8.1 and better.
+your XS module, and use C<-Iinc>.  This module has no non-core runtime prerequisites on
+Perl 5.8.1 and better.
 
 For a working example, please see the C<Makefile.PL> that comes with L<Term::EditLine>.
 
@@ -186,7 +186,7 @@ Alien::Base::Wrapper responds to these environment variables:
 
 =item ALIEN_BASE_WRAPPER_QUIET
 
-Do not print the command before executing
+If set to true, do not print the command before executing
 
 =back
 
