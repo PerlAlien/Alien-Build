@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Removed Alien::Build::Wrapper.  The same interface now exists as
+    Alien::Base::Wrapper in a separate dist.
 
 0.27      2017-03-16 21:00:02 -0400
   - %{cwd} helper uses / on windows instead of \
