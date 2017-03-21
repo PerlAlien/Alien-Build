@@ -11,8 +11,8 @@ use Text::ParseWords qw( shellwords );
 
 =head1 SYNOPSIS
 
- % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e cc -o foo.o -c foo.c
- % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e ld -o foo foo.o
+ % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e cc -- -o foo.o -c foo.c
+ % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e ld -- -o foo foo.o
 
 =head1 DESCRIPTION
 
@@ -43,7 +43,7 @@ sub _reset
 
 =head2 cc
 
- % perl -MAlien::Base::Wrapper=Alien::Foo -e cc cflags
+ % perl -MAlien::Base::Wrapper=Alien::Foo -e cc -- cflags
 
 Invoke the C compiler with the appropriate flags from C<Alien::Foo> and what
 is provided on the command line.
@@ -64,7 +64,7 @@ sub cc
 
 =head2 ld
 
- % perl -MAlien::Base::Wrapper=Alien::Foo -e ld ldflags
+ % perl -MAlien::Base::Wrapper=Alien::Foo -e ld -- ldflags
 
 Invoke the linker with the appropriate flags from C<Alien::Foo> and what
 is provided on the command line.
