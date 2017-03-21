@@ -37,6 +37,5 @@ require_ok 'Alien::Build::Plugin::Core::Download';
 require_ok 'Alien::Build::Plugin::Core::Legacy';
 require_ok 'Alien::Build::Plugin::Core::Gather';
 require_ok 'Alien::Build::Util';
-require_ok 'Alien::Build::Wrapper';
 
 done_testing;
