@@ -11,8 +11,44 @@ use Text::ParseWords qw( shellwords );
 
 =head1 SYNOPSIS
 
+From the command line:
+
  % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e cc -- -o foo.o -c foo.c
  % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e ld -- -o foo foo.o
+
+From Makefile.PL:
+
+ use Config;
+ use ExtUtils::MakeMaker 6.52;
+ 
+ my $cc      = $Config{cc};
+ my $ld      = $Config{ld};
+ my $libs    = '';
+ my $ccflags = $Config{ccflags};
+ my $build_requires = { 'Alien::Libfoo' => 0 };
+ 
+ system 'pkg-config', '--exists', 'libfoo';
+ if($? == 0)
+ {
+   $ccflags = `pkg-config --cflags libsfoo` . " $ccflags";
+   $libs    = `pkg-config --libs   libfoo`;
+   delete $build_requires{'Alien::Libfoo'};
+ }
+ else
+ {
+   $cc = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Libfoo -e cc --';
+   $ld = '$(FULLPERL) -Iinc -MAlien::Base::Wrapper=Alien::Libfoo -e ld --';
+ }
+ 
+ WriteMakefile(
+   NAME => 'Foo::XS',
+   BUILD_REQUIRES => $build_requires,
+   CC             => $cc,
+   LD             => $ld,
+   CCFLAGS        => $ccflags,
+   LIBS           => [ $libs ],
+   ...
+ );
 
 =head1 DESCRIPTION
 
@@ -23,6 +59,8 @@ based on L<Alien::Base>.  The idea is to eventually use this to allow optional
 use of L<Alien> modules by XS which cannot probe for a system library.
 Historically an XS module that wanted to use an L<Alien> had to I<always> have
 it as a prerequisite.
+
+For a working example, please see the C<Makefile.PL> that comes with L<Term::EditLine>.
 
 =cut
 
