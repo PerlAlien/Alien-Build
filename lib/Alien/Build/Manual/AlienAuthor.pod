@@ -81,7 +81,7 @@ Here is the L<alienfile> that you might have:
    build [
      [ './configure --prefix=%{.install.prefix} --disable-shared' ],
      [ '%{make}' ],
-     [ '%{make} install ],
+     [ '%{make} install' ],
    ];
    
  };
@@ -151,7 +151,7 @@ library or tool in the event that it is not already installed.
    build [
      [ './configure --prefix=%{.install.prefix} --disable-shared' ],
      [ '%{make}' ],
-     [ '%{make} install ],
+     [ '%{make} install' ],
    ];
  };
 
