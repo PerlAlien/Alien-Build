@@ -61,15 +61,13 @@ sub init
     }
   }
   
-  my $client;
-  
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
     
       require PkgConfig::LibPkgConf::Client;
-      $client ||= PkgConfig::LibPkgConf::Client->new;
+      my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
       die "package @{[ $self->pkg_name ]} not found" unless $pkg;
       if(defined $self->minimum_version)
@@ -87,10 +85,11 @@ sub init
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
+      $DB::single = 1;
       require PkgConfig::LibPkgConf::Client;
-      $client ||= PkgConfig::LibPkgConf::Client->new;
+      my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
-      die "reload of package failed" unless defined $pkg;
+      die "reload of package @{[ $self->pkg_name ]} failed" unless defined $pkg;
       
       $build->runtime_prop->{version}        = $pkg->version;
       $build->runtime_prop->{cflags}         = $pkg->cflags;

@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improved diagnostics
+  - Fixed libpkgconf cache'ing bug
 
 0.28      2017-03-21 17:10:43 -0400
   - Removed Alien::Build::Wrapper.  The same interface now exists as
