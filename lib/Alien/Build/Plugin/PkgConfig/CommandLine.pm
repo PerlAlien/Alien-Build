@@ -96,7 +96,7 @@ sub init
     probe => \@probe
   );
   
-  my @gather_system;
+  my @gather_system = ( [ $pkgconf, '--exists', $self->pkg_name ] );
   
   foreach my $prop_name (qw( cflags libs version ))
   {
