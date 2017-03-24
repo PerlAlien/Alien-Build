@@ -7,7 +7,7 @@ use base 'Test2::Require';
 # ABSTRACT: Skip a test file unless FFI::Platypus is available
 # VERSION
 
-=head1
+=head1 SYNOPSIS
 
  use Test::Alien::CanPlatypus;
 
@@ -30,6 +30,8 @@ sub skip
 =over 4
 
 =item L<Test::Alien>
+
+=item L<FFI::Platypus>
 
 =back
 

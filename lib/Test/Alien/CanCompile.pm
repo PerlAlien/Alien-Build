@@ -7,7 +7,7 @@ use base 'Test2::Require';
 # ABSTRACT: Skip a test file unless a C compiler is available
 # VERSION
 
-=head1
+=head1 SYNOPSIS
 
  use Test::Alien::CanCompile;
 

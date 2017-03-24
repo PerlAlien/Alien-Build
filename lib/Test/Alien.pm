@@ -723,6 +723,14 @@ sub ffi_ok
 
 =over 4
 
+=item L<Alien>
+
+=item L<Alien::Base>
+
+=item L<Alien::Build>
+
+=item L<alienfile>
+
 =item L<Test2>
 
 =item L<Test::Alien::Run>
@@ -734,9 +742,5 @@ sub ffi_ok
 =item L<Test::Alien::Synthetic>
 
 =back
-
-=head1 CAVEATS
-
-This module uses L<Test2> instead of L<Test::More>.
 
 =cut
