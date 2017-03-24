@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.29      2017-03-24 12:57:13 -0400
   - Improved diagnostics
   - Fixed libpkgconf cache'ing bug
 
