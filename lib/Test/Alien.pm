@@ -125,12 +125,6 @@ prerequisites are automatically skipped.  For example, L</xs_ok> will automatica
 itself if a compiler is not found, and L</ffi_ok> will automatically skip itself
 if L<FFI::Platypus> is not installed.
 
-B<NOTE>: This module uses L<Test2> instead of the classic L<Test::More>.
-As of this writing that makes it incompatible with the vast majority of
-testing modules on CPAN.  This will change when/if L<Test2> replaces
-L<Test::More>.  For the most part testing of L<Alien> modules is done in
-isolation to other testing libraries so that shouldn't be too terrible.
-
 =head1 FUNCTIONS
 
 =head2 alien_ok
