@@ -118,9 +118,20 @@ sub init
       
       $build->runtime_prop->{cflags} = $cflags;
       $build->runtime_prop->{libs}   = $libs;
+      $build->install_prop->{plugin_probe_cbuilder_gather} = 1;
       
       'system';
     }
+  );
+
+  $meta->register_hook(
+    gather_system => sub {
+      my($build) = @_;
+      unless($build->install_prop->{plugin_probe_cbuilder_gather})
+      {
+        die "cbuilder plugin failed to gather";
+      }
+    },
   );
 }
 

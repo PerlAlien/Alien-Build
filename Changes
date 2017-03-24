@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Better negotiation between pkg-config and cbuilder plugins
 
 0.29      2017-03-24 12:57:13 -0400
   - Improved diagnostics
