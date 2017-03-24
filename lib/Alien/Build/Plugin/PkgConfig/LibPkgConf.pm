@@ -85,7 +85,6 @@ sub init
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
-      $DB::single = 1;
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($self->pkg_name);
