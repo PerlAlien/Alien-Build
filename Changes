@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add documentation Alien::Build::Manual::AlienUser
+  - Fixup compiler and linker flags when not doing a double staged install
 
 0.31      2017-03-24 15:27:19 -0400
   - Better negotiation between pkg-config and cbuilder plugins (again)

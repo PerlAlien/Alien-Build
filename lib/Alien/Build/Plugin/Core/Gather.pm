@@ -79,7 +79,19 @@ sub init
       else
       {
         local $CWD = $build->install_prop->{stage};
-        return $orig->($build);
+        my $ret = $orig->($build);
+
+        # if we are not doing a double staged install we want to substitute the install
+        # prefix with the runtime prefix.
+        my $old = $build->install_prop->{prefix};
+        my $new = $build->runtime_prop->{prefix};
+        
+        foreach my $flag (qw( cflags cflags_static libs libs_static ))
+        {
+          $build->runtime_prop->{$flag} =~ s{(-I|-L|-LIBPATH:)\Q$old\E}{$1 . $new}eg;
+        }
+        
+        return $ret;
       }
     }
   );
