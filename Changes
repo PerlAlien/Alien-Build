@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.32      2017-03-28 14:14:52 -0400
   - Add documentation Alien::Build::Manual::AlienUser
   - Fixup compiler and linker flags when not doing a double staged install
 
