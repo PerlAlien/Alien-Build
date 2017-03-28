@@ -8,6 +8,83 @@
 
 =head1 DESCRIPTION
 
-TODO
+This document is intended for a user of an L<Alien::Base> based L<Alien>
+module's user.  Although specifically geared for L<Alien::Base>
+subclasses, it may have some useful hints for L<Alien> in general.
+
+The following documentation will assume you are trying to use an L<Alien>
+called C<Alien::Foo> which provides the library C<libfoo> and the command
+line tool C<foo>.  Many L<Alien>s will only provide one or the other.
+
+What follows are the main use cases.
+
+=head2 Module::Build
+
+ use Module::Build;
+ use Alien::Foo;
+ 
+ my $builder = Module::Build->new(
+   ...
+   configure_requires => {
+     'Alien::Foo' => '0',
+     ...
+   },
+   extra_compiler_flags => Alien::Foo->cflags,
+   extra_linker_flags   => Alien::Foo->libs,
+   ...
+ );
+ 
+ $build->create_build_script;
+
+The key gotcha for using L<Alien> from a C<Build.PL> for an XS module
+is remembering to explicitly making the L<Alien> a configuration 
+prerequisite.
+
+=head2 ExtUtils::MakeMaker
+
+ use ExtUtils::MakeMaker;
+ use Config;
+ use Alien::Foo;
+ 
+ WriteMakefile(
+   ...
+   CONFIGURE_REQUIRES => {
+     'Alien::Foo' => '0',
+   },
+   CCFLAGS => Alien::Foo->cflags . " $Config{ccflags}",
+   LIBS    => [ Alien::Foo->libs ],
+   ...
+ );
+
+MakeMaker is similar, make sure that you explicitly make your L<Alien>
+a configure prerequisite.
+
+=head2 FFI::Platypus
+
+ use FFI::Platypus;
+ use Alien::Foo;
+ 
+ my $ffi = FFI::Platypus->new(
+   lib => [ Alien::Foo->dynamic_libs ],
+ );
+
+Not all L<Alien>s provide dynamic libraries, but those that do can be
+used by L<FFI::Raw> or L<FFI::Platypus>.  Unlike an XS module, these
+need to be a regular run time prerequisite.
+
+=head2 tool
+
+ use Alien::Foo;
+ use Env qw( @PATH );
+ 
+ unshift @ENV, Alien::Foo->bin_dir;
+ system 'foo', '--bar', '--baz';
+
+Some L<Alien>s provide tools instead of or in addition to a library.
+You need to add them to the C<PATH> environment variable though.
+(Unless the tool is already provided by the system, in which case
+it is already in the path and the C<bin_dir> method will return an
+empty list).
 
 =cut
+
