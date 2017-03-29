@@ -24,6 +24,8 @@ subtest 'updates requires' => sub {
 
 subtest 'fetch' => sub {
 
+  skip_all 'test requires HTTP::Tiny' unless eval q{ use HTTP::Tiny 0.044; 1 };
+
   foreach my $type (qw( http ftp file ))
   {
     subtest "with $type" => sub {
