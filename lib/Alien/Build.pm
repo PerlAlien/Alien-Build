@@ -35,7 +35,7 @@ client, and work closely with L<Alien::Base> which is used at runtime.
 This is the detailed documentation for L<Alien::Build> class.  If you are
 starting out as a user of an L<Alien::Build> based L<Alien> module, see
 L<Alien::Build::Manual::AlienUser>.  If you are starting out writing a new
-L<Alien::Build> based L<Alien> module, see L<Alien::Build::Manual::ALienAuthor>.
+L<Alien::Build> based L<Alien> module, see L<Alien::Build::Manual::AlienAuthor>.
 As an L<Alien> author, you will also likely be interested in
 L<Alien::Build::Manual::FAQ>.  If you are interested in writing a
 L<Alien::Build> plugin, see L<Alien::Build::Manual::PluginAuthor>.

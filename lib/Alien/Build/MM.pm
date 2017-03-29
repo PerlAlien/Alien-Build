@@ -20,7 +20,7 @@ In your Makefile.PL:
  
  WriteMakefile($abmm->mm_args(
    ABSTRACT     => 'Discover or download and install libfoo',
-   DISTNAME     => 'ALien-Libfoo',
+   DISTNAME     => 'Alien-Libfoo',
    NAME         => 'Alien::Libfoo',
    VERSION_FROM => 'lib/Alien/Libfoo.pm',
    ...
