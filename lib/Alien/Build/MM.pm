@@ -199,9 +199,14 @@ sub mm_postamble
                 "_alien/mm/prefix :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e prefix \$(INSTALLDIRS) $dirs\n\n";
 
+  # set verson
+  $postamble .= "alien_version : _alien/mm/version\n\n" .
+                "_alien/mm/version :\n" .
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e version \$(VERSION)\n\n";
+
   # download
   $postamble .= "alien_download : _alien/mm/download\n\n" .
-                "_alien/mm/download : _alien/mm/prefix\n" .
+                "_alien/mm/download : _alien/mm/prefix _alien/mm/version\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e download\n\n";
 
   # build
@@ -259,6 +264,15 @@ sub import
         $build->set_prefix($prefix);
         $build->checkpoint;
         _touch('prefix');
+      };
+      
+      *version = sub
+      {
+        my($build, $version) = _args();
+        
+        $build->runtime_prop->{perl_module_version} = $version;
+        $build->checkpoint;
+        _touch('version');
       };
       
       *download = sub

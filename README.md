@@ -24,7 +24,7 @@ client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base
 This is the detailed documentation for [Alien::Build](https://metacpan.org/pod/Alien::Build) class.  If you are
 starting out as a user of an [Alien::Build](https://metacpan.org/pod/Alien::Build) based [Alien](https://metacpan.org/pod/Alien) module, see
 [Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser).  If you are starting out writing a new
-[Alien::Build](https://metacpan.org/pod/Alien::Build) based [Alien](https://metacpan.org/pod/Alien) module, see [Alien::Build::Manual::ALienAuthor](https://metacpan.org/pod/Alien::Build::Manual::ALienAuthor).
+[Alien::Build](https://metacpan.org/pod/Alien::Build) based [Alien](https://metacpan.org/pod/Alien) module, see [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor).
 As an [Alien](https://metacpan.org/pod/Alien) author, you will also likely be interested in
 [Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien::Build::Manual::FAQ).  If you are interested in writing a
 [Alien::Build](https://metacpan.org/pod/Alien::Build) plugin, see [Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor).
@@ -220,6 +220,12 @@ relevant once the install process is complete.
 - version
 
     The version of the library or tool
+
+- perl\_module\_version
+
+    The version of the Perl module used to install the alien (if available).
+    For example if [Alien::curl](https://metacpan.org/pod/Alien::curl) is installing `libcurl` this would be the
+    version of [Alien::curl](https://metacpan.org/pod/Alien::curl) used during the install step.
 
 - prefix
 

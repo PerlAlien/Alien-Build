@@ -295,6 +295,12 @@ The static library flags
 
 The version of the library or tool
 
+=item perl_module_version
+
+The version of the Perl module used to install the alien (if available).
+For example if L<Alien::curl> is installing C<libcurl> this would be the
+version of L<Alien::curl> used during the install step.
+
 =item prefix
 
 The final install root.  This is usually they share directory.
