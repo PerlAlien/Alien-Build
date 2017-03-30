@@ -164,6 +164,10 @@ you run C<make all>, but can be run individually if needed for debugging.
 
 Determines the final install prefix (C<%{.install.prefix}>).
 
+=item alien_version
+
+Determine the perl_module_version (C<%{.runtime.perl_module_version}>)
+
 =item alien_download
 
 Downloads the source from the internet.  Does nothing for a system install.
