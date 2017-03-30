@@ -107,7 +107,6 @@ sub mm_args
     my $module = $args{DISTNAME};
     $module =~ s/-/::/g;
     # See if there is an existing version installed, without pulling it into this process
-    $DB::single = 1;
     my($old_prefix, $err, $ret) = capture { system $^X, "-M$module", -e => "print $module->dist_dir"; $? };
     if($ret == 0)
     {

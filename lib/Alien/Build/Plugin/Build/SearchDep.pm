@@ -8,8 +8,6 @@ use Text::ParseWords qw( shellwords );
 # ABSTRACT: Add dependencies to library and header search path
 # VERSION
 
-our $VERSION = '0.35';
-
 =head1 SYNOPSIS
 
  use alienfile;
