@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.35      2017-03-30 18:02:45 -0400
   - Add Build::SearchDep plugin
   - Add PkgConfig::MakeStatic plugin
 
