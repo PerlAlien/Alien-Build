@@ -10,6 +10,7 @@ require_ok 'Alien::Build::Interpolate::Default';
 require_ok 'Alien::Build::Plugin';
 require_ok 'Alien::Build::Plugin::Download::Negotiate';
 require_ok 'Alien::Build::Plugin::Build::Autoconf';
+require_ok 'Alien::Build::Plugin::Build::SearchDep';
 require_ok 'Alien::Build::Plugin::Build::MSYS';
 require_ok 'Alien::Build::Plugin::Fetch::LWP';
 require_ok 'Alien::Build::Plugin::Fetch::HTTPTiny';

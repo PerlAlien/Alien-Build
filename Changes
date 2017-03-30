@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add Build::SearchDep plugin
 
 0.34      2017-03-30 11:19:48 -0400
   - Add install property: old.prefix
