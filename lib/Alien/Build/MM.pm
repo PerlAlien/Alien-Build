@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Alien::Build;
 use Path::Tiny ();
+use Capture::Tiny qw( capture );
 use Carp ();
 
 # ABSTRACT: Alien::Build installer code for ExtUtils::MakeMaker
@@ -103,6 +104,15 @@ sub mm_args
   {
     $self->build->set_stage(Path::Tiny->new("blib/lib/auto/share/dist/$args{DISTNAME}")->absolute->stringify);
     $self->build->install_prop->{mm}->{distname} = $args{DISTNAME};
+    my $module = $args{DISTNAME};
+    $module =~ s/-/::/g;
+    # See if there is an existing version installed, without pulling it into this process
+    my($old_prefix, $err, $ret) = capture { system $^X, "-M$module", -e => "print $module->dist_dir"; $? };
+    if($ret == 0)
+    {
+      chomp $old_prefix;
+      $self->build->install_prop->{old_prefix} = $old_prefix;
+    }
   }
   else
   {

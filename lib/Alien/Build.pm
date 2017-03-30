@@ -219,10 +219,19 @@ based module.
 
 =over
 
-=item root
+=item autoconf_prefix
 
-The build root directory.  This will be an absolute path.  It is the
-absolute form of C<./_alien> by default.
+The prefix as understood by autoconf.  This is only different on Windows
+Where MSYS is used and paths like C<C:/foo> are  represented as C</C/foo>
+which are understood by the MSYS tools, but not by Perl.  You should
+only use this if you are using L<Alien::Build::Plugin::Autoconf> in
+your L<alienfile>.
+
+
+=item old_prefix
+
+The prefix from an old install, if available.  This can be useful for
+reusing an existing install if it meets the current requirements.
 
 =item patch
 
@@ -235,13 +244,10 @@ same as the runtime or final install location.  Under a non-C<destdir>
 install this is the C<stage> directory (usually the appropriate
 share directory under C<blib>).
 
-=item autoconf_prefix
+=item root
 
-The prefix as understood by autoconf.  This is only different on Windows
-Where MSYS is used and paths like C<C:/foo> are  represented as C</C/foo>
-which are understood by the MSYS tools, but not by Perl.  You should
-only use this if you are using L<Alien::Build::Plugin::Autoconf> in
-your L<alienfile>.
+The build root directory.  This will be an absolute path.  It is the
+absolute form of C<./_alien> by default.
 
 =item stage
 
