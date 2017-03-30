@@ -36,7 +36,7 @@ sub init
 {
   my($self, $meta) = @_;
   
-  $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::SearchDep' => '0.34');
+  $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::SearchDep' => '0.35');
   $meta->add_requires('share'     => 'Env::ShellWords' => 0.01);
   
   my @aliens;

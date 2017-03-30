@@ -95,7 +95,7 @@ sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::SearchDep' => '0.34');
+  $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::SearchDep' => '0.35');
 
   $meta->before_hook(
     gather_share => sub {
