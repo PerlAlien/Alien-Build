@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.33      2017-03-29 20:38:56 -0400
   - Add runtime property: perl_module_version
   - Fix important typos
 
