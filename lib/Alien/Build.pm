@@ -289,28 +289,6 @@ The command name for tools where the name my differ from platform to
 platform.  For example, the GNU version of make is usually C<make> in
 Linux and C<gmake> on FreeBSD.
 
-=item libs
-
-The library flags
-
-=item libs_static
-
-The static library flags
-
-=item version
-
-The version of the library or tool
-
-=item perl_module_version
-
-The version of the Perl module used to install the alien (if available).
-For example if L<Alien::curl> is installing C<libcurl> this would be the
-version of L<Alien::curl> used during the install step.
-
-=item prefix
-
-The final install root.  This is usually they share directory.
-
 =item install_type
 
 The install type.  Is one of:
@@ -330,6 +308,28 @@ downloaded from the internet or retrieved in another appropriate fashion
 and built.
 
 =back
+
+=item libs
+
+The library flags
+
+=item libs_static
+
+The static library flags
+
+=item perl_module_version
+
+The version of the Perl module used to install the alien (if available).
+For example if L<Alien::curl> is installing C<libcurl> this would be the
+version of L<Alien::curl> used during the install step.
+
+=item prefix
+
+The final install root.  This is usually they share directory.
+
+=item version
+
+The version of the library or tool
 
 =back
 

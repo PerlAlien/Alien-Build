@@ -156,10 +156,18 @@ the entire install phase, but not kept around during the runtime
 phase.  Thus they cannot be accessed from your [Alien::Base](https://metacpan.org/pod/Alien::Base)
 based module.
 
-- root
+- autoconf\_prefix
 
-    The build root directory.  This will be an absolute path.  It is the
-    absolute form of `./_alien` by default.
+    The prefix as understood by autoconf.  This is only different on Windows
+    Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
+    which are understood by the MSYS tools, but not by Perl.  You should
+    only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
+    your [alienfile](https://metacpan.org/pod/alienfile).
+
+- old\_prefix
+
+    The prefix from an old install, if available.  This can be useful for
+    reusing an existing install if it meets the current requirements.
 
 - patch
 
@@ -172,13 +180,10 @@ based module.
     install this is the `stage` directory (usually the appropriate
     share directory under `blib`).
 
-- autoconf\_prefix
+- root
 
-    The prefix as understood by autoconf.  This is only different on Windows
-    Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
-    which are understood by the MSYS tools, but not by Perl.  You should
-    only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
-    your [alienfile](https://metacpan.org/pod/alienfile).
+    The build root directory.  This will be an absolute path.  It is the
+    absolute form of `./_alien` by default.
 
 - stage
 
@@ -209,28 +214,6 @@ relevant once the install process is complete.
     platform.  For example, the GNU version of make is usually `make` in
     Linux and `gmake` on FreeBSD.
 
-- libs
-
-    The library flags
-
-- libs\_static
-
-    The static library flags
-
-- version
-
-    The version of the library or tool
-
-- perl\_module\_version
-
-    The version of the Perl module used to install the alien (if available).
-    For example if [Alien::curl](https://metacpan.org/pod/Alien::curl) is installing `libcurl` this would be the
-    version of [Alien::curl](https://metacpan.org/pod/Alien::curl) used during the install step.
-
-- prefix
-
-    The final install root.  This is usually they share directory.
-
 - install\_type
 
     The install type.  Is one of:
@@ -246,6 +229,28 @@ relevant once the install process is complete.
         For when a system install is not possible, the library source will be
         downloaded from the internet or retrieved in another appropriate fashion
         and built.
+
+- libs
+
+    The library flags
+
+- libs\_static
+
+    The static library flags
+
+- perl\_module\_version
+
+    The version of the Perl module used to install the alien (if available).
+    For example if [Alien::curl](https://metacpan.org/pod/Alien::curl) is installing `libcurl` this would be the
+    version of [Alien::curl](https://metacpan.org/pod/Alien::curl) used during the install step.
+
+- prefix
+
+    The final install root.  This is usually they share directory.
+
+- version
+
+    The version of the library or tool
 
 ## hook\_prop
 
