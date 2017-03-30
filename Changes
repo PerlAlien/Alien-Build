@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.34      2017-03-30 11:19:48 -0400
   - Add install property: old.prefix
   - Add install property: old.runtime
 
