@@ -164,10 +164,19 @@ based module.
     only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
     your [alienfile](https://metacpan.org/pod/alienfile).
 
-- old\_prefix
+- old
 
-    The prefix from an old install, if available.  This can be useful for
-    reusing an existing install if it meets the current requirements.
+    Hash containing information on a previously installed Alien of the same
+    name, if available.  This may be useful in cases where you want to
+    reuse the previous install if it is still sufficient.
+
+    - prefix
+
+        The prefix for the previous install.
+
+    - runtime
+
+        The runtime properties from the previous install.
 
 - patch
 

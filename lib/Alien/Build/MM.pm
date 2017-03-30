@@ -107,11 +107,24 @@ sub mm_args
     my $module = $args{DISTNAME};
     $module =~ s/-/::/g;
     # See if there is an existing version installed, without pulling it into this process
+    $DB::single = 1;
     my($old_prefix, $err, $ret) = capture { system $^X, "-M$module", -e => "print $module->dist_dir"; $? };
     if($ret == 0)
     {
       chomp $old_prefix;
-      $self->build->install_prop->{old_prefix} = $old_prefix;
+      my $file = Path::Tiny->new($old_prefix, qw( _alien alien.json ));
+      if(-r $file)
+      {
+        my $old_runtime = eval {
+          require JSON::PP;
+          JSON::PP::decode_json($file->slurp);
+        };
+        unless($@)
+        {
+          $self->build->install_prop->{old}->{runtime} = $old_runtime;
+          $self->build->install_prop->{old}->{preifx}  = $old_prefix;
+        }
+      }
     }
   }
   else
@@ -253,7 +266,6 @@ sub import
       
       *_touch = sub {
         my($name) = @_;
-        require Path::Tiny;
         my $path = Path::Tiny->new("_alien/mm/$name");
         $path->parent->mkpath;
         $path->touch;

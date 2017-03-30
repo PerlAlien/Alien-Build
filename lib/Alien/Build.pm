@@ -227,11 +227,23 @@ which are understood by the MSYS tools, but not by Perl.  You should
 only use this if you are using L<Alien::Build::Plugin::Autoconf> in
 your L<alienfile>.
 
+=item old
 
-=item old_prefix
+Hash containing information on a previously installed Alien of the same
+name, if available.  This may be useful in cases where you want to
+reuse the previous install if it is still sufficient.
 
-The prefix from an old install, if available.  This can be useful for
-reusing an existing install if it meets the current requirements.
+=over 4
+
+=item prefix
+
+The prefix for the previous install.
+
+=item runtime
+
+The runtime properties from the previous install.
+
+=back
 
 =item patch
 
