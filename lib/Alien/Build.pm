@@ -994,17 +994,13 @@ sub build
   if($self->install_type eq 'share')
   {
     local $CWD;
-  
-    unless($self->meta_prop->{destdir})
-    {
-      delete $ENV{DESTDIR};
-    }
-  
+    delete $ENV{DESTDIR} unless $self->meta_prop->{destdir};
+
     %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
     %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
-  
+
     my $destdir;
-  
+
     $self->_call_hook(
     {
       before => sub {
@@ -1020,8 +1016,8 @@ sub build
         $destdir = "$destdir" if $destdir;
       },
     }, 'build');
-  
-  
+
+
     $self->_call_hook('gather_share');
   }
   
