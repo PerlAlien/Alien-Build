@@ -1017,7 +1017,6 @@ sub build
       },
     }, 'build');
 
-
     $self->_call_hook('gather_share');
   }
   
