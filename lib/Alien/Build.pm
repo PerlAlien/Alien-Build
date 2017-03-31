@@ -70,6 +70,7 @@ sub new
       patch => (defined $args{patch}) ? _path($args{patch})->absolute->stringify : undef,
     },
     runtime_prop => {
+      alien_build_version => $Alien::Build::VERSION || 'dev',
     },
     bin_dir => [],
     pkg_config_path => [],
@@ -286,6 +287,10 @@ during runtime, and shouldn't include anything that is no longer
 relevant once the install process is complete.
 
 =over 4
+
+=item alien_build_version
+
+The version of L<Alien::Build> used to install the library or tool.
 
 =item cflags
 

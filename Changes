@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add runtime property: alien_build_version
 
 0.35      2017-03-30 18:02:45 -0400
   - Add Build::SearchDep plugin

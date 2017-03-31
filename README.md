@@ -209,6 +209,10 @@ anything that you will need to know to use the library or tool
 during runtime, and shouldn't include anything that is no longer
 relevant once the install process is complete.
 
+- alien\_build\_version
+
+    The version of [Alien::Build](https://metacpan.org/pod/Alien::Build) used to install the library or tool.
+
 - cflags
 
     The compiler flags
