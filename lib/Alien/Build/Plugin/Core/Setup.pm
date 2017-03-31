@@ -26,7 +26,7 @@ sub init
 {
   my($self, $meta) = @_;
   
-  if($^O eq 'MSWin32' && $Config{cc} =~ /cl(\.exe)?$/i)
+  if($^O eq 'MSWin32' && $Config{ccname} eq 'cl')
   {
     $meta->prop->{platform}->{compiler_type} = 'microsoft';
   }
