@@ -162,7 +162,7 @@ sub ld
 
  my %args = Alien::Base::Wrapper->mm_args;
 
-Returns arguments that you can pass into WriteMakefile to compile/link against
+Returns arguments that you can pass into C<WriteMakefile> to compile/link against
 the specified Aliens.
 
 =cut
