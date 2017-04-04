@@ -83,16 +83,18 @@ comes with L<PkgConfig::LibPkgConf>.
 =cut
 
 my @cflags_I;
-my @cflags;
+my @cflags_other;
 my @ldflags_L;
-my @libs;
+my @ldflags_l;
+my @ldflags_other;
 
 sub _reset
 {
-  @cflags_I  = ();
-  @cflags    = ();
-  @ldflags_L = ();
-  @libs      = ();
+  @cflags_I      = ();
+  @cflags_other  = ();
+  @ldflags_L     = ();
+  @ldflags_l     = ();
+  @ldflags_other = ();
 }
 
 =head1 FUNCTIONS
@@ -111,7 +113,7 @@ sub cc
   my @command = (
     $Config{cc},
     @cflags_I,
-    @cflags,
+    @cflags_other,
     @ARGV,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
@@ -132,8 +134,9 @@ sub ld
   my @command = (
     $Config{ld},
     @ldflags_L,
+    @ldflags_other,
     @ARGV,
-    @libs,
+    @ldflags_l,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
   exec @command;
@@ -168,11 +171,12 @@ sub import
       $libs   = $alien->libs;
     }
     
-    @cflags_I  = grep  /^-I/, shellwords $cflags;
-    @cflags    = grep !/^-I/, shellwords $cflags;
+    push @cflags_I,     grep  /^-I/, shellwords $cflags;
+    push @cflags_other, grep !/^-I/, shellwords $cflags;
     
-    @ldflags_L = grep  /^-L/, shellwords $libs;
-    @libs      = grep !/^-L/, shellwords $libs;
+    push @ldflags_L,     grep  /^-L/,    shellwords $libs;
+    push @ldflags_l,     grep  /^-l/,    shellwords $libs;
+    push @ldflags_other, grep !/^-[Ll]/, shellwords $libs;
   }
 }
 

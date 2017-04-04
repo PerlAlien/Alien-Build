@@ -149,4 +149,46 @@ subtest 'share sans static' => sub {
 
 };
 
+subtest 'combine aliens' => sub {
+
+  Alien::Base::Wrapper::_reset();
+  
+  {
+    package
+      Alien::Foo5;
+      
+    sub install_type { 'system' }
+    sub cflags { '-I/foo/include -DFOO5=1' }
+    sub libs   { '-L/foo/lib --ld-foo -lfoo' }
+    
+    package
+      Alien::Bar5;
+    
+    sub install_type { 'share' }
+    sub cflags { '-I/bar/include -DBAR5=1' }
+    sub libs   { '-L/foo/lib --ld-bar -lbar' }
+  }
+
+  Alien::Base::Wrapper->import('Alien::Foo5', 'Alien::Bar5');
+  
+  is(
+    exec_arrayref {
+      local @ARGV = qw( one two three );
+      Alien::Base::Wrapper::cc();
+    },
+    [$Config{cc}, qw( -I/foo/include -I/bar/include -DFOO5=1 -DBAR5=1 one two three ) ],
+    'cc',
+  );
+
+  is(
+    exec_arrayref {
+      local @ARGV = qw( one two three );
+      Alien::Base::Wrapper::ld();
+    },
+    [$Config{cc}, qw( -L/foo/lib -L/foo/lib --ld-foo --ld-bar one two three -lfoo -lbar )],
+    'ld',
+  );
+
+};
+
 done_testing;
