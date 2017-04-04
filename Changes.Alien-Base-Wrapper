@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Fix bug related to multiple aliens
+  - Add mm_args method
 
 0.03      2017-03-21 15:26:28 -0400
   - Sorry, more documentation changes only.

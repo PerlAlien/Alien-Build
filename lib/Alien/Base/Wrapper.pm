@@ -6,7 +6,7 @@ use 5.008001;
 use Config;
 use Text::ParseWords qw( shellwords );
 
-# ABSTRACT: Compiler and linker wrapper for late optional Alien utilization
+# ABSTRACT: Compiler and linker wrapper for Alien
 # VERSION
 
 =head1 SYNOPSIS
@@ -16,69 +16,83 @@ From the command line:
  % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e cc -- -o foo.o -c foo.c
  % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e ld -- -o foo foo.o
 
-From Makefile.PL:
+From Makefile.PL (non-dynamic):
 
- use Config;
+ use ExtUtils::MakeMaker;
+ use Alien::Base::Wrapper qw( Alien::Foo Alien::Bar !export );
+ 
+ WriteMakefile(
+   'NAME'              => 'Foo::XS',
+   'VERSION_FROM'      => 'lib/Foo/XS.pm',
+   'CONFIGURE_REQUIRES => {
+     'ExtUtils::MakeMaker' => 6.52,
+     'Alien::Foo'          => 0,
+     'Alien::Bar'          => 0,
+   },
+   Alien::Base::Wrapper->mm_args,
+ );
+
+From Makefile.PL (dynamic):
+
+ use Devel::CheckLib qw( check_lib );
  use ExtUtils::MakeMaker 6.52;
  
- my $cc      = $Config{cc};
- my $ld      = $Config{ld};
- my $libs    = '';
- my $ccflags = $Config{ccflags};
+ my @mm_args;
+ my @libs;
  my %build_requires;
  
- system 'pkg-config', '--exists', 'libfoo';
- if($? == 0)
+ if(check_lib( lib => [ 'foo' ] )
  {
-   $ccflags = `pkg-config --cflags libfoo` . " $ccflags";
-   $libs    = `pkg-config --libs   libfoo`;
+   push @mm_args, LIBS => [ '-lfoo' ];
  }
  else
  {
-   $cc = '$(FULLPERL) -MAlien::Base::Wrapper=Alien::Libfoo -e cc --';
-   $ld = '$(FULLPERL) -MAlien::Base::Wrapper=Alien::Libfoo -e ld --';
-   $build_requires{'Alien::Libfoo'} = 0;
-   $build_requires{'Alien::Base::Wrapper'} = 0;
+   push @mm_args,
+     CC => '$(FULLPERL) -MAlien::Base::Wrapper=Alien::Foo -e cc --',
+     LD => '$(FULLPERL) -MAlien::Base::Wrapper=Alien::Foo -e ld --',
+     BUILD_REQUIRES => {
+       'Alien::Foo'           => 0,
+       'Alien::Base::Wrapper' => 0,
+     }
+   ;
  }
- 
- WriteMakefile(
-   NAME           => 'Foo::XS',
-   BUILD_REQUIRES => \%build_requires,
-   CC             => $cc,
-   LD             => $ld,
-   CCFLAGS        => $ccflags,
-   LIBS           => [ $libs ],
-   ...
- );
 
+ WriteMakefile(
+   'NAME'         => 'Foo::XS',
+   'VERSION_FROM' => 'lib/Foo/XS.pm',
+   'CONFIGURE_REQUIRES => {
+     'ExtUtils::MakeMaker' => 6.52,
+   },
+   @mm_args,
+ );
+ 
 =head1 DESCRIPTION
 
-B<Note>: this particular module is still somewhat experimental.
+This module acts as a wrapper around one or more L<Alien> modules.  It is designed to work
+with L<Alien::Base> based aliens, but it should work with any L<Alien> which uses the same
+essential API.
 
-This module provides a command line wrapper for your compiler and linker that use the 
-correct flags needed for compiling and linking with L<Alien> modules.  The problem that 
-this module attempts to solve is that compiler and linker flags typically need to be 
-determined at I<configure> time when a distribution is installed, meaning if you are going 
-to use an L<Alien> module, then it needs to be a configure prerequisite, even if the 
-library is already installed on the operating system.  With this module, you can use this 
-wrapper as the compiler and linker commands and delay computing the compiler and linker 
-flags to the build stage, and only if necessary.
+In the first example (from the command line), this class acts as a wrapper around the
+compiler and linker that Perl is configured to use.  It takes the normal compiler and
+linker flags and adds the flags provided by the Aliens specified, and then executes the
+command.  It will print the command to the console so that you can see exactly what is
+happening.
 
-The author of this module believes it to be somewhat unnecessary.  L<Alien> modules based on 
-L<Alien::Base> have a number of prerequisites, but they well maintained and reliable, so 
-while there is a small cost in terms of extra dependencies, this is more than made up for 
-in reliability on systems where libraries that are do not typically come with commonly used 
-open source libraries.  Operating system vendors that are packaging XS perl modules may 
-disagree.
+In the second example (from Makefile.PL non-dynamic), this class is used to generate the
+appropriate L<ExtUtils::MakeMaker> (EUMM) arguments needed to C<WriteMakefile>.
 
-If you wish to be extra minimal in your prerequisites you can bundle this module with
-your XS module, and use C<-Iinc>.  This module has no non-core runtime prerequisites on
-Perl 5.8.1 and better.
+In the third example (from Makefile.PL dynamic), we do a quick check to see if the simple
+linker flag C<-lfoo> will work, if so we use that.  If not, we use a wrapper around the
+compiler and linker that will use the alien flags that are known at build time.  The
+problem that this form attempts to solve is that compiler and linker flags typically
+need to be determined at I<configure> time, when a distribution is installed, meaning
+if you are going to use an L<Alien> module then it needs to be a configure prerequisite,
+even if the library is already installed and easily detected on the operating system.
 
-For a working example, please see the C<Makefile.PL> that comes with L<Term::EditLine>.
-
-For a more custom, non L<Alien::Base> based example, see the C<Makefile.PL> that
-comes with L<PkgConfig::LibPkgConf>.
+The author of this module believes that the third (from Makefile.PL dynamic) form is
+somewhat unnecessary.  L<Alien> modules based on L<Alien::Base> have a few prerequisites,
+but they are well maintained and reliable, so while there is a small cost in terms of extra
+dependencies, the overall reliability thanks to reduced overall complexity.
 
 =cut
 
@@ -87,6 +101,7 @@ my @cflags_other;
 my @ldflags_L;
 my @ldflags_l;
 my @ldflags_other;
+my @mm;
 
 sub _reset
 {
@@ -95,6 +110,7 @@ sub _reset
   @ldflags_L     = ();
   @ldflags_l     = ();
   @ldflags_other = ();
+  @mm            = ();
 }
 
 =head1 FUNCTIONS
@@ -142,18 +158,37 @@ sub ld
   exec @command;
 }
 
+=head2 mm_args
+
+ my %args = Alien::Base::Wrapper->mm_args;
+
+Returns arguments that you can pass into WriteMakefile to compile/link against
+the specified Aliens.
+
+=cut
+
+sub mm_args
+{
+  @mm;
+}
+
+sub _join
+{
+  join ' ', map { s/(\s)/\\$1/g; $_ } @_;
+}
+
 sub import
 {
   my(undef, @aliens) = @_;
-  {
-    my $caller = caller;
-    no strict 'refs';
-    *{"${caller}::cc"} = \&cc;
-    *{"${caller}::ld"} = \&ld;
-  }
-  
+
+  my $export = 1;
+
   foreach my $alien (@aliens)
   {
+    if($alien eq '!export')
+    {
+      $export = 0;
+    }
     $alien = "Alien::$alien" unless $alien =~ /::/;
     my $alien_pm = $alien . '.pm';
     $alien_pm =~ s/::/\//g;
@@ -178,6 +213,28 @@ sub import
     push @ldflags_l,     grep  /^-l/,    shellwords $libs;
     push @ldflags_other, grep !/^-[Ll]/, shellwords $libs;
   }
+  
+  my @cflags_define = grep  /^-D/, @cflags_other;
+  my @cflags_other2 = grep !/^-D/, @cflags_other;
+  
+  @mm = ();
+
+  push @mm, INC       => _join @cflags_I                             if @cflags_I;
+  push @mm, CCFLAGS   => _join(@cflags_other2) . " $Config{ccflags}" if @cflags_other2;
+  push @mm, DEFINE    => _join(@cflags_define)                       if @cflags_define;
+
+  push @mm, LIBS      => [@ldflags_l];
+  my @ldflags = (@ldflags_L, @ldflags_other);
+  push @mm, LDDLFLAGS => _join(@ldflags) . " $Config{lddlflags}"     if @ldflags;
+  push @mm, LDFLAGS   => _join(@ldflags) . " $Config{ldflags}"       if @ldflags;
+  
+  if($export)
+  {
+    my $caller = caller;
+    no strict 'refs';
+    *{"${caller}::cc"} = \&cc;
+    *{"${caller}::ld"} = \&ld;
+  }  
 }
 
 1;
