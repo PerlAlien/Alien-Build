@@ -102,6 +102,7 @@ my @ldflags_L;
 my @ldflags_l;
 my @ldflags_other;
 my @mm;
+my @mb;
 
 sub _reset
 {
@@ -111,6 +112,7 @@ sub _reset
   @ldflags_l     = ();
   @ldflags_other = ();
   @mm            = ();
+  @mb            = ();
 }
 
 =head1 FUNCTIONS
@@ -172,6 +174,19 @@ sub mm_args
   @mm;
 }
 
+=head2 mb_args
+
+ my %args = Alien::Base::Wrapper->mb_args;
+
+Returns arguments that you can pass into the constructor to L<Module::Build>.
+
+=cut
+
+sub mb_args
+{
+  @mb;
+}
+
 sub _join
 {
   join ' ', map { s/(\s)/\\$1/g; $_ } @_;
@@ -227,6 +242,19 @@ sub import
   my @ldflags = (@ldflags_L, @ldflags_other);
   push @mm, LDDLFLAGS => _join(@ldflags) . " $Config{lddlflags}"     if @ldflags;
   push @mm, LDFLAGS   => _join(@ldflags) . " $Config{ldflags}"       if @ldflags;
+
+  @mb = ();
+  
+  push @mb, extra_compiler_flags => _join(@cflags_I, @cflags_other);
+  push @mb, extra_linker_flags   => _join(@ldflags_l);
+  
+  if(@ldflags)
+  {
+    push @mb, config => {
+      lddlflags => _join(@ldflags) . " $Config{lddlflags}",
+      ldflags   => _join(@ldflags) . " $Config{ldflags}",
+    },
+  }
   
   if($export)
   {

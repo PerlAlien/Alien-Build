@@ -189,24 +189,51 @@ subtest 'combine aliens' => sub {
     'ld',
   );
 
-  my %mm_args = Alien::Base::Wrapper->mm_args;
+  subtest 'mm_args' => sub {
 
-  if(eval q{ require YAML })
-  {
-    note YAML::Dump(\%mm_args);
-  }
+    my %mm_args = Alien::Base::Wrapper->mm_args;
+
+    if(eval q{ require YAML })
+    {
+      note YAML::Dump(\%mm_args);
+    }
   
-  is(
-    \%mm_args,
-    hash {
-      field DEFINE    => '-DFOO5=1 -DBAR5=1';
-      field INC       => '-I/foo/include -I/bar/include';
-      field LIBS      => [ '-lfoo', '-lbar' ];
-      field LDDLFLAGS => T();
-      field LDFLAGS   => T();
-    },
-    'mm_args',
-  );
+    is(
+      \%mm_args,
+      hash {
+        field DEFINE    => '-DFOO5=1 -DBAR5=1';
+        field INC       => '-I/foo/include -I/bar/include';
+        field LIBS      => [ '-lfoo', '-lbar' ];
+        field LDDLFLAGS => T();
+        field LDFLAGS   => T();
+      },
+    );
+    
+  };
+  
+  subtest 'mb_args' => sub {
+
+    my %mb_args = Alien::Base::Wrapper->mb_args;
+
+    if(eval q{ require YAML })
+    {
+      note YAML::Dump(\%mb_args);
+    }
+    
+    is(
+      \%mb_args,
+      hash {
+        field extra_compiler_flags => '-I/foo/include -I/bar/include -DFOO5=1 -DBAR5=1';
+        field extra_linker_flags   => '-lfoo -lbar';
+        field config => hash {
+          field lddlflags => T();
+          field ldflags   => T();
+        };
+      },
+    );
+  
+
+  };
 
 };
 
