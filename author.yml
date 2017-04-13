@@ -44,6 +44,7 @@ pod_spelling_system:
     - alienizing
     - libfoo
     - libpkgconf
+    - pc
 
 pod_coverage:
   skip: 0

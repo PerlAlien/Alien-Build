@@ -17,7 +17,7 @@ use Text::ParseWords qw( shellwords );
 
 =head1 DESCRIPTION
 
-This plugin adds the other aliens as prerequsites, and adds their header and library
+This plugin adds the other aliens as prerequisites, and adds their header and library
 search path to C<CFLAGS> and C<LDFLAGS> environment variable, so that tools that use
 them (like autoconf) can pick them up.
 
@@ -26,7 +26,7 @@ them (like autoconf) can pick them up.
 =head2 aliens
 
 Either a list reference or hash reference of the other aliens.  If a hash reference
-then the keys are the class names and the valuess are the versions of those classes.
+then the keys are the class names and the values are the versions of those classes.
 
 =cut
 
