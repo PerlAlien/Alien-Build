@@ -145,7 +145,7 @@ MSYS plugin and use a command sequence to do the build like this:
  share {
    plugin 'Build::MSYS' => ();
    build [
-     # eplicitly running configure with "sh" will make sure that
+     # explicitly running configure with "sh" will make sure that
      # it works on windows as well as UNIX.
      'sh configure --prefix=%{.install.prefix} --disable-shared',
      '%{make}',
