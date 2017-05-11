@@ -13,7 +13,7 @@ use Test2::API qw( context );
  use Test::Alien;
  
  run_ok([ $^X, -e => 'print "some output"; exit 22'])
-   ->status_is(22)
+   ->exit_is(22)
    ->out_like(qr{some});
 
 =head1 DESCRIPTION
