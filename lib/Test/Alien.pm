@@ -7,7 +7,7 @@ use Env qw( @PATH );
 use File::Which 1.10 qw( which );
 use if $^O ne 'MSWin32', 'Capture::Tiny' => 'capture_merged';
 use Capture::Tiny qw( capture );
-use File::Temp qw( tempdir );
+use File::Temp ();
 use Carp qw( croak );
 use File::Spec;
 use File::Basename qw( dirname );
@@ -407,7 +407,7 @@ sub xs_ok
   my $verbose = $xs->{verbose};
   my $ok = 1;
   my @diag;
-  my $dir = tempdir( CLEANUP => 1 );
+  my $dir = _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' );
   my $xs_filename = File::Spec->catfile($dir, 'test.xs');
   my $c_filename  = File::Spec->catfile($dir, 'test.c');
   
@@ -719,6 +719,31 @@ sub ffi_ok
   }
   
   $ok;
+}
+
+sub _tempdir
+{
+  # makes sure /tmp or whatever isn't mounted noexec,
+  # which will cause xs_ok tests to fail.
+
+  my $dir = File::Temp::tempdir(@_);
+
+  if($^O ne 'MSWin32')
+  {
+    my $filename = File::Spec->catfile($dir, 'foo.pl');
+    my $fh;
+    open $fh, '>', $filename;
+    print $fh "#!$^X";
+    close $fh;
+    chmod 0755, $filename;
+    system $filename, 'foo';
+    if($?)
+    {
+      $dir = File::Temp::tempdir( DIR => File::Spec->curdir );
+    }
+  }
+  
+  $dir;  
 }
 
 1;
