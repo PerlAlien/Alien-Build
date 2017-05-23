@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Handle $Config{cc} and $Config{ld} with spaces.
+  - Bug in test where test was incorrectly expecting
+    $Config{cc} instead of $Config{ld} in one test.
 
 0.04      2017-04-04 15:40:13 -0400
   - Fix bug related to multiple aliens

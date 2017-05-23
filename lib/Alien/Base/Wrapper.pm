@@ -129,7 +129,7 @@ is provided on the command line.
 sub cc
 {
   my @command = (
-    $Config{cc},
+    shellwords($Config{cc}),
     @cflags_I,
     @cflags_other,
     @ARGV,
@@ -150,7 +150,7 @@ is provided on the command line.
 sub ld
 {
   my @command = (
-    $Config{ld},
+    shellwords($Config{ld}),
     @ldflags_L,
     @ldflags_other,
     @ARGV,

@@ -3,6 +3,7 @@ use Test2::Bundle::Extended;
 use Test::Exec;
 use Config;
 use Alien::Base::Wrapper ();
+use Text::ParseWords qw( shellwords );
 
 $ENV{ALIEN_BASE_WRAPPER_QUIET} = 1;
 
@@ -62,7 +63,7 @@ subtest 'system' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::cc();
     },
-    [$Config{cc}, qw( -I/foo/include -DBAR=1 one two three )],
+    [shellwords($Config{cc}), qw( -I/foo/include -DBAR=1 one two three )],
     'cc',
   );
 
@@ -71,7 +72,7 @@ subtest 'system' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::ld();
     },
-    [$Config{ld}, qw( -L/foo/lib one two three -lfoo )],
+    [shellwords($Config{ld}), qw( -L/foo/lib one two three -lfoo )],
     'ld',
   );
 
@@ -99,7 +100,7 @@ subtest 'share' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::cc();
     },
-    [$Config{cc}, qw( -I/foo/include -DBAR=2 one two three )],
+    [shellwords($Config{cc}), qw( -I/foo/include -DBAR=2 one two three )],
     'cc',
   );
 
@@ -108,7 +109,7 @@ subtest 'share' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::ld();
     },
-    [$Config{ld}, qw( -L/foo/lib one two three -lfoo -lbaz )],
+    [shellwords($Config{ld}), qw( -L/foo/lib one two three -lfoo -lbaz )],
     'ld',
   );
 
@@ -134,7 +135,7 @@ subtest 'share sans static' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::cc();
     },
-    [$Config{cc}, qw( -I/foo/include -DBAR=1 one two three )],
+    [shellwords($Config{cc}), qw( -I/foo/include -DBAR=1 one two three )],
     'cc',
   );
 
@@ -143,7 +144,7 @@ subtest 'share sans static' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::ld();
     },
-    [$Config{ld}, qw( -L/foo/lib one two three -lfoo )],
+    [shellwords($Config{ld}), qw( -L/foo/lib one two three -lfoo )],
     'ld',
   );
 
@@ -176,7 +177,7 @@ subtest 'combine aliens' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::cc();
     },
-    [$Config{cc}, qw( -I/foo/include -I/bar/include -DFOO5=1 -DBAR5=1 one two three ) ],
+    [shellwords($Config{cc}), qw( -I/foo/include -I/bar/include -DFOO5=1 -DBAR5=1 one two three ) ],
     'cc',
   );
 
@@ -185,7 +186,7 @@ subtest 'combine aliens' => sub {
       local @ARGV = qw( one two three );
       Alien::Base::Wrapper::ld();
     },
-    [$Config{cc}, qw( -L/foo/lib -L/foo/lib --ld-foo --ld-bar one two three -lfoo -lbar )],
+    [shellwords($Config{ld}), qw( -L/foo/lib -L/foo/lib --ld-foo --ld-bar one two three -lfoo -lbar )],
     'ld',
   );
 
