@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.05      2017-05-23 13:30:44 -0400
   - Handle $Config{cc} and $Config{ld} with spaces.
   - Bug in test where test was incorrectly expecting
     $Config{cc} instead of $Config{ld} in one test.
