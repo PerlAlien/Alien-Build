@@ -59,6 +59,18 @@ prerequisite.
 MakeMaker is similar, make sure that you explicitly make your L<Alien>
 a configure prerequisite.
 
+=head2 Dist::Zilla
+
+ [@Filter]
+ -remove = MakeMaker
+ 
+ [MakeMaker::Awesome]
+ header = user Config;
+ header = use Alien::Foo;
+ WriteMakefile_arg = CONFIGURE_REQUIRES => { 'Alien::Foo' => '0' }
+ WriteMakefile_arg = CCFLAGS => Alien::Foo>cflags . ' ' . $Config{ccflags}
+ WriteMakefile_arg = LIBS => [ Alien::Foo->libs ]
+
 =head2 FFI::Platypus
 
  use FFI::Platypus;
