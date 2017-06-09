@@ -45,6 +45,9 @@ pod_spelling_system:
     - libfoo
     - libpkgconf
     - pc
+    - DJERIUS
+    - Diab
+    - Jerius
 
 pod_coverage:
   skip: 0
