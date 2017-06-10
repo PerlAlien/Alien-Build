@@ -71,7 +71,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch build build_ffi gather gather_ffi meta_prop );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop );
 
 =head1 DIRECTIVES
 
@@ -435,6 +435,27 @@ sub patch
   _in_phase 'share';
   my $caller = caller;
   $caller->meta->register_hook(patch => $instr);
+  return;
+}
+
+=head2 patch_ffi
+
+ share {
+   patch_ffi \&code;
+   patch_ffi \@commandlist;
+ };
+
+Instructions for the patch_ffi stage.  May be either a
+code reference, or a command list.
+
+=cut
+
+sub patch_ffi
+{
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(patch_ffi => $instr);
   return;
 }
 

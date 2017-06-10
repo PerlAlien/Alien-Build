@@ -349,6 +349,17 @@ subtest 'patch' => sub {
 
 };
 
+subtest 'patch_ffi' => sub {
+
+  my $build = alienfile q{
+    use alienfile;
+    share { patch_ffi sub { } };
+  };
+  
+  is( $build->meta->has_hook('patch_ffi'), T() );
+
+};
+
 subtest 'arch' => sub {
 
   subtest 'on' => sub {

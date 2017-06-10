@@ -26,6 +26,8 @@ subtest basic => sub {
         $dir->child('lib')->mkpath;
         $dir->child('lib', 'libfoo.a')->touch;
       };
+
+      patch_ffi sub { shift->{runtime_prop}->{my_did_patch_ffi} = 1 };
       
       build_ffi sub {
         my($build) = @_;
@@ -53,7 +55,8 @@ subtest basic => sub {
     $build->build;
   };
 
-  ok($build->{runtime_prop}->{my_did_build_ffi}, 'did build_ffi');
+  ok($build->{runtime_prop}->{my_did_patch_ffi},  'did patch_ffi');
+  ok($build->{runtime_prop}->{my_did_build_ffi},  'did build_ffi');
   ok($build->{runtime_prop}->{my_did_gather_ffi}, 'did gather_ffi');
 
   my $stage = $build->install_prop->{stage};
