@@ -49,6 +49,7 @@ not recognize.  Such packages are the rationale for this property.
 
 has with_pic       => 1;
 #has dynamic        => 0; # TODO
+has ffi            => 0;
 
 sub init
 {
@@ -62,18 +63,39 @@ sub init
   
   my $intr = $meta->interpolator;
 
+  $meta->before_hook(
+    $_ => sub {
+    my($build) = @_;
+    my $prefix = $build->install_prop->{prefix};
+    if(_win)
+    {
+      $prefix = Path::Tiny->new($prefix)->stringify;
+      $prefix =~ s!^([a-z]):!/$1!i if _win;
+    }
+    $build->install_prop->{autoconf_prefix} = $prefix;
+    },
+  ) for qw( build build_ffi );
+
+  # FFI mode undocumented for now...
+
+  if($self->ffi)
+  {
+    $meta->add_requires('configure', 'Alien::Build::Plugin::Build::Autoconf' => '0.41');
+    $meta->default_hook(
+      build_ffi => [
+        '%{configure} --enable-shared --disable-static --libdir=%{.install.autoconf_prefix}/dynamic',
+        '%{make}',
+        '%{make} install',
+      ]
+    );
+  }
+
   $meta->around_hook(
     build => sub {
       my $orig = shift;
       my $build = shift;
 
       my $prefix = $build->install_prop->{prefix};
-      if(_win)
-      {
-        $prefix = Path::Tiny->new($prefix)->stringify;
-        $prefix =~ s!^([a-z]):!/$1!i if _win;
-      }
-      $build->install_prop->{autoconf_prefix} = $prefix;
       
       $intr->replace_helper(
         configure => sub {

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added (undocumented so far) ffi option to Build::Autoconf plugin
 
 0.40      2017-06-10 13:15:33 -0400
   - Added ffi block for alienfile.
