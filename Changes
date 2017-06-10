@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.38      2017-06-10 06:28:21 -0400
   - Added build_ffi and gather_ffi stages
 
 0.37      2017-06-09 17:04:21 -0400
