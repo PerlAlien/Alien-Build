@@ -62,6 +62,7 @@ a configure prerequisite.
 =head2 Dist::Zilla
 
  [@Filter]
+ -bundle = @Basic
  -remove = MakeMaker
  
  [MakeMaker::Awesome]
