@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added build_ffi and gather_ffi stages
 
 0.37      2017-06-09 17:04:21 -0400
   - Generate ::Install::Files module for use with Inline, if cflags or libs are detected.

@@ -126,6 +126,10 @@ but if you do not follow this rule your recipe will likely be broken.
     Regular expression for the files that should be copied from the `DESTDIR`
     into the stage directory.  If not defined, then all files will be copied.
 
+- destdir\_ffi\_filter
+
+    Same as `destdir_filter` except applies to `build_ffi` instead of `build`.
+
 - platform
 
     Hash reference.  Contains information about the platform beyond just `$^O`.

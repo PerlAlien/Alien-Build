@@ -50,51 +50,57 @@ sub init
     }
   );
 
-  $meta->around_hook(
-    gather_share => sub {
-      my($orig, $build) = @_;
+  foreach my $type (qw( share ffi ))
+  {
+    next if $type eq 'ffi' && !$meta->has_hook('build_ffi');
+    
+    $meta->around_hook(
+      "gather_$type" => sub {
+        my($orig, $build) = @_;
         
-      if($build->meta_prop->{destdir})
-      {
-        my $destdir = $ENV{DESTDIR};
-        die "nothing was installed into destdir" unless -d $destdir;
-        my $src = Path::Tiny->new(_destdir_prefix($ENV{DESTDIR}, $build->install_prop->{prefix}));
-        my $dst = Path::Tiny->new($build->install_prop->{stage});
-        
-        my $res = do {
-          local $CWD = "$src";
-          $orig->($build);
-        };
-        
-        $build->log("mirror $src => $dst");
-        
-        $dst->mkpath;
-        _mirror("$src", "$dst", {
-          verbose => 1,
-          filter => $build->meta_prop->{destdir_filter},
-        });
-        
-        return $res;
-      }
-      else
-      {
-        local $CWD = $build->install_prop->{stage};
-        my $ret = $orig->($build);
-
-        # if we are not doing a double staged install we want to substitute the install
-        # prefix with the runtime prefix.
-        my $old = $build->install_prop->{prefix};
-        my $new = $build->runtime_prop->{prefix};
-        
-        foreach my $flag (qw( cflags cflags_static libs libs_static ))
+        if($build->meta_prop->{destdir})
         {
-          $build->runtime_prop->{$flag} =~ s{(-I|-L|-LIBPATH:)\Q$old\E}{$1 . $new}eg;
-        }
+          my $destdir = $ENV{DESTDIR};
+          die "nothing was installed into destdir" unless -d $destdir;
+          my $src = Path::Tiny->new(_destdir_prefix($ENV{DESTDIR}, $build->install_prop->{prefix}));
+          my $dst = Path::Tiny->new($build->install_prop->{stage});
         
-        return $ret;
+          my $res = do {
+            local $CWD = "$src";
+            $orig->($build);
+          };
+        
+          $build->log("mirror $src => $dst");
+        
+          $dst->mkpath;
+          _mirror("$src", "$dst", {
+            verbose => 1,
+            filter => $build->meta_prop->{$type eq 'share' ? 'destdir_filter' : 'destdir_ffi_filter'},
+          });
+        
+          return $res;
+        }
+        else
+        {
+          local $CWD = $build->install_prop->{stage};
+          my $ret = $orig->($build);
+
+          # if we are not doing a double staged install we want to substitute the install
+          # prefix with the runtime prefix.
+          my $old = $build->install_prop->{prefix};
+          my $new = $build->runtime_prop->{prefix};
+        
+          foreach my $flag (qw( cflags cflags_static libs libs_static ))
+          {
+            next unless defined $build->runtime_prop->{$flag};
+            $build->runtime_prop->{$flag} =~ s{(-I|-L|-LIBPATH:)\Q$old\E}{$1 . $new}eg;
+          }
+        
+          return $ret;
+        }
       }
-    }
-  );
+    );
+  }
   
   $meta->after_hook(
     $_ => sub {

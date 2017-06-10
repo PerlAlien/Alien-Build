@@ -170,6 +170,10 @@ is supported by C<autoconf> and others.
 Regular expression for the files that should be copied from the C<DESTDIR>
 into the stage directory.  If not defined, then all files will be copied.
 
+=item destdir_ffi_filter
+
+Same as C<destdir_filter> except applies to C<build_ffi> instead of C<build>.
+
 =item platform
 
 Hash reference.  Contains information about the platform beyond just C<$^O>.
@@ -436,7 +440,7 @@ sub load
     $class->meta;
   }};
 
-  my @preload = qw( Core::Setup Core::Download );
+  my @preload = qw( Core::Setup Core::Download Core::FFI );
   @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
   
@@ -998,31 +1002,34 @@ sub build
   
   if($self->install_type eq 'share')
   {
-    local $CWD;
-    delete $ENV{DESTDIR} unless $self->meta_prop->{destdir};
-
-    %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
-    %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
-
-    my $destdir;
-
-    $self->_call_hook(
+    foreach my $suffix ('', '_ffi')
     {
-      before => sub {
-        $CWD = $self->extract;
-        if($self->meta_prop->{destdir})
-        {
-          $destdir = Alien::Build::TempDir->new($self, 'destdir');
-          $ENV{DESTDIR} = "$destdir";
-        }
-        $self->_call_hook({ all => 1 }, 'patch');
-      },
-      after => sub {
-        $destdir = "$destdir" if $destdir;
-      },
-    }, 'build');
+      local $CWD;
+      delete $ENV{DESTDIR} unless $self->meta_prop->{destdir};
 
-    $self->_call_hook('gather_share');
+      %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
+      %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
+
+      my $destdir;
+
+      $self->_call_hook(
+      {
+        before => sub {
+          $CWD = $self->extract;
+          if($self->meta_prop->{destdir})
+          {
+            $destdir = Alien::Build::TempDir->new($self, 'destdir');
+            $ENV{DESTDIR} = "$destdir";
+          }
+          $self->_call_hook({ all => 1 }, "patch${suffix}");
+        },
+        after => sub {
+          $destdir = "$destdir" if $destdir;
+        },
+      }, "build${suffix}");
+
+      $self->_call_hook("gather@{[ $suffix || '_share' ]}");
+    }
   }
   
   elsif($self->install_type eq 'system')

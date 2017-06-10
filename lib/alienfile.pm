@@ -71,7 +71,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch build gather meta_prop );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch build build_ffi gather gather_ffi meta_prop );
 
 =head1 DIRECTIVES
 
@@ -459,6 +459,28 @@ sub build
   return;
 }
 
+=head2 build_ffi
+
+ share {
+   build \&code;
+   build \@commandlist;
+ };
+
+Instructions for the build FFI stage.  Builds shared libraries instead of static.
+This is optional, and is only necessary if a fresh and separate build needs to be
+done for FFI.
+
+=cut
+
+sub build_ffi
+{
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(build_ffi => $instr);
+  return;
+}
+
 =head2 gather
 
  gather \&code;
@@ -491,6 +513,26 @@ sub gather
   $meta->register_hook(gather_system => $instr) if $phase =~ /^(any|system)$/;
   $meta->register_hook(gather_share => $instr)  if $phase =~ /^(any|share)$/;
   return;;
+}
+
+=head2 gather_ffi
+
+ share {
+   gather_ffi \&code;
+   gather_ffi \@commandlist;
+ }
+
+Gather specific to C<build_ffi>.  Not usually necessary.
+
+=cut
+
+sub gather_ffi
+{
+  my($instr) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  $caller->meta->register_hook(gather_ffi => $instr);
+  return;
 }
 
 =head2 meta_prop

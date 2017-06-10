@@ -233,7 +233,7 @@ subtest 'download' => sub {
 
 };
 
-foreach my $hook (qw( fetch decode prefer extract build ))
+foreach my $hook (qw( fetch decode prefer extract build build_ffi ))
 {
 
   subtest "$hook" => sub {
@@ -304,6 +304,16 @@ subtest 'gather' => sub {
   
   };
 
+  subtest 'share + gather_ffi' => sub {
+  
+    my $build = alienfile q{
+      use alienfile;
+      share { gather_ffi sub {} };
+    };
+  
+    is( $build->meta->has_hook('gather_ffi'), T() );
+  };
+  
   subtest 'nada' => sub {
   
     my $build = alienfile q{
