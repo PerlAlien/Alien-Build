@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.39      2017-06-10 06:40:45 -0400
   - Added patch_ffi keyword for alienfile missing in previous release
 
 0.38      2017-06-10 06:28:21 -0400
