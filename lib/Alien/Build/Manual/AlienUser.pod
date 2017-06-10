@@ -23,7 +23,7 @@ What follows are the main use cases.
  use Module::Build;
  use Alien::Foo;
  
- my $builder = Module::Build->new(
+ my $build = Module::Build->new(
    ...
    configure_requires => {
      'Alien::Foo' => '0',
