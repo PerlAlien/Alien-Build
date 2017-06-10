@@ -1129,6 +1129,7 @@ sub new
   my($class, %args) = @_;
   my $self = bless {
     phase => 'any',
+    build_suffix => '',
     require => {
       any    => {},
       share  => {},

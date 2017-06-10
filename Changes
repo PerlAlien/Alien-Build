@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added ffi block for alienfile.
+  - Deprecate patch_ffi, build_ffi and gather_ffi directives.
 
 0.39      2017-06-10 06:40:45 -0400
   - Added patch_ffi keyword for alienfile missing in previous release

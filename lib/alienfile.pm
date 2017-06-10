@@ -71,7 +71,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi );
 
 =head1 DIRECTIVES
 
@@ -434,7 +434,8 @@ sub patch
   my($instr) = @_;
   _in_phase 'share';
   my $caller = caller;
-  $caller->meta->register_hook(patch => $instr);
+  my $suffix = $caller->meta->{build_suffix};
+  $caller->meta->register_hook("patch$suffix" => $instr);
   return;
 }
 
@@ -445,6 +446,8 @@ sub patch
    patch_ffi \@commandlist;
  };
 
+[DEPRECATED]
+
 Instructions for the patch_ffi stage.  May be either a
 code reference, or a command list.
 
@@ -453,6 +456,7 @@ code reference, or a command list.
 sub patch_ffi
 {
   my($instr) = @_;
+  Carp::carp("patch_ffi is deprecated, use ffi { patch ... } } instead");
   _in_phase 'share';
   my $caller = caller;
   $caller->meta->register_hook(patch_ffi => $instr);
@@ -476,7 +480,8 @@ sub build
   my($instr) = @_;
   _in_phase 'share';
   my $caller = caller;
-  $caller->meta->register_hook(build => $instr);
+  my $suffix = $caller->meta->{build_suffix};
+  $caller->meta->register_hook("build$suffix" => $instr);
   return;
 }
 
@@ -487,6 +492,8 @@ sub build
    build \@commandlist;
  };
 
+[DEPRECATED]
+
 Instructions for the build FFI stage.  Builds shared libraries instead of static.
 This is optional, and is only necessary if a fresh and separate build needs to be
 done for FFI.
@@ -496,6 +503,7 @@ done for FFI.
 sub build_ffi
 {
   my($instr) = @_;
+  Carp::carp("build_ffi is deprecated, use ffi { build ... } } instead");
   _in_phase 'share';
   my $caller = caller;
   $caller->meta->register_hook(build_ffi => $instr);
@@ -531,9 +539,17 @@ sub gather
   my $phase = $meta->{phase};
   Carp::croak "gather is not allowed in configure block"
     if $phase eq 'configure';
-  $meta->register_hook(gather_system => $instr) if $phase =~ /^(any|system)$/;
-  $meta->register_hook(gather_share => $instr)  if $phase =~ /^(any|share)$/;
-  return;;
+  my $suffix = $caller->meta->{build_suffix};
+  if($suffix eq '_ffi')
+  {
+    $meta->register_hook(gather_ffi => $instr)
+  }
+  else
+  {
+    $meta->register_hook(gather_system => $instr) if $phase =~ /^(any|system)$/;
+    $meta->register_hook(gather_share => $instr)  if $phase =~ /^(any|share)$/;
+  }
+  return;
 }
 
 =head2 gather_ffi
@@ -543,6 +559,8 @@ sub gather
    gather_ffi \@commandlist;
  }
 
+[DEPRECATED]
+
 Gather specific to C<build_ffi>.  Not usually necessary.
 
 =cut
@@ -550,9 +568,37 @@ Gather specific to C<build_ffi>.  Not usually necessary.
 sub gather_ffi
 {
   my($instr) = @_;
+  Carp::carp("gather_ffi is deprecated, use ffi { gather ... } } instead");
   _in_phase 'share';
   my $caller = caller;
   $caller->meta->register_hook(gather_ffi => $instr);
+  return;
+}
+
+=head2 ffi
+
+ share {
+   ffi {
+     patch \&code;
+     patch \@commandlist;
+     build \&code;
+     build \@commandlist;
+     gather \&code;
+     gather \@commandlist;
+   }
+ }
+
+Specify patch, build or gather stages related to FFI.
+
+=cut
+
+sub ffi (&)
+{
+  my($code) = @_;
+  _in_phase 'share';
+  my $caller = caller;
+  local $caller->meta->{build_suffix} = '_ffi';
+  $code->();
   return;
 }
 
