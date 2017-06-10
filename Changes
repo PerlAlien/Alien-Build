@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.40      2017-06-10 13:15:33 -0400
   - Added ffi block for alienfile.
   - Deprecate patch_ffi, build_ffi and gather_ffi directives.
 
