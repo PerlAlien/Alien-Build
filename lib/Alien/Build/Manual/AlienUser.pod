@@ -65,11 +65,13 @@ a configure prerequisite.
  -bundle = @Basic
  -remove = MakeMaker
  
+ [Prereqs / ConfigureRequires]
+ Alien::Foo = 0
+ 
  [MakeMaker::Awesome]
  header = user Config;
  header = use Alien::Foo;
- WriteMakefile_arg = CONFIGURE_REQUIRES => { 'Alien::Foo' => '0' }
- WriteMakefile_arg = CCFLAGS => Alien::Foo>cflags . ' ' . $Config{ccflags}
+ WriteMakefile_arg = CCFLAGS => Alien::Foo->cflags . ' ' . $Config{ccflags}
  WriteMakefile_arg = LIBS => [ Alien::Foo->libs ]
 
 =head2 FFI::Platypus
