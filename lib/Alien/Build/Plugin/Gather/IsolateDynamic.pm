@@ -17,6 +17,13 @@ use File::Copy ();
 
 =head1 DESCRIPTION
 
+This plugin moves dynamic libraries from the C<lib> and C<bin> directories and puts them in
+their own C<dynamic> directory.  This allows them to be used by FFI modules, but to be ignored
+by XS modules.
+
+This plugin provides the equivalent functionality of the C<alien_isolate_dynamic> attribute
+from L<Alien::Base::ModuleBuild>.  
+
 =cut
 
 sub init
@@ -61,3 +68,9 @@ sub init
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<alienfile>
+
+=cut
