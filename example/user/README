@@ -1,0 +1,4 @@
+This directory contains examples of how to USE an Alien
+from another module.  These examples use Alien::xz, which
+uses alienfile + Alien::Build + Alien::Base, and can be
+found on CPAN.
