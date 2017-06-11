@@ -39,6 +39,7 @@ require_ok 'Alien::Build::Plugin::Core::Download';
 require_ok 'Alien::Build::Plugin::Core::Legacy';
 require_ok 'Alien::Build::Plugin::Core::Gather';
 require_ok 'Alien::Build::Plugin::Core::FFI';
+require_ok 'Alien::Build::Plugin::Gather::IsolateDynamic';
 require_ok 'Alien::Build::Util';
 
 done_testing;

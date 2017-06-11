@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added Gather::IsolateDynamic plugin
 
 0.41      2017-06-10 19:03:49 -0400
   - Added (undocumented so far) ffi option to Build::Autoconf plugin
