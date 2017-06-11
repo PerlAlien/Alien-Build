@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.42      2017-06-11 09:09:55 -0400
   - Added Gather::IsolateDynamic plugin
+  - This version includes The Answer to Life, the Universe and Everything.
 
 0.41      2017-06-10 19:03:49 -0400
   - Added (undocumented so far) ffi option to Build::Autoconf plugin
