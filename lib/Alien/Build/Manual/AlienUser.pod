@@ -12,6 +12,11 @@ This document is intended for a user of an L<Alien::Base> based L<Alien>
 module's user.  Although specifically geared for L<Alien::Base>
 subclasses, it may have some useful hints for L<Alien> in general.
 
+Full working examples of how to use an L<Alien> module are also bundled
+with L<Alien::Build> in the distribution's C<example/user> directory.
+Those examples use L<Alien::xz>, which uses L<alienfile> + L<Alien::Build>
++ L<Alien::Base>.
+
 The following documentation will assume you are trying to use an L<Alien>
 called C<Alien::Foo> which provides the library C<libfoo> and the command
 line tool C<foo>.  Many L<Alien>s will only provide one or the other.
