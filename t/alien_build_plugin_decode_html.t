@@ -10,9 +10,9 @@ subtest 'updates requires' => sub {
   my $plugin = Alien::Build::Plugin::Decode::HTML->new;
 
   my($build,$meta) = build_blank_alien_build;
-  
+
   $plugin->init($meta);
-  
+
   is( $build->requires('share')->{'HTML::LinkExtor'}, 0 );
   is( $build->requires('share')->{'URI'}, 0 );
 
@@ -25,7 +25,7 @@ subtest 'decode' => sub {
   my $plugin = Alien::Build::Plugin::Decode::HTML->new;
 
   my($build,$meta) = build_blank_alien_build;
-  
+
   $plugin->init($meta);
 
   eval { $build->load_requires('share') };
@@ -45,7 +45,7 @@ subtest 'decode' => sub {
         hash {
           field type => 'list';
           field list => array {
-            foreach my $filename (qw( foo-1.00 foo-1.00.tar foo-1.00.tar.Z foo-1.00.tar.bz2 foo-1.00.tar.gz foo-1.00.tar.xz foo-1.00.zip))
+            foreach my $filename (qw( foo-1.00 foo-1.00.tar foo-1.00.tar.Z foo-1.00.tar.bz2 foo-1.00.tar.gz foo-1.00.tar.xz foo-1.00.tgz foo-1.00.zip))
             {
               item hash {
                 field filename => $filename;
