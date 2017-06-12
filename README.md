@@ -590,6 +590,8 @@ Contributors:
 
 Diab Jerius (DJERIUS)
 
+Roy Storey
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2017 by Graham Ollis.
