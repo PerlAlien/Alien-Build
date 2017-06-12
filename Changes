@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.44      2017-06-12 10:52:08 -0400
+  - Decode::HTML plugin unescapes URI encoded filenames, as it should (kiwiroy++ gh#17)
+
 0.43      2017-06-11 21:23:55 -0400
   - Fix documentaton coverage for Alien::*::Install::Files
   - Additional fixes for Alien::*::Install::Files support
