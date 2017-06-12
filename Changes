@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix documentaton coverage for Alien::*::Install::Files
 
 0.42      2017-06-11 09:09:55 -0400
   - Added Gather::IsolateDynamic plugin
