@@ -337,7 +337,13 @@ sub import
             "package ${mod}::Install::Files;\n",
             "require ${mod};\n",
             "sub Inline { shift; ${mod}->Inline(\@_) }\n",
-            "1;"
+            "1;\n",
+            "\n",
+            "=begin Pod::Coverage\n",
+            "\n",
+            "  Inline\n",
+            "\n",
+            "=cut\n",
           );
         }
         
