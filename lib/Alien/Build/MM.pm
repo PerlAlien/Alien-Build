@@ -327,8 +327,8 @@ sub import
         my $cflags = $build->runtime_prop->{cflags};
         my $libs   = $build->runtime_prop->{libs};
         
-        if($cflags && $cflags !~ /^\s*$/
-        && $libs   && $libs   !~ /^\s*$/)
+        if(($cflags && $cflags !~ /^\s*$/)
+        || ($libs   && $libs   !~ /^\s*$/))
         {
           my $mod = join '::', split /-/, $distname;
           my $install_files_pm = Path::Tiny->new("blib/lib/@{[ join '/', split /-/, $distname ]}/Install/Files.pm");
