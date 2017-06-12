@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.43      2017-06-11 21:23:55 -0400
   - Fix documentaton coverage for Alien::*::Install::Files
   - Additional fixes for Alien::*::Install::Files support
 
