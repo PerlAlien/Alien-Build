@@ -29,6 +29,7 @@ sub init
 
   $meta->add_requires('share' => 'HTML::LinkExtor' => 0);
   $meta->add_requires('share' => 'URI' => 0);
+  $meta->add_requires('share' => 'URI::Escape' => 0);
   
   $meta->register_hook( decode => sub {
     my(undef, $res) = @_;
@@ -54,8 +55,8 @@ sub init
         my $path = $url->path;
         $path =~ s{/$}{}; # work around for Perl 5.8.7- gh#8
         push @list, {
-          filename => File::Basename::basename($path),
-          url      => $url->as_string,
+          filename => URI::Escape::uri_unescape(File::Basename::basename($path)),
+          url      => URI::Escape::uri_unescape($url->as_string),
         };
       }
     });
