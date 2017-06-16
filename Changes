@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.45      2017-06-16 13:36:36 -0400
+  - Documentation improvements
+
 0.44      2017-06-12 10:52:08 -0400
   - Decode::HTML plugin unescapes URI encoded filenames, as it should (kiwiroy++ gh#17)
 
