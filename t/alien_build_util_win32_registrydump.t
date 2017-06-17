@@ -1,16 +1,14 @@
 use Test2::Bundle::Extended;
 use Alien::Build::Util::Win32::RegistryDump qw( _read_win32_reg_dump );
 
-imported_ok '_read_win32_reg_dump';
+skip_all 'requires additional modules'
+  unless Alien::Build::Util::Win32::RegistryDump::_load();
 
-skip_all => 'requires additional modules' unless Alien::Build::Util::Win32::RegistryDump::_load();
+imported_ok '_read_win32_reg_dump';
 
 subtest basic => sub {
 
   my $openvpn = _read_win32_reg_dump('corpus/win32/openvpn.reg');
-
-  use YAML ();
-  note YAML::Dump($openvpn);
 
   is(
     $openvpn, 
