@@ -41,5 +41,6 @@ require_ok 'Alien::Build::Plugin::Core::Gather';
 require_ok 'Alien::Build::Plugin::Core::FFI';
 require_ok 'Alien::Build::Plugin::Gather::IsolateDynamic';
 require_ok 'Alien::Build::Util';
+require_ok 'Alien::Build::Util::Win32::RegistryDump';
 
 done_testing;
