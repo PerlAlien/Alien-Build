@@ -113,6 +113,8 @@ sub init
 {
   my($self, $meta) = @_;
   
+  $meta->prop->{plugin_download_negotiate_default_url} = $self->url;
+
   my $fetch = $self->_pick_fetch;
   
   $self->_plugin($meta, 'Fetch', $fetch, url => $self->url, ssl => $self->ssl);

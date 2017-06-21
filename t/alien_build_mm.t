@@ -5,7 +5,7 @@ use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 
-delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_INSTALL_TYPE );
+delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_BUILD_POSTLOAD ALIEN_INSTALL_TYPE );
 
 sub alienfile
 {

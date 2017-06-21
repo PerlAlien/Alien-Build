@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added Alien::Build::Plugin::Fetch::PromptBeforeDownload
 
 0.45      2017-06-16 13:36:36 -0400
   - Documentation improvements

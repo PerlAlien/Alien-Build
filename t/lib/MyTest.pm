@@ -8,7 +8,7 @@ use base qw( Exporter );
 
 our @EXPORT = qw( build_blank_alien_build alienfile path_to_tar );
 
-delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_INSTALL_TYPE );
+delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_BUILD_POSTLOAD ALIEN_INSTALL_TYPE );
 
 sub build_blank_alien_build
 {
