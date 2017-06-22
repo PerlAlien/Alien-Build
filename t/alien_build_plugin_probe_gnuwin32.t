@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::Plugin::Probe::GnuWin32;
 use Capture::Tiny qw( capture_merged );
 

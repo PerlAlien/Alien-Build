@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::Util::Win32::RegistryDump qw( _read_win32_reg_dump );
 
 skip_all 'requires additional modules'

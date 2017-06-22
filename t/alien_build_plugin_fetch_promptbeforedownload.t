@@ -1,8 +1,7 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::Plugin::Fetch::PromptBeforeDownload;
 
-diag 'TODO';
-
-ok 1;
+my $todo = todo 'test not written';
+fail 'there should be a test';
 
 done_testing;

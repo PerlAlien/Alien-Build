@@ -28,7 +28,8 @@ $modules{$_} = $_ for qw(
   PkgConfig
   PkgConfig::LibPkgConf
   Sort::Versions
-  Test2::Suite
+  Test2::Mock
+  Test2::V0
   Test::More
   Text::ParseWords
   URI

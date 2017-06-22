@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::Util qw( _dump _mirror _destdir_prefix );
 use Path::Tiny qw( path );
 use IPC::Cmd qw( can_run );

@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::Plugin::Prefer::SortVersions;
 use lib 't/lib';
 use MyTest;

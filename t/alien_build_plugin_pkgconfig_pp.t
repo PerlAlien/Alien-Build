@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::Plugin::PkgConfig::PP;
 use Path::Tiny qw( path );
 use lib 't/lib';

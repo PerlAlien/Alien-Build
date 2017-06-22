@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Build::MM qw( cmd ); 
 use File::chdir;
 use File::Temp qw( tempdir );

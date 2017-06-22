@@ -466,7 +466,6 @@ meta object should be made before the `probe`, `download` or `build` steps.
 ## prop
 
     my $href = $build->meta->prop;
-    my $href = Alien::Build->meta->prop;
 
 Meta properties.  This is the same as calling `meta_prop` on
 the class or [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.

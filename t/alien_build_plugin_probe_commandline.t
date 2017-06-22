@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use lib 't/lib';
 use MyTest::System2;
 use MyTest;
