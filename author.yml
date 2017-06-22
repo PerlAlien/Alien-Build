@@ -56,4 +56,5 @@ pod_coverage:
   # for either Class or method.
   private:
     - Alien::Build::Plugin::.*#init
+    - Alien::Build::Plugin::Probe::GnuWin32#new
 
