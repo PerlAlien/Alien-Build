@@ -1147,7 +1147,6 @@ sub new
 =head2 prop
 
  my $href = $build->meta->prop;
- my $href = Alien::Build->meta->prop;
 
 Meta properties.  This is the same as calling C<meta_prop> on
 the class or L<Alien::Build> instance.
