@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.46      2017-06-22 13:02:52 -0400
   - Added Alien::Build::Plugin::Fetch::PromptBeforeDownload
   - Fixed typo in Alien::Build::Plugin::GnuWin32
 
