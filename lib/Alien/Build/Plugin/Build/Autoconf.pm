@@ -63,8 +63,7 @@ sub init
   
   my $intr = $meta->interpolator;
 
-  $meta->before_hook(
-    $_ => sub {
+  my $set_autoconf_prefix = sub {
     my($build) = @_;
     my $prefix = $build->install_prop->{prefix};
     if(_win)
@@ -73,8 +72,11 @@ sub init
       $prefix =~ s!^([a-z]):!/$1!i if _win;
     }
     $build->install_prop->{autoconf_prefix} = $prefix;
-    },
-  ) for qw( build build_ffi );
+  };
+
+  $meta->before_hook(
+    build_ffi => $set_autoconf_prefix,
+  );
 
   # FFI mode undocumented for now...
 
@@ -95,7 +97,8 @@ sub init
       my $orig = shift;
       my $build = shift;
 
-      my $prefix = $build->install_prop->{prefix};
+      $set_autoconf_prefix->($build);
+      my $prefix = $build->install_prop->{autoconf_prefix};
       
       $intr->replace_helper(
         configure => sub {

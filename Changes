@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed windows + autoconf regression
 
 0.46      2017-06-22 13:02:52 -0400
   - Added Alien::Build::Plugin::Fetch::PromptBeforeDownload
