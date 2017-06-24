@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.47      2017-06-24 17:21:57 -0400
   - Fixed windows + autoconf regression
 
 0.46      2017-06-22 13:02:52 -0400
