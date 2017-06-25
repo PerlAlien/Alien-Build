@@ -232,6 +232,10 @@ which are understood by the MSYS tools, but not by Perl.  You should
 only use this if you are using L<Alien::Build::Plugin::Autoconf> in
 your L<alienfile>.
 
+=item env
+
+Environment variables to override during the build stage.
+
 =item old
 
 Hash containing information on a previously installed Alien of the same
