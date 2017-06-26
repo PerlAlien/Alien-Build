@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.49      2017-06-26 17:18:25 -0400
   - Fix: set runtime_prop version instead of runtime_prop
     based on archive version number
 
