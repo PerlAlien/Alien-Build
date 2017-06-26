@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix: set runtime_prop version instead of runtime_prop
+    based on archive version number
 
 0.48      2017-06-26 16:09:29 -0400
   - Gather::IsolateDynamic skip directories that do not exist

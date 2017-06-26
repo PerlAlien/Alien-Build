@@ -40,8 +40,8 @@ sub _hook
   if($res->{type} eq 'list')
   {
     $res = $build->prefer($res);
-    my $version = $res->{list}->[0]->{version};
     die "no matching files in listing" if @{ $res->{list} } == 0;
+    my $version = $res->{list}->[0]->{version};
     my($pick, @other) = map { $_->{url} } @{ $res->{list} };
     if(@other > 8)
     {
@@ -56,7 +56,7 @@ sub _hook
     {
       $version =~ s/\.+$//;
       $build->log("setting version based on archive to $version");
-      $build->install_prop->{version} = $version;
+      $build->runtime_prop->{version} = $version;
     }
   }
 

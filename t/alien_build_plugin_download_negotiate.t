@@ -91,7 +91,7 @@ subtest 'get the version' => sub {
     ();
   };
   
-  is($build->install_prop->{version}, '1.00');
+  is($build->runtime_prop->{version}, '1.00');
 
 };
 
