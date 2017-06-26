@@ -30,7 +30,7 @@ sub init
 {
   my($self, $meta) = @_;
   
-  $meta->add_requires('share' => 'Alien::Build::Plugin::Gather::IsolateDynamic' => '0.42' );
+  $meta->add_requires('share' => 'Alien::Build::Plugin::Gather::IsolateDynamic' => '0.48' );
   
   $meta->after_hook(
     gather_share => sub {
@@ -50,6 +50,7 @@ sub init
 
       foreach my $dir (map { $install_root->child($_) } qw( bin lib ))
       {
+        next unless -d $dir;
         foreach my $from ($dir->children)
         {
           next unless $from->basename =~ /\.so/
