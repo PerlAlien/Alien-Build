@@ -130,6 +130,10 @@ but if you do not follow this rule your recipe will likely be broken.
 
     Same as `destdir_filter` except applies to `build_ffi` instead of `build`.
 
+- env
+
+    Environment variables to override during the build stage.
+
 - platform
 
     Hash reference.  Contains information about the platform beyond just `$^O`.
@@ -167,6 +171,10 @@ based module.
     which are understood by the MSYS tools, but not by Perl.  You should
     only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
     your [alienfile](https://metacpan.org/pod/alienfile).
+
+- env
+
+    Environment variables to override during the build stage.
 
 - old
 

@@ -174,6 +174,10 @@ into the stage directory.  If not defined, then all files will be copied.
 
 Same as C<destdir_filter> except applies to C<build_ffi> instead of C<build>.
 
+=item env
+
+Environment variables to override during the build stage.
+
 =item platform
 
 Hash reference.  Contains information about the platform beyond just C<$^O>.
