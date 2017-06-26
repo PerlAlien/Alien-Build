@@ -29,7 +29,8 @@ from L<Alien::Base::ModuleBuild>.
 sub init
 {
   my($self, $meta) = @_;
-  
+
+  # plugin was introduced in 0.42, but had a bug which was fixed in 0.48  
   $meta->add_requires('share' => 'Alien::Build::Plugin::Gather::IsolateDynamic' => '0.48' );
   
   $meta->after_hook(
