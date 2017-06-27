@@ -7,7 +7,7 @@ use Carp ();
 use File::chdir;
 use JSON::PP ();
 use Env qw( @PATH );
-use Env qw( @PKG_CONFIG_PATH );
+use Env qw( @PKG_CONFIG_PATH @ACLOCAL_PATH );
 use Config ();
 
 # ABSTRACT: Build external dependencies for use in CPAN
@@ -74,6 +74,7 @@ sub new
     },
     bin_dir => [],
     pkg_config_path => [],
+    aclocal_path => [],
   }, $class;
   
   $self->meta->filename(
@@ -681,6 +682,11 @@ sub load_requires
       {
         push @{ $self->{pkg_config_path} }, $path->stringify;
       }
+      $path = _path($mod->dist_dir)->child('share/aclocal');
+      if(-d $path)
+      {
+        push @{ $self->{aclocal_path} }, $path->stringify;
+      }
     }
   }
   1;
@@ -695,6 +701,9 @@ sub _call_hook
   
   local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
   unshift @PKG_CONFIG_PATH, @{ $self->{pkg_config_path} };
+  
+  local $ENV{ACLOCAL_PATH} = $ENV{ACLOCAL_PATH};
+  unshift @ACLOCAL_PATH, @{ $self->{aclocal_path} };
   
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;
