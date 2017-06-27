@@ -7,7 +7,7 @@ use Carp ();
 use File::chdir;
 use JSON::PP ();
 use Env qw( @PATH );
-use Env qw( @PKG_CONFIG_PATH @ACLOCAL_PATH );
+use Env qw( @PKG_CONFIG_PATH );
 use Config ();
 
 # ABSTRACT: Build external dependencies for use in CPAN
@@ -685,7 +685,13 @@ sub load_requires
       $path = _path($mod->dist_dir)->child('share/aclocal');
       if(-d $path)
       {
-        push @{ $self->{aclocal_path} }, $path->stringify;
+        $path = "$path";
+        if($^O eq 'MSWin32')
+        {
+          # convert to MSYS path
+          $path =~ s{^([a-z]):}{/$1/}i;
+        }
+        push @{ $self->{aclocal_path} }, $path;
       }
     }
   }
@@ -703,7 +709,13 @@ sub _call_hook
   unshift @PKG_CONFIG_PATH, @{ $self->{pkg_config_path} };
   
   local $ENV{ACLOCAL_PATH} = $ENV{ACLOCAL_PATH};
-  unshift @ACLOCAL_PATH, @{ $self->{aclocal_path} };
+  # autoconf uses MSYS paths, even for the ACLOCAL_PATH environment variable, so we can't use Env for this.
+  {
+    my @path;
+    @path = split ':', $ENV{ACLOCAL_PATH} if defined $ENV{ACLOCAL_PATH};
+    unshift @path, @{ $self->{aclocal_path} };
+    $ENV{ACLOCAL_PATH} = join ':', @path;
+  }
   
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;

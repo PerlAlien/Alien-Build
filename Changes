@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixup ACLOCAL_PATH on Windows
 
 0.50      2017-06-27 12:50:12 -0400
   - Update ACLOCAL_PATH for any required Alien that has a share/aclocal directory.
