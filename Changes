@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.51      2017-06-27 15:04:19 -0400
   - Fixup ACLOCAL_PATH on Windows
 
 0.50      2017-06-27 12:50:12 -0400
