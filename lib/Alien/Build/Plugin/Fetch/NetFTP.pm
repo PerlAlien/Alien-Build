@@ -56,14 +56,10 @@ sub init
     
     $url = URI->new($url);
     
-    my $ftp = Net::FTP->new(
-      $url->host, Port =>$url->port,
-    ) or die "error fetching $url: $@";
-    
-    $ftp->login($url->user, $url->password)
-      or die "error on login $url: @{[ $ftp->message ]}";
-    
-    $ftp->binary;
+    my $ftp = eval {
+      _ftp_connect($url);
+    };
+    die $@ unless defined $ftp;
 
     my $path = $url->path;
 
@@ -75,9 +71,23 @@ sub init
       
       my $path = eval {
         $ftp->cwd($dir) or die;
-        my $dir = File::Temp::tempdir( CLEANUP => 1);
-        my $path = path("$dir/$filename")->stringify;
-        $ftp->get($filename, $path) or die;
+        my $tdir = File::Temp::tempdir( CLEANUP => 1);
+        my $path = path("$tdir/$filename")->stringify;
+        
+        unless($ftp->get($filename, $path)) # NAT problem? try to use passive mode
+        {
+          $ftp->quit;
+          
+          $ftp = eval {
+            _ftp_connect($url, 1);
+          };
+          die $@ unless defined $ftp;
+          
+          $ftp->cwd($dir) or die;
+          
+          $ftp->get($filename, $path) or die;
+        }
+        
         $path;
       };
       
@@ -95,9 +105,24 @@ sub init
     
     $ftp->cwd($path) or die "unable to fetch $url as either a directory or file";
     
-    my @list = $ftp->ls;
+    my $list = $ftp->ls;
+    if(!defined($list)) # NAT problem? try to use passive mode
+    {
+      $ftp->quit;
+      
+      $ftp = eval {
+        _ftp_connect($url, 1);
+      };
+      die $@ unless defined $ftp;
+      
+      $ftp->cwd($path) or die "unable to fetch $url as either a directory or file";
+      
+      $list = $ftp->ls;
+      
+      die "cannot list directory $path on $url" unless defined $list;
+    }
     
-    die "no files found at $url" unless @list;
+    die "no files found at $url" unless @$list;
 
     $path .= '/' unless $path =~ /\/$/;
     
@@ -113,13 +138,29 @@ sub init
             url      => $furl->as_string,
           );
           \%h;
-        } sort @list,
+        } sort @$list,
       ],
     };
     
   });
 
   $self;
+}
+
+sub _ftp_connect {
+  my $url = shift;
+  my $is_passive = shift || 0;
+  
+  my $ftp = Net::FTP->new(
+    $url->host, Port =>$url->port, Passive =>$is_passive,
+  ) or die "error fetching $url: $@";
+  
+  $ftp->login($url->user, $url->password)
+    or die "error on login $url: @{[ $ftp->message ]}";
+  
+  $ftp->binary;
+  
+  $ftp;
 }
 
 1;
