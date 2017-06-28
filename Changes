@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.52      2017-06-28 17:26:24 -0400
+  - Enhanced Fetch::NetFTP plugin to try passive mode if active fails.
+
 0.51      2017-06-27 15:04:19 -0400
   - Fixup ACLOCAL_PATH on Windows
 
