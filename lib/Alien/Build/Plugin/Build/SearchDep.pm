@@ -32,12 +32,30 @@ then the keys are the class names and the values are the versions of those class
 
 has aliens => {};
 
+=head2 public_I
+
+Include the C<-I> flags when setting the runtime cflags property.
+
+=head2 public_l
+
+Include the C<-l> flags when setting the runtime libs property.
+
+=cut
+
+has public_I => 0;
+has public_l => 0;
+
 sub init
 {
   my($self, $meta) = @_;
   
   $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::SearchDep' => '0.35');
   $meta->add_requires('share'     => 'Env::ShellWords' => 0.01);
+  
+  if($self->public_I || $self->public_l)
+  {
+    $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::SearchDep' => '0.53');
+  }
   
   my @aliens;
   if(ref($self->aliens) eq 'HASH')
@@ -63,8 +81,9 @@ sub init
       tie my @CXXFLAGS, 'Env::ShellWords', 'CXXFLAGS';
       tie my @LDFLAGS,  'Env::ShellWords', 'LDFLAGS';
       
-      my $cflags = [];
+      my $cflags  = $build->install_prop->{plugin_build_searchdep_cflags}  = [];
       my $ldflags = $build->install_prop->{plugin_build_searchdep_ldflags} = [];
+      my $libs    = $build->install_prop->{plugin_build_searchdep_libs}    = [];
       
       foreach my $other (@aliens)
       {
@@ -82,6 +101,7 @@ sub init
         }
         unshift @$cflags,  grep /^-I/, shellwords($other_cflags);
         unshift @$ldflags, grep /^-L/, shellwords($other_libs);
+        unshift @$libs,    grep /^-l/, shellwords($other_libs);
       }
       
       unshift @CFLAGS, @$cflags;
@@ -97,8 +117,20 @@ sub init
     gather_share => sub {
       my($build) = @_;
       
+      if($self->public_l)
+      {
+        $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_libs} }) . ' ' . $build->runtime_prop->{$_}
+          for qw( libs libs_static );
+      }
+      
       $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_ldflags} }) . ' ' . $build->runtime_prop->{$_}
         for qw( libs libs_static );
+
+      if($self->public_I)
+      {
+        $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_cflags} }) . ' ' . $build->runtime_prop->{$_}
+          for qw( cflags cflags_static );
+      }
     },
   );
 }
