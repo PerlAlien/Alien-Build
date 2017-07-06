@@ -49,6 +49,8 @@ pod_spelling_system:
     - Diab
     - Jerius
     - ffi
+    - lang
+    - env
 
 pod_coverage:
   skip: 0
