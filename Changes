@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.53      2017-07-06 13:04:34 -0400
   - Build::SearchDep sets CXXFLAGS (in addition to CFLAGS) for C++ projects
   - Probe::CBuilder adds aliens property
   - Probe::CBuilder adds lang property
