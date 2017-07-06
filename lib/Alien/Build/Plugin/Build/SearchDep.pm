@@ -55,11 +55,13 @@ sub init
     build => sub {
       my($orig, $build) = @_;
       
-      local $ENV{CFLAGS} = $ENV{CFLAGS};
-      local $ENV{LDFLAGS} = $ENV{LDFLAGS};
+      local $ENV{CFLAGS}   = $ENV{CFLAGS};
+      local $ENV{CXXFLAGS} = $ENV{CXXFLAGS};
+      local $ENV{LDFLAGS}  = $ENV{LDFLAGS};
       
-      tie my @CFLAGS,  'Env::ShellWords', 'CFLAGS';
-      tie my @LDFLAGS, 'Env::ShellWords', 'LDFLAGS';
+      tie my @CFLAGS,   'Env::ShellWords', 'CFLAGS';
+      tie my @CXXFLAGS, 'Env::ShellWords', 'CXXFLAGS';
+      tie my @LDFLAGS,  'Env::ShellWords', 'LDFLAGS';
       
       my $cflags = [];
       my $ldflags = $build->install_prop->{plugin_build_searchdep_ldflags} = [];
@@ -83,6 +85,7 @@ sub init
       }
       
       unshift @CFLAGS, @$cflags;
+      unshift @CXXFLAGS, @$cflags;
       unshift @LDFLAGS, @$ldflags;
       
       $orig->($build);

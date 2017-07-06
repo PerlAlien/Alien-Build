@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Build::SearchDep sets CXXFLAGS (in addition to CFLAGS) for C++ projects
 
 0.52      2017-06-28 17:26:24 -0400
   - Enhanced Fetch::NetFTP plugin to try passive mode if active fails.
