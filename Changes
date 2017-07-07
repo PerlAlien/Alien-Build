@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.54      2017-07-07 01:28:54 -0400
   - Alien::Build::MM add alien_prop target
 
 0.53      2017-07-06 13:04:34 -0400
