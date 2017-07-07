@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Alien::Build::MM add alien_prop target
 
 0.53      2017-07-06 13:04:34 -0400
   - Build::SearchDep sets CXXFLAGS (in addition to CFLAGS) for C++ projects

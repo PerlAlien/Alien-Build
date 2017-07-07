@@ -199,6 +199,10 @@ Downloads the source from the internet.  Does nothing for a system install.
 Build from source (if a share install).  Gather configuration (for either
 system or share install).
 
+=item alien_prop
+
+Prints the meta, install and runtime properties for the Alien.
+
 =back 
 
 =cut
@@ -242,6 +246,16 @@ sub mm_postamble
   
   # append to all
   $postamble .= "pure_all :: _alien/mm/build\n\n";
+  
+  # prop
+  $postamble .= "alien_prop :\n" .
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop\n\n";
+  $postamble .= "alien_prop_meta :\n" .
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop meta\n\n";
+  $postamble .= "alien_prop_install :\n" .
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop install\n\n";
+  $postamble .= "alien_prop_runtime :\n" .
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop install\n\n";
   
   $postamble;
 }
@@ -350,6 +364,20 @@ sub import
         $build->checkpoint;
         _touch('build');
       };
+      
+      *dumpprop = sub
+      {
+        my($build, $type) = _args();
+        
+        my %h = (
+          meta    => $build->meta_prop,
+          install => $build->install_prop,
+          runtime => $build->runtime_prop,
+        );
+        
+        require Alien::Build::Util;
+        print Alien::Build::Util::_dump($type ? $h{$type} : \%h);
+      }
     }
   }
 }
