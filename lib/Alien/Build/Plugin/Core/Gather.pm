@@ -123,9 +123,10 @@ sub init
       );
       
       # copy the alienfile, if we managed to keep it around.
-      if($build->meta->filename      && 
-         -r $build->meta->filename   &&
-         $build->meta->filename !~ /\.(pm|pl)$/)
+      if($build->meta->filename                 && 
+         -r $build->meta->filename              &&
+         $build->meta->filename !~ /\.(pm|pl)$/ &&
+         ! -d $build->meta->filename)
       {
         Path::Tiny->new($build->meta->filename)
                   ->copy($stage->child('_alien/alienfile'));
