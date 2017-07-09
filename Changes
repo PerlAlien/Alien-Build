@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Use lib/pkgconfig and share/aclocal from any Alien::Base requires.
+    Previously only Alien::Base modules build with alienfile + Alien::Build
+    were used.
 
 0.54      2017-07-07 01:28:54 -0400
   - Alien::Build::MM add alien_prop target

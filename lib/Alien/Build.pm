@@ -675,7 +675,8 @@ sub load_requires
     {
       push @{ $self->{bin_dir} }, $mod->bin_dir;
     }
-    if($mod->can('runtime_prop') && $mod->runtime_prop)
+    if(($mod->can('runtime_prop') && $mod->runtime_prop)
+    || ($mod->isa('Alien::Base')  && $mod->install_type('share')))
     {
       my $path = _path($mod->dist_dir)->child('lib/pkgconfig');
       if(-d $path)
