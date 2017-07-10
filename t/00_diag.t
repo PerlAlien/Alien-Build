@@ -32,7 +32,6 @@ $modules{$_} = $_ for qw(
   PkgConfig::LibPkgConf
   Sort::Versions
   Test2::API
-  Test2::Bundle::Extended
   Test2::Mock
   Test2::Require
   Test2::Require::Module

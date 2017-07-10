@@ -9,7 +9,7 @@ use Test2::API qw( context );
 
 =head1 SYNOPSIS
 
- use Test2::Bundle::Extended;
+ use Test2::V0;
  use Test::Alien;
  
  plan 1;
@@ -100,7 +100,7 @@ based L<Alien> distribution.
 
  use strict;
  use warnings;
- use Test2::Bundle::Extended;
+ use Test2::V0;
  use Test::Alien;
  use Alien::Libarchive;
  

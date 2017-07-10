@@ -1,7 +1,5 @@
-use strict;
-use warnings;
 use Test2::Require::Module 'Alien::Libarchive' => '0.26';
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Test::Alien;
 
 skip_all 'bored';

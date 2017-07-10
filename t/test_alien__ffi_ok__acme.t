@@ -1,8 +1,6 @@
-use strict;
-use warnings;
 use Test2::Require::Module 'Acme::Alien::DontPanic' => '0.026';
 use Test2::Require::Module 'Alien::Base' => '0.023';
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Test::Alien::CanCompile;
 use Test::Alien;
 

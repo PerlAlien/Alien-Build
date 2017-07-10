@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use LZMA::Example;
 
 my $version = lzma_version_string();

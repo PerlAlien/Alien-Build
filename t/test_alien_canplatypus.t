@@ -1,6 +1,4 @@
-use strict;
-use warnings;
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Test::Alien::CanPlatypus;
 use ExtUtils::CBuilder;
 

@@ -39,7 +39,7 @@ our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic );
 
 Test commands that come with your Alien:
 
- use Test2::Bundle::Extended;
+ use Test2::V0;
  use Test::Alien;
  use Alien::patch;
  
@@ -54,7 +54,7 @@ Test commands that come with your Alien:
 
 Test that your library works with C<XS>:
 
- use Test2::Bundle::Extended;
+ use Test2::V0;
  use Test::Alien;
  use Alien::Editline;
  
@@ -87,7 +87,7 @@ Test that your library works with C<XS>:
 
 Test that your library works with L<FFI::Platypus>:
 
- use Test2::Bundle::Extended;
+ use Test2::V0;
  use Test::Alien;
  use Alien::LibYAML;
  
