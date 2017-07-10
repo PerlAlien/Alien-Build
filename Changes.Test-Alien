@@ -1,0 +1,58 @@
+Revision history for Test-Alien
+
+After 0.15 Test-Alien was merged with Alien-Build
+
+0.15      2017-05-23 13:14:32 -0400
+  - Documentation fixes
+  - Require more recent Text::ParseWords to avoid bugs in
+    Text::ParseWords
+  - Handle situation where temp directory is mounted
+    noexec
+
+0.14      2017-03-23 22:10:24 -0400
+  - Documentation fixes.
+
+0.12      2017-02-01 10:56:29 -0500
+  - workaround for Capture::Tiny on MSWin32
+
+0.11      2017-01-30 18:45:05 -0500
+  - Only use static methods (see last entry) on share installs
+    Typically you want to use the dynamic libraries on a system
+    install
+
+0.10      2017-01-30 18:37:41 -0500
+  - Use static methods for cflags and libs if they are provided
+    by the Alien module.
+
+0.09      2017-01-13 07:13:38 -0500
+  - Test::Alien::Run#note and #diag can be chained like the other 
+    methods
+
+0.08      2016-12-29 18:03:35 -0500
+  - Fixes to silence warnings coming from recent versions of Test2::Suite
+
+0.07      2016-05-10 11:31:59 -0400
+  - Require non-experimental Test2/Test-Simple and Test2::Suite
+
+0.06      2016-04-27 14:52:12 -0400
+  - Better diagnostic when there is a link exception.
+
+0.05      2016-04-25 06:59:01 -0400
+  - Migrated to Test2 API - This will likely break your
+    test if you are using Test::Stream.  Sorry!
+
+0.04      2015-12-29 13:52:08 -0500
+  - Tweaked test skips based on cpantesters feedback
+
+0.03      2015-12-26 17:28:45 -0700
+  - Fixed (hopefully) test failure in
+    test_alien_synthetic_libarchive.t
+    when FFI::Platypus was installed
+    but FFI::Raw was not
+
+0.02      2015-12-25 22:18:53 -0700
+  - Fixes for Windows.
+  - First CPAN release.
+
+0.01      2015-12-25 20:20:16 -0700
+  - initial version

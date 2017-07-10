@@ -51,6 +51,12 @@ pod_spelling_system:
     - ffi
     - lang
     - env
+    - diag
+    - pxs
+    - xs
+    - useable
+    - subtests
+    - subtest
 
 pod_coverage:
   skip: 0
@@ -59,4 +65,7 @@ pod_coverage:
   private:
     - Alien::Build::Plugin::.*#init
     - Alien::Build::Plugin::Probe::GnuWin32#new
+    - Test::Alien::CanCompile#skip
+    - Test::Alien::CanPlatypus#skip
+    - Test::Alien#with_subtest
 

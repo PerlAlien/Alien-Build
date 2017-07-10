@@ -12,10 +12,13 @@ my $post_diag;
 $modules{$_} = $_ for qw(
   Alien::Base
   Capture::Tiny
+  ExtUtils::CBuilder
   ExtUtils::MakeMaker
+  ExtUtils::ParseXS
   FFI::CheckLib
   File::Listing
   File::Listing::Ftpcopy
+  File::Which
   File::chdir
   HTML::LinkExtor
   HTTP::Tiny
@@ -28,7 +31,11 @@ $modules{$_} = $_ for qw(
   PkgConfig
   PkgConfig::LibPkgConf
   Sort::Versions
+  Test2::API
+  Test2::Bundle::Extended
   Test2::Mock
+  Test2::Require
+  Test2::Require::Module
   Test2::V0
   Test::More
   Text::ParseWords
