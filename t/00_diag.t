@@ -10,12 +10,15 @@ my %modules;
 my $post_diag;
 
 $modules{$_} = $_ for qw(
+  Acme::Alien::DontPanic
   Alien::Base
+  Alien::Libarchive
   Capture::Tiny
   ExtUtils::CBuilder
   ExtUtils::MakeMaker
   ExtUtils::ParseXS
   FFI::CheckLib
+  FFI::Platypus
   File::Listing
   File::Listing::Ftpcopy
   File::Which
