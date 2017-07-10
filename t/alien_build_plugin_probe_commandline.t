@@ -3,7 +3,6 @@ use lib 't/lib';
 use MyTest::System2;
 use MyTest;
 use Alien::Build::Plugin::Probe::CommandLine;
-use IPC::Cmd;
 use Capture::Tiny qw( capture_merged );
 
 sub cap (&)

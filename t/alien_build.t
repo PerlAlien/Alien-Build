@@ -630,8 +630,6 @@ subtest 'download' => sub {
 
 subtest 'extract' => sub {
 
-  require IPC::Cmd;
-
   my $tar_cmd = path_to_tar;
   
   skip_all 'test requires command line tar' unless $tar_cmd;

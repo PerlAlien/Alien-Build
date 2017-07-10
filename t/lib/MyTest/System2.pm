@@ -6,7 +6,7 @@ use base qw( Exporter );
 use Scalar::Util qw( refaddr );
 use Text::ParseWords qw( shellwords );
 use Scalar::Util qw( weaken );
-use IPC::Cmd ();
+use File::Which ();
 
 our @EXPORT = qw( system_fake system_add );
 
@@ -33,9 +33,9 @@ my @stack;
 };
 
 {
-  my $old = \&IPC::Cmd::can_run;
+  my $old = \&File::Which::which;
   no warnings 'redefine';
-  *IPC::Cmd::can_run = sub 
+  *File::Which::which = sub 
   {
     my $system = $stack[-1];
     

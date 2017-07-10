@@ -8,9 +8,9 @@ our @EXPORT = qw( have_pkgconfig_bin );
 
 sub have_pkgconfig_bin
 {
-  require IPC::Cmd;
+  require File::Which;
   
-  ($ENV{PKG_CONFIG} && IPC::Cmd::can_run($ENV{PKG_CONFIG})) || IPC::Cmd::can_run('pkgconf') || IPC::Cmd::can_run('pkg-config')
+  ($ENV{PKG_CONFIG} && File::Which::which($ENV{PKG_CONFIG})) || File::Which::which('pkgconf') || File::Which::which('pkg-config')
 }
 
 1;

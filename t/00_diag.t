@@ -25,7 +25,6 @@ $modules{$_} = $_ for qw(
   File::chdir
   HTML::LinkExtor
   HTTP::Tiny
-  IPC::Cmd
   JSON::PP
   LWP
   Module::Load

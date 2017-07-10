@@ -1,7 +1,7 @@
 use Test2::V0;
 use Alien::Build::Util qw( _dump _mirror _destdir_prefix );
 use Path::Tiny qw( path );
-use IPC::Cmd qw( can_run );
+use File::Which qw( which );
 use Capture::Tiny qw( capture_merged );
 use Env qw( @PATH );
 use Config;
@@ -19,7 +19,7 @@ subtest 'dump' => sub {
 
 subtest 'mirror' => sub {
 
-  if($^O eq 'MSWin32' && ! can_run 'diff')
+  if($^O eq 'MSWin32' && ! which 'diff')
   {
     if(eval { require Alien::MSYS })
     {
@@ -27,7 +27,7 @@ subtest 'mirror' => sub {
     }
   }
 
-  skip_all 'test requires diff' unless can_run 'diff';
+  skip_all 'test requires diff' unless which 'diff';
 
   my $tmp1 = Path::Tiny->tempdir("mirror_src_XXXX");
     

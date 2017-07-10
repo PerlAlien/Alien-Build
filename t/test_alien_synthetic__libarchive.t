@@ -2,7 +2,9 @@ use Test2::Require::Module 'Alien::Libarchive' => '0.26';
 use Test2::V0;
 use Test::Alien;
 
-skip_all 'bored';
+# Alien::Libarchive is in a state of flux, and expected to switch to 
+# Alien::Build + Alien::Base + alienfile in the near future
+skip_all 'broken';
 
 is(
   intercept { alien_ok 'Alien::Libarchive' },

@@ -40,12 +40,12 @@ has bin_name => sub {
 
   # We prefer pkgconf to pkg-config because it seems to be the future.
 
-  require IPC::Cmd;
-  IPC::Cmd::can_run($ENV{PKG_CONFIG})
+  require File::Which;
+  File::Which::which($ENV{PKG_CONFIG})
     ? $ENV{PKG_CONFIG}
-    : IPC::Cmd::can_run('pkgconf')
+    : File::Which::which('pkgconf')
       ? 'pkgconf'
-      : IPC::Cmd::can_run('pkg-config')
+      : File::Which::which('pkg-config')
         ? 'pkg-config'
         : undef;
 };
