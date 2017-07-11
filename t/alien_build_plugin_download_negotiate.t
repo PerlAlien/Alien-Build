@@ -1,7 +1,6 @@
 use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Download::Negotiate;
-use lib 't/lib';
 use Path::Tiny;
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _dump );

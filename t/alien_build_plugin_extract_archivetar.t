@@ -1,7 +1,6 @@
 use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::ArchiveTar;
-use lib 't/lib';
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );

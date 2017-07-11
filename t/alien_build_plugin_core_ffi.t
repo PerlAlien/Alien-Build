@@ -1,7 +1,6 @@
 use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Core::FFI;
-use lib 't/lib';
 use Capture::Tiny qw( capture_merged );
 
 subtest basic => sub {

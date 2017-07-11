@@ -1,5 +1,6 @@
 use Test2::V0;
 use Test::Alien::Build;
+use Capture::Tiny qw( capture_merged );
 
 {
   my %commands;
@@ -34,9 +35,7 @@ use Test::Alien::Build;
   }
 }
 
-use lib 't/lib';
 use Alien::Build::CommandSequence;
-use Capture::Tiny qw( capture_merged );
 
 subtest 'basic' => sub {
 

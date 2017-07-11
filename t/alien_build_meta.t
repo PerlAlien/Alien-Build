@@ -1,7 +1,6 @@
 use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build;
-use lib 't/lib';
 
 subtest 'basic' => sub {
 

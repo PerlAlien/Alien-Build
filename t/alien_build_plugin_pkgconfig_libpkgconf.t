@@ -2,7 +2,6 @@ use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::PkgConfig::LibPkgConf;
 use Path::Tiny qw( path );
-use lib 't/lib';
 use Capture::Tiny qw( capture_merged );
 
 $ENV{PKG_CONFIG_PATH}   = path('corpus/lib/pkgconfig')->absolute->stringify;
