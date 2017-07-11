@@ -8,8 +8,9 @@ Revision history for {{$dist->name}}
   - Import helpers from Aliens that are required using requires.
     (this was always the intent, but for some reason was not implemented until now).
   - Add helper_ok test to Test::Alien
-  - Add interpolate_template_is to Test::Alien
+  - Add interpolate_template_is test to Test::Alien
   - Add Test::Alien::Build
+  - Add has_helper method to Alien::Build::Interpolate
 
 0.55      2017-07-09 12:25:06 -0400
   - Use lib/pkgconfig and share/aclocal from any Alien::Base requires.
