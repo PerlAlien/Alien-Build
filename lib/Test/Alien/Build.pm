@@ -34,7 +34,7 @@ This module provides some tools for testing L<Alien::Build> and L<alienfile>.  O
 core development, It is probably most useful for L<Alien::Build::Plugin> developers.
 
 This module also unsets a number of L<Alien::Build> specific environment variables, in order to make tests
-reproducable even when overrides are set in different environments.  So if you want to test those variables in
+reproducible even when overrides are set in different environments.  So if you want to test those variables in
 various states you should explicitly set them in your test script.  These variables are unset if they defined:
 C<ALIEN_BUILD_PRELOAD> C<ALIEN_BUILD_POSTLOAD> C<ALIEN_INSTALL_TYPE>.
 
@@ -46,7 +46,7 @@ C<ALIEN_BUILD_PRELOAD> C<ALIEN_BUILD_POSTLOAD> C<ALIEN_INSTALL_TYPE>.
  my $build = alienfile q{ use alienfile ... };
  my $build = alienfile filename => 'alienfile';
 
-Create a Alien::Build instance from the given L<alienfile>.  The first two forms are abreviations.
+Create a Alien::Build instance from the given L<alienfile>.  The first two forms are abbreviations.
 
  my $build = alienfile;
  # is the same as
@@ -58,7 +58,7 @@ and
  # is the same as
  my $build = alienfile source => q{ use alienfile ... };
 
-Except for the second abreviated form sets the line number before feeding the source into L<Alien::Build>
+Except for the second abbreviated form sets the line number before feeding the source into L<Alien::Build>
 so that you will get diagnostics with the correct line numbers.
 
 =over 4

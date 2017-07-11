@@ -57,6 +57,7 @@ pod_spelling_system:
     - useable
     - subtests
     - subtest
+    - unsets
 
 pod_coverage:
   skip: 0
