@@ -1,4 +1,5 @@
-use Test2::Require::Module 'Archive::Tar' => 0, 'Env::ShellWords' => 0;
+use Test2::Require::Module 'Archive::Tar' => 0;
+use Test2::Require::Module 'Env::ShellWords' => 0;
 use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Build::SearchDep;
