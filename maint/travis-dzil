@@ -13,7 +13,7 @@ function dzil {
 }
 
 if [ ! -e ~/.travis-dzil-first ]; then
-  cpanm -n -l $PREFIX Dist::Zilla Archive::Tar::Wrapper
+  cpanm -n -l $PREFIX Dist::Zilla Archive::Tar::Wrapper Dist::Zilla::Plugin::OurPkgVersion
   dzil authordeps --missing | cpanm -l $PREFIX -n
   dzil listdeps   --missing | cpanm -l $PREFIX -n
   touch ~/.travis-dzil-first
