@@ -1,8 +1,7 @@
 use Test2::V0;
 use Test::Alien::Build;
 use lib 't/lib';
-use MyTest;
-use MyTest::System2;
+use MyTest::System;
 use Alien::Build::Plugin::Probe::CBuilder;
 use Test2::Mock;
 use Capture::Tiny qw( capture_merged );

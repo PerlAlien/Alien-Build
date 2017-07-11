@@ -2,7 +2,7 @@ use Test2::V0;
 use Test::Alien::Build;
 use lib 't/lib';
 use lib 'corpus/lib';
-use MyTest::System2;
+use MyTest::System;
 use Alien::Build;
 use Capture::Tiny qw( capture_merged );
 use File::chdir;

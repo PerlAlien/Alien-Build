@@ -2,7 +2,6 @@ use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::HTTPTiny;
 use lib 't/lib';
-use MyTest;
 use Path::Tiny qw( path );
 use MyTest::HTTP;
 use Alien::Build::Util qw( _dump );

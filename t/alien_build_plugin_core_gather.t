@@ -2,7 +2,6 @@ use Test2::V0;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Core::Gather;
 use lib 't/lib';
-use MyTest;
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _dump _destdir_prefix );
 use Path::Tiny qw( path );

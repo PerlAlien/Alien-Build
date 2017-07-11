@@ -6,7 +6,6 @@ use lib 't/lib';
 use lib 'corpus/lib';
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
-use MyTest;
 
 subtest 'compile examples' => sub {
 

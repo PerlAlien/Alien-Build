@@ -1,7 +1,7 @@
 use Test2::V0;
 use Test::Alien::Build;
 use lib 't/lib';
-use MyTest::System2;
+use MyTest::System;
 use Alien::Build::Plugin::Probe::CommandLine;
 use Capture::Tiny qw( capture_merged );
 
