@@ -1,8 +1,8 @@
 use Test2::V0;
+use Test::Alien::Build;
 use lib 't/lib';
 use MyTest::System;
 use Alien::Build::CommandSequence;
-use MyTest;
 use Capture::Tiny qw( capture_merged );
 
 subtest 'basic' => sub {
@@ -14,7 +14,8 @@ subtest 'basic' => sub {
 
 subtest 'apply requirements' => sub {
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   my $intr = $meta->interpolator;
   
@@ -44,7 +45,8 @@ subtest 'apply requirements' => sub {
 
 subtest 'execute' => sub {
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   my $intr = $meta->interpolator;
   $intr->add_helper(foo => sub { 'myfoo' });
 

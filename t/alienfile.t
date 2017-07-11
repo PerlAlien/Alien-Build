@@ -1,4 +1,5 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build;
 use Path::Tiny qw( path );
 use lib 't/lib';

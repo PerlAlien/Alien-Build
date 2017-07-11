@@ -1,4 +1,5 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::PkgConfig::MakeStatic;
 use lib 't/lib';
 use MyTest;

@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::ArchiveZip;
 use lib 't/lib';
-use MyTest;
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
@@ -12,8 +12,9 @@ subtest 'archive' => sub {
   {
     subtest "with extension $ext" => sub {
     
-      my($build, $meta) = build_blank_alien_build;
-  
+      my $build = alienfile filename => 'corpus/blank/alienfile';
+      my $meta = $build->meta;
+
       my $plugin = Alien::Build::Plugin::Extract::ArchiveZip->new;
       $plugin->init($meta);
       eval { $build->load_requires('share') };

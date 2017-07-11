@@ -1,13 +1,14 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::Directory;
 use lib 't/lib';
-use MyTest;
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 
 subtest 'basic' => sub {
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   my $plugin = Alien::Build::Plugin::Extract::Directory->new;
   $plugin->init($meta);

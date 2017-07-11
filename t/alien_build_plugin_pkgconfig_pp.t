@@ -1,8 +1,8 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::PkgConfig::PP;
 use Path::Tiny qw( path );
 use lib 't/lib';
-use MyTest;
 use Capture::Tiny qw( capture_merged );
 
 $ENV{PKG_CONFIG_PATH}   = path('corpus/lib/pkgconfig')->absolute->stringify;
@@ -12,7 +12,8 @@ skip_all 'test requires PkgConfig 0.09026' unless eval q{ use PkgConfig 0.09026;
 
 sub build
 {
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   my $plugin = Alien::Build::Plugin::PkgConfig::PP->new(@_);
   $plugin->init($meta);
   ($build, $meta, $plugin);

@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::Prefer::SortVersions;
 use lib 't/lib';
-use MyTest;
 use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 
@@ -9,7 +9,8 @@ subtest 'updates requires' => sub {
 
   my $plugin = Alien::Build::Plugin::Prefer::SortVersions->new;
 
-  my($build,$meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $plugin->init($meta);
   
@@ -23,7 +24,8 @@ subtest 'prefer' => sub {
 
   my $builder = sub {
     my $plugin = Alien::Build::Plugin::Prefer::SortVersions->new(@_);
-    my($build,$meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     $plugin->init($meta);
     eval { $build->load_requires('share') };
     $@ ? () : wantarray ? ($build,$meta) : $build;

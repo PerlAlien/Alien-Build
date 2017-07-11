@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::LWP;
 use lib 't/lib';
-use MyTest;
 use Path::Tiny qw( path );
 use MyTest::HTTP;
 use MyTest::FTP;
@@ -12,7 +12,8 @@ subtest 'updates requires' => sub {
 
   my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => 'file://localhost/' );
 
-  my($build,$meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $plugin->init($meta);
   
@@ -39,7 +40,8 @@ subtest 'fetch' => sub {
 
       my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url" );
 
-      my($build,$meta) = build_blank_alien_build;
+      my $build = alienfile filename => 'corpus/blank/alienfile';
+      my $meta = $build->meta;
   
       $plugin->init($meta);
       eval { $build->load_requires('share') };

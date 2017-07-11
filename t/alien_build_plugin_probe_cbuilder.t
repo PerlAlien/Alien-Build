@@ -1,4 +1,5 @@
 use Test2::V0;
+use Test::Alien::Build;
 use lib 't/lib';
 use MyTest;
 use MyTest::System2;

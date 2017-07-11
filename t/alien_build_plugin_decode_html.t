@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::Decode::HTML;
 use lib 't/lib';
-use MyTest;
 use Path::Tiny;
 use Alien::Build::Util qw( _dump );
 
@@ -9,7 +9,8 @@ subtest 'updates requires' => sub {
 
   my $plugin = Alien::Build::Plugin::Decode::HTML->new;
 
-  my($build,$meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $plugin->init($meta);
   
@@ -24,7 +25,8 @@ subtest 'decode' => sub {
 
   my $plugin = Alien::Build::Plugin::Decode::HTML->new;
 
-  my($build,$meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $plugin->init($meta);
 

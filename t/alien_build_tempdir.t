@@ -1,11 +1,11 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build;
 use lib 't/lib';
-use MyTest;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
 
-my($build,$meta) = build_blank_alien_build;
+my $build = alienfile filename => 'corpus/blank/alienfile';
 
 ok(
   -d $build->root,

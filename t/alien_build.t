@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use lib 't/lib';
 use lib 'corpus/lib';
-use MyTest;
 use MyTest::System2;
 use Alien::Build;
 use Capture::Tiny qw( capture_merged );
@@ -49,7 +49,8 @@ subtest 'invalid alienfile' => sub {
 
 subtest 'load requires' => sub {
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   note(_dump $meta);
   
@@ -69,7 +70,8 @@ subtest 'load requires' => sub {
 
 subtest 'hook' => sub {
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   subtest 'simple single working hook' => sub {
   
@@ -290,7 +292,8 @@ subtest 'probe' => sub {
 
   subtest 'system' => sub {
   
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     
     $meta->register_hook(
       probe => sub {
@@ -306,7 +309,8 @@ subtest 'probe' => sub {
   
   subtest 'share' => sub {
 
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     
     $meta->register_hook(
       probe => sub {
@@ -322,7 +326,8 @@ subtest 'probe' => sub {
   
   subtest 'throw exception' => sub {
   
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     
     $meta->register_hook(
       probe => sub {
@@ -344,7 +349,8 @@ subtest 'probe' => sub {
     
       local $ENV{ALIEN_INSTALL_TYPE} = 'share';
       
-      my($build,$meta) = build_blank_alien_build;
+      my $build = alienfile filename => 'corpus/blank/alienfile';
+      my $meta = $build->meta;
       
       $meta->register_hook(
         probe => sub {
@@ -362,8 +368,9 @@ subtest 'probe' => sub {
     
       subtest 'probe okay' => sub {
       
-        my($build,$meta) = build_blank_alien_build;
-        
+        my $build = alienfile filename => 'corpus/blank/alienfile';
+        my $meta = $build->meta;
+
         $meta->register_hook(
           probe => sub {
             'system';
@@ -376,7 +383,8 @@ subtest 'probe' => sub {
       
       subtest 'probe share' => sub {
       
-        my($build, $meta) = build_blank_alien_build;
+        my $build = alienfile filename => 'corpus/blank/alienfile';
+        my $meta = $build->meta;
         
         $meta->register_hook(
           probe => sub {
@@ -392,7 +400,8 @@ subtest 'probe' => sub {
       
       subtest 'probe exception' => sub {
       
-        my($build, $meta) = build_blank_alien_build;
+        my $build = alienfile filename => 'corpus/blank/alienfile';
+        my $meta = $build->meta;
         
         $meta->register_hook(
           probe => sub {
@@ -416,7 +425,8 @@ subtest 'gather system' => sub {
 
   local $ENV{ALIEN_INSTALL_TYPE} = 'system';
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $meta->register_hook(
     probe => sub {
@@ -469,7 +479,8 @@ subtest 'gather system' => sub {
 subtest 'download' => sub {
 
   my $build = sub {
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     require Alien::Build::Plugin::Fetch::Corpus;
     my $plugin = Alien::Build::Plugin::Fetch::Corpus->new(@_);
     $plugin->init($meta);
@@ -562,7 +573,8 @@ subtest 'download' => sub {
         }
       };
     
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     
     $meta->register_hook(
       download => [ "wget http://test1.test/foo/bar/baz/foo-1.00.tar.gz" ],
@@ -579,7 +591,8 @@ subtest 'download' => sub {
         0;
       };
     
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     
     $meta->register_hook(
       download => [ 'true' ],
@@ -599,7 +612,8 @@ subtest 'download' => sub {
         0;
       };
     
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
     
     $meta->register_hook(
       download => ['explode'],
@@ -630,11 +644,16 @@ subtest 'download' => sub {
 
 subtest 'extract' => sub {
 
-  my $tar_cmd = path_to_tar;
+  my $tar_cmd = do {
+    require Alien::Build::Plugin::Extract::CommandLine;
+    my $plugin = Alien::Build::Plugin::Extract::CommandLine->new;
+    $plugin->tar_cmd;
+  };
   
   skip_all 'test requires command line tar' unless $tar_cmd;
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $meta->register_hook(
     extract => [ [ $tar_cmd, "xf", "%{alien.install.download}"] ],
@@ -662,7 +681,8 @@ subtest 'extract' => sub {
 subtest 'build' => sub {
 
   subtest 'plain' => sub {
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
   
     my @data;
   
@@ -723,7 +743,8 @@ subtest 'build' => sub {
   
   subtest 'destdir' => sub {
   
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
   
     $meta->register_hook(
       probe => sub { 'share' },
@@ -821,7 +842,8 @@ subtest 'patch' => sub {
 
   subtest 'single' => sub {
 
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
 
     my $tmp = Path::Tiny->tempdir;
     my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
@@ -867,7 +889,8 @@ subtest 'patch' => sub {
 
   subtest 'double' => sub {
 
-    my($build, $meta) = build_blank_alien_build;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
 
     my $tmp = Path::Tiny->tempdir;
     my $share = $tmp->child('blib/lib/auto/share/Alien-Foo/');
@@ -950,7 +973,8 @@ subtest 'preload' => sub {
   
   local $ENV{ALIEN_BUILD_PRELOAD} = join ';', qw( Preload1 Preload1::Preload2 );
   
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   ok( $meta->has_hook($_), "has hook $_" ) for qw( preload1 preload2 );
 

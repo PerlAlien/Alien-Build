@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use lib 't/lib';
 use MyTest::System2;
-use MyTest;
 use Alien::Build::Plugin::Probe::CommandLine;
 use Capture::Tiny qw( capture_merged );
 
@@ -15,7 +15,8 @@ sub cap (&)
 
 sub build 
 {
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   if(ref $_[-1] eq 'CODE')
   {

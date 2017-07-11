@@ -1,7 +1,7 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::NetFTP;
 use lib 't/lib';
-use MyTest;
 use MyTest::FTP;
 use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
@@ -10,7 +10,8 @@ subtest 'updates requires' => sub {
 
   my $plugin = Alien::Build::Plugin::Fetch::NetFTP->new( url => 'ftp://localhost/' );
 
-  my($build,$meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $plugin->init($meta);
   
@@ -39,7 +40,8 @@ subtest 'fetch' => sub {
 
   my $plugin = Alien::Build::Plugin::Fetch::NetFTP->new( url => $url );
 
-  my($build,$meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   $plugin->init($meta);
 

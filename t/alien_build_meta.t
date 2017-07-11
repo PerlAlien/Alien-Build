@@ -1,11 +1,12 @@
 use Test2::V0;
+use Test::Alien::Build;
 use Alien::Build;
 use lib 't/lib';
-use MyTest;
 
 subtest 'basic' => sub {
 
-  my($build, $meta) = build_blank_alien_build;
+  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $meta = $build->meta;
   
   isa_ok( $build->meta, 'Alien::Build::Meta' );
 
