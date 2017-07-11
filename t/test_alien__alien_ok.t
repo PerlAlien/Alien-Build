@@ -2,8 +2,6 @@ use Test2::V0;
 use Test::Alien;
 use Env qw( @PATH );
 
-plan 4;
-
 is(
   intercept { alien_ok 'Alien::Foo' },
   array {
@@ -46,6 +44,8 @@ is(
   "alien_ok with bad class",
 );
 
+done_testing;
+
 package
   Alien::Foo;
 
@@ -54,3 +54,4 @@ sub cflags       {}
 sub libs         {}
 sub dynamic_libs {}
 sub bin_dir      { '/foo/bar/baz' }
+

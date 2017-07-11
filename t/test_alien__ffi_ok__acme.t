@@ -1,17 +1,15 @@
 use Test2::Require::Module 'Acme::Alien::DontPanic' => '0.026';
-use Test2::Require::Module 'Alien::Base' => '0.023';
 use Test2::V0;
 use Test::Alien::CanCompile;
 use Test::Alien;
 
-plan 3;
-
 alien_ok 'Acme::Alien::DontPanic';
 ffi_ok { symbols => ['answer'] } , with_subtest {
   my($ffi) = @_;
-  plan 1;
   is $ffi->function('answer' => [] => 'int')->call(), 42, 'answer is 42';
 };
+
+done_testing;
 
 __DATA__
 

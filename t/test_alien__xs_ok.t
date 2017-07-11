@@ -2,8 +2,6 @@ use Test::Alien::CanCompile;
 use Test2::V0;
 use Test::Alien;
 
-plan 7;
-
 is(
   intercept { xs_ok '' },
   array {
@@ -70,18 +68,17 @@ is(
 my $xs = do { local $/; <DATA> };
 xs_ok { xs => $xs, verbose => 1 }, with_subtest {
   my($module) = @_;
-  plan 1;
   is $module->baz(), 42, "call $module->baz()";
 };
 
 $xs =~ s{\bTA_MODULE\b}{Foo::Bar}g;
 xs_ok $xs, 'xs without parameterized name', with_subtest {
   my($module) = @_;
-  plan 2;
   is $module, 'Foo::Bar';
   is $module->baz(), 42, "call $module->baz()";
 };
 
+done_testing;
 
 __DATA__
 

@@ -18,8 +18,6 @@ BEGIN {
 };
 use Test::Alien;
 
-plan 5;
-
 sub _prog ($)
 {
   my($code) = @_;
@@ -33,8 +31,6 @@ sub _prog ($)
 }
 
 subtest 'run with exit 0' => sub {
-
-  plan 16;
 
   my $run;
   my $prog = _prog q{
@@ -236,8 +232,6 @@ subtest 'run with exit 0' => sub {
 
 subtest 'run with exit 22' => sub {
 
-  plan 10;
-
   my $run;
   my $prog = _prog q{
     use strict;
@@ -351,8 +345,6 @@ subtest 'run with kill 9' => sub {
     kill 9, $$;
   };
 
-  plan 6;
-
   my $run;
 
   is(
@@ -401,8 +393,6 @@ subtest 'run with not found' => sub {
 
   local $which = sub { undef() };
 
-  plan 6;
-
   my $run;
 
   is(
@@ -449,8 +439,6 @@ subtest 'run -1' => sub {
   local $which = sub { '/baz/bar/foo' };
   local $system = sub { $? = -1; $! = 2; };
 
-  plan 6;
-
   my $run;
 
   is(
@@ -495,3 +483,4 @@ subtest 'run -1' => sub {
 
 };
 
+done_testing;

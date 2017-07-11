@@ -2,8 +2,6 @@ use Test2::V0;
 use Test::Alien::CanPlatypus;
 use Test::Alien;
 
-plan 8;
-
 is(
   intercept { ffi_ok; },
   array {
@@ -18,13 +16,11 @@ is(
 
 ffi_ok {}, 'min version test', with_subtest {
   my($ffi) = @_;
-  plan 1;
   cmp_ok $ffi->VERSION, '>=', 0.12;
 };
 
 ffi_ok { ignore_not_found => 1 }, 'ignore not found', with_subtest {
   my($ffi) = @_;
-  plan 3;
   cmp_ok $ffi->VERSION, '>=', 0.15;
   eval { $ffi->attach( foo => [] => 'void') };
   is $@, '';
@@ -33,7 +29,6 @@ ffi_ok { ignore_not_found => 1 }, 'ignore not found', with_subtest {
 
 ffi_ok { lang => 'Fortran' }, 'lang', with_subtest {
   my($ffi) = @_;
-  plan 2;
   cmp_ok $ffi->VERSION, '>=', 0.18;
   is $ffi->lang, 'Fortran';
 };
@@ -56,3 +51,5 @@ is(
   },
   'not found error'
 );
+
+done_testing;

@@ -8,8 +8,6 @@ BEGIN {
 
 use Test::Alien;
 
-plan 5;
-
 xs_ok '';
 xs_ok '', sub {};
 
@@ -49,3 +47,5 @@ is(
   },
   'skip works with cb'
 );
+
+done_testing;

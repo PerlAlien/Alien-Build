@@ -1,16 +1,14 @@
 use Test::Alien::CanCompile;
 use Test2::Require::Module 'Acme::Alien::DontPanic' => '0.026';
-use Test2::Require::Module 'Alien::Base' => '0.023';
 use Test2::V0;
 use Test::Alien;
 
-plan 3;
-
 alien_ok 'Acme::Alien::DontPanic';
 xs_ok do { local $/; <DATA> }, with_subtest {
-  plan 1;
   is Acme::answer(), 42, 'answer is 42';
 };
+
+done_testing;
 
 __DATA__
 
