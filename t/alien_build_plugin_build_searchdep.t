@@ -15,8 +15,6 @@ subtest basic => sub {
   
     use alienfile;
     
-    probe sub { 'share' };
-    
     share {
     
       plugin 'Download::Foo' => ();
@@ -79,8 +77,6 @@ subtest public_I => sub {
   
     use alienfile;
     
-    probe sub { 'share' };
-    
     share {
     
       plugin 'Download::Foo' => ();
@@ -125,8 +121,6 @@ subtest public_l => sub {
   my $build = alienfile q{
   
     use alienfile;
-    
-    probe sub { 'share' };
     
     share {
     
@@ -177,8 +171,6 @@ subtest list => sub {
       aliens => [ 'Alien::libfoo1', 'Alien::libfoo2' ],
     );
     
-    probe sub { 'share' };
-    
     share {
     };
   
@@ -200,8 +192,6 @@ subtest hash => sub {
     plugin 'Build::SearchDep' => (
       aliens => { 'Alien::libfoo2' => '0.01'},
     );
-    
-    probe sub { 'share' };
     
     share {
     };
