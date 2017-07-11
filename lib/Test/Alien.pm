@@ -30,7 +30,7 @@ BEGIN {
   } if $^O eq 'MSWin32';
 }
 
-our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic );
+our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is );
 
 # ABSTRACT: Testing tools for Alien modules
 # VERSION
@@ -721,8 +721,105 @@ sub ffi_ok
   $ok;
 }
 
-sub _tempdir
+=head2 helper_ok
+
+ helper_ok $name;
+ helper_ok $name, $message;
+
+Tests that the given helper has been defined.
+
+=cut
+
+sub _interpolator
+{  
+  require Alien::Build::Interpolate::Default;
+  my $intr = Alien::Build::Interpolate::Default->new;
+  
+  foreach my $alien (@aliens)
+  {
+    if($alien->can('alien_helper'))
+    {
+      my $help = $alien->alien_helper;
+      foreach my $name (keys %$help)
+      {
+        my $code = $help->{$name};
+        $intr->replace_helper($name, $code);
+      }
+    }
+  }
+  
+  $intr;
+}
+
+sub helper_ok
 {
+  my($name, $message) = @_;
+
+  $message ||= "helper $name exists";
+
+  my $intr = _interpolator; 
+
+  my $code = $intr->has_helper($name);
+
+  my $ok = defined $code;
+
+  my $ctx = context();
+  $ctx->ok($ok, $message);
+  $ctx->release;
+  
+  $ok;
+}
+
+=head2 interpolate_template_is
+
+ interpolate_template_is $template, $string;
+ interpolate_template_is $template, $string, $message;
+ interpolate_template_is $template, $regex;
+ interpolate_template_is $template, $regex, $message;
+
+Tests that the given template when evaluated with the appropriate helpers will match
+either the given string or regular expression.
+
+=cut
+
+sub interpolate_template_is
+{
+  my($template, $pattern, $message) = @_;
+  
+  $message ||= "template matches";
+  
+  my $intr = _interpolator;
+  
+  my $value = eval { $intr->interpolate($template) };
+  my $error = $@;
+  my @diag;
+  my $ok;
+  
+  if($error)
+  {
+    $ok = 0;
+    push @diag, "error in evaluation:";
+    push @diag, "  $error";
+  }
+  elsif(ref($pattern) eq 'Regexp')
+  {
+    $ok = $value =~ $pattern;
+    push @diag, "value '$value' does not match $pattern'" unless $ok;
+  }
+  else
+  {
+    $ok = $value eq "$pattern";
+    push @diag, "value '$value' does not equal '$pattern'" unless $ok;
+  }
+  
+  my $ctx = context();
+  $ctx->ok($ok, $message, [@diag]);
+  $ctx->release;
+  
+  $ok;
+}
+
+sub _tempdir {
   # makes sure /tmp or whatever isn't mounted noexec,
   # which will cause xs_ok tests to fail.
 

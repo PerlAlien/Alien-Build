@@ -1056,6 +1056,20 @@ subtest 'system' => sub {
 
 };
 
+subtest 'requires pulls helpers' => sub {
+
+  my $build = alienfile q{
+    use alienfile;
+    requires 'Alien::libfoo1';
+    probe sub { 'system' }
+  };
+
+  $build->load_requires('any');
+  ok($build->meta->interpolator->has_helper('foo1'), 'has helper foo1');
+  ok($build->meta->interpolator->has_helper('foo2'), 'has helper foo2');
+
+};
+
 done_testing;
 
 {

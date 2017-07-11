@@ -69,16 +69,19 @@ sub replace_helper
   $self->add_helper(@_);
 }
 
-=head2 execute_helper
+=head2 has_helper
 
- my $value = $intr->execute_helper($name);
+ my $coderef = $intr->has_helper($name);
+
+Used to discover if a helper exists with the given name.
+Returns the code reference.
 
 =cut
 
-sub execute_helper
+sub has_helper
 {
   my($self, $name) = @_;
-  
+
   foreach my $module (keys %{ $self->{helper}->{$name}->{require} })
   {
     my $version = $self->{helper}->{$name}->{require}->{$module};
@@ -104,7 +107,7 @@ sub execute_helper
   
   my $code = $self->{helper}->{$name}->{code};
   
-  die "no helper defined for $name" unless defined $code;
+  return unless defined $code;
 
   if(ref($code) ne 'CODE')
   {
@@ -116,6 +119,22 @@ sub execute_helper
       $value;
     };
   }
+  
+  $code;
+}
+
+=head2 execute_helper
+
+ my $value = $intr->execute_helper($name);
+
+=cut
+
+sub execute_helper
+{
+  my($self, $name) = @_;
+  
+  my $code = $self->has_helper($name);
+  die "no helper defined for $name" unless defined $code;
   
   $code->();
 }

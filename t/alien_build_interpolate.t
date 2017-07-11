@@ -104,4 +104,22 @@ subtest 'property, default to alien' => sub {
 
 };
 
+subtest 'has_helper' => sub {
+
+  my $intr = Alien::Build::Interpolate->new;
+
+  $intr->add_helper(foo => sub { 'foo' . (1+2) });
+  $intr->add_helper(bar => '"bar" . (3+4)');
+
+  my $foo = $intr->has_helper('foo');
+  my $bar = $intr->has_helper('bar');
+
+  is(ref($foo), 'CODE');
+  is(ref($bar), 'CODE');
+  
+  is($foo->(), 'foo3');
+  is($bar->(), 'bar7');
+  
+};
+
 done_testing;

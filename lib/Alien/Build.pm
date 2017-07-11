@@ -671,10 +671,12 @@ sub load_requires
     my $ver = $reqs->{$mod};
     eval qq{ use $mod @{[ $ver ? $ver : '' ]} () };
     die if $@;
+
     if($mod->can('bin_dir'))
     {
       push @{ $self->{bin_dir} }, $mod->bin_dir;
     }
+
     if(($mod->can('runtime_prop') && $mod->runtime_prop)
     || ($mod->isa('Alien::Base')  && $mod->install_type('share')))
     {
@@ -695,6 +697,17 @@ sub load_requires
         push @{ $self->{aclocal_path} }, $path;
       }
     }
+    
+    if($mod->can('alien_helper'))
+    {
+      my $helpers = $mod->alien_helper;
+      foreach my $name (sort keys %$helpers)
+      {
+        my $code = $helpers->{$name};
+        $self->meta->interpolator->replace_helper($name => $code);
+      }
+    }
+
   }
   1;
 }
