@@ -7,18 +7,20 @@ use base qw( Exporter);
 use Path::Tiny qw( path );
 use Carp qw( croak );
 use File::Temp qw( tempdir );
+use Test2::API qw( context );
 
-our @EXPORT = qw( alienfile );
+our @EXPORT = qw( alienfile alienfile_ok );
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
 
 =head1 SYNOPSIS
 
+ use Test2::V0;
  use Test::Alien::Build;
  
  # returns an instance of Alien::Build.
- my $build = alienfile q{
+ my $build = alienfile_ok q{
    use alienfile;
    
    plugin 'My::Plugin' => (
@@ -27,6 +29,8 @@ our @EXPORT = qw( alienfile );
      ...
    );
  };
+ 
+ done_testing;
 
 =head1 DESCRIPTION
 
@@ -89,8 +93,13 @@ The install prefix for the build.
 
 sub alienfile
 {
-  my(undef, $filename, $line) = caller;
-  my %args = @_ == 0 ? (filename => 'alienfile') : @_ % 2 ? ( source => do { my(undef, $filename, $line) = caller; '# line '. $line . ' "' . path($filename)->absolute . qq("\n) . $_[0] }) : @_;
+  my($package, $filename, $line) = caller;
+  ($package, $filename, $line) = caller(2) if $package eq __PACKAGE__;
+  $filename = path($filename)->absolute;
+  my %args = @_ == 0 ? (filename => 'alienfile') : @_ % 2 ? ( source => do { '# line '. $line . ' "' . path($filename)->absolute . qq("\n) . $_[0] }) : @_;
+
+  use YAML ();
+  print YAML::Dump(\%args);
   
   my $get_temp_root = do{
     my $root; # may be undef;
@@ -137,6 +146,30 @@ sub alienfile
   
   $build
 }
+
+=head2 alienfile_ok
+
+ my $build = alienfile_ok;
+ my $build = alienfile_ok q{ use alienfile ... };
+ my $build = alienfile_ok filename => 'alienfile';
+
+Same as C<alienfile> above, except that it runs as a test, and will not throw an exception
+on failure (it will return undef instead).
+
+=cut
+
+sub alienfile_ok
+{
+  my $build = eval { alienfile(@_) };
+  my $error = $@;
+  my $ok = !! $build;
+  
+  my $ctx = context();
+  $ctx->ok($ok, 'alienfile compiles');
+  $ctx->diag("error: $error") if $error;
+  $ctx->release;
+}
+
 
 delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_BUILD_POSTLOAD ALIEN_INSTALL_TYPE );
 

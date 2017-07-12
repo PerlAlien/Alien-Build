@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add alienfile_ok to Test::Alien::Build
 
 0.56_01   2017-07-11 16:39:38 -0400
   - Merged Test-Alien and Alien-Build.  For the old Test-Alien change log
