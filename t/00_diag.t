@@ -1,7 +1,5 @@
-use strict;
-use warnings;
+use Test2::V0;
 use Config;
-use Test::More tests => 1;
 
 # This .t file is generated.
 # make changes instead to dist.ini
@@ -38,7 +36,6 @@ $modules{$_} = $_ for qw(
   Test2::Require
   Test2::Require::Module
   Test2::V0
-  Test::More
   Text::ParseWords
   URI
   YAML
@@ -110,3 +107,4 @@ if($post_diag)
 
 spacer;
 
+done_testing;
