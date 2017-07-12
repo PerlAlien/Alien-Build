@@ -1,6 +1,8 @@
 use Test2::V0;
 use Config;
 
+eval q{ require Test::More };
+
 # This .t file is generated.
 # make changes instead to dist.ini
 
@@ -85,7 +87,7 @@ if(@keys > 0)
 
 diag sprintf $format, 'perl ', $];
 
-foreach my $module (@modules)
+foreach my $module (sort @modules)
 {
   if(eval qq{ require $module; 1 })
   {
