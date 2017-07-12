@@ -98,9 +98,6 @@ sub alienfile
   $filename = path($filename)->absolute;
   my %args = @_ == 0 ? (filename => 'alienfile') : @_ % 2 ? ( source => do { '# line '. $line . ' "' . path($filename)->absolute . qq("\n) . $_[0] }) : @_;
 
-  use YAML ();
-  print YAML::Dump(\%args);
-  
   my $get_temp_root = do{
     my $root; # may be undef;
     sub {
@@ -168,6 +165,8 @@ sub alienfile_ok
   $ctx->ok($ok, 'alienfile compiles');
   $ctx->diag("error: $error") if $error;
   $ctx->release;
+  
+  $build;
 }
 
 

@@ -37,11 +37,15 @@ subtest 'from file' => sub {
 
 };
 
-alienfile_ok q{ use alienfile };
+my $ret;
+
+$ret = alienfile_ok q{ use alienfile };
+isa_ok($ret, 'Alien::Build');
+
 alienfile_ok filename => 'corpus/basic/alienfile';
 
 is(
-  intercept { alienfile_ok q{ bogus alienfile stuff } },
+  intercept { $ret = alienfile_ok q{ bogus alienfile stuff } },
   array {
     event Ok => sub {
       call pass => F();
