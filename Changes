@@ -1,9 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.57      2017-07-12 16:45:54 -0400
   - Add alienfile_ok to Test::Alien::Build
   - Fixed bug with preload and postload environment variables
   - Removed Alien::Build::Plugin::Fetch::PromptBeforeDownload
+    which is now a separate distribution
+  - Removed Alien::Build::Plugin::Probe::GnuWin32
     which is now a separate distribution
 
 0.56_01   2017-07-11 16:39:38 -0400
