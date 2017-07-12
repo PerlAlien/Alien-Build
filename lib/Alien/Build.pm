@@ -450,11 +450,11 @@ sub load
   }};
 
   my @preload = qw( Core::Setup Core::Download Core::FFI );
-  @preload = split ';', $ENV{ALIEN_BUILD_PRELOAD}
+  push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
   
   my @postload = qw( Core::Legacy Core::Gather );
-  @postload = split ';', $ENV{ALIEN_BUILD_POSTLOAD}
+  push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
     if defined $ENV{ALIEN_BUILD_POSTLOAD};
 
   my $self = $class->new(
