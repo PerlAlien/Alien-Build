@@ -1,8 +1,6 @@
 use Test2::V0;
 use Test::Alien::Build;
 
-alienfile_ok q{ bogus alienfile stuff };
-
 subtest 'inline' => sub {
 
   my $build = alienfile q{
@@ -41,5 +39,19 @@ subtest 'from file' => sub {
 
 alienfile_ok q{ use alienfile };
 alienfile_ok filename => 'corpus/basic/alienfile';
+
+is(
+  intercept { alienfile_ok q{ bogus alienfile stuff } },
+  array {
+    event Ok => sub {
+      call pass => F();
+      call name => 'alienfile compiles';
+    };
+    event Diag => sub {};
+    event Diag => sub {};
+    end;
+  },
+  'compile error in alienfile fails test'
+);
 
 done_testing;
