@@ -1,4 +1,4 @@
-use Test2::V0;
+use Test2::V0 -no_srand => 1;
 use Test::Alien;
 use lib 'corpus/lib';
 use Alien::libfoo1;

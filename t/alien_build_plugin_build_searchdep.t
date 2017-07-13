@@ -1,6 +1,6 @@
 use Test2::Require::Module 'Archive::Tar' => 0;
 use Test2::Require::Module 'Env::ShellWords' => 0;
-use Test2::V0;
+use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Build::SearchDep;
 use lib 'corpus/lib';

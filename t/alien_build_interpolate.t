@@ -1,4 +1,4 @@
-use Test2::V0;
+use Test2::V0 -no_srand => 1;
 use Alien::Build::Interpolate;
 use lib 'corpus/lib';
 

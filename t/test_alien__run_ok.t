@@ -1,4 +1,4 @@
-use Test2::V0;
+use Test2::V0 -no_srand => 1;
 use File::Which ();
 use File::Spec;
 use File::Temp qw( tempdir );

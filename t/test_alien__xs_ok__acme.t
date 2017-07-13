@@ -1,6 +1,6 @@
 use Test::Alien::CanCompile;
 use Test2::Require::Module 'Acme::Alien::DontPanic' => '0.026';
-use Test2::V0;
+use Test2::V0 -no_srand => 1;
 use Test::Alien;
 
 alien_ok 'Acme::Alien::DontPanic';

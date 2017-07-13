@@ -1,4 +1,4 @@
-use Test2::V0;
+use Test2::V0 -no_srand => 1;
 use Alien::Build::Util qw( _dump _mirror _destdir_prefix );
 use Path::Tiny qw( path );
 use File::Which qw( which );
