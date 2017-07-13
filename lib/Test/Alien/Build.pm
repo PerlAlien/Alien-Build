@@ -139,11 +139,15 @@ sub alienfile
   require Alien::Build;
   
   my $build;
-  note scalar capture_merged {
+  my $out = capture_merged {
     $build = Alien::Build->load($args{filename}, root => $args{root});
     $build->set_stage($args{stage});
     $build->set_prefix($args{prefix});
   };
+
+  my $ctx = context();
+  $ctx->note($out) if $out;
+  $ctx->release;
   
   $build
 }

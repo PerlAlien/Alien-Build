@@ -44,22 +44,32 @@ This property is for compatibility with other fetch plugins, but is not used.
 
 has ssl => 0;
 
+=head2 passive
+
+If set to true, try passive mode FIRST.  By default it will try an active mode, then
+passive mode.
+
+=cut
+
+has passive => 0;
+
 sub init
 {
   my($self, $meta) = @_;
 
   $meta->add_requires('share' => 'Net::FTP' => 0 );
   $meta->add_requires('share' => 'URI' => 0 );
+  $meta->add_requires('share' => 'Alien::Build::Plugin::Fetch::NetFTP' => '0.61')
+    if $self->passive;
+
   $meta->register_hook( fetch => sub {
-    my(undef, $url) = @_;
+    my($build, $url) = @_;
     $url ||= $self->url;
     
     $url = URI->new($url);
     
-    my $ftp = eval {
-      _ftp_connect($url);
-    };
-    die $@ unless defined $ftp;
+    $build->log("trying passive mode FTP first") if $self->passive;
+    my $ftp = _ftp_connect($url, $self->passive);
 
     my $path = $url->path;
 
@@ -74,14 +84,12 @@ sub init
         my $tdir = File::Temp::tempdir( CLEANUP => 1);
         my $path = path("$tdir/$filename")->stringify;
         
-        unless($ftp->get($filename, $path)) # NAT problem? try to use passive mode
+        unless(eval { $ftp->get($filename, $path) }) # NAT problem? try to use passive mode
         {
           $ftp->quit;
           
-          $ftp = eval {
-            _ftp_connect($url, 1);
-          };
-          die $@ unless defined $ftp;
+          $build->log("switching to @{[ $self->passive ? 'active' : 'passive' ]} mode");
+          $ftp = _ftp_connect($url, !$self->passive);
           
           $ftp->cwd($dir) or die;
           
@@ -103,17 +111,17 @@ sub init
       $path .= "/";
     }
     
+    $ftp->quit;
+    $ftp = _ftp_connect($url, $self->passive);
     $ftp->cwd($path) or die "unable to fetch $url as either a directory or file";
     
-    my $list = $ftp->ls;
-    if(!defined($list)) # NAT problem? try to use passive mode
+    my $list = eval { $ftp->ls };
+    unless(defined $list) # NAT problem? try to use passive mode
     {
       $ftp->quit;
       
-      $ftp = eval {
-        _ftp_connect($url, 1);
-      };
-      die $@ unless defined $ftp;
+      $build->log("switching to @{[ $self->passive ? 'active' : 'passive' ]} mode");
+      $ftp = _ftp_connect($url, !$self->passive);
       
       $ftp->cwd($path) or die "unable to fetch $url as either a directory or file";
       
@@ -150,6 +158,8 @@ sub init
 sub _ftp_connect {
   my $url = shift;
   my $is_passive = shift || 0;
+
+  Alien::Build->log("is_passive = $is_passive");
   
   my $ftp = Net::FTP->new(
     $url->host, Port =>$url->port, Passive =>$is_passive,

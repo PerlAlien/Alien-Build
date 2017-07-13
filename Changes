@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add passive property to Download::Negotiate plugin
+  - Add passive property to Fetch::NetFTP plugin
+  - Add log directive to alienfile
 
 0.60      2017-07-12 22:26:22 -0400
   - Fix broken test t/01_use.t

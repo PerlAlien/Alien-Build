@@ -71,7 +71,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log );
 
 =head1 DIRECTIVES
 
@@ -623,7 +623,19 @@ sub meta_prop
 
 Returns the meta object for your L<alienfile>.
 
+=head2 log
+
+ log($message);
+
+Prints the given log to stdout.
+
 =cut
+
+sub log
+{
+  unshift @_, 'Alien::Build';
+  goto &Alien::Build::log;
+}
 
 sub import
 {

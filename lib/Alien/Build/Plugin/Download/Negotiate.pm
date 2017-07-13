@@ -72,6 +72,15 @@ Perl SSL modules will be loaded.
 =cut
 
 has 'ssl'     => 0;
+
+=head2 passive
+
+If using FTP, attempt a passive mode transfer first, before trying an active mode transfer.
+
+=cut
+
+has 'passive' => 0;
+
 has 'scheme'  => undef;
 
 sub _pick_fetch
@@ -113,11 +122,14 @@ sub init
 {
   my($self, $meta) = @_;
   
+  $meta->add_requires('share' => 'Alien::Build::Plugin::Download::Negotiate' => '0.61')
+    if $self->passive;
+
   $meta->prop->{plugin_download_negotiate_default_url} = $self->url;
 
   my $fetch = $self->_pick_fetch;
   
-  $self->_plugin($meta, 'Fetch', $fetch, url => $self->url, ssl => $self->ssl);
+  $self->_plugin($meta, 'Fetch', $fetch, url => $self->url, ssl => $self->ssl, passive => $self->passive);
   
   if($self->version)
   {
@@ -145,10 +157,11 @@ sub init
 
 sub _plugin
 {
-  my($self, $meta, $type, $name, @args) = @_;
+  my($self, $meta, $type, $name, %args) = @_;
   my $class = "Alien::Build::Plugin::${type}::$name";
   Module::Load::load($class);
-  my $plugin = $class->new(@args);
+  delete $args{passive} unless $type eq 'Fetch' && $name eq 'NetFTP';
+  my $plugin = $class->new(%args);
   $plugin->init($meta);
 }
 

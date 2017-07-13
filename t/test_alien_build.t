@@ -58,4 +58,10 @@ is(
   'compile error in alienfile fails test'
 );
 
+alienfile_ok q{
+  use alienfile;
+  
+  log('hey there');
+};
+
 done_testing;
