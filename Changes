@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.59      2017-07-12 21:10:14 -0400
   - ACTUALLY removed Alien::Build::Plugin::Probe::GnuWin32, which
     I promised to remove two releases ago :/
 
