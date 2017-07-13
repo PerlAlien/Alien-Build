@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - ACTUALLY removed Alien::Build::Plugin::Probe::GnuWin32, which
+    I promised to remove two releases ago :/
 
 0.58      2017-07-12 20:19:13 -0400
   - If PkgConfig.pm is needed, version 0.14026 will be required
