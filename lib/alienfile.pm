@@ -211,11 +211,8 @@ sub plugin
       "Alien/Build/Plugin/$name.pm";
     };
   }
-  
-  unless($INC{$pm})
-  {
-    require $pm;
-  }
+
+  require $pm unless $class->can('new');  
   my $caller = caller;
   my $plugin = $class->new(@args);
   $plugin->init($caller->meta);

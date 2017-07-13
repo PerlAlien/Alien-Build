@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add support for rc file ~/.alienfile/rc.pl
   - Add start_url meta property
   - Fetch plugins use start_url property by default
 

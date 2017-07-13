@@ -432,6 +432,26 @@ sub load
 {
   my(undef, $alienfile, @args) = @_;
 
+  my $rcfile = Path::Tiny->new($ENV{ALIEN_BUILD_RC} || '~/.alienbuild/rc.pl')->absolute;
+  if(-r $rcfile)
+  {
+    package Alien::Build::rc;
+    sub logx ($)
+    {
+      unshift @_, 'Alien::Build';
+      goto &Alien::Build::log;
+    };
+    sub preload ($)
+    {
+      push @Alien::Build::rc::PRELOAD, $_[0];
+    }
+    sub postload ($)
+    {
+      push @Alien::Build::rc::POSTLOAD, $_[0];
+    }
+    require $rcfile;
+  }
+
   unless(-r $alienfile)
   {
     require Carp;
@@ -455,10 +475,12 @@ sub load
   }};
 
   my @preload = qw( Core::Setup Core::Download Core::FFI );
+  push @preload, @Alien::Build::rc::PRELOAD;
   push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
   
   my @postload = qw( Core::Legacy Core::Gather );
+  push @postload, @Alien::Build::rc::POSTLOAD;
   push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
     if defined $ENV{ALIEN_BUILD_POSTLOAD};
 
@@ -471,10 +493,14 @@ sub load
 
   eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
     package ${class}::Alienfile;
-    alienfile::plugin(\$_) for \@preload;
+    foreach my \$preload (\@preload) {
+      ref \$preload eq 'CODE' ? \$preload->(meta()) : alienfile::plugin(\$preload);
+    }
     do '@{[ $file->absolute->stringify ]}';
     die \$\@ if \$\@;
-    alienfile::plugin(\$_) for \@postload;
+    foreach my \$postload (\@postload) {
+      ref \$postload eq 'CODE' ? \$postload->(meta()) : alienfile::plugin(\$postload);
+    }
   };
   die $@ if $@;
   
@@ -1544,6 +1570,11 @@ L<Alien::Build> responds to these environment variables:
 =item ALIEN_INSTALL_TYPE
 
 If set to C<share> or C<system>, it will override the system detection logic.
+
+=item ALIEN_BUILD_RC
+
+Perl source file which can override some global defaults for L<Alien::Build>,
+by, for example, setting preload and postload plugins.
 
 =item ALIEN_BUILD_PRELOAD
 
