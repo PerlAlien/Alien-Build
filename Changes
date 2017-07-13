@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - If PkgConfig.pm is needed, version 0.14026 will be required
+    (PkgConfig.pm is a dynamic prereq on environments that do
+    not have pkg-config or pkgconf).
 
 0.57      2017-07-12 16:45:54 -0400
   - Add alienfile_ok to Test::Alien::Build
