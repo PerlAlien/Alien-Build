@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
   - Add support for rc file ~/.alienfile/rc.pl
   - Add start_url meta property
   - Fetch plugins use start_url property by default
+  - Turn off Test2::Plugin::SRand, which seemed to be triggering an error in File::Temp
+    see fd3208bfe8613aae63e4439aa1f4c78d01be086e
 
 0.61      2017-07-13 11:10:46 +0000
   - Add passive property to Download::Negotiate plugin
