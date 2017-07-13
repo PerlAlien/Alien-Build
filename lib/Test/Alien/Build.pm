@@ -8,6 +8,7 @@ use Path::Tiny qw( path );
 use Carp qw( croak );
 use File::Temp qw( tempdir );
 use Test2::API qw( context );
+use Capture::Tiny qw( capture_merged );
 
 our @EXPORT = qw( alienfile alienfile_ok );
 
@@ -137,9 +138,12 @@ sub alienfile
 
   require Alien::Build;
   
-  my $build = Alien::Build->load($args{filename}, root => $args{root});
-  $build->set_stage($args{stage});
-  $build->set_prefix($args{prefix});
+  my $build;
+  note scalar capture_merged {
+    $build = Alien::Build->load($args{filename}, root => $args{root});
+    $build->set_stage($args{stage});
+    $build->set_prefix($args{prefix});
+  };
   
   $build
 }
