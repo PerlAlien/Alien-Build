@@ -58,6 +58,8 @@ pod_spelling_system:
     - subtests
     - subtest
     - unsets
+    - postload
+    - preload
 
 pod_coverage:
   skip: 0
