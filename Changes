@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.60      2017-07-12 22:26:22 -0400
   - Fix broken test t/01_use.t
 
 0.59      2017-07-12 21:10:14 -0400
