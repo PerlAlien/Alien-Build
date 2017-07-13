@@ -1,4 +1,5 @@
 use Test2::V0;
+use Test2::Mock;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::HTTPTiny;
 use lib 't/lib';
@@ -19,6 +20,48 @@ subtest 'updates requires' => sub {
   is( $build->requires('share')->{'URI'},         0 );
 
   note _dump $meta;
+
+};
+
+subtest 'use start_url' => sub {
+
+  subtest 'sets start_url' => sub {
+  
+    my $build = alienfile_ok q{
+  
+      use alienfile;
+    
+      plugin 'Fetch::HTTPTiny' => 'http://foo.bar.baz';
+  
+    };
+  
+    is $build->meta_prop->{start_url}, 'http://foo.bar.baz';
+    
+  };
+  
+  subtest 'uses start_url' => sub {
+  
+    my $mock = Test2::Mock->new(class => 'Alien::Build::Plugin::Fetch::HTTPTiny');
+    my $plugin;
+    
+    $mock->after(init => sub {
+      my($self, $meta) = @_;
+      $plugin = $self;
+    });
+  
+    my $build = alienfile_ok q{
+    
+      use alienfile;
+      
+      meta->prop->{start_url} = 'http://baz.bar.foo';
+      
+      plugin 'Fetch::HTTPTiny' => ();
+    
+    };
+    
+    is $plugin->url, 'http://baz.bar.foo';
+  
+  };
 
 };
 

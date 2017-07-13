@@ -11,9 +11,8 @@ use Carp ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Fetch::LWP' => (
-   url => 'http://ftp.gnu.org/gnu/make',
- );
+ meta->prop->{start_url} = 'http://ftp.gnu.org/gnu/make';
+ plugin 'Fetch::LWP' => ();
 
 =head1 DESCRIPTION
 
@@ -35,7 +34,7 @@ The initial URL to fetch.  This may be a directory listing (in HTML) or the fina
 
 =cut
 
-has '+url' => sub { Carp::croak "url is a required property" };
+has '+url' => '';
 
 =head2 ssl
 
@@ -52,6 +51,10 @@ sub init
 
   $meta->add_requires('share' => 'LWP::UserAgent' => 0 );
   
+  $meta->prop->{start_url} ||= $self->url;
+  $self->url($meta->prop->{start_url});
+  $self->url || Carp::croak('url is a required property');
+
   if($self->url =~ /^https:/ || $self->ssl)
   {
     $meta->add_requires('share' => 'LWP::Protocol::https' => 0 );

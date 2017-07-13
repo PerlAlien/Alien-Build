@@ -13,9 +13,8 @@ use Path::Tiny qw( path );
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Fetch::NetFTP' => (
-   url => 'ftp://ftp.gnu.org/gnu/make',
- );
+ meta->prop->{start_url} = 'ftp://ftp.gnu.org/gnu/make';
+ plugin 'Fetch::NetFTP' => ();
 
 =head1 DESCRIPTION
 
@@ -34,7 +33,7 @@ The initial URL to fetch.  This may be a directory or the final file.
 
 =cut
 
-has '+url' => sub { Carp::croak "url is a required property" };
+has '+url' => '';
 
 =head2 ssl
 
@@ -56,6 +55,10 @@ has passive => 0;
 sub init
 {
   my($self, $meta) = @_;
+
+  $meta->prop->{start_url} ||= $self->url;
+  $self->url($meta->prop->{start_url});
+  $self->url || Carp::croak('url is a required property');
 
   $meta->add_requires('share' => 'Net::FTP' => 0 );
   $meta->add_requires('share' => 'URI' => 0 );

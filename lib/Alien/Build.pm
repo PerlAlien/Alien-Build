@@ -196,6 +196,7 @@ future, but for now, will be one of:
 
 On Windows when using Microsoft Visual C++
 
+
 =item unix
 
 Virtually everything else, including gcc on windows.
@@ -206,6 +207,10 @@ The main difference is that with Visual C++ C<-LIBPATH> should be used instead
 of C<-L>, and static libraries should have the C<.LIB> suffix instead of C<.a>.
 
 =back
+
+=item start_url
+
+The default or start URL used by fetch plugins.
 
 =back
 

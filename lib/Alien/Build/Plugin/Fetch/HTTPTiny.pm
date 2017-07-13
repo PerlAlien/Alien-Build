@@ -12,9 +12,8 @@ use Carp ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Fetch::HTTPTiny' => (
-   url => 'http://ftp.gnu.org/gnu/make',
- );
+ meta->prop->{start_url} = 'http://ftp.gnu.org/gnu/make';
+ plugin 'Fetch::HTTPTiny' => ();
 
 =head1 DESCRIPTION
 
@@ -36,7 +35,7 @@ The initial URL to fetch.  This may be a directory listing (in HTML) or the fina
 
 =cut
 
-has '+url' => sub { Carp::croak "url is a required property" };
+has '+url' => '';
 
 =head2 ssl
 
@@ -53,6 +52,10 @@ sub init
 
   $meta->add_requires('share' => 'HTTP::Tiny' => '0.044' );
   $meta->add_requires('share' => 'URI' => 0 );
+
+  $meta->prop->{start_url} ||= $self->url;
+  $self->url($meta->prop->{start_url});
+  $self->url || Carp::croak('url is a required property');
 
   if($self->url =~ /^https:/ || $self->ssl)
   {
