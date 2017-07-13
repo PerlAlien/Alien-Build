@@ -32,7 +32,6 @@ require_ok 'Alien::Build::Plugin::Extract::ArchiveTar';
 require_ok 'Alien::Build::Plugin::Extract::ArchiveZip';
 require_ok 'Alien::Build::Plugin::Extract::Negotiate';
 require_ok 'Alien::Build::Plugin::Probe::CBuilder';
-require_ok 'Alien::Build::Plugin::Probe::GnuWin32';
 require_ok 'Alien::Build::Plugin::Probe::CommandLine';
 require_ok 'Alien::Build::Plugin::Core::Setup';
 require_ok 'Alien::Build::Plugin::Core::Download';
