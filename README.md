@@ -154,6 +154,10 @@ but if you do not follow this rule your recipe will likely be broken.
         The main difference is that with Visual C++ `-LIBPATH` should be used instead
         of `-L`, and static libraries should have the `.LIB` suffix instead of `.a`.
 
+- start\_url
+
+    The default or start URL used by fetch plugins.
+
 ## install\_prop
 
     my $href = $build->install_prop;
@@ -553,6 +557,11 @@ a method.  For example, this will add a probe system requirement:
 - ALIEN\_INSTALL\_TYPE
 
     If set to `share` or `system`, it will override the system detection logic.
+
+- ALIEN\_BUILD\_RC
+
+    Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien::Build),
+    by, for example, setting preload and postload plugins.
 
 - ALIEN\_BUILD\_PRELOAD
 

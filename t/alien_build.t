@@ -1094,6 +1094,43 @@ subtest 'requires pulls helpers' => sub {
 
 };
 
+subtest 'around bug?' => sub {
+
+  my $build = alienfile_ok q{
+  
+    use alienfile;
+    
+    meta->register_hook(
+      foo => sub {
+        my($build, $arg) = @_;
+        return scalar reverse $arg;
+      },
+    );
+  
+  };
+  
+  is $build->_call_hook(foo => 'bar'), 'rab';
+
+  $build->meta->around_hook(
+    foo => sub {
+      my($orig, $build, $arg) = @_;
+      $orig->($build, "a${arg}b");
+    },
+  );
+  
+  is $build->_call_hook(foo => 'bar'), 'braba';
+
+  $build->meta->around_hook(
+    foo => sub {
+      my($orig, $build, $arg) = @_;
+      $orig->($build, "|${arg}|");
+    },
+  );
+  
+  is $build->_call_hook(foo => 'bar'), 'b|rab|a';
+
+};
+
 done_testing;
 
 {
