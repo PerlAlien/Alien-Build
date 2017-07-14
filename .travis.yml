@@ -21,6 +21,7 @@ perl:
 
 script:
   - ./maint/travis-run-test
+  - perl maint/ci-test-plugins.pl
 
 cache:
   directories:

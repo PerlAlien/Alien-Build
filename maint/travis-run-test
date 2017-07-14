@@ -14,3 +14,4 @@ cd Alien-Build-*
 perl Makefile.PL
 make
 make test TEST_VERBOSE=1
+make install
