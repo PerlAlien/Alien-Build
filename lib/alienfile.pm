@@ -645,6 +645,16 @@ sub import
 
 =head1 SEE ALSO
 
-L<Alien::Build>, L<Alien::Build::MM>, L<Alien::Base>
+=over 4
+
+=item L<Alien>
+
+=item L<Alien::Build>
+
+=item L<Alien::Build::MM>
+
+=item L<Alien::Base>
+
+=back
 
 =cut
