@@ -16,7 +16,7 @@ sub run
   }
 }
 
-my @mods = (
+my @mods = qw(
   Alien::Build::MB
   Alien::Build::Plugin::Fetch::Cache
   Alien::Build::Plugin::Fetch::Prompt
