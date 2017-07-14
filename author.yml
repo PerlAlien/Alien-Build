@@ -71,4 +71,5 @@ pod_coverage:
     - Test::Alien::CanCompile#skip
     - Test::Alien::CanPlatypus#skip
     - Test::Alien#with_subtest
+    - Test::Alien#capture_merged
 
