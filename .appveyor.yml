@@ -24,9 +24,8 @@ install:
 build: off
 
 test_script:
-  - dzil test -v
+  - dzil run 'perl Makefile.PL ; make ; prove -bv t ; make install'
+  - perl maint/ci-test-plugins.pl
 
 shallow_clone: true
 
-cache:
-  - C:\Perl5
