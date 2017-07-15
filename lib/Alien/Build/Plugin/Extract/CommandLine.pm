@@ -128,9 +128,12 @@ sub _dcon
   my $name;
   my $cmd;
 
-  $cmd = $self->gzip_cmd if $src =~ /\.(gz|tgz|Z|taz)$/;
-  
-  if($src =~ /\.(bz2|tbz)$/)
+  if($src =~ /\.(gz|tgz|Z|taz)$/)
+  {
+    $self->gzip_cmd(_which('gzip')) unless defined $self->gzip_cmd;
+    $cmd = $self->gzip_cmd;
+  }
+  elsif($src =~ /\.(bz2|tbz)$/)
   {
     $self->bzip2_cmd(_which('bzip2')) unless defined $self->bzip2_cmd;
     $cmd = $self->bzip2_cmd;
@@ -202,7 +205,10 @@ sub init
   {
     $meta->add_requires('share' => 'Alien::Libbz2' => '0.22');
   }
-  # TODO also Alien::gzip
+  elsif($self->format eq 'tar.gz')
+  {
+    $meta->add_requires('share' => 'Alien::gzip' => '0.03');
+  }
   
   $meta->register_hook(
     extract => sub {
