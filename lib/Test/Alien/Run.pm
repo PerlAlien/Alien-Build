@@ -9,7 +9,7 @@ use Test2::API qw( context );
 
 =head1 SYNOPSIS
 
- use Test2::Extended::Bundle;
+ use Test2::V0;
  use Test::Alien;
  
  run_ok([ $^X, -e => 'print "some output"; exit 22'])
