@@ -6,6 +6,15 @@ use 5.008001;
 use Config;
 use Text::ParseWords qw( shellwords );
 
+# NOTE: Although this module is now distributed with Alien-Build,
+# it should have NO non-perl-core dependencies for all Perls 
+# 5.8.1-5.26.0 (as of this writing, and any Perl more recent).
+# You should be able to extract this module from the rest of
+# Alien-Build and use it by itself.
+# ALSO NOTE: Although it was lost in the spin-off, this used
+# to be called Alien::Build::Wrapper, and was originally
+# distributed with Alien-Build.
+
 # ABSTRACT: Compiler and linker wrapper for Alien
 # VERSION
 

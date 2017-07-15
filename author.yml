@@ -60,6 +60,7 @@ pod_spelling_system:
     - unsets
     - postload
     - preload
+    - EUMM
 
 pod_coverage:
   skip: 0

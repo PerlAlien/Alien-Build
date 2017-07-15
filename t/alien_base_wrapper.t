@@ -1,5 +1,5 @@
 use Test2::Require::Module 'Test::Exec';
-use Test2::Bundle::Extended;
+use Test2::V0 -no_srand => 1;
 use Test::Exec;
 use Config;
 use Alien::Base::Wrapper ();

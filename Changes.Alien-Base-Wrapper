@@ -1,6 +1,6 @@
-Revision history for {{$dist->name}}
+Revision history for Alien-Base-Wrapper
 
-{{$NEXT}}
+After 0.05 Alien-Base-Wrapper was merged with Alien-Build
 
 0.05      2017-05-23 13:30:44 -0400
   - Handle $Config{cc} and $Config{ld} with spaces.
