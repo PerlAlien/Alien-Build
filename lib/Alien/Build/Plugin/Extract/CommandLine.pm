@@ -41,7 +41,7 @@ The C<gzip> command, if available.  C<undef> if not available.
 =cut
 
 has gzip_cmd => sub {
-  File::Which::which('gzip') ? 'gzip' : undef;
+  _which('gzip') ? 'gzip' : undef;
 };
 
 =head2 bzip2_cmd
@@ -50,9 +50,10 @@ The C<bzip2> command, if available.  C<undef> if not available.
 
 =cut
 
-# TODO: use Alien::Libbz2 if available
+sub _which { File::Which::which(@_) }
+
 has bzip2_cmd => sub {
-  File::Which::which('bzip2') ? 'bzip2' : undef;
+  _which('bzip2') ? 'bzip2' : undef;
 };
 
 =head2 xz_cmd
@@ -61,9 +62,8 @@ The C<xz> command, if available.  C<undef> if not available.
 
 =cut
 
-# TODO: use Alien::xz if available
 has xz_cmd => sub {
-  File::Which::which('xz') ? 'xz' : undef;
+  _which('xz') ? 'xz' : undef;
 };
 
 =head2 tar_cmd
@@ -73,14 +73,14 @@ The C<tar> command, if available.  C<undef> if not available.
 =cut
 
 has tar_cmd => sub {
-  File::Which::which('bsdtar')
+  _which('bsdtar')
     ? 'bsdtar'
     # TODO: GNU tar can be iffy on windows, where absolute
     # paths get confused with remote tars.  *sigh* fix later
     # if we can, for now just assume that 'tar.exe' is borked
     # on windows to be on the safe side.  The Fetch::ArchiveTar
     # is probably a better plugin to use on windows anyway.
-    : File::Which::which('tar') && $^O ne 'MSWin32'
+    : _which('tar') && $^O ne 'MSWin32'
       ? 'tar'
       : undef;
 };
@@ -92,7 +92,7 @@ The C<unzip> command, if available.  C<undef> if not available.
 =cut
 
 has unzip_cmd => sub {
-  File::Which::which('unzip') ? 'unzip' : undef;
+  _which('unzip') ? 'unzip' : undef;
 };
 
 sub _run
@@ -127,10 +127,19 @@ sub _dcon
 
   my $name;
   my $cmd;
-  
+
   $cmd = $self->gzip_cmd if $src =~ /\.(gz|tgz|Z|taz)$/;
-  $cmd = $self->bzip2_cmd if $src =~ /\.(bz2|tbz)$/;
-  $cmd = $self->xz_cmd if $src =~ /\.(xz|txz)$/;
+  
+  if($src =~ /\.(bz2|tbz)$/)
+  {
+    $self->bzip2_cmd(_which('bzip2')) unless defined $self->bzip2_cmd;
+    $cmd = $self->bzip2_cmd;
+  }
+  elsif($src =~ /\.(xz|txz)$/)
+  {
+    $self->xz_cmd(_which('xz')) unless defined $self->xz_cmd;
+    $cmd = $self->xz_cmd;
+  }
   
   if($src =~ /\.(gz|bz2|xz|Z)$/)
   {
@@ -184,6 +193,16 @@ sub handles
 sub init
 {
   my($self, $meta) = @_;
+  
+  if($self->format eq 'tar.xz')
+  {
+    $meta->add_requires('share' => 'Alien::xz' => '0.06');
+  }
+  elsif($self->format eq 'tar.bz2')
+  {
+    $meta->add_requires('share' => 'Alien::Libbz2' => '0.22');
+  }
+  # TODO also Alien::gzip
   
   $meta->register_hook(
     extract => sub {
