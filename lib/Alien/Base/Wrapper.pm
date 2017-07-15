@@ -48,7 +48,6 @@ From Makefile.PL (dynamic):
  
  my @mm_args;
  my @libs;
- my %build_requires;
  
  if(check_lib( lib => [ 'foo' ] )
  {
