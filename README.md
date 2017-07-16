@@ -68,8 +68,8 @@ so that it does not interfere with other plugin or future versions of
       $meta->register_hook(
         some_hook => sub {
           my($build) = @_;
-          $build->install_prop->{plugin_fetch_newprotocol_bar => 'some other value' );
-          $build->runtime_prop->{plugin_fetch_newprotocol_baz => 'and another value' );
+          $build->install_prop->{plugin_fetch_newprotocol_bar} = 'some other value';
+          $build->runtime_prop->{plugin_fetch_newprotocol_baz} = 'and another value';
         }
       );
     }
