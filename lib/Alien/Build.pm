@@ -1150,6 +1150,8 @@ sub system
   ($command, @args) = map { 
     $self->meta->interpolator->interpolate($_, $prop)
   } ($command, @args);
+
+  $self->log("+ $command @args");
   
   scalar @args
     ? system $command, @args
