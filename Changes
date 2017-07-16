@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix cmake helper.
 
 0.65_01   2017-07-16 12:29:36 -0400
   - Fixed bug in Core::Download plugin which would fail if download

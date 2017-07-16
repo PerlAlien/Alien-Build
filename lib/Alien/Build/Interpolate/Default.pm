@@ -76,7 +76,7 @@ Requires: L<Alien::CMake> 0.07
 
 =cut
 
-  $self->add_helper( cmake => 'cmake', 'Alien::CMake' => '0.07' );
+  $self->add_helper( cmake => sub { 'cmake' }, 'Alien::CMake' => '0.07' );
 
 =head2 cp
 
