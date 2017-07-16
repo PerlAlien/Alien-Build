@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug in Core::Download plugin which would fail if download
+    was a directory tree instead of a tarball
 
 0.64_01   2017-07-15 15:41:49 -0400
   - Merged Alien-Base-Wrapper and Alien-Build.  For the old Alien-Base-Wrapper change log
