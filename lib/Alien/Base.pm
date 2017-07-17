@@ -774,6 +774,10 @@ L<Alien::Build::Manual::FAQ>
 
 =head1 THANKS
 
+C<Alien::Base> was originally written by Joel Berger, and that
+code is still Copyright (C) 2012-2017 Joel Berger.  It has the
+same license as the rest of the L<Alien::Build>.
+
 Special thanks for the early development of C<Alien::Base> go to:
 
 =over
