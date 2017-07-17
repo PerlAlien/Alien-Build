@@ -3,6 +3,7 @@ package Alien::Build::Plugin::PkgConfig::Negotiate;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use Config;
 use Carp ();
 
 # ABSTRACT: Package configuration negotiation plugin
@@ -52,7 +53,10 @@ sub _pick
   require Alien::Build::Plugin::PkgConfig::CommandLine;
   if(Alien::Build::Plugin::PkgConfig::CommandLine->new(pkg_name => 'foo')->bin_name)
   {
-    return 'PkgConfig::CommandLine';
+    unless($^O eq 'solaris' && $Config{ptrsize} == 8)
+    {
+      return 'PkgConfig::CommandLine';
+    }
   }
   
   return 'PkgConfig::PP';
