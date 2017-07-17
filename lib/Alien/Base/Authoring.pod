@@ -1,6 +1,5 @@
-=head1 NAME
-
-Alien::Base::Authoring - Authoring an Alien distribution using Alien::Base
+# ABSTRACT: Authoring an Alien distribution using Alien::Base
+# PODNAME: Alien::Base::Authoring
 
 =head1 SYNOPSIS
 

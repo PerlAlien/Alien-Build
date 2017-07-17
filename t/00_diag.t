@@ -11,7 +11,7 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   Acme::Alien::DontPanic
-  Alien::Base
+  Alien::Base::ModuleBuild
   Alien::Libarchive
   Capture::Tiny
   ExtUtils::CBuilder
@@ -21,6 +21,7 @@ $modules{$_} = $_ for qw(
   FFI::Platypus
   File::Listing
   File::Listing::Ftpcopy
+  File::ShareDir
   File::Which
   File::chdir
   HTML::LinkExtor

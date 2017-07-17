@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+After 0.043_01 Alien-Base was merged with Alien-Build
+
 0.043_01 2017-07-17 03:25:31 -0400
   - Migrate to Test2::V0
   - Documentation improvements (gh#187 jj++)

@@ -61,12 +61,17 @@ pod_spelling_system:
     - postload
     - preload
     - EUMM
+    - alienized
 
 pod_coverage:
   skip: 0
   # format is "Class#method" or "Class", regex allowed
   # for either Class or method.
   private:
+    - Alien::Base#Inline
+    - Alien::Base#split_flags
+    - Alien::Base#split_flags_unix
+    - Alien::Base#split_flags_windows
     - Alien::Build::Plugin::.*#init
     - Alien::Build::Plugin::Probe::GnuWin32#new
     - Test::Alien::CanCompile#skip

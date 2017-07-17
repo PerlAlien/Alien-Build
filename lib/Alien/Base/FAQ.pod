@@ -1,6 +1,6 @@
-=head1 NAME
-
-Alien::Base::FAQ - Frequently asked questions
+# ABSTRACT: Frequently asked questions
+# VERSION
+# PODNAME: Alien::Base::FAQ
 
 =head1 SYNOPSIS
 

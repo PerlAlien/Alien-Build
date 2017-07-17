@@ -2,10 +2,6 @@ package Alien::Base;
 
 use strict;
 use warnings;
-
-our $VERSION = '0.043_01';
-$VERSION = eval $VERSION;
-
 use Carp;
 use File::ShareDir ();
 use File::Spec;
@@ -13,11 +9,8 @@ use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
 
-=encoding UTF-8
-
-=head1 NAME
-
-Alien::Base - Base classes for Alien:: modules
+# ABSTRACT: Base classes for Alien:: modules
+# VERSION
 
 =head1 SYNOPSIS
 
@@ -196,6 +189,15 @@ sub dist_dir {
   return $dist_dir;
 }
 
+=head2 new
+
+ my $alien = Alien::MyLibrary->new;
+
+Creates an instance of an L<Alien::Base> object.  This is typically
+unnecessary.
+
+=cut
+
 sub new { return bless {}, $_[0] }
 
 sub _flags
@@ -242,6 +244,15 @@ sub cflags {
   return $class->runtime_prop ? $class->_flags('cflags') : $class->_pkgconfig_keyword('Cflags');
 }
 
+=head2 cflags_static
+
+ my $cflags = Alien::MyLibrary->cflags_static;
+
+Same as C<cflags> above, but gets the static compiler flags,
+if they are different.
+
+=cut
+
 sub cflags_static {
   my $class = shift;
   return $class->runtime_prop ? $class->_flags('cflags_static') : $class->_pkgconfig_keyword('Cflags', 'static');
@@ -267,6 +278,15 @@ sub libs {
   return $class->runtime_prop ? $class->_flags('libs') : $class->_pkgconfig_keyword('Libs');
 }
 
+=head2 libs_static
+
+ my $libs = Alien::MyLibrary->libs_static;
+
+Same as C<libs> above, but gets the static linker flags,
+if they are different.
+
+=cut
+
 sub libs_static {
   my $class = shift;
   return $class->runtime_prop ? $class->_flags('libs_static') : $class->_pkgconfig_keyword('Libs', 'static');
@@ -276,7 +296,7 @@ sub libs_static {
 
  my $version = Alien::MyLibrary->version;
 
-Returns the version of the Alienized library or tool that was
+Returns the version of the alienized library or tool that was
 determined at install time.
 
 =cut
@@ -624,7 +644,7 @@ sub alien_helper {
 
 List of header files to automatically include in inline C and C++
 code when using L<Inline::C> or L<Inline::CPP>.  This is provided
-as a public interface primarily so that it can be overidden at run
+as a public interface primarily so that it can be overridden at run
 time.  This can also be specified in your C<Build.PL> with 
 L<Alien::Base::ModuleBuild> using the C<alien_inline_auto_include>
 property.
@@ -697,7 +717,7 @@ __POD__
 
 =head1 SUPPORT AND CONTRIBUTING
 
-First check the L<Alien::Base::FAQ> for questions that have already been answered.
+First check the L<Alien::Build::Manual::FAQ> for questions that have already been answered.
 
 IRC: #native on irc.perl.org
 
@@ -748,53 +768,13 @@ L<Alien>
 
 =item *
 
-L<Alien::Base::FAQ>
+L<Alien::Build::Manual::FAQ>
 
 =back
 
-=head1 AUTHOR
+=head1 THANKS
 
-Original author: Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
-
-Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Base> team
-
-=head1 CONTRIBUTORS
-
-=over 
-
-=item David Mertens (run4flat)
-
-=item Mark Nunberg (mordy, mnunberg)
-
-=item Christian Walde (Mithaldu)
-
-=item Brian Wightman (MidLifeXis)
-
-=item Graham Ollis (plicease)
-
-=item Zaki Mughal (zmughal)
-
-=item mohawk2
-
-=item Vikas N Kumar (vikasnkumar)
-
-=item Flavio Poletti (polettix)
-
-=item Salvador Fandiño (salva)
-
-=item Gianni Ceccarelli (dakkar)
-
-=item Pavel Shaydo (zwon, trinitum)
-
-=item Kang-min Liu (劉康民, gugod)
-
-=item Nicholas Shipp (nshp)
-
-=item Juan Julián Merelo Guervós (JJ)
-
-=back
-
-Thanks also to
+Special thanks for the early development of C<Alien::Base> go to:
 
 =over
 
@@ -815,13 +795,6 @@ For productive conversations about implementation.
 For graciously teaching me about rpath and dynamic loading,
 
 =back
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2012-2017 by Joel Berger
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut
 
