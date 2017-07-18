@@ -622,7 +622,7 @@ Zaki Mughal (zmughal
 
 mohawk2
 
-Vikas N Kumar (vikasnkumar
+Vikas N Kumar (vikasnkumar)
 
 Flavio Poletti (polettix)
 
