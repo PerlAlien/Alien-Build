@@ -616,9 +616,9 @@ Mark Nunberg (mordy, mnunberg)
 
 Christian Walde (Mithaldu)
 
-Brian Wightman (MidLifeXis
+Brian Wightman (MidLifeXis)
 
-Zaki Mughal (zmughal
+Zaki Mughal (zmughal)
 
 mohawk2
 
