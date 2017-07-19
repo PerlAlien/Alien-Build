@@ -88,8 +88,16 @@ sub init
     my($build) = @_;
     require PkgConfig;
     my $pkg = PkgConfig->find($self->pkg_name, search_path => [@PKG_CONFIG_PATH]);
-    die "second load of PkgConfig.pm @{[ $self->pkg_name ]} failed: @{[ $pkg->errmsg ]}"
-      if $pkg->errmsg;
+    if($pkg->errmsg)
+    {
+      $build->log("Trying to load the pkg-config information from the source code build");
+      $build->log("of your package failed");
+      $build->log("You are currently using the pure-perl implementation of pkg-config");
+      $build->log("(AB Plugin is named PkgConfig::PP, which uses PkgConfig.pm");
+      $build->log("It may work better with the real pkg-config.");
+      $build->log("Try installing your OS' version of pkg-config or unset ALIEN_BUILD_PKG_CONFIG");
+      die "second load of PkgConfig.pm @{[ $self->pkg_name ]} failed: @{[ $pkg->errmsg ]}"
+    }
     $build->runtime_prop->{cflags}  = _cleanup scalar $pkg->get_cflags;
     $build->runtime_prop->{libs}    = _cleanup scalar $pkg->get_ldflags;
     $build->runtime_prop->{version} = $pkg->pkg_version;
