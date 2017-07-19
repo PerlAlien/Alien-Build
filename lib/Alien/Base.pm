@@ -784,7 +784,7 @@ Special thanks for the early development of C<Alien::Base> go to:
 
 =item Christian Walde (Mithaldu)
 
-For productive conversations about component interoperablility.
+For productive conversations about component interoperability.
 
 =item kmx
 

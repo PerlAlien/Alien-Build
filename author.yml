@@ -62,6 +62,41 @@ pod_spelling_system:
     - preload
     - EUMM
     - alienized
+    - Ceccarelli
+    - Fandiño
+    - Flavio
+    - Gianni
+    - Guervós
+    - JJ
+    - Julián
+    - Kang
+    - Kumar
+    - Liu
+    - Merelo
+    - Mertens
+    - MidLifeXis
+    - Mithaldu
+    - Nunberg
+    - Pavel
+    - Poletti
+    - Shaydo
+    - Vikas
+    - Walde
+    - Wightman
+    - dakkar
+    - gugod
+    - mnunberg
+    - mordy
+    - polettix
+    - salva
+    - trinitum
+    - vikasnkumar
+    - zmughal
+    - zwon
+    - nshp
+    - Shipp
+    - kmx
+    - rpath
 
 pod_coverage:
   skip: 0
