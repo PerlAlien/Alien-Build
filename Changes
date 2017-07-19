@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.68_01   2017-07-19 08:54:58 -0400
+  - ALIEN_BUILD_PKG_CONFIG can be used to override the PkgConfig::Negotiate
+    logic.
+  - Extra diagnostics for PkgConfig::PP failure in gather stage
+
 0.67_01   2017-07-18 13:52:56 -0400
   - Merged Alien-Base and Alien-Build.  For the old Test-Alien change log
     see Changes.Alien-Base
