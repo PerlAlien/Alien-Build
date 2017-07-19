@@ -44,6 +44,8 @@ has minimum_version => undef;
 sub _pick
 {
   my($class) = @_;
+
+  return $ENV{ALIEN_BUILD_PKG_CONFIG} if $ENV{ALIEN_BUILD_PKG_CONFIG};
   
   if(eval q{ use PkgConfig::LibPkgConf 0.04; 1 })
   {
@@ -75,6 +77,17 @@ sub init
 }
 
 1;
+
+=head1 ENVIRONMENT
+
+=over 4
+
+=item ALIEN_BUILD_PKG_CONFIG
+
+If set, this plugin will be used instead of the build in logic
+which attempts to automatically pick the best plugin.
+
+=back
 
 =head1 SEE ALSO
 

@@ -1578,6 +1578,11 @@ If set to C<share> or C<system>, it will override the system detection logic.
 Perl source file which can override some global defaults for L<Alien::Build>,
 by, for example, setting preload and postload plugins.
 
+=item ALIEN_BUILD_PKG_CONFIG
+
+Override the logic in L<Alien::Build::Plugin::PkgConfig::Negotiate> which
+chooses the best C<pkg-config> plugin.
+
 =item ALIEN_BUILD_PRELOAD
 
 semicolon separated list of plugins to automatically load before parsing

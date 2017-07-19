@@ -563,6 +563,11 @@ a method.  For example, this will add a probe system requirement:
     Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien::Build),
     by, for example, setting preload and postload plugins.
 
+- ALIEN\_BUILD\_PKG\_CONFIG
+
+    Override the logic in [Alien::Build::Plugin::PkgConfig::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig::Negotiate) which
+    chooses the best `pkg-config` plugin.
+
 - ALIEN\_BUILD\_PRELOAD
 
     semicolon separated list of plugins to automatically load before parsing
