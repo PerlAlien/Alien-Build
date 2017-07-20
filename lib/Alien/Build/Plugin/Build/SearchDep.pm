@@ -117,6 +117,9 @@ sub init
     gather_share => sub {
       my($build) = @_;
       
+      $build->runtime_prop->{libs}        = '' unless defined $build->runtime_prop->{libs};
+      $build->runtime_prop->{libs_static} = '' unless defined $build->runtime_prop->{libs_static};
+
       if($self->public_l)
       {
         $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_libs} }) . ' ' . $build->runtime_prop->{$_}
@@ -128,6 +131,8 @@ sub init
 
       if($self->public_I)
       {
+        $build->runtime_prop->{cflags}        = '' unless defined $build->runtime_prop->{cflags};
+        $build->runtime_prop->{cflags_static} = '' unless defined $build->runtime_prop->{cflags_static};
         $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_cflags} }) . ' ' . $build->runtime_prop->{$_}
           for qw( cflags cflags_static );
       }
