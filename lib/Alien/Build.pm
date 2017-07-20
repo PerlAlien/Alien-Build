@@ -702,6 +702,10 @@ sub load_requires
     my $ver = $reqs->{$mod};
     eval qq{ use $mod @{[ $ver ? $ver : '' ]} () };
     die if $@;
+    
+    # allow for requires on Alien::Build or Alien::Base
+    next if $mod eq 'Alien::Build';
+    next if $mod eq 'Alien::Base';
 
     if($mod->can('bin_dir'))
     {

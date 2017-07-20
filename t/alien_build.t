@@ -1131,6 +1131,42 @@ subtest 'around bug?' => sub {
 
 };
 
+subtest 'requires of Alien::Build or Alien::Base' => sub {
+
+  subtest 'Alien::Build' => sub {
+  
+    my $build = alienfile_ok q{
+      use alienfile;
+      requires 'Alien::Build' => 0;
+    };
+    
+    eval {
+      $build->load_requires('configure');
+      $build->load_requires('share');
+    };
+    
+    is $@, '';
+    
+  };
+
+  subtest 'Alien::Base' => sub {
+  
+    my $build = alienfile_ok q{
+      use alienfile;
+      requires 'Alien::Base' => 0;
+    };
+    
+    eval {
+      $build->load_requires('configure');
+      $build->load_requires('share');
+    };
+    
+    is $@, '';
+    
+  };
+
+};
+
 done_testing;
 
 {

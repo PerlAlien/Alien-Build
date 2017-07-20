@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Allow Alien::Build or Alien::Base as requires in alienfile.
 
 0.68_01   2017-07-19 08:54:58 -0400
   - ALIEN_BUILD_PKG_CONFIG can be used to override the PkgConfig::Negotiate
