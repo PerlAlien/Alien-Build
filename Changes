@@ -3,6 +3,8 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Allow Alien::Build or Alien::Base as requires in alienfile.
   - Fix warnings that sometimes come from Build::SearchDep plugin
+  - Extract::CommandLine tests to see if tar can handle tar.gz, tar.bz2, tar.xz
+    to avoid needing Alien::gzip, Alien::bzip2 or Alien::xz
 
 0.68_01   2017-07-19 08:54:58 -0400
   - ALIEN_BUILD_PKG_CONFIG can be used to override the PkgConfig::Negotiate
