@@ -1614,6 +1614,41 @@ be used by some Fetch plugins, if they support it.
 
 =back
 
+=head1 SUPPORT
+
+The intent of the C<Alien-Build> team is to support as best as possible 
+all Perls from 5.8.1 to the latest production version.  So long as they 
+are also supported by the Perl toolchain.
+
+Please feel encouraged to report issues that you encounter to the 
+project GitHub Issue tracker:
+
+=over 4
+
+=item L<https://github.com/Perl5-Alien/Alien-Build/issues>
+
+=back
+
+Better if you can fix the issue yourself, please feel encouraged to open 
+pull-request on the project GitHub:
+
+=over 4
+
+=item L<https://github.com/Perl5-Alien/Alien-Build/pulls>
+
+=back
+
+If you are confounded and have questions, join us on the C<#native> 
+channel on irc.perl.org.  The C<Alien-Build> developers frequent this 
+channel and can probably help point you in the right direction.  If you
+don't have an IRC client handy, you can use this web interface:
+
+=over 4
+
+=item L<https://chat.mibbit.com/?channel=%23native&server=irc.perl.org>
+
+=back
+
 =head1 SEE ALSO
 
 L<Alien::Build::Manual::AlienAuthor>,

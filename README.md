@@ -593,6 +593,29 @@ a method.  For example, this will add a probe system requirement:
     plugin [Alien::Build::Plugin::Downaload::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::Downaload::Negotiate).  Other proxy variables may
     be used by some Fetch plugins, if they support it.
 
+# SUPPORT
+
+The intent of the `Alien-Build` team is to support as best as possible 
+all Perls from 5.8.1 to the latest production version.  So long as they 
+are also supported by the Perl toolchain.
+
+Please feel encouraged to report issues that you encounter to the 
+project GitHub Issue tracker:
+
+- [https://github.com/Perl5-Alien/Alien-Build/issues](https://github.com/Perl5-Alien/Alien-Build/issues)
+
+Better if you can fix the issue yourself, please feel encouraged to open 
+pull-request on the project GitHub:
+
+- [https://github.com/Perl5-Alien/Alien-Build/pulls](https://github.com/Perl5-Alien/Alien-Build/pulls)
+
+If you are confounded and have questions, join us on the `#native` 
+channel on irc.perl.org.  The `Alien-Build` developers frequent this 
+channel and can probably help point you in the right direction.  If you
+don't have an IRC client handy, you can use this web interface:
+
+- [https://chat.mibbit.com/?channel=%23native&server=irc.perl.org](https://chat.mibbit.com/?channel=%23native&server=irc.perl.org)
+
 # SEE ALSO
 
 [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor),
