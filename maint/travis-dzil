@@ -1,7 +1,8 @@
 #!/bin/bash
 
 source ${PERLBREW_ROOT}/etc/bashrc
-perlbrew use 5.24
+DZIL_PERL_VERSION=5.24
+perlbrew use $DZIL_PERL_VERSION
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -13,10 +14,14 @@ function dzil {
 }
 
 if [ ! -e ~/.travis-dzil-first ]; then
-  cpanm -n -l $PREFIX Dist::Zilla Archive::Tar::Wrapper Dist::Zilla::Plugin::OurPkgVersion
+  if [ ! -e ~/mylib/dzil/.perl-$DZIL_PERL_VERSION ]; then
+    rm -rf ~/mylib/dzil
+  fi
+  cpanm -n -l $PREFIX Dist::Zilla Archive::Tar::Wrapper
   dzil authordeps --missing | cpanm -l $PREFIX -n
   dzil listdeps   --missing | cpanm -l $PREFIX -n
   touch ~/.travis-dzil-first
+  touch ~/mylib/dzil/.perl-$DZIL_PERL_VERSION
 fi
 
 dzil $@
