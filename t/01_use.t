@@ -44,6 +44,7 @@ require_ok 'Alien::Build::Util::Win32::RegistryDump';
 require_ok 'Test::Alien';
 require_ok 'Test::Alien::Build';
 require_ok 'Test::Alien::CanCompile';
+require_ok 'Test::Alien::CanCompileCpp';
 require_ok 'Test::Alien::CanPlatypus';
 require_ok 'Test::Alien::Run';
 require_ok 'Test::Alien::Synthetic';

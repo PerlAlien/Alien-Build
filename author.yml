@@ -110,6 +110,7 @@ pod_coverage:
     - Alien::Build::Plugin::.*#init
     - Alien::Build::Plugin::Probe::GnuWin32#new
     - Test::Alien::CanCompile#skip
+    - Test::Alien::CanCompileCpp#skip
     - Test::Alien::CanPlatypus#skip
     - Test::Alien#with_subtest
     - Test::Alien#capture_merged

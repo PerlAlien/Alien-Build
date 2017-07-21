@@ -331,11 +331,23 @@ The XS code.  This is the only required element.
 
 =item pxs
 
-The L<ExtUtils::ParseXS> arguments passes as a hash reference.
+Extra L<ExtUtils::ParseXS> arguments passed in as a hash reference.
+
+=item cbuilder_compile
+
+Extra The L<ExtUtils::CBuilder> arguments passed in as a hash reference.
+
+=item cbuilder_link
+
+Extra The L<ExtUtils::CBuilder> arguments passed in as a hash reference.
 
 =item verbose
 
 Spew copious debug information via test note.
+
+=item C++ or cpp
+
+XS should be compiled as C++.
 
 =back
 
@@ -390,6 +402,15 @@ sub xs_ok
   # modify it.
   $xs->{xs} = "@{[ $xs->{xs} ]}";
   $xs->{pxs} ||= {};
+  $xs->{cbuilder_compile} ||= {};
+  $xs->{link_compile}     ||= {};
+
+  if($xs->{cpp} || $xs->{'C++'})
+  {
+    $xs->{pxs}->{'C++'} = 1;
+    $xs->{cbuilder_compile}->{'C++'} = 1;
+  }
+
   my $verbose = $xs->{verbose};
   my $ok = 1;
   my @diag;
@@ -469,6 +490,7 @@ sub xs_ok
         $cb->compile(
           source               => $c_filename,
           extra_compiler_flags => [shellwords map { _flags $_, 'cflags' } @aliens],
+          %{ $xs->{cbuilder_compile} },
         );
       };
       ($obj, $@);
@@ -495,6 +517,7 @@ sub xs_ok
             objects            => [$obj],
             module_name        => $module,
             extra_linker_flags => [shellwords map { _flags $_, 'libs' } @aliens],
+            %{ $xs->{cbuilder_link} },
           );
         };
         ($lib, $@);
