@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improve Alien::Autotools support by updating ACLOCAL_PATH
+    when you requires 'Alien::Autotools';
 
 0.70_01   2017-07-21 07:23:04 -0400
   - (Alien::Build::MM) Fix race condition with parallel make (GH#24)

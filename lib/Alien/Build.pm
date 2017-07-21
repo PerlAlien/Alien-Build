@@ -733,6 +733,13 @@ sub load_requires
       }
     }
     
+    # sufficiently new Autotools have a aclocal_dir which will
+    # give us the directories we need.
+    if($mod eq 'Alien::Autotools' && $mod->can('aclocal_dir'))
+    {
+      push @{ $self->{aclocal_path} }, $mod->aclocal_dir;
+    }
+    
     if($mod->can('alien_helper'))
     {
       my $helpers = $mod->alien_helper;
