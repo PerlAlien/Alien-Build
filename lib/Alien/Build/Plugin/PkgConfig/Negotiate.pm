@@ -67,8 +67,11 @@ sub _pick
 sub init
 {
   my($self, $meta) = @_;
+
+  my $plugin = $self->_pick;
+  Alien::Build->log("Using PkgConfig plugin: $plugin");
     
-  $self->subplugin($self->_pick,
+  $self->subplugin($plugin,
     pkg_name        => $self->pkg_name,
     minimum_version => $self->minimum_version,
   )->init($meta);

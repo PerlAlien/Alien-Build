@@ -66,6 +66,8 @@ sub init
   my $set_autoconf_prefix = sub {
     my($build) = @_;
     my $prefix = $build->install_prop->{prefix};
+    die "Prefix is not set.  Did you forget to run 'make alien_prefix'?"
+      unless $prefix;
     if(_win)
     {
       $prefix = Path::Tiny->new($prefix)->stringify;
@@ -99,6 +101,8 @@ sub init
 
       $set_autoconf_prefix->($build);
       my $prefix = $build->install_prop->{autoconf_prefix};
+      die "Prefix is not set.  Did you forget to run 'make alien_prefix'?"
+        unless $prefix;
       
       $intr->replace_helper(
         configure => sub {
