@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.71_01   2017-07-21 15:07:32 -0400
   - Improve Alien::Autotools support by updating ACLOCAL_PATH
     when you requires 'Alien::Autotools';
   - Add cbuilder_compile option to Test::Alien xs_ok function
