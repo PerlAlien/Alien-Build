@@ -347,6 +347,8 @@ Spew copious debug information via test note.
 
 =item C++ or cpp
 
+[EXPERIMENTAL]
+
 XS should be compiled as C++.
 
 =back
@@ -378,6 +380,19 @@ sub _flags
     : $class->$method;
 }
 
+{
+  my $seen = 0;
+  sub _warn_cpp
+  {
+    $DB::single = 1;
+    return if $seen;
+    my $ctx = context();
+    $ctx->diag("Test::Alien xs_ok C++ is considered experimental");
+    $ctx->release;
+    $seen++;
+  }
+}
+
 sub xs_ok
 {
   my $cb;
@@ -407,6 +422,7 @@ sub xs_ok
 
   if($xs->{cpp} || $xs->{'C++'})
   {
+    _warn_cpp();
     $xs->{pxs}->{'C++'} = 1;
     $xs->{cbuilder_compile}->{'C++'} = 1;
   }
