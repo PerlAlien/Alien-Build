@@ -9,6 +9,7 @@ Revision history for {{$dist->name}}
   - Extract::CommandLine fallback on ptar if bsdtar or tar are
     not available.
   - Add Fetch::LocalDir plugin
+  - Add tmp flag for local files to avoid copies
 
 0.71_01   2017-07-21 15:07:32 -0400
   - Improve Alien::Autotools support by updating ACLOCAL_PATH

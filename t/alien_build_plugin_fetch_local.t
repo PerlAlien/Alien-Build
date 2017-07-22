@@ -27,6 +27,7 @@ subtest 'basic' => sub {
         field type     => 'file';
         field filename => 'foo-1.00.tar';
         field path     => T();
+        field tmp      => 0;
         end;
       },
       'response hash'
@@ -80,6 +81,7 @@ subtest 'basic' => sub {
         field type     => 'file';
         field filename => 'foo-1.00.tar.gz';
         field path     => T();
+        field tmp      => 0;
         end;
       },
       'response hash'
@@ -191,6 +193,7 @@ subtest 'uri' => sub {
         field type     => 'file';
         field filename => 'foo-1.00.tar.gz';
         field path     => T();
+        field tmp      => 0;
         end;
       },
       'response hash'

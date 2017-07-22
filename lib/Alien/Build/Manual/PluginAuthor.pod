@@ -125,9 +125,15 @@ with the following keys:
  return {
    type     => 'file',
    filename => $filename,
-   path     => $path,    # full file system path to file
+   path     => $path,     # full file system path to file
    version  => $version,  # optional, if known
+   tmp      => $tmp,      # optional
  };
+
+C<$tmp> if set will indicate if the file is temporary or not, and can
+be used by L<Alien::Build> to save a copy in some cases.  The default
+is true, so L<Alien::Build> assumes the file or directory is temporary
+if you don't tell it otherwise.
 
 If the URL points to a directory listing you should return it as either
 a hash reference containing a list of files:

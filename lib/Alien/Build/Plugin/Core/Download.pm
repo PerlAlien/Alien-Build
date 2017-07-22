@@ -61,14 +61,13 @@ sub _hook
     }
   }
 
-  my $tmp = Alien::Build::TempDir->new($build, "download");
-
   if($res->{type} eq 'file')
   {
     my $alienfile = $res->{filename};
     $build->log("downloaded $alienfile");
     if($res->{content})
     {
+      my $tmp = Alien::Build::TempDir->new($build, "download");
       my $path = Path::Tiny->new("$tmp/$alienfile");
       $path->spew_raw($res->{content});
       $build->install_prop->{download} = $path->stringify;
@@ -77,21 +76,37 @@ sub _hook
     }
     elsif($res->{path})
     {
-      my $from = Path::Tiny->new($res->{path});
-      my $to   = Path::Tiny->new("$tmp/@{[ $from->basename ]}");
-      if(-d $res->{path})
+      if(defined $res->{tmp} && !$res->{tmp})
       {
-        _mirror $from, $to;
+        if(-e $res->{path})
+        {
+          $build->install_prop->{download} = $res->{path};
+          $build->install_prop->{complete}->{download} = 1;
+        }
+        else
+        {
+          die "not a file or directory: @{[ $res->{path} ]}";
+        }
       }
       else
       {
-        require File::Copy;
-        File::Copy::copy(
-          "$from" => "$to",
-        ) || die "copy $from => $to failed: $!";
+        my $from = Path::Tiny->new($res->{path});
+        my $tmp = Alien::Build::TempDir->new($build, "download");
+        my $to   = Path::Tiny->new("$tmp/@{[ $from->basename ]}");
+        if(-d $res->{path})
+        {
+          _mirror $from, $to;
+        }
+        else
+        {
+          require File::Copy;
+          File::Copy::copy(
+            "$from" => "$to",
+          ) || die "copy $from => $to failed: $!";
+        }
+        $build->install_prop->{download} = $to->stringify;
+        $build->install_prop->{complete}->{download} = 1;
       }
-      $build->install_prop->{download} = $to->stringify;
-      $build->install_prop->{complete}->{download} = 1;
       return $build;
     }
     die "file without content or path";

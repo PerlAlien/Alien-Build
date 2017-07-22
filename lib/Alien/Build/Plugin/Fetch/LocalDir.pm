@@ -92,6 +92,7 @@ sub init
           type     => 'file',
           filename => $path->basename,
           path     => $path->stringify,
+          tmp      => 0,
         };
       }
       else
