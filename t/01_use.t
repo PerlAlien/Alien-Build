@@ -38,6 +38,7 @@ require_ok 'Alien::Build::Plugin::Core::Gather';
 require_ok 'Alien::Build::Plugin::Core::Download';
 require_ok 'Alien::Build::Plugin::Fetch::NetFTP';
 require_ok 'Alien::Build::Plugin::Fetch::Local';
+require_ok 'Alien::Build::Plugin::Fetch::LocalDir';
 require_ok 'Alien::Build::Plugin::Fetch::HTTPTiny';
 require_ok 'Alien::Build::Plugin::Fetch::LWP';
 require_ok 'Alien::Build::Plugin::Prefer::SortVersions';

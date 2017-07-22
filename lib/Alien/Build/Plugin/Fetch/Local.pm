@@ -13,7 +13,7 @@ use Path::Tiny ();
 
  use alienfile;
  meta->prop->{start_url} = 'patch/libfoo-1.00.tar.gz';
- plugin 'Fetch::Local' => ();
+ plugin 'Fetch::Local';
 
 =head1 DESCRIPTION
 
@@ -22,7 +22,8 @@ instead.  It picks the appropriate fetch plugin based on your platform and envir
 In some cases you may need to use this plugin directly instead.
 
 This fetch plugin fetches files from the local file system.  It is mostly useful if you
-intend to bundle packages with your Alien.
+intend to bundle packages (as tarballs or zip files) with your Alien.  If you intend to
+bundle a source tree, use L<Alien::Build::Plugin::Fetch::LocalDir>.
 
 =head1 PROPERTIES
 
@@ -123,7 +124,21 @@ sub init
 
 =head1 SEE ALSO
 
-L<Alien::Build::Plugin::Download::Negotiate>, L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
+=over 4
+
+=item L<Alien::Build::Plugin::Download::Negotiate>
+
+=item L<Alien::Build::Plugin::Fetch::LocalDir>
+
+=item L<Alien::Build>
+
+=item L<alienfile>
+
+=item L<Alien::Build::MM>
+
+=item L<Alien>
+
+=back
 
 =cut
 
