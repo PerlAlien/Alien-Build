@@ -131,7 +131,14 @@ sub _dcon
   if($src =~ /\.(gz|tgz|Z|taz)$/)
   {
     $self->gzip_cmd(_which('gzip')) unless defined $self->gzip_cmd;
-    $cmd = $self->gzip_cmd unless $self->_tar_can('tar.gz');
+    if($src =~ /\.(gz|tgz)$/)
+    {
+      $cmd = $self->gzip_cmd unless $self->_tar_can('tar.gz');
+    }
+    elsif($src =~ /\.(Z|taz)$/)
+    {
+      $cmd = $self->gzip_cmd unless $self->_tar_can('tar.Z');
+    }
   }
   elsif($src =~ /\.(bz2|tbz)$/)
   {
@@ -183,7 +190,8 @@ sub handles
   $ext = 'tar.bz2' if $ext eq 'tbz';
   $ext = 'tar.xz'  if $ext eq 'txz';
 
-  return 1 if ($ext eq 'tar.gz' || $ext eq 'tar.Z') && $self->_tar_can('tar.gz');
+  return 1 if $ext eq 'tar.gz' && $self->_tar_can('tar.gz');
+  return 1 if $ext eq 'tar.Z' && $self->_tar_can('tar.Z');
   return 1 if $ext eq 'tar.bz2' && $self->_tar_can('tar.bz2');
   return 1 if $ext eq 'tar.xz' && $self->_tar_can('tar.xz');
   
@@ -209,7 +217,7 @@ sub init
   {
     $meta->add_requires('share' => 'Alien::Libbz2' => '0.22');
   }
-  elsif($self->format eq 'tar.gz' && !$self->handles('tar.gz'))
+  elsif($self->format =~ /^tar\.(gz|Z)$/ && !$self->handles($self->format))
   {
     $meta->add_requires('share' => 'Alien::gzip' => '0.03');
   }
@@ -218,7 +226,6 @@ sub init
     extract => sub {
       my($build, $src) = @_;
       
-      $DB::single = 1;
       my($dcon_name, $dcon_cmd) = _dcon($self, $src);
       
       if($dcon_name)
@@ -321,10 +328,10 @@ sub _tar_can
     return 0;
   }
   
-  my $content = Path::Tiny->new('xx.txt')->slurp;
+  my $content = eval { Path::Tiny->new('xx.txt')->slurp };
   $cleanup->();
   
-  return $content eq "xx\n";
+  return defined $content && $content eq "xx\n";
 }
 
 1;
@@ -352,4 +359,9 @@ M'XL(`(;*<%D``ZNHT"NI*&&@*3`P,#`S,5$`T>9FIF#:P`C"AP)C!4-C0V,3
 M0Q-30W-S!0-#(W-#0P8%`]HZ"P)*BTL2BX!.R<_)R2Q.QZT.J"PM#8\Y$(\H
 >P.DA`BHJN`;:":-@%(R"43`*!@```)9R\&H`"```
 
+[ xx.tar.Z]
+M'YV0>/"XH(.'#H"#"!,J7,BPH<.'$"-*1`BCH@T:-$``J`CCAHT:&CG"D)%Q
+MH\B3,T#$F+&21@P:-6+<N`$"1@P9-V+$`%!SHL^?0(,*!5!G#ITP<DR^8<,F
+MS9PS0Q<:#6/&3-2%)V&$/*GQJM>O8,.*'1I0P=BS:-.J7<NVK=NW<./*G4NW
+7KMV[>//JW<NWK]^_@`,+'DRXL.'#0P$`
 

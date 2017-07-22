@@ -384,7 +384,6 @@ sub _flags
   my $seen = 0;
   sub _warn_cpp
   {
-    $DB::single = 1;
     return if $seen;
     my $ctx = context();
     $ctx->diag("Test::Alien xs_ok C++ is considered experimental");

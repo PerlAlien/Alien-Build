@@ -3,6 +3,9 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Marking C++ support in Test::Alien as EXPERIMENTAL
     (it seems to be unreliable on MSWin32, possibly others)
+  - Fixed Extract::CommandLine probe of tar command to see if it
+    can handle tar.gz, tar.bz2, tar.xz (feature introduced in
+    0.69_01).
 
 0.71_01   2017-07-21 15:07:32 -0400
   - Improve Alien::Autotools support by updating ACLOCAL_PATH
