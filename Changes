@@ -6,6 +6,8 @@ Revision history for {{$dist->name}}
   - Fixed Extract::CommandLine probe of tar command to see if it
     can handle tar.gz, tar.bz2, tar.xz (feature introduced in
     0.69_01).
+  - Extract::CommandLine fallback on ptar if bsdtar or tar are
+    not available.
 
 0.71_01   2017-07-21 15:07:32 -0400
   - Improve Alien::Autotools support by updating ACLOCAL_PATH

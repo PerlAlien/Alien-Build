@@ -85,7 +85,9 @@ has tar_cmd => sub {
     # is probably a better plugin to use on windows anyway.
     : _which('tar') && $^O ne 'MSWin32'
       ? 'tar'
-      : undef;
+      : _which('ptar')
+        ? 'ptar'
+        : undef;
 };
 
 =head2 unzip_cmd
