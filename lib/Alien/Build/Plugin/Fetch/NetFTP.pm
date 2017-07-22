@@ -70,6 +70,9 @@ sub init
     $url ||= $self->url;
     
     $url = URI->new($url);
+
+    die "Fetch::NetFTP does not support @{[ $url->scheme ]}"
+      unless $url->scheme eq 'ftp';
     
     $build->log("trying passive mode FTP first") if $self->passive;
     my $ftp = _ftp_connect($url, $self->passive);
@@ -162,8 +165,6 @@ sub _ftp_connect {
   my $url = shift;
   my $is_passive = shift || 0;
 
-  Alien::Build->log("is_passive = $is_passive");
-  
   my $ftp = Net::FTP->new(
     $url->host, Port =>$url->port, Passive =>$is_passive,
   ) or die "error fetching $url: $@";
