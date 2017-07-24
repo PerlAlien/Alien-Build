@@ -2,6 +2,8 @@ use Test2::V0 -no_srand => 1;
 use Test::Alien;
 use Test::Alien::CanCompileCpp;
 
+skip_all 'skip experimental on Debian kFreeBSD' if $^O eq 'gnukfreebsd';
+
 my $xs = do { local $/; <DATA> };
 
 my $subtest = sub {
