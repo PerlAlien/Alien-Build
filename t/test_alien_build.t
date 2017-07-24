@@ -119,6 +119,7 @@ subtest alien_build_ok => sub {
           call name => 'alien builds okay';
         };
         event Diag => sub {};
+        event Diag => sub {};
         event Diag => sub {
           call message => match(qr/build threw exception: dinosaurs and transformers/);
         };

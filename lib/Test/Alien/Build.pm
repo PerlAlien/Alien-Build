@@ -235,11 +235,14 @@ sub alien_build_ok
     if($error)
     {
       $ok = 0;
+      push @diag, $out;
       push @diag, "build threw exception: $error";
     }
     else
     {
       $ok = 1;
+      
+      push @note, $out;
       
       require Alien::Base;
       
@@ -277,6 +280,7 @@ sub alien_build_ok
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
+  $ctx->note($_) for @note;
   $ctx->release;
   
   $alien;
