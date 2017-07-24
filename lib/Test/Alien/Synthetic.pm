@@ -61,6 +61,10 @@ List reference containing the dynamic libraries.
 
 Tool binary directory.
 
+=head2 runtime_prop
+
+Runtime properties.
+
 =cut
 
 sub _def ($) { my($val) = @_; defined $val ? $val : '' }
@@ -68,6 +72,14 @@ sub _def ($) { my($val) = @_; defined $val ? $val : '' }
 sub cflags       { _def shift->{cflags}             }
 sub libs         { _def shift->{libs}               }
 sub dynamic_libs { @{ shift->{dynamic_libs} || [] } }
+
+sub runtime_prop
+{
+  my($self) = @_;
+  defined $self->{runtime_prop}
+    ? $self->{runtime_prop}
+    : {};
+}
 
 sub cflags_static
 {

@@ -212,6 +212,10 @@ List reference containing the dynamic libraries.
 
 Tool binary directory.
 
+=item runtime_prop
+
+Runtime properties.
+
 =back
 
 See L<Test::Alien::Synthetic> for more details.
