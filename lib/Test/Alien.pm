@@ -573,17 +573,37 @@ sub xs_ok
         my $pmpath = File::Spec->catfile($dir, @modparts, "$modfname.pm");
         mkpath(dirname($pmpath), 0, 0700);
         open my $fh, '>', $pmpath;
-        print $fh '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
-          package $module;
+        
+        my($alien_with_xs_load, @rest) = grep { $_->can('xs_load') } @aliens;
+        
+        if($alien_with_xs_load)
+        {
+          print $fh '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
+            package $module;
+            
+            use strict;
+            use warnings;
+            use $alien_with_xs_load;
+            
+            $alien_with_xs_load->xs_load('$module', '\$VERSION', @rest);
+            
+            1;
+          };
+        }
+        else
+        {
+          print $fh '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
+            package $module;
           
-          use strict;
-          use warnings;
-          require XSLoader;
-          our \$VERSION = '0.01';
-          XSLoader::load('$module','\$VERSION');
+            use strict;
+            use warnings;
+            require XSLoader;
+            our \$VERSION = '0.01';
+            XSLoader::load('$module','\$VERSION');
           
-          1;
-        };
+            1;
+          };
+        }
         close $fh;
 
         {

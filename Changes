@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Add alien_build_ok to Test::Alien::Build
+  - Enable Alien::Base::Dino compatibility in Test::Alien
 
 0.73      2017-07-24 07:19:49 -0400
   - Fetch::FTP plugin will not attempt FTP transfer with non-FTP URLs
