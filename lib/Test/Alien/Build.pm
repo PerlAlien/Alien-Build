@@ -186,10 +186,23 @@ sub alienfile_ok
 
  my $alien = alien_build_ok;
  my $alien = alien_build_ok $name;
+ my $alien = alien_build_ok { class => $class };
+ my $alien = alien_build_ok { class => $class }, $name;
 
 Runs the download and build stages.  Passes if the build succeeds.  Returns an instance
 of L<Alien::Base> which can be passed into C<alien_ok> from L<Test::Alien>.  Returns
 C<undef> if the test fails.
+
+Options
+
+=over 4
+
+=item class
+
+The base class to use for your alien.  This is L<Alien::Base> by default.  Sould
+be a subclass of L<Alien::Base>, or at least adhear to its API.
+
+=back
 
 =cut
 
@@ -197,6 +210,9 @@ my $count = 1;
 
 sub alien_build_ok
 {
+  my $opt = defined $_[0] && ref($_[0]) eq 'HASH'
+    ? $_[0] : { class => 'Alien::Base' };
+
   my($name) = @_;
 
   $name ||= 'alien builds okay';
@@ -246,7 +262,7 @@ sub alien_build_ok
       $alien = sprintf 'Test::Alien::Build::Faux%04d', $count++;
       {
         no strict 'refs';
-        @{ "${alien}::ISA" }          = 'Alien::Base';
+        @{ "${alien}::ISA" }          = $opt->{class};
         *{ "${alien}::dist_dir" }     = $dist_dir;
         *{ "${alien}::runtime_prop" } = $runtime_prop;
       }
