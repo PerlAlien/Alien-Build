@@ -583,7 +583,6 @@ sub xs_ok
             
             use strict;
             use warnings;
-            use $alien_with_xs_load;
             
             $alien_with_xs_load->xs_load('$module', '\$VERSION', @rest);
             
