@@ -211,7 +211,7 @@ my $count = 1;
 sub alien_build_ok
 {
   my $opt = defined $_[0] && ref($_[0]) eq 'HASH'
-    ? $_[0] : { class => 'Alien::Base' };
+    ? shift : { class => 'Alien::Base' };
 
   my($name) = @_;
 
