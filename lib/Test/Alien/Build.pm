@@ -199,8 +199,8 @@ Options
 
 =item class
 
-The base class to use for your alien.  This is L<Alien::Base> by default.  Sould
-be a subclass of L<Alien::Base>, or at least adhear to its API.
+The base class to use for your alien.  This is L<Alien::Base> by default.  Should
+be a subclass of L<Alien::Base>, or at least adhere to its API.
 
 =back
 
