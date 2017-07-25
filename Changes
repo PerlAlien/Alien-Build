@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.74      2017-07-25 06:52:43 -0400
   - Add alien_build_ok to Test::Alien::Build
   - Enable Alien::Base::Dino compatibility in Test::Alien
 
