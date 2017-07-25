@@ -379,7 +379,7 @@ sub _flags
 {
   my($class, $method) = @_;
   my $static = "${method}_static";
-  $class->can($static) && $class->can('install_type') && $class->install_type eq 'share'
+  $class->can($static) && $class->can('install_type') && $class->install_type eq 'share' && (!$class->can('xs_load'))
     ? $class->$static
     : $class->$method;
 }
