@@ -12,7 +12,6 @@ my $post_diag;
 $modules{$_} = $_ for qw(
   Acme::Alien::DontPanic
   Alien::Base::ModuleBuild
-  Alien::Libarchive
   Capture::Tiny
   ExtUtils::CBuilder
   ExtUtils::MakeMaker
