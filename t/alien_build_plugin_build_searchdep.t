@@ -7,6 +7,9 @@ use lib 'corpus/lib';
 use Alien::libfoo1;
 use Alien::libfoo2;
 use Capture::Tiny qw( capture_merged );
+use Path::Tiny qw( path );
+
+my $corpus = path('corpus')->absolute;
 
 subtest basic => sub {
 
@@ -60,12 +63,12 @@ subtest basic => sub {
   is($build->runtime_prop->{cflags}, '-core-cflag');
   is($build->runtime_prop->{cflags_static}, '-core-cflag-static');
 
-  is($build->runtime_prop->{libs}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag');
-  is($build->runtime_prop->{libs_static}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag-static');
+  is($build->runtime_prop->{libs}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag");
+  is($build->runtime_prop->{libs_static}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag-static");
   
-  is($build->runtime_prop->{my_CFLAGS}, '-Icorpus/lib/auto/share/dist/Alien-libfoo2/include');
-  is($build->runtime_prop->{my_CXXFLAGS}, '-Icorpus/lib/auto/share/dist/Alien-libfoo2/include');
-  is($build->runtime_prop->{my_LDFLAGS}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib');
+  is($build->runtime_prop->{my_CFLAGS}, "-I$corpus/lib/auto/share/dist/Alien-libfoo2/include");
+  is($build->runtime_prop->{my_CXXFLAGS}, "-I$corpus/lib/auto/share/dist/Alien-libfoo2/include");
+  is($build->runtime_prop->{my_LDFLAGS}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib");
   
 };
 
@@ -108,10 +111,10 @@ subtest public_I => sub {
     $build->build;
   };
 
-  is($build->runtime_prop->{cflags}, '-Icorpus/lib/auto/share/dist/Alien-libfoo2/include -core-cflag');
-  is($build->runtime_prop->{cflags_static}, '-Icorpus/lib/auto/share/dist/Alien-libfoo2/include -core-cflag-static');
-  is($build->runtime_prop->{libs}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag');
-  is($build->runtime_prop->{libs_static}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag-static');
+  is($build->runtime_prop->{cflags}, "-I$corpus/lib/auto/share/dist/Alien-libfoo2/include -core-cflag");
+  is($build->runtime_prop->{cflags_static}, "-I$corpus/lib/auto/share/dist/Alien-libfoo2/include -core-cflag-static");
+  is($build->runtime_prop->{libs}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag");
+  is($build->runtime_prop->{libs_static}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib -core-flag-static");
 };
 
 
@@ -157,8 +160,8 @@ subtest public_l => sub {
   is($build->runtime_prop->{cflags}, '-core-cflag');
   is($build->runtime_prop->{cflags_static}, '-core-cflag-static');
 
-  is($build->runtime_prop->{libs}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib -lfoo -lbar -lbaz -core-flag');
-  is($build->runtime_prop->{libs_static}, '-Lcorpus/lib/auto/share/dist/Alien-libfoo2/lib -lfoo -lbar -lbaz -core-flag-static');  
+  is($build->runtime_prop->{libs}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib -lfoo -lbar -lbaz -core-flag");
+  is($build->runtime_prop->{libs_static}, "-L$corpus/lib/auto/share/dist/Alien-libfoo2/lib -lfoo -lbar -lbaz -core-flag-static");
 };
 
 

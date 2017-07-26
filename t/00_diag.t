@@ -21,7 +21,6 @@ $modules{$_} = $_ for qw(
   FFI::Platypus
   File::Listing
   File::Listing::Ftpcopy
-  File::ShareDir
   File::Which
   File::chdir
   HTML::LinkExtor

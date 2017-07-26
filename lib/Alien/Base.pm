@@ -3,7 +3,6 @@ package Alien::Base;
 use strict;
 use warnings;
 use Carp;
-use File::ShareDir ();
 use Path::Tiny ();
 use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_merged/;
@@ -172,6 +171,29 @@ C<install_type> is C<share>).
 
 =cut
 
+sub _dist_dir ($)
+{
+  my($dist_name) = @_;
+  
+  my @pm = split /-/, $dist_name;
+  $pm[-1] .= ".pm";
+  
+  foreach my $inc (@INC)
+  {
+    my $pm = Path::Tiny->new($inc, @pm);
+    if(-f $pm)
+    {
+      my $share = Path::Tiny->new($inc, qw( auto share dist ), $dist_name );
+      if(-d $share)
+      {
+        return $share->absolute->stringify;
+      }
+      last;
+    }
+  }
+  Carp::croak("unable to find dist share directory for $dist_name");
+}
+
 sub dist_dir {
   my $class = shift;
 
@@ -180,7 +202,7 @@ sub dist_dir {
 
   my $dist_dir = 
     $class->config('finished_installing') 
-      ? File::ShareDir::dist_dir($dist) 
+      ? _dist_dir $dist
       : $class->config('working_directory');
 
   croak "Failed to find share dir for dist '$dist'"
@@ -695,7 +717,7 @@ then this will return undef.
     $alien_build_config_cache{$class} ||= do {
       my $dist = ref $class ? ref $class : $class;
       $dist =~ s/::/-/g;
-      my $dist_dir = eval { File::ShareDir::dist_dir($dist) };
+      my $dist_dir = eval { _dist_dir $dist };
       return if $@;
       my $alien_json = Path::Tiny->new($dist_dir, '_alien', 'alien.json');
       return unless -r $alien_json;
