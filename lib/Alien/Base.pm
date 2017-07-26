@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 use File::ShareDir ();
-use File::Spec;
+use Path::Tiny ();
 use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
@@ -514,13 +514,13 @@ sub dynamic_libs {
   } else {
   
     my $dir = $class->dist_dir;
-    my $dynamic = File::Spec->catfile($class->dist_dir, 'dynamic');
+    my $dynamic = Path::Tiny->new($class->dist_dir, 'dynamic');
     
     if(-d $dynamic)
     {
       return FFI::CheckLib::find_lib(
         lib        => '*',
-        libpath    => $dynamic,
+        libpath    => "$dynamic",
         systempath => [],
       );
     }
@@ -563,8 +563,8 @@ sub bin_dir {
   }
   else
   {
-    my $dir = File::Spec->catfile($class->dist_dir, 'bin');
-    return -d $dir ? ($dir) : ();
+    my $dir = Path::Tiny->new($class->dist_dir, 'bin');
+    return -d $dir ? ("$dir") : ();
   }
 }
 
@@ -697,11 +697,9 @@ then this will return undef.
       $dist =~ s/::/-/g;
       my $dist_dir = eval { File::ShareDir::dist_dir($dist) };
       return if $@;
-      my $alien_json = File::Spec->catfile($dist_dir, '_alien', 'alien.json');
+      my $alien_json = Path::Tiny->new($dist_dir, '_alien', 'alien.json');
       return unless -r $alien_json;
-      open my $fh, '<', $alien_json;
-      my $json = do { local $/; <$fh> };
-      close $fh;
+      my $json = $alien_json->slurp;
       require JSON::PP;
       my $config = JSON::PP::decode_json($json);
       $config->{distdir} = $dist_dir;

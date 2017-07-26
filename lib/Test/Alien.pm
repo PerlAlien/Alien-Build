@@ -8,13 +8,12 @@ use File::Which 1.10 qw( which );
 use Capture::Tiny qw( capture capture_merged );
 use File::Temp ();
 use Carp qw( croak );
-use File::Spec;
 use File::Basename qw( dirname );
-use File::Path qw( mkpath );
 use File::Copy qw( move );
 use Text::ParseWords qw( shellwords );
 use Test2::API qw( context run_subtest );
 use base qw( Exporter );
+use Path::Tiny qw( path );
 
 our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is );
 
@@ -435,8 +434,8 @@ sub xs_ok
   my $ok = 1;
   my @diag;
   my $dir = _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' );
-  my $xs_filename = File::Spec->catfile($dir, 'test.xs');
-  my $c_filename  = File::Spec->catfile($dir, $xs->{cpp} ? 'test.cpp' : 'test.c');
+  my $xs_filename = path($dir)->child('test.xs')->stringify;
+  my $c_filename  = path($dir)->child($xs->{cpp} ? 'test.cpp' : 'test.c')->stringify;
   
   my $ctx = context();
   my $module;
@@ -566,14 +565,14 @@ sub xs_ok
         my $dl_dlext = $Config::Config{dlext};
         my $modfname = $modparts[-1];
 
-        my $libpath = File::Spec->catfile($dir, 'auto', @modparts, "$modfname.$dl_dlext");
-        mkpath(dirname($libpath), 0, 0700);
-        move($lib, $libpath) || die "unable to copy $lib => $libpath $!";
+        my $libpath = path($dir)->child('auto', @modparts, "$modfname.$dl_dlext");
+        $libpath->parent->mkpath;
+        move($lib, "$libpath") || die "unable to copy $lib => $libpath $!";
         
         pop @modparts;
-        my $pmpath = File::Spec->catfile($dir, @modparts, "$modfname.pm");
-        mkpath(dirname($pmpath), 0, 0700);
-        open my $fh, '>', $pmpath;
+        my $pmpath = path($dir)->child(@modparts, "$modfname.pm");
+        $pmpath->parent->mkpath;
+        open my $fh, '>', "$pmpath";
         
         my($alien_with_xs_load, @rest) = grep { $_->can('xs_load') } @aliens;
         
@@ -875,7 +874,7 @@ sub _tempdir {
 
   if($^O ne 'MSWin32')
   {
-    my $filename = File::Spec->catfile($dir, 'foo.pl');
+    my $filename = path($dir, 'foo.pl');
     my $fh;
     open $fh, '>', $filename;
     print $fh "#!$^X";
@@ -884,7 +883,7 @@ sub _tempdir {
     system $filename, 'foo';
     if($?)
     {
-      $dir = File::Temp::tempdir( DIR => File::Spec->curdir );
+      $dir = File::Temp::tempdir( DIR => path('.')->absolute->stringify );
     }
   }
   
