@@ -1,11 +1,6 @@
-use strict;
-use warnings;
-
+use Test2::V0 -no_srand => 1;
 use File::Spec;
-
-use Test::More;
-
-use_ok('Alien::Base::PkgConfig');
+use Alien::Base::PkgConfig;
 
 my $file = File::Spec->catfile( qw/t pkgconfig test.pc/ );
 ok( -e $file, "Test file found" );
@@ -18,7 +13,7 @@ my $pcfiledir = delete $pc->{vars}{pcfiledir};
 ok( -d $pcfiledir, 'pcfiledir is a directory' );
 ok( -e File::Spec->catfile($pcfiledir, 'test.pc'), 'pcfiledir contains test.pc' );
 
-is_deeply( 
+is( 
   $pc->{vars}, 
   {
     'INTERNAL_VARIABLE' => '-lotherlib',
@@ -27,7 +22,7 @@ is_deeply(
   "read vars"
 );
 
-is_deeply(
+is(
   $pc->{keywords},
   {
     'Version' => '1.01',
