@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.75      2017-07-26 11:30:11 -0400
   - Disable C++ Test::Alien test on production releases
     C++ in Test::Alien is considered experimental and the
     test has been intermitently causing a hard fail.
