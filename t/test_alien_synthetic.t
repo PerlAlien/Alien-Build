@@ -1,7 +1,7 @@
 use Test2::V0 -no_srand => 1;
 use Test::Alien;
 use File::Temp qw( tempdir );
-use File::Spec;
+use Path::Tiny qw( path );
 
 is(
   synthetic(),
@@ -57,7 +57,7 @@ is(
 );
 
 is(
-  synthetic({ bin_dir => File::Spec->catdir($dir, 'foo') }),
+  synthetic({ bin_dir => path($dir)->child('foo')->stringify }),
   object {
     prop blessed => 'Test::Alien::Synthetic';
     call sub { [shift->bin_dir] } => [];

@@ -1,7 +1,7 @@
 use Test2::V0 -no_srand => 1;
 use File::Which ();
-use File::Spec;
 use File::Temp qw( tempdir );
+use Path::Tiny qw( path );
 our $which;
 our $system;
 BEGIN {
@@ -22,7 +22,7 @@ sub _prog ($)
 {
   my($code) = @_;
   my($package, $filename, $line) = caller;
-  my $pl = File::Spec->catfile( tempdir( CLEANUP => 1 ), 'test.pl');
+  my $pl = path(tempdir( CLEANUP => 1 ))->child('test.pl');
   open my $fh, '>', $pl;
   print $fh qq{# line @{[ $line ]} "@{[ $filename ]}"\n};
   print $fh $code;

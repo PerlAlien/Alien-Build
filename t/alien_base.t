@@ -1,11 +1,42 @@
 use Test2::V0 -no_srand => 1;
+use Test2::Mock;
 use lib 'corpus/lib';
 use Env qw( @PKG_CONFIG_PATH );
 use File::Glob qw( bsd_glob );
 use File::chdir;
-use File::Spec;
+use Path::Tiny qw( path );
+use FFI::CheckLib;
 
-unshift @PKG_CONFIG_PATH, File::Spec->rel2abs(File::Spec->catdir( qw( corpus pkgconfig )));
+my $mock = Test2::Mock->new(
+  class => 'FFI::CheckLib',
+  override => [
+    find_lib => sub {
+      my %args = @_;
+      if($args{libpath})
+      {
+        return unless -d $args{libpath};
+        return sort do {
+          local $CWD = $args{libpath};
+          map { path($_)->absolute->stringify } bsd_glob('*.so*');
+        };
+      }
+      else
+      {
+        if($args{lib} eq 'foo')
+        {
+          return ('/usr/lib/libfoo.so', '/usr/lib/libfoo.so.1');
+        }
+        else
+        {
+          return;
+        } 
+      }
+    },
+  ],
+);
+
+
+unshift @PKG_CONFIG_PATH, path('corpus/pkgconfig')->absolute->stringify;
 
 subtest 'AB::MB sys install' => sub {
 
@@ -64,7 +95,7 @@ subtest 'Alien::Build system' => sub {
 
   require Alien::libfoo1;
   
-  is( -f File::Spec->catfile(Alien::libfoo1->dist_dir,'_alien/for_libfoo1'), T(), 'dist_dir');
+  is( -f path(Alien::libfoo1->dist_dir)->child('_alien/for_libfoo1'), T(), 'dist_dir');
   is( Alien::libfoo1->cflags, '-DFOO=1', 'cflags' );
   is( Alien::libfoo1->cflags_static, '-DFOO=1 -DFOO_STATIC=1', 'cflags_static');
   is( Alien::libfoo1->libs, '-lfoo', 'libs' );
@@ -91,7 +122,7 @@ subtest 'Alien::Build share' => sub {
 
   require Alien::libfoo2;
   
-  is( -f File::Spec->catfile(Alien::libfoo2->dist_dir,'_alien/for_libfoo2'), T(), 'dist_dir');
+  is( -f path(Alien::libfoo2->dist_dir)->child('_alien/for_libfoo2'), T(), 'dist_dir');
   
   subtest 'cflags' => sub {
     is(
@@ -107,7 +138,7 @@ subtest 'Alien::Build share' => sub {
     my($dir) = [split /\s+/, Alien::libfoo2->cflags]->[0] =~ /^-I(.*)$/;
     
     is(
-      -f File::Spec->catfile($dir,'foo.h'),
+      -f path($dir)->child('foo.h'),
       T(),
       '-I directory points to foo.h location',
     );
@@ -126,7 +157,7 @@ subtest 'Alien::Build share' => sub {
     ($dir) = [split /\s+/, Alien::libfoo2->cflags_static]->[0] =~ /^-I(.*)$/;
     
     is(
-      -f File::Spec->catfile($dir,'foo.h'),
+      -f path($dir)->child('foo.h'),
       T(),
       '-I directory points to foo.h location (static)',
     );
@@ -147,7 +178,7 @@ subtest 'Alien::Build share' => sub {
     my($dir) = [split /\s+/, Alien::libfoo2->libs]->[0] =~ /^-L(.*)$/;
     
     is(
-      -f File::Spec->catfile($dir,'libfoo.a'),
+      -f path($dir)->child('libfoo.a'),
       T(),
       '-L directory points to libfoo.a location',
     );
@@ -168,7 +199,7 @@ subtest 'Alien::Build share' => sub {
     ($dir) = [split /\s+/, Alien::libfoo2->libs_static]->[0] =~ /^-L(.*)$/;
     
     is(
-      -f File::Spec->catfile($dir,'libfoo.a'),
+      -f path($dir)->child('libfoo.a'),
       T(),
       '-L directory points to libfoo.a location (static)',
     );
@@ -205,7 +236,7 @@ subtest 'Alien::Build share' => sub {
     'bin_dir',
   );
   
-  is( -f File::Spec->catfile(Alien::libfoo2->bin_dir,'foo-config'), T(), 'has a foo-config');
+  is( -f path(Alien::libfoo2->bin_dir)->child('foo-config'), T(), 'has a foo-config');
   
   is( Alien::libfoo2->runtime_prop->{arbitrary}, 'two', 'runtime_prop' );
 
@@ -238,34 +269,3 @@ subtest 'build flags' => sub {
 };
 
 done_testing;
-
-package
-  FFI::CheckLib;
-
-use File::Glob qw( bsd_glob );
-use File::chdir;
-BEGIN { $INC{'FFI/CheckLib.pm'} = __FILE__ }
-
-sub find_lib {
-  my %args = @_;
-  if($args{libpath})
-  {
-    return unless -d $args{libpath};
-    return sort do {
-      local $CWD = $args{libpath};
-      map { File::Spec->rel2abs($_) } bsd_glob('*.so*');
-    };
-  }
-  else
-  {
-    if($args{lib} eq 'foo')
-    {
-      return ('/usr/lib/libfoo.so', '/usr/lib/libfoo.so.1');
-    }
-    else
-    {
-      return;
-    } 
-  }
-}
-
