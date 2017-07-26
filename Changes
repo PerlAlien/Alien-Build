@@ -1,6 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Disable C++ Test::Alien test on production releases
+    C++ in Test::Alien is considered experimental and the
+    test has been intermitently causing a hard fail.
+    Until the issue is resolved the test will only run on
+    development releases
 
 0.74      2017-07-25 06:52:43 -0400
   - Add alien_build_ok to Test::Alien::Build

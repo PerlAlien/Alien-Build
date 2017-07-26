@@ -428,6 +428,7 @@ sub xs_ok
     _warn_cpp();
     $xs->{pxs}->{'C++'} = 1;
     $xs->{cbuilder_compile}->{'C++'} = 1;
+    $xs->{cpp} = 1;
   }
 
   my $verbose = $xs->{verbose};
@@ -435,7 +436,7 @@ sub xs_ok
   my @diag;
   my $dir = _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' );
   my $xs_filename = File::Spec->catfile($dir, 'test.xs');
-  my $c_filename  = File::Spec->catfile($dir, 'test.c');
+  my $c_filename  = File::Spec->catfile($dir, $xs->{cpp} ? 'test.cpp' : 'test.c');
   
   my $ctx = context();
   my $module;

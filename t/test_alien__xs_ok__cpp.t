@@ -1,8 +1,11 @@
 use Test2::V0 -no_srand => 1;
 use Test::Alien;
 use Test::Alien::CanCompileCpp;
+use lib 't/lib';
+use Test2::Require::Dev;
 
-skip_all 'skip experimental on Debian kFreeBSD' if $^O eq 'gnukfreebsd';
+skip_all 'skipping on production releases (for now)'
+  if defined $Test::Alien::VERSION && $Test::Alien::VERSION =~ /\.[0-9]{2}$/;
 
 my $xs = do { local $/; <DATA> };
 
@@ -11,28 +14,17 @@ my $subtest = sub {
   is($module->get_value(), 42);
 };
 
-todo 'C++ support is experimental' => sub {
+xs_ok {
+  xs      => $xs,
+  cpp     => 1,
+  verbose => 1,
+}, 'by setting cpp => 1', with_subtest { $subtest->(@_) };
 
-  xs_ok {
-    xs               => $xs,
-    pxs              => { 'C++' => 1 },
-    cbuilder_compile => { 'C++' => 1 },
-    verbose          => 1,
-  }, 'by setting pxs and cbuilder_compile', with_subtest { $subtest->(@_) };
-
-  xs_ok {
-    xs      => $xs,
-    cpp     => 1,
-    verbose => 1,
-  }, 'by setting cpp => 1', with_subtest { $subtest->(@_) };
-
-  xs_ok {
-    xs      => $xs,
-    'C++'   => 1,
-    verbose => 1,
-  }, 'by setting C++ => 1', with_subtest { $subtest->(@_) };
-
-};
+xs_ok {
+  xs      => $xs,
+  'C++'   => 1,
+  verbose => 1,
+}, 'by setting C++ => 1', with_subtest { $subtest->(@_) };
 
 done_testing;
 
