@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.76_01   2017-07-26 11:31:44 -0400
+  - Development release otherwise identical to 0.75
+
 0.75      2017-07-26 11:30:11 -0400
   - Disable C++ Test::Alien test on production releases
     C++ in Test::Alien is considered experimental and the
