@@ -843,6 +843,8 @@ sub probe
       die $error;
     }
     $self->log("error in probe (will do a share install): $@");
+    $self->log("Don't panic, we will attempt a share build from source if possible.");
+    $self->log("Do not file a bug unless you expected a system install to succeed.");
     $type = 'share';
   }
   
