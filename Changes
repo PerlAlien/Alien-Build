@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.78_01   2017-07-30 12:55:31 -0400
+  - Development release otherwise identical to 0.77
+
 0.77      2017-07-30 12:54:13 -0400
   - Add options to Probe::CommandLine plugin: match_stderr, version_stderr
 
