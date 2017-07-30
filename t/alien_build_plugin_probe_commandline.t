@@ -186,5 +186,36 @@ subtest 'match + version' => sub {
 
 };
 
+subtest 'match_stderr + version_stderr' => sub {
+
+  my $guard = system_fake
+    'foo' => sub { print STDERR "Froodle Foomaker version 1.00\n"; return 0 },
+  ;
+  
+  subtest 'match good' => sub {
+    my($build) = build(command => 'foo', match_stderr => qr/Froodle/);
+    is cap { $build->probe }, 'system';
+  };
+
+  subtest 'match bad' => sub {
+    my($build) = build(command => 'foo', match_stderr => qr/Droodle/);
+    is cap { $build->probe }, 'share';
+  };
+  
+  subtest 'version found' => sub {
+    my($build) = build(command => 'foo', version_stderr => qr/version ([0-9\.]+)/);
+    is cap { $build->probe }, 'system';
+    is $build->runtime_prop->{version}, '1.00';
+  };
+  
+  subtest 'version unfound' => sub {
+    my($build) = build(command => 'foo', version_stderr => qr/version = ([0-9\.]+)/);
+    is cap { $build->probe }, 'system';
+    is $build->runtime_prop->{version}, undef;
+  };
+
+
+};
+
 done_testing;
 

@@ -77,6 +77,14 @@ Regular expression for which the program output should match.
 
 has 'match'     => undef;
 
+=head2 match_stderr
+
+Regular expression for which the program standard error should match.
+
+=cut
+
+has 'match_stderr' => undef;
+
 =head2 version
 
 Regular expression to parse out the version from the program output.
@@ -85,6 +93,15 @@ The regular expression should store the version number in C<$1>.
 =cut
 
 has 'version'   => undef;
+
+=head2 version_stderr
+
+Regular expression to parse out the version from the program standard error.
+The regular expression should store the version number in C<$1>.
+
+=cut
+
+has 'version_stderr' => undef;
 
 sub init
 {
@@ -98,16 +115,24 @@ sub init
       die 'Command not found ' . $self->command;
     }
 
-    if(defined $self->match || defined $self->version)
+    if(defined $self->match || defined $self->match_stderr || defined $self->version || defined $self->version_stderr)
     {
       my($out,$err,$ret) = capture {
         system( $self->command, @{ $self->args } );
       };
       die 'Command did not return a true value' if $ret;
       die 'Command output did not match' if defined $self->match && $out !~ $self->match;
+      die 'Command standard error did not match' if defined $self->match_stderr && $err !~ $self->match_stderr;
       if(defined $self->version)
       {
         if($out =~ $self->version)
+        {
+          $build->runtime_prop->{version} = $1;
+        }
+      }
+      if(defined $self->version_stderr)
+      {
+        if($err =~ $self->version_stderr)
         {
           $build->runtime_prop->{version} = $1;
         }
