@@ -325,8 +325,8 @@ determined at install time.
 
 sub version {
   my $self = shift;
-  return $class->runtime_prop
-    ? $class->runtime_prop->{version}
+  return $self->runtime_prop
+    ? $self->runtime_prop->{version}
     : do {
       my $version = $self->config('version');
       chomp $version;
