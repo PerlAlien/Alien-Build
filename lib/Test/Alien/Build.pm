@@ -11,7 +11,7 @@ use Test2::API qw( context );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 
-our @EXPORT = qw( alienfile alienfile_ok alien_build_ok );
+our @EXPORT = qw( alienfile alienfile_ok alien_build_ok alien_install_type_is );
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
@@ -180,6 +180,54 @@ sub alienfile_ok
   $ctx->release;
   
   $build;
+}
+
+=head2 alien_install_type_is
+
+ alien_install_type_is $type;
+ alien_install_type_is $type, $name;
+
+Simple test to see if the install type is what you expect.
+C<$type> should be one of C<system> or C<share>.
+
+=cut
+
+sub alien_install_type_is
+{
+  my($type, $name) = @_;
+
+  croak "invalid install type" unless defined $type && $type =~ /^(system|share)$/;  
+  $name ||= "alien install type is $type";
+  
+  my $ok = 0;
+  my @diag;
+  
+  if($build)
+  {
+    my($out, $actual) = capture_merged {
+      $build->load_requires('configure');
+      $build->install_type;
+    };
+    if($type eq $actual)
+    {
+      $ok = 1;
+    }
+    else
+    {
+      push @diag, "expected install type of $type, but got $actual";
+    }
+  }
+  else
+  {
+    push @diag, 'no alienfile'
+  }
+  
+  my $ctx = context();
+  $ctx->ok($ok, $name);
+  $ctx->diag($_) for @diag;
+  $ctx->release;
+
+  $ok;
 }
 
 =head2 alien_build_ok

@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added alien_install_type_is to Test::Alien::Build
+  - PkgConfig::CommandLine plugin supports multiple pkg_names
 
 0.78_01   2017-07-30 12:55:31 -0400
   - Development release otherwise identical to 0.77

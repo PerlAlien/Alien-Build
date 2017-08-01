@@ -1,0 +1,12 @@
+prefix=/test
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: xor
+Description: A testing pkg-config file
+Version: 4.2.1
+Libs: -L${libdir} -lxor
+Libs.private: -lxor1
+Cflags: -I${includedir}/xor
+Cflags.private: -DXOR_STATIC

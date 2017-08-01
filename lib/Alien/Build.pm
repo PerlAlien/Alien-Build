@@ -310,6 +310,12 @@ relevant once the install process is complete.
 
 The version of L<Alien::Build> used to install the library or tool.
 
+=item alt
+
+Alternate configurations.  If the alienized package has multiple
+libraries this could be used to store the different compiler or
+linker flags for each library.
+
 =item cflags
 
 The compiler flags

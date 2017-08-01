@@ -28,7 +28,8 @@ the best command line tools to accomplish this task.
 
 =head2 pkg_name
 
-The package name.
+The package name.  If this is a list reference then .pc files with all those package
+names must be present.
 
 =cut
 
@@ -64,11 +65,14 @@ sub _val
   my $string = $args->{out};
   chomp $string;
   $string =~ s{^\s+}{};
-  if($prop_name eq 'version')
+  if($prop_name =~ /version$/)
   { $string =~ s{\s*$}{} }
   else
   { $string =~ s{\s*$}{ } }
-  $build->runtime_prop->{$prop_name} = $string;
+  if($prop_name =~ /^(.*?)\.(.*?)\.(.*?)$/)
+  { $build->runtime_prop->{$1}->{$2}->{$3} = $string }
+  else
+  { $build->runtime_prop->{$prop_name} = $string }
   ();
 }
 
@@ -77,39 +81,50 @@ sub init
   my($self, $meta) = @_;
   
   my $pkgconf = $self->bin_name;
+
+  $meta->add_requires('configure', 'Alien::Build::Plugin::PkgConfig::CommandLine' => '0.79') if ref $self->pkg_name;
   
-  my @probe = (
-    [$pkgconf, '--exists', $self->pkg_name],
-  );
+  my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
+  
+  my @probe = map { [$pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
   
   if(defined $self->minimum_version)
   {
-    push @probe, [ $pkgconf, '--atleast-version=' . $self->minimum_version, $self->pkg_name ];
+    push @probe, [ $pkgconf, '--atleast-version=' . $self->minimum_version, $pkg_name ];
   }
 
   unshift @probe, sub {
     my($build) = @_;
-    $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
+    $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
   };
   
   $meta->register_hook(
     probe => \@probe
   );
   
-  my @gather_system = ( [ $pkgconf, '--exists', $self->pkg_name ] );
+  my @gather_system = map { [ $pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
   
   foreach my $prop_name (qw( cflags libs version ))
   {
     my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
     push @gather_system,
-      [ $pkgconf, $flag, $self->pkg_name, sub { _val @_, $prop_name } ];
+      [ $pkgconf, $flag, $pkg_name, sub { _val @_, $prop_name } ];
+    foreach my $alt ($pkg_name, @alt_names)
+    {
+      push @gather_system,
+        [ $pkgconf, $flag, $alt, sub { _val @_, "alt.$alt.$prop_name" } ];
+    }
   }
 
   foreach my $prop_name (qw( cflags libs ))
   {
-    my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
     push @gather_system,
-      [ $pkgconf, '--static', $flag, $self->pkg_name, sub { _val @_, "${prop_name}_static" } ];
+      [ $pkgconf, '--static', "--$prop_name", $pkg_name, sub { _val @_, "${prop_name}_static" } ];
+    foreach my $alt ($pkg_name, @alt_names)
+    {
+      push @gather_system,
+        [ $pkgconf, '--static', "--$prop_name", $alt, sub { _val @_, "alt.$alt.${prop_name}_static" } ];
+    }
   }
   
   $meta->register_hook(

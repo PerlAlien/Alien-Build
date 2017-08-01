@@ -189,4 +189,116 @@ subtest alien_build_ok => sub {
 
 };
 
+subtest 'alien_install_type_is' => sub {
+
+
+  my $ret;
+
+  subtest 'no alienfile' => sub {
+
+    eval { alienfile q{ die } };
+    
+    is(
+      intercept { $ret = alien_install_type_is 'system' },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'alien install type is system';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => 'no alienfile';
+        };
+        end;
+      },
+      'test for anything',
+    );
+  
+    is $ret, F(), 'return false';
+  };
+  
+  subtest 'is system' => sub {
+  
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'system' };
+    };
+    
+    is(
+      intercept { $ret = alien_install_type_is 'system', 'some name' },
+      array {
+        event Ok => sub {
+          call pass => T();
+          call name => 'some name';
+        };
+        end;
+      },
+      'check for system',
+    );
+    
+    is $ret, T(), 'return true';
+
+    is(
+      intercept { $ret = alien_install_type_is 'share', 'some name' },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'some name';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => 'expected install type of share, but got system';
+        };
+        end;
+      },
+      'check for share',
+    );
+    
+    is $ret, F(), 'return false';
+  
+  };
+
+  subtest 'is share' => sub {
+  
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+    };
+    
+    is(
+      intercept { $ret = alien_install_type_is 'share', 'some other name' },
+      array {
+        event Ok => sub {
+          call pass => T();
+          call name => 'some other name';
+        };
+        end;
+      },
+      'check for share',
+    );
+    
+    is $ret, T(), 'return true';
+
+    is(
+      intercept { $ret = alien_install_type_is 'system', 'some other name' },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'some other name';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => 'expected install type of system, but got share';
+        };
+        end;
+      },
+      'check for system',
+    );
+    
+    is $ret, F(), 'return false';
+  
+  };
+  
+};
+
 done_testing;
