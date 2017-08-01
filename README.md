@@ -229,6 +229,12 @@ relevant once the install process is complete.
 
     The version of [Alien::Build](https://metacpan.org/pod/Alien::Build) used to install the library or tool.
 
+- alt
+
+    Alternate configurations.  If the alienized package has multiple
+    libraries this could be used to store the different compiler or
+    linker flags for each library.
+
 - cflags
 
     The compiler flags

@@ -24,6 +24,10 @@ In some cases you may need to use this plugin directly instead.
 This plugin provides Probe and Gather steps for pkg-config based packages.  It uses
 L<PkgConfig::LibPkgConf> to accomplish this task.
 
+This plugin is part of the Alien::Build core For Now, but may be removed in a future
+date.  While It Seemed Like A Good Idea at the time, it may not be appropriate to keep
+it in core.  If it is spun off it will get its own distribution some time in the future.
+
 =head1 PROPERTIES
 
 =head2 pkg_name
