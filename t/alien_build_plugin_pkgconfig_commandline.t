@@ -114,14 +114,14 @@ subtest 'system multiple' => sub {
         field libs          => '-L/test/lib -lxor ';
         field libs_static   => '-L/test/lib -lxor -lxor1 ';
         field cflags        => '-I/test/include/xor ';
-        field cflags_static => '-I/test/include/xor -DXOR_STATIC ';
+        field cflags_static => D();
         field version       => '4.2.1';
         field alt => hash {
           field 'xor' => hash {
             field libs          => '-L/test/lib -lxor ';
             field libs_static   => '-L/test/lib -lxor -lxor1 ';
             field cflags        => '-I/test/include/xor ';
-            field cflags_static => '-I/test/include/xor -DXOR_STATIC ';
+            field cflags_static => D();
             field version       => '4.2.1';
             end;
           };
@@ -129,7 +129,7 @@ subtest 'system multiple' => sub {
             field libs          => '-L/test/lib -lxor-chillout ';
             field libs_static   => '-L/test/lib -lxor-chillout ';
             field cflags        => '-I/test/include/xor ';
-            field cflags_static => '-I/test/include/xor -DXOR_STATIC ';
+            field cflags_static => D();
             field version       => '4.2.2';
           };
           end;
