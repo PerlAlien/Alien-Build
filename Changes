@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - prefer non-legacy version
 
 0.79_01   2017-08-01 12:22:15 -0400
   - Added alien_install_type_is to Test::Alien::Build

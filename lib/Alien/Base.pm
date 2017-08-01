@@ -325,9 +325,13 @@ determined at install time.
 
 sub version {
   my $self = shift;
-  my $version = $self->config('version');
-  chomp $version;
-  return $version;
+  return $class->runtime_prop
+    ? $class->runtime_prop->{version}
+    : do {
+      my $version = $self->config('version');
+      chomp $version;
+      $version;
+    };
 }
 
 =head2 install_type
