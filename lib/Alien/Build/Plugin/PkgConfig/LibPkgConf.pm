@@ -32,7 +32,8 @@ it in core.  If it is spun off it will get its own distribution some time in the
 
 =head2 pkg_name
 
-The package name.
+The package name.  If this is a list reference then .pc files with all those package
+names must be present.
 
 =cut
 
@@ -65,21 +66,30 @@ sub init
     }
   }
   
+  my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
+
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
-      $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
+      $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
     
       my $client = PkgConfig::LibPkgConf::Client->new;
-      my $pkg = $client->find($self->pkg_name);
-      die "package @{[ $self->pkg_name ]} not found" unless $pkg;
+      my $pkg = $client->find($pkg_name);
+      die "package $pkg_name not found" unless $pkg;
       if(defined $self->minimum_version)
       {
         if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->minimum_version) == -1)
         {
-          die "package @{[ $self->pkg_name ]} is not recent enough";
+          die "package $pkg_name is not recent enough";
         }
       }
+      
+      foreach my $alt (@alt_names)
+      {
+        my $pkg = $client->find($alt);
+        die "package $alt not found" unless $pkg;
+      }
+      
       'system';
     },
   );
@@ -88,14 +98,31 @@ sub init
     $_ => sub {
       my($build) = @_;
       my $client = PkgConfig::LibPkgConf::Client->new;
-      my $pkg = $client->find($self->pkg_name);
-      die "reload of package @{[ $self->pkg_name ]} failed" unless defined $pkg;
       
-      $build->runtime_prop->{version}        = $pkg->version;
-      $build->runtime_prop->{cflags}         = $pkg->cflags;
-      $build->runtime_prop->{libs}           = $pkg->libs;
-      $build->runtime_prop->{cflags_static}  = $pkg->cflags_static;
-      $build->runtime_prop->{libs_static}    = $pkg->libs_static;
+      foreach my $name ($pkg_name, @alt_names)
+      {
+        my $pkg = $client->find($name);
+        die "reload of package $name failed" unless defined $pkg;
+
+        my %prop;      
+        $prop{version}        = $pkg->version;
+        $prop{cflags}         = $pkg->cflags;
+        $prop{libs}           = $pkg->libs;
+        $prop{cflags_static}  = $pkg->cflags_static;
+        $prop{libs_static}    = $pkg->libs_static;
+        $build->runtime_prop->{alt}->{$name} = \%prop;
+      }
+      
+      foreach my $key (keys %{ $build->runtime_prop->{alt}->{$pkg_name} })
+      {
+        $build->runtime_prop->{$key} = $build->runtime_prop->{alt}->{$pkg_name}->{$key};
+      }
+
+      $DB::single = 1;      
+      if(keys %{ $build->runtime_prop->{alt} } == 1)
+      {
+        delete $build->runtime_prop->{alt};
+      }
     },
   ) for qw( gather_system gather_share );
   

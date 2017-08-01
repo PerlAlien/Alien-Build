@@ -29,7 +29,8 @@ L<PkgConfig> to accomplish this task.
 
 =head2 pkg_name
 
-The package name.
+The package name.  If this is a list reference then .pc files with all those package
+names must be present.
 
 =cut
 
@@ -120,6 +121,10 @@ sub init
     foreach my $key (keys %{ $build->runtime_prop->{alt}->{$pkg_name} })
     {
       $build->runtime_prop->{$key} = $build->runtime_prop->{alt}->{$pkg_name}->{$key};
+    }
+    if(keys %{ $build->runtime_prop->{alt} } == 1)
+    {
+      delete $build->runtime_prop->{alt};
     }
   };
   

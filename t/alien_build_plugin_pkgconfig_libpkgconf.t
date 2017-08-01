@@ -82,6 +82,65 @@ subtest 'system available, okay' => sub {
     },
   );
   
+  is(
+    $build->runtime_prop->{alt},
+    U(),
+  );
+  
+};
+
+subtest 'system multiple' => sub {
+
+  subtest 'all found in system' => sub {
+  
+    my $build = alienfile_ok q{
+  
+      use alienfile;
+      plugin 'PkgConfig::LibPkgConf' => (
+        pkg_name => [ 'xor', 'xor-chillout' ],
+      );
+  
+    };
+
+    alien_install_type_is 'system';  
+    
+    my $alien = alien_build_ok;
+    
+    use Alien::Build::Util qw( _dump );
+    note _dump($alien->runtime_prop);
+
+    is(
+      $alien->runtime_prop,
+      hash {
+        field libs          => '-L/test/lib -lxor ';
+        field libs_static   => '-L/test/lib -lxor -lxor1 ';
+        field cflags        => '-I/test/include/xor ';
+        field cflags_static => '-I/test/include/xor -DXOR_STATIC ';
+        field version       => '4.2.1';
+        field alt => hash {
+          field 'xor' => hash {
+            field libs          => '-L/test/lib -lxor ';
+            field libs_static   => '-L/test/lib -lxor -lxor1 ';
+            field cflags        => '-I/test/include/xor ';
+            field cflags_static => '-I/test/include/xor -DXOR_STATIC ';
+            field version       => '4.2.1';
+            end;
+          };
+          field 'xor-chillout' => hash {
+            field libs          => '-L/test/lib -lxor-chillout ';
+            field libs_static   => '-L/test/lib -lxor-chillout ';
+            field cflags        => '-I/test/include/xor ';
+            field cflags_static => '-I/test/include/xor -DXOR_STATIC ';
+            field version       => '4.2.2';
+          };
+          end;
+        };
+        etc;
+      },
+    );
+    
+  };
+
 };
 
 done_testing;

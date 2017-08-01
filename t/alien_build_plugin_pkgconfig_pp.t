@@ -74,6 +74,11 @@ subtest 'system available, okay' => sub {
   
   note "cflags_static = @{[ $build->runtime_prop->{cflags_static} ]}";
 
+  is(
+    $build->runtime_prop->{alt},
+    U(),
+  );
+
 };
 
 subtest 'system multiple' => sub {

@@ -5,6 +5,7 @@ Revision history for {{$dist->name}}
   - PkgConfig::CommandLine plugin supports multiple pkg_names
   - PkgConfig::PP plugin supports multiple pkg_names
   - PkgConfig::LibPkgConf is a candidate for removing from core
+  - PkgConfig::LibPkgConf plugin supports multiple pkg_names
 
 0.78_01   2017-07-30 12:55:31 -0400
   - Development release otherwise identical to 0.77

@@ -128,6 +128,16 @@ sub init
   $meta->register_hook(
     $_ => \@gather,
   ) for qw( gather_system gather_share );
+
+  $meta->after_hook(
+    $_ => sub {
+      my($build) = @_;
+      if(keys %{ $build->runtime_prop->{alt} } == 1)
+      {
+        delete $build->runtime_prop->{alt};
+      }
+    },
+  ) for qw( gather_system gather_share );
   
   $self;
 }
