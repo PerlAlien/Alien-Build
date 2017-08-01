@@ -102,33 +102,33 @@ sub init
     probe => \@probe
   );
   
-  my @gather_system = map { [ $pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
+  my @gather = map { [ $pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
   
   foreach my $prop_name (qw( cflags libs version ))
   {
     my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
-    push @gather_system,
+    push @gather,
       [ $pkgconf, $flag, $pkg_name, sub { _val @_, $prop_name } ];
     foreach my $alt ($pkg_name, @alt_names)
     {
-      push @gather_system,
+      push @gather,
         [ $pkgconf, $flag, $alt, sub { _val @_, "alt.$alt.$prop_name" } ];
     }
   }
 
   foreach my $prop_name (qw( cflags libs ))
   {
-    push @gather_system,
+    push @gather,
       [ $pkgconf, '--static', "--$prop_name", $pkg_name, sub { _val @_, "${prop_name}_static" } ];
     foreach my $alt ($pkg_name, @alt_names)
     {
-      push @gather_system,
+      push @gather,
         [ $pkgconf, '--static', "--$prop_name", $alt, sub { _val @_, "alt.$alt.${prop_name}_static" } ];
     }
   }
   
   $meta->register_hook(
-    $_ => \@gather_system,
+    $_ => \@gather,
   ) for qw( gather_system gather_share );
   
   $self;
