@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.81_01   2017-08-01 15:03:22 -0400
+  - Development release otherwise identical to 0.80
+
 0.80      2017-08-01 14:49:14 -0400
   - Prefer non-legacy version
   - Fix PkgConfig::CommandLine bug introduced in 0.79_01
