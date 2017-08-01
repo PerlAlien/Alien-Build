@@ -43,6 +43,7 @@ require_ok 'Alien::Build::Plugin::Probe::CBuilder';
 require_ok 'Alien::Build::Plugin::Probe::CommandLine';
 require_ok 'Alien::Build::Util';
 require_ok 'Alien::Build::Util::Win32::RegistryDump';
+require_ok 'Alien::Role';
 require_ok 'Test::Alien';
 require_ok 'Test::Alien::Build';
 require_ok 'Test::Alien::CanCompile';
