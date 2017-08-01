@@ -70,7 +70,12 @@ sub init
 
   my $plugin = $self->_pick;
   Alien::Build->log("Using PkgConfig plugin: $plugin");
-    
+  
+  if(ref($self->pkg_name) eq 'ARRAY')
+  {
+    $meta->add_requires('configure', 'Alien::Build::Plugin::PkgConfig::Negotiate' => '0.79');
+  }
+  
   $self->subplugin($plugin,
     pkg_name        => $self->pkg_name,
     minimum_version => $self->minimum_version,
