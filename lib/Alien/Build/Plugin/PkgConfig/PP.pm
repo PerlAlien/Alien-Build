@@ -62,24 +62,32 @@ sub init
   {
     $meta->add_requires('configure' => 'PkgConfig' => '0.14026');
   }
+  
+  my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
 
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
-      $build->runtime_prop->{legacy}->{name} ||= $self->pkg_name;
+      $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
 
-      require PkgConfig;
-      my $pkg = PkgConfig->find($self->pkg_name);
-      die "package @{[ $self->pkg_name ]} not found" if $pkg->errmsg;
+      my $pkg = PkgConfig->find($pkg_name);
+      die "package @{[ $pkg_name ]} not found" if $pkg->errmsg;
       if(defined $self->minimum_version)
       {
         my $version = PkgConfig::Version->new($pkg->pkg_version);
         my $need    = PkgConfig::Version->new($self->minimum_version);
         if($version < $need)
         {
-          die "package @{[ $self->pkg_name ]} is not recent enough";
+          die "package @{[ $pkg_name ]} is not recent enough";
         }
       }
+      
+      foreach my $alt (@alt_names)
+      {
+        my $pkg = PkgConfig->find($alt);
+        die "package $alt not found" if $pkg->errmsg;
+      }
+      
       'system';
     },
   );
@@ -87,23 +95,33 @@ sub init
   my $gather = sub {
     my($build) = @_;
     require PkgConfig;
-    my $pkg = PkgConfig->find($self->pkg_name, search_path => [@PKG_CONFIG_PATH]);
-    if($pkg->errmsg)
+
+    foreach my $name ($pkg_name, @alt_names)
     {
-      $build->log("Trying to load the pkg-config information from the source code build");
-      $build->log("of your package failed");
-      $build->log("You are currently using the pure-perl implementation of pkg-config");
-      $build->log("(AB Plugin is named PkgConfig::PP, which uses PkgConfig.pm");
-      $build->log("It may work better with the real pkg-config.");
-      $build->log("Try installing your OS' version of pkg-config or unset ALIEN_BUILD_PKG_CONFIG");
-      die "second load of PkgConfig.pm @{[ $self->pkg_name ]} failed: @{[ $pkg->errmsg ]}"
+      my $pkg = PkgConfig->find($name, search_path => [@PKG_CONFIG_PATH]);
+      if($pkg->errmsg)
+      {
+        $build->log("Trying to load the pkg-config information from the source code build");
+        $build->log("of your package failed");
+        $build->log("You are currently using the pure-perl implementation of pkg-config");
+        $build->log("(AB Plugin is named PkgConfig::PP, which uses PkgConfig.pm");
+        $build->log("It may work better with the real pkg-config.");
+        $build->log("Try installing your OS' version of pkg-config or unset ALIEN_BUILD_PKG_CONFIG");
+        die "second load of PkgConfig.pm @{[ $name ]} failed: @{[ $pkg->errmsg ]}"
+      }
+      my %prop;
+      $prop{cflags}  = _cleanup scalar $pkg->get_cflags;
+      $prop{libs}    = _cleanup scalar $pkg->get_ldflags;
+      $prop{version} = $pkg->pkg_version;
+      $pkg = PkgConfig->find($name, static => 1, search_path => [@PKG_CONFIG_PATH]);
+      $prop{cflags_static} = _cleanup scalar $pkg->get_cflags;
+      $prop{libs_static}   = _cleanup scalar $pkg->get_ldflags;
+      $build->runtime_prop->{alt}->{$name} = \%prop;
     }
-    $build->runtime_prop->{cflags}  = _cleanup scalar $pkg->get_cflags;
-    $build->runtime_prop->{libs}    = _cleanup scalar $pkg->get_ldflags;
-    $build->runtime_prop->{version} = $pkg->pkg_version;
-    $pkg = PkgConfig->find($self->pkg_name, static => 1, search_path => [@PKG_CONFIG_PATH]);
-    $build->runtime_prop->{cflags_static} = _cleanup scalar $pkg->get_cflags;
-    $build->runtime_prop->{libs_static}   = _cleanup scalar $pkg->get_ldflags;
+    foreach my $key (keys %{ $build->runtime_prop->{alt}->{$pkg_name} })
+    {
+      $build->runtime_prop->{$key} = $build->runtime_prop->{alt}->{$pkg_name}->{$key};
+    }
   };
   
   $meta->register_hook(

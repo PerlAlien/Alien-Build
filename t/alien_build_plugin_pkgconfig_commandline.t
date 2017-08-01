@@ -85,9 +85,6 @@ subtest 'system available, okay' => sub {
 
 subtest 'system multiple' => sub {
 
-  local $Alien::Build::Plugin::PkgConfig::CommandLine::VERSION = '0.79'
-    unless defined $Alien::Build::Plugin::PkgConfig::CommandLine::VERSION;
-
   subtest 'all found in system' => sub {
   
     my $build = alienfile_ok q{
