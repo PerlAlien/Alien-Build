@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.83_01   2017-08-03 19:24:30 -0400
+  - Development release otherwise identical to 0.82
+
 0.82      2017-08-03 16:51:26 -0400
   - Require ExtUtils::ParseXS 3.30 (gh#28)
   - Revert regression where PkgConfig.pm would not loaded before use
