@@ -73,11 +73,13 @@ sub init
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
     
+      require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($pkg_name);
       die "package $pkg_name not found" unless $pkg;
       if(defined $self->minimum_version)
       {
+        require PkgConfig::LibPkgConf::Util;
         if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->minimum_version) == -1)
         {
           die "package $pkg_name is not recent enough";
@@ -97,6 +99,7 @@ sub init
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
+      require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
       
       foreach my $name ($pkg_name, @alt_names)

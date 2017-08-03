@@ -95,6 +95,7 @@ sub init
 
   my $gather = sub {
     my($build) = @_;
+    require PkgConfig;
 
     foreach my $name ($pkg_name, @alt_names)
     {
