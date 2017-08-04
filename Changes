@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.84_01   2017-08-04 15:15:48 -0400
   - Fix testing failure on msys2/mingw32/64 which has a pkg-config
     that defaults to rewriting prefix.
   - Fix skip in test which could cause failure in PkgConfig::PP test
