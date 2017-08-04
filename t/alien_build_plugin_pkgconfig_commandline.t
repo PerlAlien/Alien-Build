@@ -14,6 +14,8 @@ ok $bin_name, 'has bin_name';
 note "it be $bin_name";
 note "PKG_CONFIG_PATH=$ENV{PKG_CONFIG_PATH}";
 
+my $prefix = '/test';
+
 sub build
 {
   my $build = alienfile filename => 'corpus/blank/alienfile';
@@ -64,13 +66,24 @@ subtest 'system available, okay' => sub {
   
   note capture_merged { $build->build; () };
   
+  if($^O eq 'MSWin32')
+  {
+    if($build->runtime_prop->{cflags} =~ m/-I(.*)\/include\/foo/)
+    {
+      $prefix = $1;
+      ok(-f "$prefix/lib/pkgconfig/foo.pc", "relocation looks okay");
+      note "prefix = $prefix\n";
+      note "-f $prefix/lib/pkgconfig/foo.pc";
+    }
+  }
+  
   is(
     $build->runtime_prop,
     hash {
       #field cflags      => match qr/-fPIC/;
-      field cflags      => match qr/-I\/test\/include\/foo/;
-      field libs        => '-L/test/lib -lfoo ';
-      field libs_static => '-L/test/lib -lfoo -lbar -lbaz ';
+      field cflags      => match qr/-I\Q$prefix\E\/include\/foo/;
+      field libs        => "-L$prefix/lib -lfoo ";
+      field libs_static => "-L$prefix/lib -lfoo -lbar -lbaz ";
       field version     => '1.2.3';
       etc;
     },
@@ -111,24 +124,24 @@ subtest 'system multiple' => sub {
     is(
       $alien->runtime_prop,
       hash {
-        field libs          => '-L/test/lib -lxor ';
-        field libs_static   => '-L/test/lib -lxor -lxor1 ';
-        field cflags        => '-I/test/include/xor ';
+        field libs          => "-L$prefix/lib -lxor ";
+        field libs_static   => "-L$prefix/lib -lxor -lxor1 ";
+        field cflags        => "-I$prefix/include/xor ";
         field cflags_static => D();
         field version       => '4.2.1';
         field alt => hash {
           field 'xor' => hash {
-            field libs          => '-L/test/lib -lxor ';
-            field libs_static   => '-L/test/lib -lxor -lxor1 ';
-            field cflags        => '-I/test/include/xor ';
+            field libs          => "-L$prefix/lib -lxor ";
+            field libs_static   => "-L$prefix/lib -lxor -lxor1 ";
+            field cflags        => "-I$prefix/include/xor ";
             field cflags_static => D();
             field version       => '4.2.1';
             end;
           };
           field 'xor-chillout' => hash {
-            field libs          => '-L/test/lib -lxor-chillout ';
-            field libs_static   => '-L/test/lib -lxor-chillout ';
-            field cflags        => '-I/test/include/xor ';
+            field libs          => "-L$prefix/lib -lxor-chillout ";
+            field libs_static   => "-L$prefix/lib -lxor-chillout ";
+            field cflags        => "-I$prefix/include/xor ";
             field cflags_static => D();
             field version       => '4.2.2';
           };
