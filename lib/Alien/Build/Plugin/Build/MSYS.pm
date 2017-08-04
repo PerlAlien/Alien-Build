@@ -22,15 +22,29 @@ for building software that is normally expected in a UNIX or POSIX environment.
 This like C<sh>, C<awk> and C<make>.  To provide MSYS, this plugin uses
 L<Alien::MSYS>.
 
+=head1 PROPERTIES
+
+=head2 msys_version
+
+The version of L<Alien::MSYS> required if it is deemed necessary.  If L<Alien::MSYS>
+isn't needed (if running under Unix, or MSYS2, for example) this will do nothing.
+
 =cut
+
+has msys_version   => '0.07';
 
 sub init
 {
   my($self, $meta) = @_;
   
+  if($self->msys_version ne '0.07')
+  {
+    $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::MSYS' => '0.84');
+  }
+  
   if(_win_and_needs_msys())
   {
-    $meta->add_requires('share' => 'Alien::MSYS' => '0.07');
+    $meta->add_requires('share' => 'Alien::MSYS' => $self->msys_version);
     
     $meta->around_hook(
       build => sub {

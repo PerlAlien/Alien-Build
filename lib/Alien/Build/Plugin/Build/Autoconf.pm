@@ -45,18 +45,25 @@ autoconf, but are really an autoconf style interface with a different implementa
 They may fail if you try to provide it with options such as C<--with-pic> that they do
 not recognize.  Such packages are the rationale for this property.
 
+=head2 msys_version
+
+The version of L<Alien::MSYS> required if it is deemed necessary.  If L<Alien::MSYS>
+isn't needed (if running under Unix, or MSYS2, for example) this will do nothing.
+
 =cut
 
 has with_pic       => 1;
-#has dynamic        => 0; # TODO
 has ffi            => 0;
+has msys_version   => undef;
 
 sub init
 {
   my($self, $meta) = @_;
   
   require Alien::Build::Plugin::Build::MSYS;
-  Alien::Build::Plugin::Build::MSYS->new->init($meta);
+  Alien::Build::Plugin::Build::MSYS->new(
+    (defined $self->msys_version ? (msys_version => $self->msys_version) : ()),
+  )->init($meta);
   
   $meta->prop->{destdir} = 1;
   $meta->prop->{autoconf} = 1;
