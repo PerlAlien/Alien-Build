@@ -154,6 +154,24 @@ but if you do not follow this rule your recipe will likely be broken.
         The main difference is that with Visual C++ `-LIBPATH` should be used instead
         of `-L`, and static libraries should have the `.LIB` suffix instead of `.a`.
 
+    - system\_type
+
+        `$^O` is frequently good enough to make platform specific logic in your
+        [alienfile](https://metacpan.org/pod/alienfile), this handles the case when $^O can cover platforms that provide
+        multiple environments that Perl might run under.  The main example is windows,
+        but others may be added in the future.
+
+        - unix
+        - vms
+        - windows-activestate
+        - windows-microsoft
+        - windows-mingw
+        - windows-strawberry
+        - windows
+
+        Note that `cygwin` and `msys` are considered `unix` even though they run
+        on windows!
+
 - start\_url
 
     The default or start URL used by fetch plugins.

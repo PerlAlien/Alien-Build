@@ -206,6 +206,34 @@ Virtually everything else, including gcc on windows.
 The main difference is that with Visual C++ C<-LIBPATH> should be used instead
 of C<-L>, and static libraries should have the C<.LIB> suffix instead of C<.a>.
 
+=item system_type
+
+C<$^O> is frequently good enough to make platform specific logic in your
+L<alienfile>, this handles the case when $^O can cover platforms that provide
+multiple environments that Perl might run under.  The main example is windows,
+but others may be added in the future.
+
+=over 4
+
+=item unix
+
+=item vms
+
+=item windows-activestate
+
+=item windows-microsoft
+
+=item windows-mingw
+
+=item windows-strawberry
+
+=item windows
+
+=back
+
+Note that C<cygwin> and C<msys> are considered C<unix> even though they run
+on windows!
+
 =back
 
 =item start_url
@@ -334,7 +362,7 @@ Linux and C<gmake> on FreeBSD.
 
 The install type.  Is one of:
 
-=over
+=over 4
 
 =item system
 
