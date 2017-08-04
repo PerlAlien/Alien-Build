@@ -42,7 +42,7 @@ sub init
     $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::MSYS' => '0.84');
   }
   
-  if(_win_and_needs_msys())
+  if(_win_and_needs_msys($meta))
   {
     $meta->add_requires('share' => 'Alien::MSYS' => $self->msys_version);
     
@@ -87,17 +87,14 @@ projects will not build with C<nmake> or C<dmake> typically used by Perl on Wind
 
 sub _win_and_needs_msys
 {
+  my(undef, $meta) = @_;
   # check to see if we are running on windows.
   # if we are running on windows, check to see if
   # it is MSYS2, then we can just use that.  Otherwise
   # we are probably on Strawberry, or (less likely)
   # VC Perl, in which case we will still need Alien::MSYS
   return 0 unless $^O eq 'MSWin32';
-  my $uname_exe = File::Which::which('uname');
-  return 1 unless $uname_exe;
-  my $uname = `$uname_exe`;
-  chomp $uname;
-  return 0 if $uname =~ /^(MSYS|MINGW32|MINGW64)_NT/;
+  return 1 if $meta->prop->{platform}->{system_type} eq 'windows-mingw';
   return 1;
 }
 

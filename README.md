@@ -167,7 +167,7 @@ but if you do not follow this rule your recipe will likely be broken.
         - windows-microsoft
         - windows-mingw
         - windows-strawberry
-        - windows
+        - windows-unknown
 
         Note that `cygwin` and `msys` are considered `unix` even though they run
         on windows!

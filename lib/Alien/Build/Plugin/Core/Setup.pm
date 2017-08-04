@@ -45,6 +45,8 @@ sub _platform
   
   if($^O eq 'MSWin32')
   {
+    $hash->{system_type} = 'windows-unknown';
+
     if(defined &Win32::BuildNumber)
     {
       $hash->{system_type} = 'windows-activestate';
@@ -59,8 +61,6 @@ sub _platform
     }
     else
     {
-      $hash->{system_type} = 'windows';
-
       my $uname_exe = which('uname');
       if($uname_exe)
       {

@@ -227,7 +227,7 @@ but others may be added in the future.
 
 =item windows-strawberry
 
-=item windows
+=item windows-unknown
 
 =back
 
