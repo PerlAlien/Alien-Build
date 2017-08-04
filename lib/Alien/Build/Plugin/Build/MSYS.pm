@@ -87,7 +87,7 @@ projects will not build with C<nmake> or C<dmake> typically used by Perl on Wind
 
 sub _win_and_needs_msys
 {
-  my(undef, $meta) = @_;
+  my($meta) = @_;
   # check to see if we are running on windows.
   # if we are running on windows, check to see if
   # it is MSYS2, then we can just use that.  Otherwise
