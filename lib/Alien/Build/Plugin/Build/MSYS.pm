@@ -94,7 +94,7 @@ sub _win_and_needs_msys
   # we are probably on Strawberry, or (less likely)
   # VC Perl, in which case we will still need Alien::MSYS
   return 0 unless $^O eq 'MSWin32';
-  return 1 if $meta->prop->{platform}->{system_type} eq 'windows-mingw';
+  return 0 if $meta->prop->{platform}->{system_type} eq 'windows-mingw';
   return 1;
 }
 
