@@ -97,6 +97,9 @@ pod_spelling_system:
     - Shipp
     - kmx
     - rpath
+    - activestate
+    - mingw
+    - vms
 
 pod_coverage:
   skip: 0
