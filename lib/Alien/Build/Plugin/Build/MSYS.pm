@@ -57,6 +57,7 @@ sub init
         $orig->($build, @_);
       },
     );
+  }
 
 =head1 HELPERS
 
@@ -69,7 +70,9 @@ L<Alien::MSYS>.  This is almost certainly what you want, as most unix style make
 projects will not build with C<nmake> or C<dmake> typically used by Perl on Windows.
 
 =cut
-  
+ 
+  if($^O eq 'MSWin32')
+  {
     # Most likely if we are trying to build something unix-y and
     # we are using MSYS, then we want to use the make that comes
     # with MSYS.
