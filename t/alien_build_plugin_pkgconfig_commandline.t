@@ -68,7 +68,8 @@ subtest 'system available, okay' => sub {
   
   if($^O eq 'MSWin32')
   {
-    if($build->runtime_prop->{cflags} =~ m/-I(.*)\/include\/foo/)
+    if($build->runtime_prop->{cflags} =~ m/-I(.*)\/include\/foo/
+    && $1 ne '/test')
     {
       $prefix = $1;
       ok(-f "$prefix/lib/pkgconfig/foo.pc", "relocation looks okay");
