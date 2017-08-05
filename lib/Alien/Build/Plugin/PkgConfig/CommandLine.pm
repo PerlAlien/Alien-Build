@@ -107,10 +107,13 @@ sub init
     my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
     push @gather,
       [ $pkgconf, $flag, $pkg_name, sub { _val @_, $prop_name } ];
-    foreach my $alt ($pkg_name, @alt_names)
+    if(@alt_names)
     {
-      push @gather,
-        [ $pkgconf, $flag, $alt, sub { _val @_, "alt.$alt.$prop_name" } ];
+      foreach my $alt ($pkg_name, @alt_names)
+      {
+        push @gather,
+          [ $pkgconf, $flag, $alt, sub { _val @_, "alt.$alt.$prop_name" } ];
+      }
     }
   }
 
@@ -118,10 +121,13 @@ sub init
   {
     push @gather,
       [ $pkgconf, '--static', "--$prop_name", $pkg_name, sub { _val @_, "${prop_name}_static" } ];
-    foreach my $alt ($pkg_name, @alt_names)
+    if(@alt_names)
     {
-      push @gather,
-        [ $pkgconf, '--static', "--$prop_name", $alt, sub { _val @_, "alt.$alt.${prop_name}_static" } ];
+      foreach my $alt ($pkg_name, @alt_names)
+      {
+        push @gather,
+          [ $pkgconf, '--static', "--$prop_name", $alt, sub { _val @_, "alt.$alt.${prop_name}_static" } ];
+      }
     }
   }
   
@@ -132,7 +138,7 @@ sub init
   $meta->after_hook(
     $_ => sub {
       my($build) = @_;
-      if(keys %{ $build->runtime_prop->{alt} } == 1)
+      if(keys %{ $build->runtime_prop->{alt} } < 2)
       {
         delete $build->runtime_prop->{alt};
       }
