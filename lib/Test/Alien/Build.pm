@@ -11,7 +11,7 @@ use Test2::API qw( context );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 
-our @EXPORT = qw( alienfile alienfile_ok alien_build_ok alien_install_type_is );
+our @EXPORT = qw( alienfile alienfile_ok alien_build_ok alien_build_clean alien_install_type_is );
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
@@ -96,6 +96,7 @@ The install prefix for the build.
 =cut
 
 my $build;
+my $build_root;
 
 sub alienfile
 {
@@ -144,6 +145,7 @@ sub alienfile
   require Alien::Build;
   
   undef $build;
+  undef $build_root;
   my $out = capture_merged {
     $build = Alien::Build->load($args{filename}, root => $args{root});
     $build->set_stage($args{stage});
@@ -153,7 +155,8 @@ sub alienfile
   my $ctx = context();
   $ctx->note($out) if $out;
   $ctx->release;
-  
+
+  $build_root = $get_temp_root->();
   $build
 }
 
@@ -332,6 +335,34 @@ sub alien_build_ok
   $ctx->release;
   
   $alien;
+}
+
+=head2 alien_build_clean
+
+ alien_build_clean;
+
+Removes all files with the current build, except for the runtime prefix.
+This helps test that the final install won't depend on the build files.
+
+=cut
+
+sub alien_build_clean
+{
+  my $ctx = context();
+  if($build_root)
+  {
+    foreach my $child ($build_root->children)
+    {
+      next if $child->basename eq 'prefix';
+      $ctx->note("clean: rm: $child");
+      $child->remove_tree;
+    }
+  }
+  else
+  {
+    $ctx->note("no build to clean");
+  }
+  $ctx->release;
 }
 
 delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_BUILD_POSTLOAD ALIEN_INSTALL_TYPE );

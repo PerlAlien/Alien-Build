@@ -229,6 +229,8 @@ subtest 'system rewrite' => sub {
   
   };
 
+  alien_build_clean;
+
   subtest 'test from alien' => sub {
 
     my $inc = path($alien->cflags =~ /-I(\S*)/);
