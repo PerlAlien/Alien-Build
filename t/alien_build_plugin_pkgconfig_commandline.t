@@ -199,7 +199,7 @@ subtest 'system rewrite' => sub {
             
             Name: foo-foo
             Description: A testing pkg-config file
-            Version 1.2.3
+            Version: 1.2.3
             Libs: -L${libdir} -lfoofoo
             Cflags: -I${includedir}
           },
@@ -216,8 +216,6 @@ subtest 'system rewrite' => sub {
 
   subtest 'test from stage' => sub {
 
-    use YAML ();
-    note YAML::Dump($build->runtime_prop);
     my $inc = path($build->runtime_prop->{cflags} =~ /-I(\S*)/);
     my $lib = path($build->runtime_prop->{libs}   =~ /-L(\S*)/);
 
