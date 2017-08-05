@@ -239,11 +239,11 @@ subtest 'system rewrite' => sub {
 
     ok(-d $inc, "inc dir exists" );
     note "inc = $inc";
-    is($inc->child('foofoo.h')->slurp, "h foo-foo as staged\n", 'libfoofoo.a');
+    is(eval { $inc->child('foofoo.h')->slurp }, "h foo-foo as staged\n", 'libfoofoo.a');
     
     ok(-d $lib, "lib dir exists" );
     note "lib = $lib";
-    is($lib->child('libfoofoo.a')->slurp, "lib foo-foo as staged\n", 'libfoofoo.a');
+    is(eval { $lib->child('libfoofoo.a')->slurp }, "lib foo-foo as staged\n", 'libfoofoo.a');
   
   };
 
