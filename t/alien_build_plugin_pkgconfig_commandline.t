@@ -156,4 +156,97 @@ subtest 'system multiple' => sub {
 
 };
 
+subtest 'system rewrite' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    use Path::Tiny qw( path );
+
+    meta->prop->{destdir} = 1;
+    
+    plugin 'PkgConfig::CommandLine' => (
+      pkg_name => [ 'foo-foo' ],
+    );
+    
+    share {
+      download sub { path('file1')->touch };
+      extract sub { path('file1')->touch };
+      build sub {
+        my($build) = @_;
+        my $stage = path($ENV{DESTDIR});
+        my $prefix = path($build->install_prop->{prefix});
+        
+        {
+          my $tmp = $prefix->stringify;
+          $tmp =~ s!^([a-z]):!/$1!i if $^O eq 'MSWin32';
+          $stage = $stage->child($tmp);
+        }
+        
+        $stage->child('lib/pkgconfig')->mkpath;
+        $stage->child('lib/libfoofoo.a')->spew("lib foo-foo as staged\n");
+
+        $stage->child('include')->mkpath;
+        $stage->child('include/foofoo.h')->spew("h foo-foo as staged\n");
+
+        use YAML ();
+        $build->log(YAML::Dump($build->install_prop));
+        
+        $stage->child('lib/pkgconfig/foo-foo.pc')->spew(
+          "prefix=$prefix\n",
+          map { s/^\s*//; "$_\n" }
+          split /\n/,
+          q{
+            exec_prefix=${prefix}
+            libdir=${prefix}/lib
+            includedir=${prefix}/include
+            
+            Name: foo-foo
+            Description: A testing pkg-config file
+            Version 1.2.3
+            Libs: -L${libdir} -lfoofoo
+            Cflags: -I${includedir}
+          },
+        );
+        
+      };
+    };
+    
+  };
+  
+  alien_install_type_is 'share';
+  
+  my $alien = alien_build_ok;
+
+  subtest 'test from stage' => sub {
+
+    my $inc = path($build->runtime_prop->{cflags} =~ /-I(\S*)/);
+    my $lib = path($build->runtime_prop->{libs}   =~ /-L(\S*)/);
+
+    ok(-d $inc, "inc dir exists" );
+    note "inc = $inc";
+    is($inc->child('foofoo.h')->slurp, "h foo-foo as staged\n", 'libfoofoo.a');
+    
+    ok(-d $lib, "lib dir exists" );
+    note "lib = $lib";
+    is($lib->child('libfoofoo.a')->slurp, "lib foo-foo as staged\n", 'libfoofoo.a');
+  
+  };
+
+  subtest 'test from alien' => sub {
+
+    my $inc = path($alien->cflags =~ /-I(\S*)/);
+    my $lib = path($alien->libs   =~ /-L(\S*)/);
+
+    ok(-d $inc, "inc dir exists" );
+    note "inc = $inc";
+    is($inc->child('foofoo.h')->slurp, "h foo-foo as staged\n", 'libfoofoo.a');
+    
+    ok(-d $lib, "lib dir exists" );
+    note "lib = $lib";
+    is($lib->child('libfoofoo.a')->slurp, "lib foo-foo as staged\n", 'libfoofoo.a');
+  
+  };
+
+};
+
 done_testing;
