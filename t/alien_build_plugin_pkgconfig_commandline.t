@@ -188,9 +188,6 @@ subtest 'system rewrite' => sub {
         $stage->child('include')->mkpath;
         $stage->child('include/foofoo.h')->spew("h foo-foo as staged\n");
 
-        use YAML ();
-        $build->log(YAML::Dump($build->install_prop));
-        
         $stage->child('lib/pkgconfig/foo-foo.pc')->spew(
           "prefix=$prefix\n",
           map { s/^\s*//; "$_\n" }
@@ -219,6 +216,8 @@ subtest 'system rewrite' => sub {
 
   subtest 'test from stage' => sub {
 
+    use YAML ();
+    note YAML::Dump($build->runtime_prop);
     my $inc = path($build->runtime_prop->{cflags} =~ /-I(\S*)/);
     my $lib = path($build->runtime_prop->{libs}   =~ /-L(\S*)/);
 
@@ -239,11 +238,11 @@ subtest 'system rewrite' => sub {
 
     ok(-d $inc, "inc dir exists" );
     note "inc = $inc";
-    is(eval { $inc->child('foofoo.h')->slurp }, "h foo-foo as staged\n", 'libfoofoo.a');
+    is($inc->child('foofoo.h')->slurp, "h foo-foo as staged\n", 'libfoofoo.a');
     
     ok(-d $lib, "lib dir exists" );
     note "lib = $lib";
-    is(eval { $lib->child('libfoofoo.a')->slurp }, "lib foo-foo as staged\n", 'libfoofoo.a');
+    is($lib->child('libfoofoo.a')->slurp, "lib foo-foo as staged\n", 'libfoofoo.a');
   
   };
 

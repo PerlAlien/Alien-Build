@@ -99,7 +99,7 @@ sub init
   $meta->register_hook(
     probe => \@probe
   );
-  
+
   my @gather = map { [ $pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
   
   foreach my $prop_name (qw( cflags libs version ))

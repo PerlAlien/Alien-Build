@@ -121,7 +121,6 @@ sub init
         $build->runtime_prop->{$key} = $build->runtime_prop->{alt}->{$pkg_name}->{$key};
       }
 
-      $DB::single = 1;      
       if(keys %{ $build->runtime_prop->{alt} } == 1)
       {
         delete $build->runtime_prop->{alt};
