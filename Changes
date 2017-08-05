@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.87_01   2017-08-05 11:59:43 -0400
+  - Diagnostic release
+
 0.86_01   2017-08-05 11:51:23 -0400
   - Add alien_build_clean to Test::Alien::Build
   - Additional MSYS2 fixes
