@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Add alien_build_clean to Test::Alien::Build
+  - Additional MSYS2 fixes
 
 0.85_01   2017-08-04 15:17:52 -0400
   - Diagnostic release

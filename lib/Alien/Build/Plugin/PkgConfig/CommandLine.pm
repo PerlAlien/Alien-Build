@@ -131,9 +131,17 @@ sub init
     }
   }
   
-  $meta->register_hook(
-    $_ => \@gather,
-  ) for qw( gather_system gather_share );
+  $meta->register_hook(gather_system => [@gather]);
+
+  if($meta->prop->{platform}->{system_type} eq 'windows-mingw')
+  {
+    @gather = map {
+      my($pkgconf, @rest) = @$_;
+      [$pkgconf, '--dont-define-prefix', @rest],
+    } @gather;
+  }
+
+  $meta->register_hook(gather_share => [@gather]);
 
   $meta->after_hook(
     $_ => sub {
