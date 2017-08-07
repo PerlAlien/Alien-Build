@@ -320,7 +320,7 @@ sub _tar_can
   Path::Tiny->new($name)->spew_raw($tars{$name});
 
   my(undef, $exit) = capture_merged {
-    system 'tar', 'xf', $name;
+    system($self->tar_cmd, 'xf', $name);
     $?;
   };
   
