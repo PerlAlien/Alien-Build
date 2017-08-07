@@ -4,6 +4,7 @@ use Alien::Build::Plugin::Extract::ArchiveTar;
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
+use Alien::Build::Util qw( _dump );
 
 subtest 'archive' => sub {
 
@@ -23,21 +24,40 @@ subtest 'archive' => sub {
       my $archive = path("corpus/dist/foo-1.00.$ext")->absolute;
       
       my($out, $dir, $error) = capture_merged {
-        (eval { $build->extract("$archive") }, $@);
+        my $dir = eval { $build->extract("$archive") };
+        ($dir, $@);
       };
+      
+      my($bad1, $bad2);
+      
+      $bad1 = !!$error;
+      is $error, '';
 
       note $out if $out ne '';
-      note $error if $error;
       
-      $dir = path($dir);
-
-      ok( defined $dir && -d $dir, "directory created"   );
-      note "dir = $dir";
-
-      foreach my $name (qw( configure foo.c ))
+      if(defined $dir)
       {
-        my $file = $dir->child($name);
-        ok -f $file, "$name exists";
+        $dir = path($dir);
+
+        $bad2 = !ok( defined $dir && -d $dir, "directory created"   );
+        note "dir = $dir";
+
+        foreach my $name (qw( configure foo.c ))
+        {
+          my $file = $dir->child($name);
+          ok -f $file, "$name exists";
+        }
+      }
+      
+      if($bad1 || $bad2)
+      {
+        diag "failed with extension $ext";
+        diag _dump({ error => $error, dir => "$dir" });
+        if($out ne '')
+        {
+          diag "[out]";
+          diag $out;
+        }
       }
     }
   }

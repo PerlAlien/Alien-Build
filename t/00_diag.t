@@ -12,6 +12,9 @@ my $post_diag;
 $modules{$_} = $_ for qw(
   Acme::Alien::DontPanic
   Alien::Base::ModuleBuild
+  Alien::Libbz2
+  Alien::gzip
+  Alien::xz
   Archive::Tar
   Archive::Zip
   Capture::Tiny
@@ -26,10 +29,16 @@ $modules{$_} = $_ for qw(
   File::chdir
   HTML::LinkExtor
   HTTP::Tiny
+  IO::Compress::Bzip2
+  IO::Socket::SSL
+  IO::Uncompress::Bunzip2
+  IO::Zlib
   JSON::PP
   LWP
+  LWP::Protocol::https
   Module::Load
   Net::FTP
+  Net::SSLeay
   Path::Tiny
   PkgConfig
   PkgConfig::LibPkgConf
