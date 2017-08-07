@@ -11,7 +11,7 @@ use Test2::API qw( context );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 
-our @EXPORT = qw( alienfile alienfile_ok alien_extract_ok alien_build_ok alien_build_clean alien_install_type_is );
+our @EXPORT = qw( alienfile alienfile_ok alien_download_ok alien_extract_ok alien_build_ok alien_build_clean alien_install_type_is );
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
@@ -231,6 +231,70 @@ sub alien_install_type_is
   $ctx->release;
 
   $ok;
+}
+
+=head2 alien_download_ok
+
+ my $file = alien_download_ok;
+ my $file = alien_download_ok $name;
+
+Makes a download attempt and test that a file or directory results.  Returns
+the file or directory if successful.  Returns C<undef> otherwise.
+
+=cut
+
+sub alien_download_ok
+{
+  my($name) = @_;
+  
+  $name ||= 'alien download';
+  
+  my $ok;
+  my $file;
+  my @diag;
+  
+  if($build)
+  {
+    my($out, $error) = capture_merged {
+      eval {
+        $build->load_requires('configure');
+        $build->load_requires($build->install_type);
+        $build->download;
+      };
+      $@;
+    };
+    if($error)
+    {
+      $ok = 0;
+      push @diag, $out if defined $out;
+      push @diag, "extract threw exception: $error";
+    }
+    else
+    {
+      $file = $build->install_prop->{download};
+      if(-d $file || -f $file)
+      {
+        $ok = 1;
+      }
+      else
+      {
+        $ok = 0;
+        push @diag, 'no file or directory';
+      }
+    }
+  }
+  else
+  {
+    $ok = 0;
+    push @diag, 'no alienfile';
+  }
+  
+  my $ctx = context();
+  $ctx->ok($ok, $name);
+  $ctx->diag($_) for @diag;
+  $ctx->release;
+
+  $file;
 }
 
 =head2 alien_extract_ok

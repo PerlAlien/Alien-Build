@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add alien_download_ok to Test::Alien::Build
   - Add alien_extract_ok to Test::Alien::Build
 
 0.89_01   2017-08-07 08:57:48 -0400

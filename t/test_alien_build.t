@@ -301,6 +301,61 @@ subtest 'alien_install_type_is' => sub {
   
 };
 
+subtest 'alien_download_ok' => sub {
+
+  subtest 'good download' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+      probe sub { 'share' };
+      share {
+        download sub {
+          path('file1')->spew("xx\n");
+        };
+      };
+    };
+    
+    my $file = alien_download_ok;
+    
+    is(
+      path($file)->slurp,
+      "xx\n",
+      'file content matches',
+    );
+
+  };
+
+  subtest 'good download' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        download sub {
+        };
+      };
+    };
+    
+    my $file;
+    
+    is(
+      intercept { $file = alien_download_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+        };
+        etc;
+      },
+      'test fails',
+    );
+    
+    is($file, U(), 'return value is undef');
+
+  };
+
+};
+
 subtest 'alien_extract_ok' => sub {
 
   subtest 'good extract' => sub {
@@ -319,7 +374,11 @@ subtest 'alien_extract_ok' => sub {
       };
     };
     
-    alien_extract_ok;
+    my $dir = alien_extract_ok;
+    
+    is(-d $dir, T(), "dir is dir" );
+    is(-f path("$dir/file2"), T(), "has file2" );
+    is(-f path("$dir/file3"), T(), "has file3" );
   
   };
   
@@ -338,16 +397,20 @@ subtest 'alien_extract_ok' => sub {
         };
       };
     };
-    
+
+    my $dir;    
     is(
-      intercept { alien_extract_ok },
+      intercept { $dir = alien_extract_ok },
       array {
         event Ok => sub {
           call pass => F();
         };
         etc;
       },
+      'test fails',
     );
+    
+    is( $dir, U(), "dir is undef");
   };
   
 };
