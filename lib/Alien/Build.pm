@@ -1060,7 +1060,7 @@ sub extract
       $CWD = "$tmp";
     },
     verify => sub {
-      my @list = grep { $_->basename !~ /^\./, } _path('.')->children;
+      my @list = grep { $_->basename !~ /^\./ && $_->basename ne 'pax_global_header' } _path('.')->children;
       
       my $count = scalar @list;
       

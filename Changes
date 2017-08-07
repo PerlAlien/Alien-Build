@@ -3,6 +3,8 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Add alien_download_ok to Test::Alien::Build
   - Add alien_extract_ok to Test::Alien::Build
+  - Extract now ignores pax_global_header, produced by extracting some
+    tarballs using older tars (including older versions of Archive::Tar).
 
 0.89_01   2017-08-07 08:57:48 -0400
   - Extract negotiator plugin checks for .gz and .bz2 support in
