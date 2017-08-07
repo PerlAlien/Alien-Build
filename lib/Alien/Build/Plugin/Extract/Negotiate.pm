@@ -42,8 +42,6 @@ sub init
   $format = 'tar.bz2' if $format eq 'tbz';
   $format = 'tar.xz'  if $format eq 'txz';
   
-  my $extract;
-
   my $extract = $self->_pick($format);
   
   $self->_plugin($meta, 'Extract', $extract, format => $format);
