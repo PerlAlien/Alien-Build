@@ -11,7 +11,7 @@ use Test2::API qw( context );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 
-our @EXPORT = qw( alienfile alienfile_ok alien_build_ok alien_build_clean alien_install_type_is );
+our @EXPORT = qw( alienfile alienfile_ok alien_extract_ok alien_build_ok alien_build_clean alien_install_type_is );
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
@@ -231,6 +231,72 @@ sub alien_install_type_is
   $ctx->release;
 
   $ok;
+}
+
+=head2 alien_extract_ok
+
+ my $dir = alien_extract_ok;
+ my $dir = alien_extract_ok $archive;
+ my $dir = alien_extract_ok $archive, $name;
+ my $dir = alien_extract_ok undef, $name;
+
+Makes an extraction attempt and test that a directory results.  Returns
+the directory if successful.  Returns C<undef> otherwise.
+
+=cut
+
+sub alien_extract_ok
+{
+  my($archive, $name) = @_;
+  
+  $name ||= $archive ? "alien extraction of $archive" : 'alien extraction';
+  my $ok;
+  my $dir;
+  my @diag;
+  
+  if($build)
+  {
+    my($out, $error);
+    ($out, $dir, $error) = capture_merged {
+      my $dir = eval {
+        $build->load_requires('configure');
+        $build->load_requires($build->install_type);
+        $build->download;
+        $build->extract($archive);
+      };
+      ($dir, $@);
+    };
+    if($error)
+    {
+      $ok = 0;
+      push @diag, $out if defined $out;
+      push @diag, "extract threw exception: $error";
+    }
+    else
+    {
+      if(-d $dir)
+      {
+        $ok = 1;
+      }
+      else
+      {
+        $ok = 0;
+        push @diag, 'no directory';
+      }
+    }
+  }
+  else
+  {
+    $ok = 0;
+    push @diag, 'no alienfile';
+  }
+  
+  my $ctx = context();
+  $ctx->ok($ok, $name);
+  $ctx->diag($_) for @diag;
+  $ctx->release;
+
+  $dir;
 }
 
 =head2 alien_build_ok

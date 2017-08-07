@@ -37,3 +37,30 @@ sub require_ok ($)
 EOM
 
 close $fh;
+
+
+{
+  sub run
+  {
+    my(@cmd) = @_;
+    print "% @cmd\n";
+    system @cmd;
+    die 'command failed' if $?;
+  }
+  use autodie;
+  mkdir 'corpus/dist2' unless -d 'corpus/dist2';
+  chdir 'corpus/dist2';
+  run 'rm', '-rf', 'foo', 'foo.tar';
+  mkdir 'foo';
+  run 'git', -C => 'foo', 'init';
+  open my $fh, '>', 'foo/foo.txt';
+  print $fh "xx\n";
+  close $fh;
+  run 'git', -C => 'foo', 'add', '.';
+  run 'git', -C => 'foo', 'commit', -m => 'yy';
+  run 'git', -C => 'foo', 'archive', '--prefix=foo-1.00/', -o => '../foo.tar', 'master';
+  run 'rm', '-rf', 'foo';
+  chdir '../..';
+}
+
+

@@ -301,4 +301,55 @@ subtest 'alien_install_type_is' => sub {
   
 };
 
+subtest 'alien_extract_ok' => sub {
+
+  subtest 'good extract' => sub {
+  
+    alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+      probe sub { 'share' };
+      share {
+        download sub {
+          path('file1')->touch;
+        };
+        extract sub {
+          path($_)->touch for qw( file2 file3 );
+        };
+      };
+    };
+    
+    alien_extract_ok;
+  
+  };
+  
+  subtest 'bad extract' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+      probe sub { 'share' };
+      share {
+        download sub {
+          path('file1')->touch;
+        };
+        extract sub {
+          ();
+        };
+      };
+    };
+    
+    is(
+      intercept { alien_extract_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+        };
+        etc;
+      },
+    );
+  };
+  
+};
+
 done_testing;
