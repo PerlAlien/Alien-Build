@@ -1,6 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Extract negotiator plugin checks for .gz and .bz2 support in
+    Archive::Tar before using ArchiveTar plugin, and will fallback on
+    Extract::CommandLine if it is not available.
+  - Extract::ArchiveTar skips appropriate tests if compression
+    support is not available
 
 0.88_01   2017-08-07 04:50:06 -0400
   - Diagnostic release

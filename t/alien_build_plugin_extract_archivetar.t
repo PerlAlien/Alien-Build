@@ -11,7 +11,7 @@ subtest 'archive' => sub {
   foreach my $ext (qw( tar tar.bz2 tar.gz ))
   {
     subtest "with extension $ext" => sub {
-    
+
       my $build = alienfile filename => 'corpus/blank/alienfile';
       my $meta = $build->meta;
 
@@ -20,6 +20,17 @@ subtest 'archive' => sub {
       eval { $build->load_requires('share') };
     
       skip_all "configuration does not support $ext" if $@;
+    
+      if($ext eq 'tar.bz2')
+      {
+        skip_all 'Test requires ZLib support in Archive::Tar'
+          unless Archive::Tar->has_zlib_support;
+      }
+      elsif($ext eq 'tar.gz')
+      {
+        skip_all 'Test requires Bzip2 support in Archive::Tar'
+          unless Archive::Tar->has_bzip2_support;
+      }
     
       my $archive = path("corpus/dist/foo-1.00.$ext")->absolute;
       

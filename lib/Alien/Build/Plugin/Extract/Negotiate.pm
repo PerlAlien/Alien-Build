@@ -43,29 +43,58 @@ sub init
   $format = 'tar.xz'  if $format eq 'txz';
   
   my $extract;
+
+  my $extract = $self->_pick($format);
   
-  if($format =~ /^tar(|\.gz|\.bz2)$/)
+  $self->_plugin($meta, 'Extract', $extract, format => $format);
+}
+
+sub _pick
+{
+  my(undef, $format) = @_;
+  
+  if($format eq 'tar')
   {
-    $extract = 'ArchiveTar';
+    return 'ArchiveTar';
+  }
+  elsif($format eq 'tar.gz')
+  {
+    if(eval q{ require Archive::Tar; Archive::Tar->has_zlib_support })
+    {
+      return 'ArchiveTar';
+    }
+    else
+    {
+      return 'CommandLine';
+    }
+  }
+  elsif($format eq 'tar.bz2')
+  {
+    if(eval q{ require Archive::Tar; Archive::Tar->has_bzip2_support })
+    {
+      return 'ArchiveTar';
+    }
+    else
+    {
+      return 'CommandLine';
+    }
   }
   elsif($format eq 'zip')
   {
-    $extract = 'ArchiveZip';
+    return 'ArchiveZip';
   }
-  elsif($format eq 'tar.xz')
+  elsif($format eq 'tar.xz' || $format eq 'tar.Z')
   {
-    $extract = 'CommandLine';
+    return 'CommandLine';
   }
   elsif($format eq 'd')
   {
-    $extract = 'Directory';
+    return 'Directory';
   }
   else
   {
     die "do not know how to handle format: $format";
   }
-  
-  $self->_plugin($meta, 'Extract', $extract, format => $format);
 }
 
 sub _plugin
