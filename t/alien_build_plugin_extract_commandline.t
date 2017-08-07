@@ -42,7 +42,8 @@ subtest 'archive' => sub {
       note "archive = $archive";
       
       my($out, $dir, $error) = capture_merged {
-        (eval { $build->extract($archive) }, $@);
+        my $dir = eval { $build->extract($archive) };
+        ($dir, $@);
       };
 
       note $out if $out ne '';
@@ -61,6 +62,46 @@ subtest 'archive' => sub {
     }
   }
   
+};
+
+subtest 'archive with pax_global_header' => sub {
+
+  skip_all "system does not support tar" unless Alien::Build::Plugin::Extract::CommandLine->new->handles('tar');
+
+  my $build = alienfile_ok q{
+  
+    use alienfile;
+    use Path::Tiny qw( path );
+    probe sub { 'share' };
+    share {
+      download sub {
+        my($build) = @_;
+        path(__FILE__)->parent->parent->child('corpus/dist2/foo.tar')->absolute->copy('foo.tar');
+      };
+      plugin 'Extract::CommandLine';
+    };
+  
+  };
+  
+  my $dir = alien_extract_ok;
+
+  if(defined $dir)
+  {
+    my $file = path($dir)->child('foo.txt');
+    my $content = eval { $file->slurp };
+    is($content, "xx\n", "file content matches");
+    
+    unless(-f $file)
+    {
+      diag "listing:";
+      foreach my $child (path($dir)->children)
+      {
+        diag $child;
+      }
+    }
+    
+  }
+
 };
 
 done_testing;

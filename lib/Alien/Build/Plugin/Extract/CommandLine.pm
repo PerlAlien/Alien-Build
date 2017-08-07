@@ -262,7 +262,7 @@ sub init
       }
       elsif($src =~ /\.tar/ || $src =~ /(\.tgz|\.tbz|\.txz|\.taz)$/i)
       {
-        $self->_run($build, $self->tar_cmd, 'xf', $src);
+        $self->_run($build, $self->tar_cmd, '-xf', $src);
       }
       else
       {
