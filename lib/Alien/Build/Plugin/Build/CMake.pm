@@ -14,6 +14,11 @@ use Alien::Build::Plugin;
  
  share {
    plugin 'Build::CMake';
+   build [
+     '%{cmake} -DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix} .',
+     '%{make}',
+     '%{make} install',
+   ];
  };
 
 =head1 DESCRIPTION
@@ -42,9 +47,19 @@ sub init
   
   $meta->prop->{destdir} = 1;
   
+  $meta->add_requires('share' => 'Alien::cmake3' => '0.02');
+  $meta->interpolator->replace_helper('cmake' => sub { require Alien::cmake3; Alien::cmake3->exe });
+
+  $meta->default_hook(
+    build => [
+      ['%{cmake}', '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', '.' ],
+      ['%{make}' ],
+      ['%{make}', 'install' ],
+    ],
+  );
+  
   # TODO: set the makefile type ??
   # TODO: handle destdir on windows ??
-  # TODO: set cmake as a share requires ??
 }
 
 1;
