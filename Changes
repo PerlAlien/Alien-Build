@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Extract::ArchiveTar plugin now probes for bz2 support rather
+    than trusting Archive::Tar which can sometimes report incorrectly
+    that it supports bz2.
 
 0.91      2017-08-08 05:24:27 -0400
   - Production release identical to 0.90_01

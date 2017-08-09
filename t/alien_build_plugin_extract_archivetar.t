@@ -24,7 +24,7 @@ subtest 'archive' => sub {
       if($ext eq 'tar.bz2')
       {
         skip_all 'Test requires ZLib support in Archive::Tar'
-          unless eval { Archive::Tar->has_zlib_support };
+          unless eval { require Alien::Build::Plugin::Extract::ArchiveTar; Alien::Build::Plugin::Extract::ArchiveTar->_can_bz2 };
       }
       elsif($ext eq 'tar.gz')
       {

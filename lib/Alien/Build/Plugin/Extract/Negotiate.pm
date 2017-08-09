@@ -68,7 +68,7 @@ sub _pick
   }
   elsif($format eq 'tar.bz2')
   {
-    if(eval q{ require Archive::Tar; Archive::Tar->has_bzip2_support })
+    if(eval q{ require Alien::Build::Plugin::Extract::ArchiveTar; Alien::Build::Plugin::Extract::ArchiveTar->_can_bz2 })
     {
       return 'ArchiveTar';
     }

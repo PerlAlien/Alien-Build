@@ -3,6 +3,9 @@ package Alien::Build::Plugin::Extract::ArchiveTar;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use File::chdir;
+use File::Temp ();
+use Path::Tiny ();
 
 # ABSTRACT: Plugin to extract a tarball using Archive::Tar
 # VERSION
@@ -78,6 +81,27 @@ sub init
       $tar->extract;
     }
   );
+}
+
+sub _can_bz2
+{
+  # even when Archive::Tar reports that it supports bz2, I can sometimes get this error:
+  # 'Cannot read enough bytes from the tarfile', so lets just probe for actual support!
+  my $dir = Path::Tiny->new(File::Temp::tempdir( CLEANUP => 1 ));
+  eval {
+    local $CWD = $dir;
+    my $tarball = unpack "u", q{M0EIH.3%!62936=+(]$0``$A[D-$0`8!``7^``!!AI)Y`!```""``=!JGIH-(MT#0]0/2!**---&F@;4#0&:D;X?(6@JH(2<%'N$%3VHC-9E>S/N@"6&I*1@GNJNHCC2>$I5(<0BKR.=XBZ""HVZ;T,CV\LJ!K&*?9`#\7<D4X4)#2R/1$`};
+    Path::Tiny->new('xx.tar.bz2')->spew_raw($tarball);
+    require Archive::Tar;
+    my $tar = Archive::Tar->new;
+    $tar->read('xx.tar.bz2');
+    $tar->extract;
+    my $content = Path::Tiny->new('xx.txt')->slurp;
+    die unless $content && $content eq "xx\n";
+  };
+  my $error = $@;
+  $dir->remove_tree;
+  !$error;
 }
 
 1;
