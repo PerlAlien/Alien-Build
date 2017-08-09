@@ -8,6 +8,11 @@ CMake plugin for Alien::Build
     
     share {
       plugin 'Build::CMake';
+      build [
+        '%{cmake} -DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix} .',
+        '%{make}',
+        '%{make} install',
+      ];
     };
 
 # DESCRIPTION
