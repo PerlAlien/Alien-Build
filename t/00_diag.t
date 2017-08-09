@@ -13,6 +13,8 @@ $modules{$_} = $_ for qw(
   Alien::Build
   Alien::Build::Plugin
   Alien::cmake3
+  Alien::gmake
+  Capture::Tiny
   ExtUtils::MakeMaker
   Path::Tiny
   Test2::Require::Module
@@ -21,7 +23,16 @@ $modules{$_} = $_ for qw(
   Test::Alien::Build
 );
 
-
+$post_diag = sub {
+  if(eval { require Alien::cmake3; 1 })
+  {
+    diag "version      = @{[ Alien::cmake3->version           ]}";
+    diag "install_type = @{[ Alien::cmake3->install_type      ]}";
+  }
+  require Alien::Build::Plugin::Build::CMake;
+  diag "is_dmake     = @{[ Alien::Build::Plugin::Build::CMake->is_dmake        ]}";
+  diag "generator    = @{[ Alien::Build::Plugin::Build::CMake->cmake_generator ]}";
+};
 
 my @modules = sort keys %modules;
 
