@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.93_01   2017-08-09 08:05:13 -0400
+  - Development release otherwise identical to 0.92
+
 0.92      2017-08-09 08:03:00 -0400
   - Extract::ArchiveTar plugin now probes for bz2 support rather
     than trusting Archive::Tar which can sometimes report incorrectly
