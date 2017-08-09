@@ -18,7 +18,7 @@ use Capture::Tiny qw( capture );
    plugin 'Build::CMake';
    build [
      # this is the default build step, if you do not specify one.
-     [ '%{cmake}', -G => '%{cmake_generator}',  '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', '.' ],
+     [ '%{cmake}', -G => '%{cmake_generator}', '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', '.' ],
      '%{make}',
      '%{make} install',
    ];
@@ -108,12 +108,18 @@ sub init
     # use it, come with gmake in the PATH.  So to save us the effort
     # of having to install Alien::gmake lets just use that version
     # if we can find it!
-    my($out, $err) = capture { system 'gmake', '--version' };
-    if($out =~ /GNU Make/)
+    my $found_gnu_make = 0;
+
+    foreach my $exe (qw( gmake make ))
     {
-      $meta->interpolator->replace_helper('make' => sub { 'gmake' });
+      my($out, $err) = capture { system $exe, '--version' };
+      if($out =~ /GNU Make/)
+      {
+        $meta->interpolator->replace_helper('make' => sub { $exe });
+      }
     }
-    else
+
+    if(!$found_gnu_make)
     {
       $meta->add_requires('share' => 'Alien::gmake' => '0.20');
       $meta->interpolator->replace_helper('make' => sub { require Alien::gmake; Alien::gmake->exe });
