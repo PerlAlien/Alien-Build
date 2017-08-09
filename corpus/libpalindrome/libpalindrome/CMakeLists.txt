@@ -8,6 +8,11 @@ ELSE()
   set_target_properties(palindromeStatic PROPERTIES OUTPUT_NAME palindrome)
 ENDIF()
 
-install(TARGETS palindrome LIBRARY DESTINATION lib)
+IF (WIN32)
+  install(TARGETS palindrome RUNTIME DESTINATION bin)
+ELSE()
+  install(TARGETS palindrome LIBRARY DESTINATION lib)
+ENDIF()
+
 install(TARGETS palindromeStatic ARCHIVE DESTINATION lib)
 install(FILES libpalindrome.h DESTINATION include)

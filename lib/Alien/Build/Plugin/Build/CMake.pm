@@ -98,7 +98,7 @@ sub init
 {
   my($self, $meta) = @_;
   
-  $meta->prop->{destdir} = 1;
+  $meta->prop->{destdir} = $^O eq 'MSWin32' ? 0 : 1;
   
   $meta->add_requires('share' => 'Alien::cmake3' => '0.02');
 
