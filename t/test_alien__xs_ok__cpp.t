@@ -4,9 +4,6 @@ use Test::Alien::CanCompileCpp;
 use lib 't/lib';
 use Test2::Require::Dev;
 
-skip_all 'skipping on production releases (for now)'
-  if defined $Test::Alien::VERSION && $Test::Alien::VERSION =~ /\.[0-9]{2}$/;
-
 my $xs = do { local $/; <DATA> };
 
 my $subtest = sub {
