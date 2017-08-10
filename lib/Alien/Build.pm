@@ -488,7 +488,6 @@ sub load
 
   unless(-r $alienfile)
   {
-    require Carp;
     Carp::croak "Unable to read alienfile: $alienfile";
   }
 
