@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.95      2017-08-11 09:47:57 -0400
   - Improve extractor logic for zip files
 
 0.94_01   2017-08-10 13:27:59 -0400
