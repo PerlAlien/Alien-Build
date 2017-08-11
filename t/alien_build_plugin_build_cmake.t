@@ -39,10 +39,13 @@ subtest 'basic' => sub {
     };
   };
 
-  if(!eval { $build->load_requires($build->install_type); 1 })
+  if($build->requires('share')->{'Alien::gmake'})
   {
-    note "prereqs not met";
-    return;
+    if(!eval { $build->load_requires($build->install_type); 1 })
+    {
+      note "prereqs not met";
+      return;
+    }
   }
 
   my $alien = alien_build_ok;
