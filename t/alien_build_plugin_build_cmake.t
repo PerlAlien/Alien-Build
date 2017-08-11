@@ -24,9 +24,17 @@ subtest 'basic' => sub {
       gather sub {
         my($build) = @_;
         my $prefix = $build->runtime_prop->{prefix};
-        my $lib    = $^O eq 'MSWin32' ? '-lpalindromeStatic' : '-lpalindrome';
         $build->runtime_prop->{$_} = "-I$prefix/include" for qw( cflags cflags_static );
-        $build->runtime_prop->{$_} = "-L$prefix/lib $lib" for qw( libs libs_static );
+
+        if($build->meta_prop->{platform}->{compiler_type} eq 'microsoft')
+        {
+          $build->runtime_prop->{$_} = "-LIBPATH:$prefix/lib palindromeStatic.lib" for qw( libs libs_static );
+        }
+        else
+        {
+          my $lib    = $^O eq 'MSWin32' ? '-lpalindromeStatic' : '-lpalindrome';
+          $build->runtime_prop->{$_} = "-L$prefix/lib $lib" for qw( libs libs_static );
+        }
       };
     };
   };
