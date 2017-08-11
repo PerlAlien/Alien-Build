@@ -48,13 +48,16 @@ This plugin replaces the default C<cmake> helper with the one that comes from L<
 
 =head2 cmake_generator
 
-This is the appropriate C<cmake> generator to use based on the make used by your Perl.
+This is the appropriate C<cmake> generator to use based on the make used by your Perl.  This is
+frequently C<Unix Makefiles>.  One place where it may be different is if your Windows Perl uses
+C<nmake>, which comes with Visual C++.
 
 =head2 make
 
-This plugin I<may> replace the default C<make> helper with the appropriate one for L<Alien::gmake>,
-if it is determined that your C<make> is not compatible with C<cmake>.  In particular this is
-the case for C<dmake> on windows, which came with older versions of Strawberry Perl.
+This plugin I<may> replace the default C<make> helper if the default C<make> is not supported by
+C<cmake>.  This is most often an issue with older versions of Strawberry Perl which used C<dmake>.
+On Perls that use C<dmake>, this plugin will search for GNU Make in the PATH, and if it can't be
+found will fallback on using L<Alien::gmake>.
 
 =head1 SEE ALSO
 

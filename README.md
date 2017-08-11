@@ -40,13 +40,16 @@ This plugin replaces the default `cmake` helper with the one that comes from [Al
 
 ## cmake\_generator
 
-This is the appropriate `cmake` generator to use based on the make used by your Perl.
+This is the appropriate `cmake` generator to use based on the make used by your Perl.  This is
+frequently `Unix Makefiles`.  One place where it may be different is if your Windows Perl uses
+`nmake`, which comes with Visual C++.
 
 ## make
 
-This plugin _may_ replace the default `make` helper with the appropriate one for [Alien::gmake](https://metacpan.org/pod/Alien::gmake),
-if it is determined that your `make` is not compatible with `cmake`.  In particular this is
-the case for `dmake` on windows, which came with older versions of Strawberry Perl.
+This plugin _may_ replace the default `make` helper if the default `make` is not supported by
+`cmake`.  This is most often an issue with older versions of Strawberry Perl which used `dmake`.
+On Perls that use `dmake`, this plugin will search for GNU Make in the PATH, and if it can't be
+found will fallback on using [Alien::gmake](https://metacpan.org/pod/Alien::gmake).
 
 # SEE ALSO
 
