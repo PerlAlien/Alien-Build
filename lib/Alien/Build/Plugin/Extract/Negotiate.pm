@@ -79,7 +79,23 @@ sub _pick
   }
   elsif($format eq 'zip')
   {
-    return 'ArchiveZip';
+    # Archive::Zip is not that reliable.  But if it is already installed it is probably working
+    if(eval q{ require Archive::Zip; 1 })
+    {
+      return 'ArchiveZip';
+    }
+    
+    # if we don't have Archive::Zip, check if we have the unzip command
+    elsif(eval { require Alien::Build::Plugin::Extract::CommandLine; Alien::Build::Plugin::Extract::CommandLine->new->unzip_cmd })
+    {
+      return 'Extract::CommandLine';
+    }
+    
+    # okay fine.  I will try to install Archive::Zip :(
+    else
+    {
+      return 'ArchiveZip';
+    }
   }
   elsif($format eq 'tar.xz' || $format eq 'tar.Z')
   {

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improve extractor logic for zip files
 
 0.94_01   2017-08-10 13:27:59 -0400
   - Diagnostic release
