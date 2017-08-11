@@ -7,7 +7,7 @@ use Path::Tiny ();
 
 subtest 'basic' => sub {
 
-  my $buil = alienfile_ok q{
+  my $build = alienfile_ok q{
     use alienfile;
     use Path::Tiny qw( path );
   
@@ -38,6 +38,12 @@ subtest 'basic' => sub {
       };
     };
   };
+
+  if(!eval { $build->load_requires($build->install_type); 1 })
+  {
+    note "prereqs not met";
+    return;
+  }
 
   my $alien = alien_build_ok;
   
