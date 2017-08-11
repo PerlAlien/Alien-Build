@@ -116,6 +116,7 @@ sub init
       if($out =~ /GNU Make/)
       {
         $meta->interpolator->replace_helper('make' => sub { $exe });
+        $found_gnu_make = 1;
       }
     }
 
