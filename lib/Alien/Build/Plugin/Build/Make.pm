@@ -44,6 +44,8 @@ The make type needed by the L<alienfile> recipe:
 
 =item dmake
 
+Sun's dmake.
+
 =item gmake
 
 GNU Make.
