@@ -30,6 +30,9 @@ L<Alien::Build::Plugin::Build::CMake>, L<Alien::Build::Plugin::Build::Autoconf>,
 L<Alien::Build::Plugin::Build::MSYS>.  This plugin is intended instead for projects that use vanilla makefiles of
 a specific type.
 
+This plugin is for now distributed separately from L<Alien::Build>, but the intention is for it to soon become
+a core plugin for L<Alien::Build>.
+
 =head1 PROPERTIES
 
 =head2 make_type
