@@ -3,8 +3,112 @@ package Alien::Build::Plugin::Build::Make;
 use strict;
 use warnings;
 use 5.008001;
+use Carp ();
+use Capture::Tiny qw( capture );
+use Alien::Build::Plugin;
 
 # ABSTRACT: Make plugin for Alien::Build
 # VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ # For a recipe that requires GNU Make
+ plugin 'Build::Make' => 'gmake';
+
+=head1 DESCRIPTION
+
+By default L<Alien::Build> provides a helper for the C<make> that is used by Perl and L<ExtUtils::MakeMaker> itself.
+This is handy, because it is the one make that you can mostly guarantee that you will have.  Unfortunately it may be
+a C<make> that isn't supported by the library or tool that you are trying to alienize.  This is mostly a problem on
+Windows, where the supported C<make>s for years were Microsoft's C<nmake> and Sun's C<dmake>, which many open source
+projects do not use.  This plugin will alter the L<alienfile> recipe to use a different C<make>.  It may (as in the
+case of C<gmake> / L<Alien::gmake>) automatically download and install an alienized version of that C<make>.
+
+=head1 PROPERTIES
+
+=head2 make_type
+
+The make type needed by the L<alienfile> recipe:
+
+=over 4
+
+=item dmake
+
+=item gmake
+
+GNU Make.
+
+=item nmake
+
+Microsoft's nmake.  It comes with Visual C++.
+
+=item umake
+
+Any UNIX C<make>  Usually either BSD or GNU Make.
+
+=back
+
+=head1 HELPERS
+
+=head2 make
+
+ %{make}
+
+This plugin may change the make helper used by your L<alienfile> recipe.
+
+=cut
+
+has '+make_type' => undef;
+
+sub init
+{
+  my($self, $meta) = @_;
+  
+  my $type = $self->make_type;
+  
+  return unless defined $type;
+  
+  $type = 'gmake' if $^O eq 'MSWin32' && $type eq 'umake';
+  
+  if($type eq 'nmake')
+  {
+    $meta->interpolator->replace_helper( make => sub { 'nmake' } );
+  }
+  
+  elsif($type eq 'dmake')
+  {
+    $meta->interpolator->replace_helper( make => sub { 'dmake' } );
+  }
+  
+  elsif($type eq 'gmake')
+  {
+    my $found = 0;
+    foreach my $make (qw( gmake make mingw32-make ))
+    {
+      my($out, $err) = capture { system $make, '--version' };
+      if($out =~ /GNU Make/)
+      {
+        $meta->interpolator->replace_helper( make => sub { $make } );
+        $found = 1;
+      }
+    }
+    unless($found)
+    {
+      $meta->add_requires('share' => 'Alien::gmake' => '0.20');
+      $meta->interpolator->replace_helper('make' => sub { require Alien::gmake; Alien::gmake->exe });
+    }
+  }
+  
+  elsif($type eq 'umake')
+  {
+    # nothing
+  }
+  
+  else
+  {
+    Carp::croak("unknown make type = ", $self->make_type);
+  }
+}
 
 1;
