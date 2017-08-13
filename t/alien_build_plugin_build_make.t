@@ -6,10 +6,20 @@ subtest 'compile' => sub {
   foreach my $type (qw( nmake dmake gmake umake ))
   {
     subtest $type => sub {
-      alienfile_ok qq{
+      my $build = alienfile_ok qq{
         use alienfile;
         plugin 'Build::Make' => '$type';
       };
+
+      if($type =~ /nmake|dmake/)
+      {
+      
+        is(
+          $build->meta->interpolator->interpolate('%{make}'),
+          $type,
+        );
+      }
+
     };
   }
 };
