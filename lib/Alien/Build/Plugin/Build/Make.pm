@@ -23,7 +23,8 @@ This is handy, because it is the one make that you can mostly guarantee that you
 a C<make> that isn't supported by the library or tool that you are trying to alienize.  This is mostly a problem on
 Windows, where the supported C<make>s for years were Microsoft's C<nmake> and Sun's C<dmake>, which many open source
 projects do not use.  This plugin will alter the L<alienfile> recipe to use a different C<make>.  It may (as in the
-case of C<gmake> / L<Alien::gmake>) automatically download and install an alienized version of that C<make>.
+case of C<gmake> / L<Alien::gmake>) automatically download and install an alienized version of that C<make> if it
+is not already installed.
 
 This plugin should NOT be used with other plugins that replace the C<make> helper, like 
 L<Alien::Build::Plugin::Build::CMake>, L<Alien::Build::Plugin::Build::Autoconf>, 
