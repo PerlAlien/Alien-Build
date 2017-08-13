@@ -69,6 +69,8 @@ has '+make_type' => undef;
 sub init
 {
   my($self, $meta) = @_;
+
+  $meta->add_requires('configure', 'Alien::Build::Plugin::Build::Make', '0.01');
   
   my $type = $self->make_type;
   

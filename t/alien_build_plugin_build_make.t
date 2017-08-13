@@ -79,6 +79,7 @@ subtest 'gmake' => sub {
   };
   
   eval {
+    $Alien::Build::Plugin::Build::Make::VERSION = '0.01';
     $build->load_requires('configure');
     $build->load_requires($build->install_type);
   };
