@@ -25,6 +25,11 @@ Windows, where the supported C<make>s for years were Microsoft's C<nmake> and Su
 projects do not use.  This plugin will alter the L<alienfile> recipe to use a different C<make>.  It may (as in the
 case of C<gmake> / L<Alien::gmake>) automatically download and install an alienized version of that C<make>.
 
+This plugin should NOT be used with other plugins that replace the C<make> helper, like 
+L<Alien::Build::Plugin::Build::CMake>, L<Alien::Build::Plugin::Build::Autoconf>, 
+L<Alien::Build::Plugin::Build::MSYS>.  This plugin is intended instead for projects that use vanilla makefiles of
+a specific type.
+
 =head1 PROPERTIES
 
 =head2 make_type
