@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug where Test::Alien xs_ok could throw an exception instead
+    of failing gracefully.
 
 0.95      2017-08-11 09:47:57 -0400
   - Improve extractor logic for zip files
