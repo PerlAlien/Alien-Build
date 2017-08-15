@@ -2,5 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.02      2017-08-15 10:26:26 -0400
+  - Production release identical to 0.01_01
+
 0.01_01   2017-08-11 09:41:33 -0400
   - initial version
