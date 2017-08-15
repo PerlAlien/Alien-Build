@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Removing accidental dependency on Archive::Tar
+    (it should be optional, though it is available on 5.10+)
   - Fixed bug where Test::Alien xs_ok could throw an exception instead
     of failing gracefully.
 
