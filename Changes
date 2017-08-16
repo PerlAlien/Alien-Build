@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Prefer MinGW Makefiles to Unix Makefiles on Windows
 
 0.04_01   2017-08-16 13:00:07 -0400
   - Diagnostic release

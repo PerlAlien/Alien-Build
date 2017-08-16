@@ -10,7 +10,13 @@ CMake plugin for Alien::Build
       plugin 'Build::CMake';
       build [
         # this is the default build step, if you do not specify one.
-        [ '%{cmake}', -G => '%{cmake_generator}', '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', '.' ],
+        [ '%{cmake}', 
+            -G => '%{cmake_generator}', 
+            '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', 
+            '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', 
+            '-DCMAKE_MAKE_PROGRAM:PATH=%{make}', 
+            '.'
+        ],
         '%{make}',
         '%{make} install',
       ];
