@@ -1,9 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.96_01   2017-08-16 11:30:50 -0400
   - Added Alien::Build::Plugin::Build::Make (which was briefly in its own distribution).
   - Removing accidental dependency on Archive::Tar
-    (it should be optional, though it is available on 5.10+)
+    (it should be optional, though it is available as part of the Perl core on 5.10+)
   - Fixed bug where Test::Alien xs_ok could throw an exception instead
     of failing gracefully.
   - Test::Alien alien_ok does not crash when undef is passed to it
