@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Diagnostic release
 
 0.03      2017-08-16 12:00:48 -0400
   - Fixes for Cygwin
