@@ -450,7 +450,11 @@ sub xs_ok
     _warn_cpp();
     $xs->{pxs}->{'C++'} = 1;
     $xs->{cbuilder_compile}->{'C++'} = 1;
-    $xs->{cpp} = 1;
+    $xs->{c_ext} = 'cpp';
+  }
+  else
+  {
+    $xs->{c_ext} = 'c';
   }
 
   my $verbose = $xs->{verbose} || 0;
@@ -458,7 +462,7 @@ sub xs_ok
   my @diag;
   my $dir = _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' );
   my $xs_filename = path($dir)->child('test.xs')->stringify;
-  my $c_filename  = path($dir)->child($xs->{cpp} ? 'test.cpp' : 'test.c')->stringify;
+  my $c_filename  = path($dir)->child("test.@{[ $xs->{c_ext} ]}")->stringify;
   
   my $ctx = context();
   my $module;
