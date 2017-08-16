@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.03      2017-08-16 12:00:48 -0400
   - Fixes for Cygwin
 
 0.02      2017-08-15 10:26:26 -0400
