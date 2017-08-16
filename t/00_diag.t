@@ -13,6 +13,7 @@ $modules{$_} = $_ for qw(
   Acme::Alien::DontPanic
   Alien::Base::ModuleBuild
   Alien::Libbz2
+  Alien::cmake3
   Alien::gzip
   Alien::xz
   Archive::Tar

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added Alien::Build::Plugin::Build::CMake (which was briefly in its own distribution).
 
 0.97      2017-08-16 17:36:36 -0400
   - Production release identical to 0.96_01
