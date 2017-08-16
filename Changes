@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixes for Cygwin
 
 0.02      2017-08-15 10:26:26 -0400
   - Production release identical to 0.01_01
