@@ -11,7 +11,7 @@ subtest 'basic' => sub {
     use alienfile;
     use Path::Tiny qw( path );
   
-    meta->prop->{start_url} = path('corpus/libpalindrome')->absolute->stringify;
+    meta->prop->{start_url} = path('corpus/cmake-libpalindrome')->absolute->stringify;
 
     probe sub { 'share' };
   

@@ -12,5 +12,4 @@ git clone https://github.com/plicease/cmake-libpalindrome.git
 cd cmake-libpalindrome
 rm -rf .git*
 cd ..
-mv cmake-libpalindrome libpalindrome
 
