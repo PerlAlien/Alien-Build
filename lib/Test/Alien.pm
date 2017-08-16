@@ -159,22 +159,36 @@ sub alien_ok ($;$)
   my($alien, $message) = @_;
 
   my $name = ref $alien ? ref($alien) . '[instance]' : $alien;
-  
+  $name = 'undef' unless defined $name;
   my @methods = qw( cflags libs dynamic_libs bin_dir );
   $message ||= "$name responds to: @methods";
-  my @missing = grep { ! $alien->can($_) } @methods;
   
-  my $ok = !@missing;
+  my $ok;
+  my @diag;
+  
+  if(defined $alien)
+  {
+    my @missing = grep { ! $alien->can($_) } @methods;
+  
+    $ok = !@missing;
+    push @diag, map { "  missing method $_" } @missing;
+
+    if($ok)
+    {
+      push @aliens, $alien;
+      unshift @PATH, $alien->bin_dir;
+    }
+  }
+  else
+  {
+    $ok = 0;
+    push @diag, "  undefined alien";
+  }
+
   my $ctx = context();
   $ctx->ok($ok, $message);
-  $ctx->diag("  missing method $_") for @missing;
+  $ctx->diag($_) for @diag;
   $ctx->release;
-  
-  if($ok)
-  {
-    push @aliens, $alien;
-    unshift @PATH, $alien->bin_dir;
-  }
   
   $ok;
 }

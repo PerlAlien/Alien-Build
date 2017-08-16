@@ -6,6 +6,7 @@ Revision history for {{$dist->name}}
     (it should be optional, though it is available on 5.10+)
   - Fixed bug where Test::Alien xs_ok could throw an exception instead
     of failing gracefully.
+  - Test::Alien alien_ok does not crash when undef is passed to it
 
 0.95      2017-08-11 09:47:57 -0400
   - Improve extractor logic for zip files

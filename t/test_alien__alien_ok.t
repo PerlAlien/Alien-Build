@@ -44,6 +44,22 @@ is(
   "alien_ok with bad class",
 );
 
+is(
+  intercept { alien_ok undef },
+  array {
+    event Ok => sub {
+      call pass => F();
+      call name => 'undef responds to: cflags libs dynamic_libs bin_dir';
+    };
+    event Diag => sub {};
+    event Diag => sub {
+      call message => '  undefined alien';
+    };
+    end;
+  },
+  'alien_ok with undef',
+);
+
 done_testing;
 
 package
