@@ -7,6 +7,11 @@ Revision history for {{$dist->name}}
   - Fixed bug where Test::Alien xs_ok could throw an exception instead
     of failing gracefully.
   - Test::Alien alien_ok does not crash when undef is passed to it
+  - C++ support in Test::Alien xs_ok is deprecated and will be removed on or after
+    31 August 2017.  This feature was experimental.  This capability will be developed
+    in the separate distribution Test-Alien-CPP
+  - remove Test::Alien::CanCompileCpp.  This module will come bundled with
+    Test-Alien-CPP instead.
 
 0.95      2017-08-11 09:47:57 -0400
   - Improve extractor logic for zip files

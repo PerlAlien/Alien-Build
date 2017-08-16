@@ -404,7 +404,15 @@ sub _flags
   {
     return if $seen;
     my $ctx = context();
-    $ctx->diag("Test::Alien xs_ok C++ is considered experimental");
+    $ctx->diag('');
+    $ctx->diag('');
+    $ctx->diag(' !!!');
+    $ctx->diag('');
+    $ctx->diag("Test::Alien xs_ok C++ is DEPRECATED and will be removed on or after 31 August 2017");
+    $ctx->diag("Please use Test::Alien::CPP instead");
+    $ctx->diag('');
+    $ctx->diag(' !!!');
+    $ctx->diag('');
     $ctx->release;
     $seen++;
   }
