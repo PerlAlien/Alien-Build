@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.04_02   2017-08-16 13:33:35 -0400
   - Prefer MinGW Makefiles to Unix Makefiles on Windows
   - Set CMAKE_MAKE_PROGRAM to match what we are using
 
