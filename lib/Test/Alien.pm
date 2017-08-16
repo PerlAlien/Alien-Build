@@ -445,7 +445,7 @@ sub xs_ok
     $xs->{cpp} = 1;
   }
 
-  my $verbose = $xs->{verbose};
+  my $verbose = $xs->{verbose} || 0;
   my $ok = 1;
   my @diag;
   my $dir = _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' );
