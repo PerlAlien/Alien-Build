@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Prefer MinGW Makefiles to Unix Makefiles on Windows
+  - Set CMAKE_MAKE_PROGRAM to match what we are using
 
 0.04_01   2017-08-16 13:00:07 -0400
   - Diagnostic release
