@@ -5,6 +5,9 @@ use Test::Alien::Build;
 use Alien::Build::Plugin::Build::CMake;
 use Path::Tiny ();
 
+# To see the actual commands being executed
+$ENV{VERBOSE} = 1;
+
 subtest 'basic' => sub {
 
   my $build = alienfile_ok q{
@@ -49,6 +52,23 @@ subtest 'basic' => sub {
   }
 
   my $alien = alien_build_ok;
+
+  if(! defined $alien)
+  {
+    if($^O eq 'MSWin32')
+    {
+      my $tmp = $build->root;
+      $tmp =~ s{/}{\\}g;
+      $tmp .= "\\..";
+      diag "dir $tmp /s";
+      diag `dir $tmp /s`;
+    }
+    else
+    {
+      my $tmp = Path::Tiny->new($build->root)->parent;
+      diag `ls -lR $tmp`;
+    }
+  }
   
   alien_ok $alien;
   
