@@ -18,7 +18,13 @@ use Capture::Tiny qw( capture );
    plugin 'Build::CMake';
    build [
      # this is the default build step, if you do not specify one.
-     [ '%{cmake}', -G => '%{cmake_generator}', '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', '.' ],
+     [ '%{cmake}', 
+         -G => '%{cmake_generator}', 
+         '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', 
+         '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', 
+         '-DCMAKE_MAKE_PROGRAM:PATH=%{make}', 
+         '.'
+     ],
      '%{make}',
      '%{make} install',
    ];
@@ -77,7 +83,7 @@ sub cmake_generator
 {
   if($^O eq 'MSWin32')
   {
-    return 'Unix Makefiles' if is_dmake();
+    return 'MinGW Makefiles' if is_dmake();
   
     {
       my($out, $err) = capture { system $Config{make}, '/?' };
@@ -86,7 +92,7 @@ sub cmake_generator
 
     {
       my($out, $err) = capture { system $Config{make}, '--version' };
-      return 'Unix Makefiles' if $out =~ /GNU Make/;
+      return 'MinGW Makefiles' if $out =~ /GNU Make/;
     }
 
     die 'make not detected';
@@ -113,7 +119,7 @@ sub init
     # if we can find it!
     my $found_gnu_make = 0;
 
-    foreach my $exe (qw( gmake make ))
+    foreach my $exe (qw( gmake make mingw32-make ))
     {
       my($out, $err) = capture { system $exe, '--version' };
       if($out =~ /GNU Make/)
@@ -133,9 +139,16 @@ sub init
   $meta->interpolator->replace_helper('cmake' => sub { require Alien::cmake3; Alien::cmake3->exe });
   $meta->interpolator->add_helper('cmake_generator' => \&cmake_generator);
 
+  my @args = (
+    -G => '%{cmake_generator}', 
+    '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', 
+    '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', 
+    '-DCMAKE_MAKE_PROGRAM:PATH=%{make}',
+  );
+
   $meta->default_hook(
     build => [
-      ['%{cmake}', -G => '%{cmake_generator}', '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', '.' ],
+      ['%{cmake}', @args, '.' ],
       ['%{make}' ],
       ['%{make}', 'install' ],
     ],
