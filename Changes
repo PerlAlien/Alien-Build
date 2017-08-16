@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.97      2017-08-16 17:36:36 -0400
+  - Production release identical to 0.96_01
+
 0.96_01   2017-08-16 11:30:50 -0400
   - Added Alien::Build::Plugin::Build::Make (which was briefly in its own distribution).
   - Removing accidental dependency on Archive::Tar
