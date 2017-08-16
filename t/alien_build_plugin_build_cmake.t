@@ -32,7 +32,7 @@ subtest 'basic' => sub {
         }
         else
         {
-          my $lib    = $^O eq 'MSWin32' ? '-lpalindromeStatic' : '-lpalindrome';
+          my $lib    = $^O =~ /^(cygwin|MSWin32)$/ ? '-lpalindromeStatic' : '-lpalindrome';
           $build->runtime_prop->{$_} = "-L$prefix/lib $lib" for qw( libs libs_static );
         }
       };
