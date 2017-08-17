@@ -1,8 +1,6 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Use the correct generator for MinGW (should be Unix Makefiles, not MinGW Makefiles)
-    ... irony.
 
 0.99      2017-08-17 12:53:55 -0400
   - Fix bug in Test::Alien xs_ok would crash with multiple alines with xs_load methods.

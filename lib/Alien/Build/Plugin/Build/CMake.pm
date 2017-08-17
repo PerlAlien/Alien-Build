@@ -83,12 +83,7 @@ sub cmake_generator
 {
   if($^O eq 'MSWin32')
   {
-    my %p;
-    Alien::Build::Plugin::Core::Setup->_platform(\%p);
-
-    my $gmake_generator = $p{system_type} eq 'windows-mingw' ? 'Unix Makefiles' : 'MinGW Makefiles';
-
-    return $gmake_generator if is_dmake();
+    return 'MinGW Makefiles' if is_dmake();
   
     {
       my($out, $err) = capture { system $Config{make}, '/?' };
@@ -97,7 +92,7 @@ sub cmake_generator
 
     {
       my($out, $err) = capture { system $Config{make}, '--version' };
-      return $gmake_generator if $out =~ /GNU Make/;
+      return 'MinGW Makefiles' if $out =~ /GNU Make/;
     }
 
     die 'make not detected';
