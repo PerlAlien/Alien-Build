@@ -23,6 +23,7 @@ This plugin does some core setup for you.
 L<Alien::Build>, L<Alien::Base::ModuleBuild>
 
 =cut
+
 sub init
 {
   my($self, $meta) = @_;  
