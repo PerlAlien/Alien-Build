@@ -24,34 +24,34 @@ use Text::ParseWords qw/shellwords/;
 
 (for details on the C<Makefile.PL> or C<Build.PL> and L<alienfile>
 that should be bundled with your L<Alien::Base> subclass, please see
-L<Alien::Base::Authoring>).
+L<Alien::Build::Manual::AlienAuthor>).
 
-Then a C<MyLibrary::XS> can use C<Alien::MyLibrary> in its C<Build.PL>:
-
- use Alien::MyLibrary;
- use Module::Build 0.28; # need at least 0.28
- 
- my $builder = Module::Build->new(
-   ...
-   extra_compiler_flags => Alien::MyLibrary->cflags,
-   extra_linker_flags   => Alien::MyLibrary->libs,
-   ...
- );
- 
- $builder->create_build_script;
-
-Or if you prefer L<ExtUtils::MakeMaker>, in its C<Makefile.PL>:
+Then a C<MyLibrary::XS> can use C<Alien::MyLibrary> in its C<Makefile.PL>:
 
  use Alien::MyLibrary
  use ExtUtils::MakeMaker;
+ use Alien::Base::Wrapper qw( Alien::MyLibrary !export );
  use Config;
  
  WriteMakefile(
    ...
-   CCFLAGS => Alien::MyLibrary->cflags . " $Config{ccflags}",
-   LIBS   => ALien::MyLibrary->libs,
+   Alien::Base::Wrapper->mm_args,
    ...
  );
+
+Or if you prefer L<Module::Build>, in its C<Build.PL>:
+
+ use Alien::MyLibrary;
+ use Module::Build 0.28; # need at least 0.28
+ use Alien::Base::Wrapper qw( Alien::MyLibrary !export );
+ 
+ my $builder = Module::Build->new(
+   ...
+   Alien::Base::Wrapper->mb_args,
+   ...
+ );
+ 
+ $builder->create_build_script;
 
 Or if you are using L<ExtUtils::Depends>:
 
@@ -63,12 +63,13 @@ Or if you are using L<ExtUtils::Depends>:
    $eud->get_makefile_vars
  );
 
-In your C<MyLibrary::XS> module, you may need to use L<Alien::MyLibrary> if
-dynamic libraries are used:
+If you are using L<Alien:Base::ModuleBuild> instead of the recommended L<Alien::Build>
+and L<alienfile>, then in your C<MyLibrary::XS> module, you may need something like
+this in your main C<.pm> file IF your library uses dynamic libraries:
 
  package MyLibrary::XS;
  
- use Alien::MyLibrary;
+ use Alien::MyLibrary; # may only be needed if you are using Alien::Base::ModuleBuild
  
  ...
 
@@ -102,7 +103,7 @@ L<alienfile> as a more modern alternative.
 
 L<Alien::Base> comprises base classes to help in the construction of C<Alien::> modules. Modules in the L<Alien> namespace are used to locate and install (if necessary) external libraries needed by other Perl modules.
 
-This is the documentation for the L<Alien::Base> module itself. To learn more about the system as a whole please see L<Alien::Base::Authoring>.
+This is the documentation for the L<Alien::Base> module itself. To learn more about the system as a whole please see L<Alien::Build::Manual::AlienAuthor>.
 
 =cut
 
