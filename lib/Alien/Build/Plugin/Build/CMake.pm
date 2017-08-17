@@ -146,26 +146,10 @@ sub init
   $meta->interpolator->replace_helper('cmake' => sub { require Alien::cmake3; Alien::cmake3->exe });
   $meta->interpolator->add_helper('cmake_generator' => \&cmake_generator);
 
-  my $prefix_name = '.install.prefix';
-  if($meta->prop->{platform}->{system_type} eq 'windows-mingw')
-  {
-    $prefix_name = '.install.autoconf_prefix';
-    $meta->before_hook(
-      $_ => sub {
-        my($build) = @_;
-        my $prefix = $build->install_prop->{prefix};
-        die "Prefix is not set.  Did you forget to run 'make alien_prefix'?"
-          unless $prefix;
-        $prefix =~ s!^([a-z]):!/$1!i;
-        $build->install_prop->{autoconf_prefix} = $prefix;
-      },
-    ) for qw( build build_ffi );
-  }
-
   my @args = (
     -G => '%{cmake_generator}', 
     '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true',
-    "-DCMAKE_INSTALL_PREFIX:PATH=%{$prefix_name}",
+    '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}',
     '-DCMAKE_MAKE_PROGRAM:PATH=%{make}',
   );
 
