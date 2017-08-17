@@ -8,6 +8,10 @@ use Path::Tiny ();
 # To see the actual commands being executed
 $ENV{VERBOSE} = 1;
 
+$Alien::Build::Plugin::Fetch::LocalDir::VERSION        ||= '0.99';
+$Alien::Build::Plugin::Build::CMake::VERSION           ||= '0.99';
+$Alien::Build::Plugin::Gather::IsolateDynamic::VERSION ||= '0.99';
+
 subtest 'basic' => sub {
 
   my $build = alienfile_ok q{

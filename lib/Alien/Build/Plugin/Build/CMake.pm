@@ -109,7 +109,8 @@ sub init
   
   $meta->prop->{destdir} = $^O eq 'MSWin32' ? 0 : 1;
   
-  $meta->add_requires('share' => 'Alien::cmake3' => '0.02');
+  $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::CMake' => '0.99');
+  $meta->add_requires('share'     => 'Alien::cmake3' => '0.02');
 
   if(is_dmake())
   {

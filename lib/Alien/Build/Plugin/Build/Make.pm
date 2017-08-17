@@ -76,7 +76,7 @@ sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires('configure', 'Alien::Build::Plugin::Build::Make', '0.01');
+  $meta->add_requires('configure', 'Alien::Build::Plugin::Build::Make', '0.99');
   
   my $type = $self->make_type;
   
