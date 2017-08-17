@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.99      2017-08-17 12:53:55 -0400
   - Fix bug in Test::Alien xs_ok would crash with multiple alines with xs_load methods.
 
 0.98_01   2017-08-16 17:50:17 -0400
