@@ -619,13 +619,21 @@ sub xs_ok
         
         if($alien_with_xs_load)
         {
+          {
+            no strict 'refs';
+            @{join '::', $module, 'rest'} = @rest;
+            ${join '::', $module, 'alien_with_xs_load'} = $alien_with_xs_load;
+          }
           print $fh '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
             package $module;
             
             use strict;
             use warnings;
+            our \$VERSION = '0.01';
+            our \@rest;
+            our \$alien_with_xs_load;
             
-            $alien_with_xs_load->xs_load('$module', '\$VERSION', @rest);
+            \$alien_with_xs_load->xs_load('$module', \$VERSION, \@rest);
             
             1;
           };
@@ -639,7 +647,7 @@ sub xs_ok
             use warnings;
             require XSLoader;
             our \$VERSION = '0.01';
-            XSLoader::load('$module','\$VERSION');
+            XSLoader::load('$module',\$VERSION);
           
             1;
           };
