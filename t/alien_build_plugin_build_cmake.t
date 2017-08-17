@@ -33,6 +33,15 @@ subtest 'basic' => sub {
         my $prefix = $build->runtime_prop->{prefix};
         $build->runtime_prop->{$_} = "-I$prefix/include" for qw( cflags cflags_static );
 
+        if($build->meta_prop->{platform}->{system_type} eq 'windows-mingw')
+        {
+          my $bin = path('bin/palx');
+          if(-e $bin)
+          {
+            $bin->move('bin/palx.exe');
+          }
+        }
+
         if($build->meta_prop->{platform}->{compiler_type} eq 'microsoft')
         {
           $build->runtime_prop->{$_} = "-LIBPATH:$prefix/lib palindromeStatic.lib" for qw( libs libs_static );
@@ -75,6 +84,9 @@ subtest 'basic' => sub {
   }
   
   alien_ok $alien;
+
+  note 'cflags = ', $alien->cflags;
+  note 'libs   = ', $alien->libs;
   
   xs_ok { xs => do { local $/; <DATA> }, verbose => 1 }, with_subtest {
     my($mod) = @_;
