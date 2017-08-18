@@ -21,21 +21,29 @@ The following documentation will assume you are trying to use an L<Alien>
 called C<Alien::Foo> which provides the library C<libfoo> and the command
 line tool C<foo>.  Many L<Alien>s will only provide one or the other.
 
+The best interface to use for using L<Alien::Base> based aliens is
+L<Alien::Base::Wrapper>.  This allows you to combine multiple aliens together
+and handles a number of corner obsecure corner cases that using L<Alien>s
+directly does not.  Also as of 0.64, L<Alien::Base::Wrapper> comes bundled
+with L<Alien::Build> and L<Alien::Base> anyway, so it is not an extra
+dependency.
+
 What follows are the main use cases.
 
 =head2 Module::Build
 
  use Module::Build;
+ use Alien::Base::Wrapper qw( Alien::Foo !export );
  use Alien::Foo;
  
  my $build = Module::Build->new(
    ...
    configure_requires => {
-     'Alien::Foo' => '0',
+     'Alien::Build::Wrapper' => '0',
+     'Alien::Foo'            => '0',
      ...
    },
-   extra_compiler_flags => Alien::Foo->cflags,
-   extra_linker_flags   => Alien::Foo->libs,
+   Alien::Base::Wrapper->mb_args
    ...
  );
  
@@ -48,16 +56,15 @@ prerequisite.
 =head2 ExtUtils::MakeMaker
 
  use ExtUtils::MakeMaker;
- use Config;
- use Alien::Foo;
+ use Alien::Base::Wrapper qw( Alien::Foo !export );
  
  WriteMakefile(
    ...
    CONFIGURE_REQUIRES => {
-     'Alien::Foo' => '0',
+     'Alien::Build::Wrapper' => '0',
+     'Alien::Foo'            => '0',
    },
-   CCFLAGS => Alien::Foo->cflags . " $Config{ccflags}",
-   LIBS    => [ Alien::Foo->libs ],
+   Alien::Base::Wrapper->mm_args
    ...
  );
 
@@ -74,10 +81,8 @@ a configure prerequisite.
  Alien::Foo = 0
  
  [MakeMaker::Awesome]
- header = user Config;
- header = use Alien::Foo;
- WriteMakefile_arg = CCFLAGS => Alien::Foo->cflags . ' ' . $Config{ccflags}
- WriteMakefile_arg = LIBS => [ Alien::Foo->libs ]
+ header = use Alien::Base::Wrapper qw( Alien::Foo !export );
+ WriteMakefile_arg = Alien::Base::Wrapper->mm_args
 
 =head2 FFI::Platypus
 
