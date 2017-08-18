@@ -100,6 +100,9 @@ pod_spelling_system:
     - activestate
     - mingw
     - vms
+    - alienize
+    - umake
+    - travis
 
 pod_coverage:
   skip: 0

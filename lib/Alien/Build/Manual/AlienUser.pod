@@ -23,7 +23,7 @@ line tool C<foo>.  Many L<Alien>s will only provide one or the other.
 
 The best interface to use for using L<Alien::Base> based aliens is
 L<Alien::Base::Wrapper>.  This allows you to combine multiple aliens together
-and handles a number of corner obsecure corner cases that using L<Alien>s
+and handles a number of corner obscure corner cases that using L<Alien>s
 directly does not.  Also as of 0.64, L<Alien::Base::Wrapper> comes bundled
 with L<Alien::Build> and L<Alien::Base> anyway, so it is not an extra
 dependency.
