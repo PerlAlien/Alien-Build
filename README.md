@@ -21,13 +21,29 @@ This module provides tools for building external (non-CPAN) dependencies
 for CPAN.  It is mainly designed to be used at install time of a CPAN 
 client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base) which is used at runtime.
 
-This is the detailed documentation for [Alien::Build](https://metacpan.org/pod/Alien::Build) class.  If you are
-starting out as a user of an [Alien::Build](https://metacpan.org/pod/Alien::Build) based [Alien](https://metacpan.org/pod/Alien) module, see
-[Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser).  If you are starting out writing a new
-[Alien::Build](https://metacpan.org/pod/Alien::Build) based [Alien](https://metacpan.org/pod/Alien) module, see [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor).
-As an [Alien](https://metacpan.org/pod/Alien) author, you will also likely be interested in
-[Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien::Build::Manual::FAQ).  If you are interested in writing a
-[Alien::Build](https://metacpan.org/pod/Alien::Build) plugin, see [Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor).
+This is the detailed documentation for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
+If you
+are starting out you probably want to do so from one of these documents:
+
+- [Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser)
+
+    For users of an `Alien::libfoo` that is implemented using [Alien::Base](https://metacpan.org/pod/Alien::Base).
+    (The developer of `Alien::libfoo` _should_ provide the documentation
+    necessary, but if not, this is the place to start).
+
+- [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor)
+
+    If you are writing your own [Alien](https://metacpan.org/pod/Alien) based on [Alien::Build](https://metacpan.org/pod/Alien::Build) and [Alien::Base](https://metacpan.org/pod/Alien::Base).
+
+- [Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien::Build::Manual::FAQ)
+
+    If you have a common question that has already been answered, like
+    "How do I use [alienfile](https://metacpan.org/pod/alienfile) with some build system".
+
+- [Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor)
+
+    This is for the brave souls who want to write plugins that will work with
+    [Alien::Build](https://metacpan.org/pod/Alien::Build) + [alienfile](https://metacpan.org/pod/alienfile).
 
 Note that you will usually not usually create a [Alien::Build](https://metacpan.org/pod/Alien::Build) instance
 directly, but rather be using a thin installer layer, such as
