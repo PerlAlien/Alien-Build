@@ -96,6 +96,28 @@ You can also modify hooks using C<before_hook>, C<around_hook> and C<after_hook>
    );
  }
 
+You can and should write tests for your plugin.  The best way to do
+this is using L<Test::Alien::Build>, which allows you to write an
+inline L<alienfile> in your test.
+
+ use Test::V0;
+ use Test::Alien::Build;
+ 
+ my $build = alienfile_ok q{
+   use alienfile;
+   plugin 'Build::MyPlugin' => (
+     arg1 => 'override for arg1',
+     arg2 => [ 'something', 'else' ],
+   );
+   ...
+ };
+ 
+ # you can interrogate $build, it is an instance of L<Alien::Build>.
+ 
+ my $alien = alien_build_ok;
+ 
+ # you can interrogate $alien, it is an instance of L<Alien::Base>.
+
 =head1 HOOKS
 
 =head2 probe hook
