@@ -22,74 +22,6 @@ a tool for probing the operating system for existing libraries and tools, and do
 and installing packages.  L<alienfile> is a recipe format for describing how to probe,
 download, build and install a package.
 
-=head2 How do I specify a minimum or exact version requirement for packages that use pkg-config?
-
-The various pkg-config plugins all support a minimum_version field:
-
- use alienfile;
- 
- plugin 'PkgConfig', pkg_name => foo, minimum_version => '1.2.3';
-
-=head2 How to create an Alien module for a packages that do not support pkg-config?
-
-Depends on how you probe for and build for a package.  Most things can be done by providing
-commands.  For example if you have a C<foo> package that provides a C<foo-config> program
-to provide the normal C<pkg-config> fields then you could do something like this:
-
- use alienfile;
- 
- probe [ 'foo-config --version' ];
- 
- share {
-   ...
- 
-   build [
-     '%{make} PREFIX=%{.runtime.prefix}',
-     '%{amek} install PREFIX=%{.runtime.prefix}',
-   ];
- };
- 
- gather [
-   [ 'foo-config', '--version', \'%{.runtime.version}' ],
-   [ 'foo-config', '--cflags',  \'%{.runtime.cflags}'  ],
-   [ 'foo-config', '--libs',    \'%{.runtime.libs}'    ],
- ];
-
-=head2 How do I test my package once it is built (before it is installed)?
-
-Use L<Test::Alien>.  It has extensive documentation, and integrates nicely with L<Alien::Base>.
-
-=head2 How do I patch packages that need alterations?
-
-If you have a diff file you can use patch:
-
- use alienfile;
- 
- ...
- 
- share {
-   ...
-   patch [ '%{patch} -p1 < %{.install.patch}/mypatch.diff' ];
-   build [ ... ] ;
- }
- 
- ...
-
-You can also patch using Perl if that is easier:
-
- use alienfile;
- 
- ...
- 
- share {
-   ...
-   patch sub {
-     my($build) = @_;
-     # make changes to source prior to build
-   };
-   build [ ... ];
- };
-
 =head2 How do I build a package that uses I<build system>
 
 =head3 autoconf
@@ -153,24 +85,128 @@ MSYS plugin and use a command sequence to do the build like this:
    ];
  };
 
-=head3 CMAKE
+=head3 CMake
 
-There is an L<Alien> for cmake: L<Alien::CMake>, and a helper C<%{cmake}> which will
-automatically pull it in as needed.  (Help wanted, an actual working example for this
-FAQ).
+There is an alien L<Alien::cmake3> that provides C<cmake> 3.x or better (It is preferred to the
+older L<Alien::CMake>).  Though it is recommended that you use the C<cmake> 
+(L<Alien::Build::Plugin::Build::CMake>) plugin instead of using L<Alien::cmake3>.
+
+ use alienfile;
+ 
+ share {
+   plugin 'Build::CMake';
+   build [
+     # this is the default build step, if you do not specify one.
+     [ '%{cmake}',
+         @{ meta->prop->{plugin_build_cmake}->{args} },
+         # ... put extra cmake args here ...
+         '.'
+     ],
+     '%{make}',
+     '%{make} install',
+   ];
+ };
 
 =head3 vanilla Makefiles
 
-You can use the C<%{make}> or C<%{gmake}> helper (use the latter if your package
-requires GNU Make.  You can also use perl configuration to make sure that position
-independent code is generated:
+L<Alien::Build> provides a helper (C<%{make}>) for the C<make> that is used by Perl and
+L<ExtUtils::MakeMaker> (EUMM).  Unfortunately the C<make> supported by Perl and EUMM on
+Windows (C<nmake> and C<dmake>) are not widely supported by most open source projects.
+(Thankfully recent perls and EUMM support GNU Make on windows now).
 
+You can use the C<make> plugin (L<Alien::Build::Plugin::Build::Make>) to tell the
+L<Alien::Build> system know which make the project that you are alienizing requires.
+
+ plugin 'Build::Make' => 'umake';
+ # umake makes %{make} either GNU Make or BSD Make on Unix and GNU Make on Windows.
  build {
    build [
+     # You can use the Perl config compiler and cflags using the %{perl.config...} helper
      [ '%{make}', 'CC=%{perl.config.cc}', 'CFLAGS=%{perl.config.cccdlflags} %{perl.config.optimize}' ],
      [ '%{make}', 'install', 'PREFIX=%{.install.prefix}' ],
    ],
  };
+
+Some open source projects require GNU Make, and you can specify that, and L<Alien::gmake>
+will be pulled in on platforms that do not already have it.
+
+ plugin 'Build::Make' => 'gmake';
+ ...
+
+=head2 How do I probe for a package that uses pkg-config
+
+Use the C<pkg-config> plugin (L<Alien::Build::Plugin::PkgConfig::Negotiate>):
+
+ use alienfile;
+ plugin 'PkgConfig' => (
+   pkg_name => 'libfoo',
+ );
+
+It will probe for a system version of the library.  It will also add the appropriate C<version>
+C<cflags> and C<libs> properties on either a C<system> or C<share> install.
+
+=head2 How do I specify a minimum or exact version requirement for packages that use pkg-config?
+
+The various pkg-config plugins all support a minimum_version field:
+
+ use alienfile;
+ 
+ plugin 'PkgConfig', pkg_name => foo, minimum_version => '1.2.3';
+
+=head2 How to create an Alien module for a packages that do not support pkg-config?
+
+=head3 Packages that provide a configuration script
+
+Many packages provide a command that you can use to get the appropriate version, compiler
+and linker flags.  For those packages you can just use the commands in your L<alienfile>.
+Something like this:
+
+ use alienfile;
+ 
+ probe [ 'foo-config --version' ];
+ 
+ share {
+   ...
+ 
+   build [
+     '%{make} PREFIX=%{.runtime.prefix}',
+     '%{amek} install PREFIX=%{.runtime.prefix}',
+   ];
+ };
+ 
+ gather [
+   [ 'foo-config', '--version', \'%{.runtime.version}' ],
+   [ 'foo-config', '--cflags',  \'%{.runtime.cflags}'  ],
+   [ 'foo-config', '--libs',    \'%{.runtime.libs}'    ],
+ ];
+
+=head3 Packages that require a compile test
+
+Some packages just expect you do know that C<-lfoo> will work.  For those you can use
+the C<cbuilder> plugin (L<Alien::Build::Plugin::Probe::CBuilder>.
+
+ use alienfile;
+ plugin 'Probe::CBuilder' => (
+   cflags => '-I/opt/libfoo/include',
+   libs   => '-L/opt/libfoo/lib -lfoo',
+ );
+ 
+ share {
+   ...
+   gather sub {
+     my($build) = @_;
+     my $prefix = $build->runtime_prop->{prefix};
+     $build->runtime_prop->{cflags} = "-I$prefix/include ";
+     $build->runtime_prop->{libs}   = "-L$prefix/lib -lfoo ";
+   };
+ }
+
+This plugin will build a small program with these flags and test that it works.  (There
+are also options to provide a program that can make simple tests to ensure the library
+works).  If the probe works, it will set the compiler and linker flags.  (There are also
+options for extracting the version from the test program).  If you do a share install
+you will need to set the compiler and linker flags yourself in the gather step, if you
+aren't using a build plugin that will do that for you.
 
 =head2 Can/Should I write a tool oriented Alien module?
 
@@ -183,6 +219,41 @@ to use the 'Probe::CommandLine':
  plugin 'Probe::CommandLine' => (
    command => 'gzip',
  );
+
+=head2 How do I test my package once it is built (before it is installed)?
+
+Use L<Test::Alien>.  It has extensive documentation, and integrates nicely with L<Alien::Base>.
+
+=head2 How do I patch packages that need alterations?
+
+If you have a diff file you can use patch:
+
+ use alienfile;
+ 
+ ...
+ 
+ share {
+   ...
+   patch [ '%{patch} -p1 < %{.install.patch}/mypatch.diff' ];
+   build [ ... ] ;
+ }
+ 
+ ...
+
+You can also patch using Perl if that is easier:
+
+ use alienfile;
+ 
+ ...
+ 
+ share {
+   ...
+   patch sub {
+     my($build) = @_;
+     # make changes to source prior to build
+   };
+   build [ ... ];
+ };
 
 =head2 How do I use Alien::Build from Dist::Zilla?
 

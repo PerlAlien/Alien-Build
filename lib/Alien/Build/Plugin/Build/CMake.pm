@@ -18,11 +18,9 @@ use Capture::Tiny qw( capture );
    plugin 'Build::CMake';
    build [
      # this is the default build step, if you do not specify one.
-     [ '%{cmake}', 
-         -G => '%{cmake_generator}', 
-         '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true', 
-         '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}', 
-         '-DCMAKE_MAKE_PROGRAM:PATH=%{make}', 
+     [ '%{cmake}',
+         @{ meta->prop->{plugin_build_cmake}->{args} },
+         # ... put extra cmake args here ...
          '.'
      ],
      '%{make}',
@@ -35,6 +33,14 @@ use Capture::Tiny qw( capture );
 This plugin helps build alienized projects that use C<cmake>.
 The intention is to make this a core L<Alien::Build> plugin if/when
 it becomes stable enough.
+
+This plugin provides a meta property C<plugin_build_cmake.args> which may change over time
+but for the moment includes:
+
+ -G %{cmake_generator}                          \
+ -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true    \
+ -DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix} \
+ -DCMAKE_MAKE_PROGRAM:PATH=%{make}
 
 =head1 METHODS
 
@@ -148,7 +154,7 @@ sub init
     '-DCMAKE_MAKE_PROGRAM:PATH=%{make}',
   );
 
-  $meta->prop->{plugin_cmake}->{args} = \@args;
+  $meta->prop->{plugin_build_cmake}->{args} = \@args;
 
   $meta->default_hook(
     build => [
@@ -157,8 +163,7 @@ sub init
       ['%{make}', 'install' ],
     ],
   );
-  
-  # TODO: set the makefile type ??
+
   # TODO: handle destdir on windows ??
 }
 
