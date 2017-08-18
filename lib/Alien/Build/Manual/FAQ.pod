@@ -255,6 +255,36 @@ You can also patch using Perl if that is easier:
    build [ ... ];
  };
 
+=head2 I would really prefer you not download stuff off the internet
+
+The idea of L<Alien> is to download missing packages and build them automatically to make installing
+easier.  Some people may not like this, or may even have security requirements that they not download
+random package over the internet (caveat, downloading random stuff off of CPAN may not be any safer,
+so make sure you audit all of the open source software that you use appropriately).  Another reason
+you may not want to download from the internet is if you are packaging up an alien for an operating
+system vendor, which will always want to use the system version of a library.  In that situation you
+don't want L<Alien::Build> to go off and download something from the internet because the probe failed
+for some reason.
+
+This is easy to take care of, simply set C<ALIEN_INSTALL_TYPE> to C<system> and a build from source
+code will never be attempted.  On systems that do not provide system versions of the library or tool
+you will get an error, allowing you to install the library, and retry the alien install.  You can
+also set the environment variable on just some aliens.
+
+ % export ALIEN_INSTALL_TYPE=system  # for everyone
+ 
+ % env ALIEN_INSTALL_TYPE=system cpanm -v Alien::libfoo
+
+=head2 For testing I would like to test both system and share installs!
+
+You can use the C<ALIEN_INSTALL_TYPE> environment variable.  It will force either a C<share> or
+C<system> install depending on how it is set.  For travis you can do something like this:
+
+ env:
+   matrix:
+     - ALIEN_FORCE=0
+     - ALIEN_FORCE=1
+
 =head2 How do I use Alien::Build from Dist::Zilla?
 
 For creating L<Alien::Base> and L<Alien::Build> based dist from L<Dist::Zilla> you can use the
