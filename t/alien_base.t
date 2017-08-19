@@ -56,6 +56,13 @@ subtest 'AB::MB sys install' => sub {
   is $version, '3.99999', "version: $version";
 };
 
+sub extract_flag {
+  my ($string, $flag) = @_;
+  return unless my @matches = $string =~ /(?:\A|\G| )-$flag(.*?)(?:(?<!\\) |\z)/g;
+  @matches = map { my $i = $_; $i =~ s#\\ # #g; $i } @matches; # de-quote all quoted spaces
+  return wantarray ? @matches : $matches[0];
+}
+
 subtest 'AB::MB share install' => sub {
 
   skip_all 'test requires Alien::Base::PkgConfig'
@@ -71,18 +78,18 @@ subtest 'AB::MB share install' => sub {
   ok $libs,    "libs:   $libs";
   is $version, '3.2.1', "version: $version";
 
-  if($cflags =~ /-I(.*)$/)
+  if(my $i = extract_flag($cflags, 'I'))
   {
-    ok -f "$1/foo2.h", "include path: $1";
+    ok -f "$i/foo2.h", "include path: $i";
   }
   else
   {
     fail "include path: ?";
   }
   
-  if($libs =~ /-L([^ ]*)/)
+  if(my $i = extract_flag($libs, 'L'))
   {
-    ok -f "$1/libfoo2.a", "lib path: $1";
+    ok -f "$i/libfoo2.a", "lib path: $i";
   }
   else
   {
@@ -125,37 +132,29 @@ subtest 'Alien::Build share' => sub {
   is( -f path(Alien::libfoo2->dist_dir)->child('_alien/for_libfoo2'), T(), 'dist_dir');
   
   subtest 'cflags' => sub {
-    is(
-      [split /\s+/, Alien::libfoo2->cflags],
-      array {
-        item match qr/^-I.*include/;
-        item '-DFOO=1';
-        end;
-      },
-      'cflags',
-    );
-    
-    my($dir) = [split /\s+/, Alien::libfoo2->cflags]->[0] =~ /^-I(.*)$/;
-    
+    my $cflags = Alien::libfoo2->cflags;
+    my $dir = extract_flag($cflags, 'I');
+    like $dir, qr/include$/, 'cflags';
+    my $def = extract_flag($cflags, 'D');
+    is $def, 'FOO=1', 'cflags';
     is(
       -f path($dir)->child('foo.h'),
       T(),
       '-I directory points to foo.h location',
     );
-  
+
+    $cflags = Alien::libfoo2->cflags_static;
+    $dir = extract_flag($cflags, 'I');
+    like $dir, qr/include$/, 'cflags';
     is(
-      [split /\s+/, Alien::libfoo2->cflags_static],
+      [extract_flag($cflags, 'D')],
       array {
-        item match qr/^-I.*include/;
-        item '-DFOO=1';
-        item '-DFOO_STATIC=1';
+        item 'FOO=1';
+        item 'FOO_STATIC=1';
         end;
       },
       'cflags_static',
     );
-    
-    ($dir) = [split /\s+/, Alien::libfoo2->cflags_static]->[0] =~ /^-I(.*)$/;
-    
     is(
       -f path($dir)->child('foo.h'),
       T(),
@@ -164,40 +163,29 @@ subtest 'Alien::Build share' => sub {
   };
   
   subtest 'libs' => sub {
-  
-    is(
-      [split /\s+/, Alien::libfoo2->libs],
-      array {
-        item match qr/-L.*lib/;
-        item '-lfoo';
-        end;
-      },
-      'libs',
-    );
-    
-    my($dir) = [split /\s+/, Alien::libfoo2->libs]->[0] =~ /^-L(.*)$/;
-    
+    my $libs = Alien::libfoo2->libs;
+    my $dir = extract_flag($libs, 'L');
+    like $dir, qr/lib$/, 'libs';
+    like extract_flag($libs, 'l'), qr/foo$/, 'libs';
     is(
       -f path($dir)->child('libfoo.a'),
       T(),
       '-L directory points to libfoo.a location',
     );
-    
-    
+
+    $libs = Alien::libfoo2->libs_static;
+    $dir = extract_flag($libs, 'L');
+    like $dir, qr/lib$/, 'libs';
     is(
-      [split /\s+/, Alien::libfoo2->libs_static],
+      [extract_flag($libs, 'l')],
       array {
-        item match qr/-L.*lib/;
-        item '-lfoo';
-        item '-lbar';
-        item '-lbaz';
+        item 'foo';
+        item 'bar';
+        item 'baz';
         end;
       },
       'libs_static',
     );
-    
-    ($dir) = [split /\s+/, Alien::libfoo2->libs_static]->[0] =~ /^-L(.*)$/;
-    
     is(
       -f path($dir)->child('libfoo.a'),
       T(),
