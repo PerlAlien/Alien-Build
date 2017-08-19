@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Documentation improvements
+  - Fixes for running from directories with spaces.
 
 0.99      2017-08-17 12:53:55 -0400
   - Fix bug in Test::Alien xs_ok would crash with multiple alines with xs_load methods.

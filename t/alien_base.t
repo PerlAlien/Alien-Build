@@ -6,6 +6,8 @@ use File::Glob qw( bsd_glob );
 use File::chdir;
 use Path::Tiny qw( path );
 use FFI::CheckLib;
+use Text::ParseWords qw( shellwords );
+use List::Util qw( first );
 
 my $mock = Test2::Mock->new(
   class => 'FFI::CheckLib',
@@ -71,23 +73,13 @@ subtest 'AB::MB share install' => sub {
   ok $libs,    "libs:   $libs";
   is $version, '3.2.1', "version: $version";
 
-  if($cflags =~ /-I(.*)$/)
-  {
-    ok -f "$1/foo2.h", "include path: $1";
-  }
-  else
-  {
-    fail "include path: ?";
-  }
+  (first { /^-I/ } shellwords($cflags)) =~ /^-I(.*)$/;
+  ok defined $1 && -f "$1/foo2.h", "include path";
+  note "include path: $1";
   
-  if($libs =~ /-L([^ ]*)/)
-  {
-    ok -f "$1/libfoo2.a", "lib path: $1";
-  }
-  else
-  {
-    fail "lib path: ?";
-  }
+  (first { /^-L/ } shellwords($libs)) =~ /^-L(.*)$/;
+  ok defined $1 && -f "$1/libfoo2.a", "lib path";
+  note "lib path: $1";
 
 };
 
@@ -126,7 +118,7 @@ subtest 'Alien::Build share' => sub {
   
   subtest 'cflags' => sub {
     is(
-      [split /\s+/, Alien::libfoo2->cflags],
+      [shellwords(Alien::libfoo2->cflags)],
       array {
         item match qr/^-I.*include/;
         item '-DFOO=1';
@@ -135,7 +127,7 @@ subtest 'Alien::Build share' => sub {
       'cflags',
     );
     
-    my($dir) = [split /\s+/, Alien::libfoo2->cflags]->[0] =~ /^-I(.*)$/;
+    my($dir) = [shellwords(Alien::libfoo2->cflags)]->[0] =~ /^-I(.*)$/;
     
     is(
       -f path($dir)->child('foo.h'),
@@ -144,7 +136,7 @@ subtest 'Alien::Build share' => sub {
     );
   
     is(
-      [split /\s+/, Alien::libfoo2->cflags_static],
+      [shellwords(Alien::libfoo2->cflags_static)],
       array {
         item match qr/^-I.*include/;
         item '-DFOO=1';
@@ -154,7 +146,7 @@ subtest 'Alien::Build share' => sub {
       'cflags_static',
     );
     
-    ($dir) = [split /\s+/, Alien::libfoo2->cflags_static]->[0] =~ /^-I(.*)$/;
+    ($dir) = [shellwords(Alien::libfoo2->cflags_static)]->[0] =~ /^-I(.*)$/;
     
     is(
       -f path($dir)->child('foo.h'),
@@ -166,7 +158,7 @@ subtest 'Alien::Build share' => sub {
   subtest 'libs' => sub {
   
     is(
-      [split /\s+/, Alien::libfoo2->libs],
+      [shellwords(Alien::libfoo2->libs)],
       array {
         item match qr/-L.*lib/;
         item '-lfoo';
@@ -175,7 +167,7 @@ subtest 'Alien::Build share' => sub {
       'libs',
     );
     
-    my($dir) = [split /\s+/, Alien::libfoo2->libs]->[0] =~ /^-L(.*)$/;
+    my($dir) = [shellwords(Alien::libfoo2->libs)]->[0] =~ /^-L(.*)$/;
     
     is(
       -f path($dir)->child('libfoo.a'),
@@ -185,7 +177,7 @@ subtest 'Alien::Build share' => sub {
     
     
     is(
-      [split /\s+/, Alien::libfoo2->libs_static],
+      [shellwords(Alien::libfoo2->libs_static)],
       array {
         item match qr/-L.*lib/;
         item '-lfoo';
@@ -196,7 +188,7 @@ subtest 'Alien::Build share' => sub {
       'libs_static',
     );
     
-    ($dir) = [split /\s+/, Alien::libfoo2->libs_static]->[0] =~ /^-L(.*)$/;
+    ($dir) = [shellwords(Alien::libfoo2->libs_static)]->[0] =~ /^-L(.*)$/;
     
     is(
       -f path($dir)->child('libfoo.a'),

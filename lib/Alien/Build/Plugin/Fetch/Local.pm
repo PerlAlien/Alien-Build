@@ -61,8 +61,9 @@ sub init
 
   if($self->url =~ /^file:/)
   {
-    $meta->add_requires('share' => 'URI' => 0 );
-    $meta->add_requires('share' => 'URI::file' => 0 );
+    $meta->add_requires('share' => 'URI'         => 0 );
+    $meta->add_requires('share' => 'URI::file'   => 0 );
+    $meta->add_requires('share' => 'URI::Escape' => 0 );
   }
 
   {
@@ -87,7 +88,7 @@ sub init
     {
       my $root = URI::file->new($self->root);
       my $url = URI->new_abs($path, $root);
-      $path = $url->path;
+      $path = URI::Escape::uri_unescape($url->path);
       $path =~ s{^/([a-z]:)}{$1}i if $^O eq 'MSWin32';
     }
     

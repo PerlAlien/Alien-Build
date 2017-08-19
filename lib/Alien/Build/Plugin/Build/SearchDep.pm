@@ -122,22 +122,31 @@ sub init
 
       if($self->public_l)
       {
-        $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_libs} }) . ' ' . $build->runtime_prop->{$_}
+        $build->runtime_prop->{$_} = join(' ', _space_escape(@{ $build->install_prop->{plugin_build_searchdep_libs} })) . ' ' . $build->runtime_prop->{$_}
           for qw( libs libs_static );
       }
       
-      $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_ldflags} }) . ' ' . $build->runtime_prop->{$_}
+      $build->runtime_prop->{$_} = join(' ', _space_escape(@{ $build->install_prop->{plugin_build_searchdep_ldflags} })) . ' ' . $build->runtime_prop->{$_}
         for qw( libs libs_static );
 
       if($self->public_I)
       {
         $build->runtime_prop->{cflags}        = '' unless defined $build->runtime_prop->{cflags};
         $build->runtime_prop->{cflags_static} = '' unless defined $build->runtime_prop->{cflags_static};
-        $build->runtime_prop->{$_} = join(' ', @{ $build->install_prop->{plugin_build_searchdep_cflags} }) . ' ' . $build->runtime_prop->{$_}
+        $build->runtime_prop->{$_} = join(' ', _space_escape(@{ $build->install_prop->{plugin_build_searchdep_cflags} })) . ' ' . $build->runtime_prop->{$_}
           for qw( cflags cflags_static );
       }
     },
   );
+}
+
+sub _space_escape
+{
+  map {
+    my $str = $_;
+    $str =~ s{(\s)}{\\$1}g;
+    $str;
+  } @_;
 }
 
 1;
