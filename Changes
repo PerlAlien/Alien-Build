@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.00      2017-08-21 16:09:37 -0400
   - Documentation improvements
   - Fixes for running from directories with spaces.
 
