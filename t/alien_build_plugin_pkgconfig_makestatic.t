@@ -4,7 +4,7 @@ use Alien::Build::Plugin::PkgConfig::MakeStatic;
 use Capture::Tiny qw( capture_merged );
 
 skip_all 'test requires PkgConfig.pm'
-  unless eval { require PkgConfig; 1 };
+  unless eval q{ use PkgConfig 0.14026; 1 };
 
 subtest 'recursive' => sub {
 
