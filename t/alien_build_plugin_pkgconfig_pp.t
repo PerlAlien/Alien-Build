@@ -7,7 +7,7 @@ use Capture::Tiny qw( capture_merged );
 $ENV{PKG_CONFIG_PATH}   = path('corpus/lib/pkgconfig')->absolute->stringify;
 $ENV{PKG_CONFIG_LIBDIR} = '';
 
-skip_all 'test requires PkgConfig 0.14026' unless eval q{ use PkgConfig 0.14026; 1 };
+skip_all 'test requires PkgConfig 0.14026' unless eval { require PkgConfig; PkgConfig->VERSION(0.14026) };
 
 sub build
 {
