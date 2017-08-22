@@ -88,7 +88,7 @@ sub _pick
     # if we don't have Archive::Zip, check if we have the unzip command
     elsif(eval { require Alien::Build::Plugin::Extract::CommandLine; Alien::Build::Plugin::Extract::CommandLine->new->unzip_cmd })
     {
-      return 'Extract::CommandLine';
+      return 'CommandLine';
     }
     
     # okay fine.  I will try to install Archive::Zip :(
