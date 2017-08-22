@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix bug in Extract::Negotiate plugin
+  - Fixes for running with perl installed in path with spaces.
 
 1.00      2017-08-21 16:09:37 -0400
   - Documentation improvements
