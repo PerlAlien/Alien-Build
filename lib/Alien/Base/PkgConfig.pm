@@ -7,8 +7,7 @@ our $VERSION = '0.043';
 
 use Carp;
 use Config;
-use File::Basename qw/fileparse/;
-use File::Spec;
+use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_stderr );
 
 sub new {
@@ -22,16 +21,13 @@ sub new {
   my ($path) = @_;
   croak "Must specify a file" unless defined $path;
 
-  $path = File::Spec->rel2abs( $path );
+  $path = path( $path )->absolute;
 
-  my ($name, $dir) = fileparse $path, '.pc';
-
-  $dir = File::Spec->catdir( $dir );  # remove trailing slash
-  $dir =~ s{\\}{/}g;
+  my($name) = $path->basename =~ /^(.*)\.pc$/;
 
   my $self = {
     package  => $name,
-    vars     => { pcfiledir => $dir },
+    vars     => { pcfiledir => $path->parent->stringify },
     keywords => {},
   };
 
