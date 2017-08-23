@@ -53,7 +53,7 @@ Create a new instance of L<Alien::Build::MM>.
 
 sub new
 {
-  my($class) = @_;
+  my($class, %prop) = @_;
   
   my $self = bless {}, $class;
   
@@ -63,6 +63,15 @@ sub new
       (-d 'patch' ? (patch => 'patch') : ()),
     )
   ;
+  
+  if(defined $prop{alienfile_meta})
+  {
+    $self->{alienfile_meta} = $prop{alienfile_meta};
+  }
+  else
+  {
+    $self->{alienfile_meta} = 1;
+  }
   
   $self->build->load_requires('configure');
   $self->build->root;
@@ -84,6 +93,19 @@ The L<Alien::Build> instance.
 sub build
 {
   shift->{build};
+}
+
+=head2 alienfile_meta
+
+ my $bool = $abmm->alienfile_meta
+
+Set to a false value, in order to turn off the x_alienfile meta
+
+=cut
+
+sub alienfile_meta
+{
+  shift->{alienfile_meta};
 }
 
 =head1 METHODS
@@ -167,6 +189,20 @@ sub mm_args
  
   #$args{META_MERGE}->{'meta-spec'}->{version} = 2;
   $args{META_MERGE}->{dynamic_config} = 1;
+  
+  if($self->alienfile_meta)
+  {
+    $args{META_MERGE}->{x_alienfile} = {
+      generated_by => "@{[ __PACKAGE__ ]} version @{[ __PACKAGE__->VERSION || 'dev' ]}",
+      requires => {
+        map {
+          my %reqs = %{ $self->build->requires($_) };
+          $reqs{$_} = "$reqs{$_}" for keys %reqs;
+          $_ => \%reqs;
+        } qw( share system )
+      },
+    };
+  }
   
   $self->build->checkpoint;
   %args;
