@@ -283,6 +283,13 @@ relevant once the install process is complete.
     platform.  For example, the GNU version of make is usually `make` in
     Linux and `gmake` on FreeBSD.
 
+- ffi\_name
+
+    The name DLL or shared object "name" to use when searching for dynamic
+    libraries at runtime.  This is passed into [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), so if
+    your library is something like `libarchive.so` or `archive.dll` you
+    would set this to `archive`.
+
 - install\_type
 
     The install type.  Is one of:

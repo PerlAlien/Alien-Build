@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - add ffi_name runtime property
 
 1.03_01   2017-08-24 13:12:22 -0400
 

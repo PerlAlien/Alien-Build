@@ -552,6 +552,12 @@ sub dynamic_libs {
   
   if($class->install_type('system')) {
 
+    if(my $prop = $class->runtime_prop)
+    {
+      return FFI::CheckLib::find_lib( lib => $prop->{ffi_name} )
+        if defined $prop->{ffi_name};
+    }
+
     my $name = $class->config('ffi_name');
     unless(defined $name) {
       $name = $class->config('name');

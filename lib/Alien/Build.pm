@@ -378,6 +378,13 @@ The command name for tools where the name my differ from platform to
 platform.  For example, the GNU version of make is usually C<make> in
 Linux and C<gmake> on FreeBSD.
 
+=item ffi_name
+
+The name DLL or shared object "name" to use when searching for dynamic
+libraries at runtime.  This is passed into L<FFI::CheckLib>, so if
+your library is something like C<libarchive.so> or C<archive.dll> you
+would set this to C<archive>.
+
 =item install_type
 
 The install type.  Is one of:

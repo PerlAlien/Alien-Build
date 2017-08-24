@@ -260,4 +260,39 @@ subtest 'build flags' => sub {
 
 };
 
+subtest 'ffi_name' => sub {
+
+  require Alien::libfoo1;
+  
+  my @args_find_lib;
+  
+  my $mock1 = Test2::Mock->new(
+    'class' => 'FFI::CheckLib',
+    override => [
+      find_lib => sub {
+        @args_find_lib = @_;
+        ('foo.dll','foo2.dll');
+      },
+    ],
+  );
+  
+  is( [Alien::libfoo1->dynamic_libs], ['foo.dll','foo2.dll'], 'call dynamic_libs' );
+  is( \@args_find_lib, [ lib => 'foo' ] );
+  
+  my $mock2 = Test2::Mock->new(
+    class => 'Alien::Base',
+    around => [
+      runtime_prop => sub {
+        my($orig, @args) = @_;
+        my $prop = $orig->(@args);
+        { ffi_name => 'roger', %$prop };
+      },
+    ],
+  );
+  
+  is( [Alien::libfoo1->dynamic_libs], ['foo.dll','foo2.dll'], 'call dynamic_libs' );
+  is( \@args_find_lib, [ lib => 'roger' ] );
+
+};
+
 done_testing;
