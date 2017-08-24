@@ -211,6 +211,7 @@ sub import
     if($alien eq '!export')
     {
       $export = 0;
+      next;
     }
     $alien = "Alien::$alien" unless $alien =~ /::/;
     my $alien_pm = $alien . '.pm';
