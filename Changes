@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.02      2017-08-24 06:56:46 -0400
   - Fix !export tag for Alien::Base::Wrapper
   - Alien::Build::MM: Include meta about share and system requirements in x_alienfile
 
