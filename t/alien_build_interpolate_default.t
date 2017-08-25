@@ -30,4 +30,15 @@ subtest 'cwd' => sub {
 
 };
 
+subtest 'mkdir_deep' => sub {
+
+  my $intr = Alien::Build::Interpolate::Default->new;
+  
+  my $val = $intr->interpolate('%{mkdir_deep} foo');
+  
+  my $expected = $^O eq 'MSWin32' ? 'md foo' : 'mkdir -p foo';
+  
+  is($val, $expected);
+};
+
 done_testing;
