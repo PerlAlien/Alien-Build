@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.04      2017-08-25 06:41:44 -0400
   - add %{mkdir_deep} helper to Alien::Build::Interpolate::Default.
 
 1.03_02   2017-08-24 13:16:04 -0400
