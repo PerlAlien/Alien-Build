@@ -32,6 +32,8 @@ subtest 'cwd' => sub {
 
 subtest 'mkdir_deep' => sub {
 
+  local $Alien::Build::VERSION = '1.04';
+
   my $intr = Alien::Build::Interpolate::Default->new;
   
   my $val = $intr->interpolate('%{mkdir_deep} foo');
