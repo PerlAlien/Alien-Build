@@ -71,6 +71,7 @@ sub init
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
 
+      require PkgConfig;
       my $pkg = PkgConfig->find($pkg_name);
       die "package @{[ $pkg_name ]} not found" if $pkg->errmsg;
       if(defined $self->minimum_version)
