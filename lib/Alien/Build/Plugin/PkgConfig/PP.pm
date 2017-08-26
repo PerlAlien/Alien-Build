@@ -100,6 +100,7 @@ sub init
 
     foreach my $name ($pkg_name, @alt_names)
     {
+      require PkgConfig;
       my $pkg = PkgConfig->find($name, search_path => [@PKG_CONFIG_PATH]);
       if($pkg->errmsg)
       {
