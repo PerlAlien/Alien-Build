@@ -285,6 +285,7 @@ sub _tar_can
   unless(%tars)
   {
     my $name = '';
+    local $_; # to avoid dynamically scoped read-only $_ from upper scopes
     while(<DATA>)
     {
       if(/^\[ (.*) \]$/)
