@@ -69,16 +69,13 @@ subtest 'basic' => sub {
 subtest 'version' => sub {
   my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
 
-  my $skip;
   my(undef,$ret) = capture_merged { system( "$pkg_config --version" ); $? };
   if ( $ret ) {
-    $skip = "Cannot use pkg-config: $ret";
+    skip_all "Cannot use pkg-config: $ret";
   }
 
-  skip_all $skip if $skip;
-
   my @installed = map { /^(\S+)/ ? $1 : () } `$pkg_config --list-all`;
-  skip "pkg-config returned no packages", 2 unless @installed;
+  skip_all "pkg-config returned no packages" unless @installed;
   my $lib = $installed[0];
 
   my ($builder_ok, $builder_bad) = map { 
