@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - add %{make_path} helper to Alien::Build::Interpolate::Default.
+  - Fixed bug with read-only $_ triggered by Dist::Zilla::Plugin::AlienBuild (zmughal++)
 
 1.04      2017-08-25 06:41:44 -0400
   - add %{mkdir_deep} helper to Alien::Build::Interpolate::Default.
