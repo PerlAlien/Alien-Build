@@ -1,8 +1,7 @@
+use Test2::Require::Module 'Readonly';
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::CommandLine;
-
-use Readonly;
 
 subtest 'tar can' => sub {
   my $build = alienfile filename => 'corpus/blank/alienfile';
