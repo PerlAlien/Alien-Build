@@ -67,7 +67,8 @@ subtest 'use start_url' => sub {
 
 subtest 'fetch' => sub {
 
-  skip_all 'test requires HTTP::Tiny' unless eval q{ use HTTP::Tiny 0.044; 1 };
+  $DB::single = 1;
+  skip_all 'test requires HTTP::Tiny' unless eval { require HTTP::Tiny; HTTP::Tiny->VERSION(0.044) };
 
   my $url = http_url;
   skip_all http_error unless $url;

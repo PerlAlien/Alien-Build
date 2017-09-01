@@ -57,7 +57,7 @@ sub _pick
   }
   elsif($format eq 'tar.gz')
   {
-    if(eval q{ require Archive::Tar; Archive::Tar->has_zlib_support })
+    if(eval { require Archive::Tar; Archive::Tar->has_zlib_support })
     {
       return 'ArchiveTar';
     }
@@ -68,7 +68,7 @@ sub _pick
   }
   elsif($format eq 'tar.bz2')
   {
-    if(eval q{ require Alien::Build::Plugin::Extract::ArchiveTar; Alien::Build::Plugin::Extract::ArchiveTar->_can_bz2 })
+    if(eval { require Alien::Build::Plugin::Extract::ArchiveTar; Alien::Build::Plugin::Extract::ArchiveTar->_can_bz2 })
     {
       return 'ArchiveTar';
     }
@@ -80,7 +80,7 @@ sub _pick
   elsif($format eq 'zip')
   {
     # Archive::Zip is not that reliable.  But if it is already installed it is probably working
-    if(eval q{ require Archive::Zip; 1 })
+    if(eval { require Archive::Zip; 1 })
     {
       return 'ArchiveZip';
     }

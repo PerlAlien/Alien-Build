@@ -78,7 +78,7 @@ subtest 'archive' => sub {
 subtest 'archive with pax_global_header' => sub {
 
   skip_all 'Test requires Archive::Tar'
-    unless eval q{ require Archive::Tar };
+    unless eval { require Archive::Tar };
 
   my $build = alienfile_ok q{
   

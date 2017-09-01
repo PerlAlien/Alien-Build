@@ -3,6 +3,7 @@ use Test2::V0 -no_srand => 1;
 use Test::Exec;
 use Config;
 use Alien::Base::Wrapper ();
+use Alien::Build::Util qw( _dump );
 use Text::ParseWords qw( shellwords );
 
 $ENV{ALIEN_BASE_WRAPPER_QUIET} = 1;
@@ -194,11 +195,8 @@ subtest 'combine aliens' => sub {
 
     my %mm_args = Alien::Base::Wrapper->mm_args;
 
-    if(eval q{ require YAML })
-    {
-      note YAML::Dump(\%mm_args);
-    }
-  
+    note _dump(\%mm_args);
+
     is(
       \%mm_args,
       hash {
@@ -216,10 +214,7 @@ subtest 'combine aliens' => sub {
 
     my %mb_args = Alien::Base::Wrapper->mb_args;
 
-    if(eval q{ require YAML })
-    {
-      note YAML::Dump(\%mb_args);
-    }
+    note _dump(\%mb_args);
     
     is(
       \%mb_args,

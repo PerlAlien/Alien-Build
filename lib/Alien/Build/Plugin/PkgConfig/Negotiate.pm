@@ -47,7 +47,7 @@ sub _pick
 
   return $ENV{ALIEN_BUILD_PKG_CONFIG} if $ENV{ALIEN_BUILD_PKG_CONFIG};
   
-  if(eval q{ use PkgConfig::LibPkgConf 0.04; 1 })
+  if(eval { require PkgConfig::LibPkgConf; PkgConfig::LibPkgConf->VERSION(0.04) })
   {
     return 'PkgConfig::LibPkgConf';
   }
