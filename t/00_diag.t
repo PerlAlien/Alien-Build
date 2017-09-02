@@ -19,6 +19,7 @@ $modules{$_} = $_ for qw(
   Archive::Tar
   Archive::Zip
   Capture::Tiny
+  Devel::Hide
   ExtUtils::CBuilder
   ExtUtils::MakeMaker
   ExtUtils::ParseXS

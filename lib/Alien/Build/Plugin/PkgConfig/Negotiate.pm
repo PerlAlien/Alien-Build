@@ -41,7 +41,17 @@ The minimum required version that is acceptable version as provided by the syste
 
 has minimum_version => undef;
 
-sub _pick
+=head1 METHODS
+
+=head2 pick
+
+ my $name = Alien::Build::Plugijn::PkgConfig::Negotiate->pick;
+
+Returns the name of the negotiated plugin.
+
+=cut
+
+sub pick
 {
   my($class) = @_;
 
@@ -68,7 +78,7 @@ sub init
 {
   my($self, $meta) = @_;
 
-  my $plugin = $self->_pick;
+  my $plugin = $self->pick;
   Alien::Build->log("Using PkgConfig plugin: $plugin");
   
   if(ref($self->pkg_name) eq 'ARRAY')
