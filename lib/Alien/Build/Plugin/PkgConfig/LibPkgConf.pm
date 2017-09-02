@@ -49,6 +49,23 @@ The minimum required version that is acceptable version as provided by the syste
 
 has minimum_version => undef;
 
+=head1 METHODS
+
+=head2 available
+
+ my $bool = Alien::Build::Plugin::PkgConfig::LibPkgConf->available;
+
+Returns true if the necessary prereqs for this plugin are I<already> installed.
+
+=cut
+
+use constant _min_version => '0.04';
+
+sub available
+{
+  !!eval { require PkgConfig::LibPkgConf; PkgConfig::LibPkgConf->VERSION(_min_version) };
+}
+
 sub init
 {
   my($self, $meta) = @_;
@@ -58,11 +75,11 @@ sub init
   if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
   {
     # Also update in Neotiate.pm
-    $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => '0.04');
+    $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => _min_version);
   
     if(defined $self->minimum_version)
     {
-      $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => '0.04');
+      $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => _min_version);
     }
   }
   

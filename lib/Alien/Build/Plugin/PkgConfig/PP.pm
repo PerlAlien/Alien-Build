@@ -46,6 +46,23 @@ The minimum required version that is acceptable version as provided by the syste
 
 has minimum_version => undef;
 
+=head1 METHODS
+
+=head2 available
+
+ my $bool = Alien::Build::Plugin::PkgConfig::PP->available;
+
+Returns true if the necessary prereqs for this plugin are I<already> installed.
+
+=cut
+
+use constant _min_version => '0.14026';
+
+sub available
+{
+  !!eval { require PkgConfig; PkgConfig->VERSION(_min_version) };
+}
+
 sub _cleanup
 {
   my($value) = @_;
@@ -61,7 +78,7 @@ sub init
   
   if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
   {
-    $meta->add_requires('configure' => 'PkgConfig' => '0.14026');
+    $meta->add_requires('configure' => 'PkgConfig' => _min_version);
   }
   
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);

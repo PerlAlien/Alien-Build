@@ -37,7 +37,7 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
-has bin_name => sub {
+sub _bin_name {
 
   # We prefer pkgconf to pkg-config because it seems to be the future.
 
@@ -50,6 +50,8 @@ has bin_name => sub {
         ? 'pkg-config'
         : undef;
 };
+
+has bin_name => \&_bin_name;
 
 =head2 minimum_version
 
@@ -74,6 +76,21 @@ sub _val
   else
   { $build->runtime_prop->{$prop_name} = $string }
   ();
+}
+
+=head1 METHODS
+
+=head2 available
+
+ my $bool = Alien::Build::Plugin::PkgConfig::CommandLine->available;
+
+Returns true if the necessary prereqs for this plugin are I<already> installed.
+
+=cut
+
+sub available
+{
+  !!_bin_name();
 }
 
 sub init

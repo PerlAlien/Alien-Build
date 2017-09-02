@@ -25,6 +25,84 @@ sub build
   ($build, $meta, $plugin);
 }
 
+subtest 'available' => sub {
+
+  my %which;
+
+  require File::Which;
+
+  my $mock = Test2::Mock->new(
+    class => 'File::Which',
+    override => [
+      which => sub {
+        my($prog) = @_;
+        if(defined $prog)
+        {
+          if($which{$prog})
+          {
+            note "which: $prog => $which{$prog}";
+            return $which{$prog};
+          }
+          else
+          {
+            note "which: $prog N/A";
+          }
+        }
+        else
+        {
+          note "which: undef";
+        }
+      },
+    ],
+  );
+  
+  subtest 'no command line' => sub {
+
+    %which = ();
+
+    is(
+      Alien::Build::Plugin::PkgConfig::CommandLine->available,
+      F(),
+    );
+  
+  };
+
+  subtest 'pkg-config' => sub {
+  
+    %which = ( 'pkg-config' => '/usr/bin/pkg-config' );
+  
+    is(
+      Alien::Build::Plugin::PkgConfig::CommandLine->available,
+      T(),
+    );
+
+  };
+
+  subtest 'pkgconf' => sub {
+  
+    %which = ( 'pkgconf' => '/usr/bin/pkgconf' );
+  
+    is(
+      Alien::Build::Plugin::PkgConfig::CommandLine->available,
+      T(),
+    );
+
+  };
+
+  subtest 'PKG_CONFIG' => sub {
+  
+    local $ENV{PKG_CONFIG} = 'foo-pkg-config';
+    %which = ( 'foo-pkg-config' => '/usr/bin/foo-pkg-config' );
+    
+    is(
+      Alien::Build::Plugin::PkgConfig::CommandLine->available,
+      T(),
+    );    
+  
+  };
+
+};
+
 subtest 'system not available' => sub {
 
   my($build, $meta, $plugin) = build('bogus');

@@ -9,6 +9,22 @@ $ENV{PKG_CONFIG_LIBDIR} = '';
 
 skip_all 'test requires PkgConfig 0.14026' unless eval { require PkgConfig; PkgConfig->VERSION(0.14026) };
 
+subtest 'available' => sub {
+
+  local $INC{'PkgConfig.pm'} = __FILE__;
+
+  subtest 'new enough' => sub {
+    local $PkgConfig::VERSION = '0.14026';
+    is(Alien::Build::Plugin::PkgConfig::PP->available, T());
+  };
+  
+  subtest 'too old!' => sub {
+    local $PkgConfig::VERSION = '0.14025';
+    is(Alien::Build::Plugin::PkgConfig::PP->available, F());
+  };
+
+};
+
 sub build
 {
   my $build = alienfile filename => 'corpus/blank/alienfile';

@@ -22,6 +22,23 @@ skip_all 'Test requires PkgConfig::LibPkgConf'
     $build->load_requires('configure');
   };
 
+subtest 'available' => sub {
+
+  local $INC{'PkgConfig/LibPkgConf.pm'} = __FILE__;
+
+  subtest 'new enough' => sub {
+    local $PkgConfig::LibPkgConf::VERSION = '0.04';
+    $DB::single = 1;
+    is(Alien::Build::Plugin::PkgConfig::LibPkgConf->available, T());
+  };
+  
+  subtest 'too old!' => sub {
+    local $PkgConfig::VERSION = '0.03';
+    is(Alien::Build::Plugin::PkgConfig::LibPkgConf->available, F());
+  };
+
+};
+
 ok $INC{'PkgConfig/LibPkgConf/Client.pm'}, 'Loaded PkgConfig::LibPkgConf::Client';
 note "inc=$INC{'PkgConfig/LibPkgConf/Client.pm'}";
 ok $INC{'PkgConfig/LibPkgConf/Util.pm'}, 'Loaded PkgConfig::LibPkgConf::Util';
