@@ -15,7 +15,7 @@ subtest 'pick fetch' => sub {
   
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('http://mytest.test/');
     
-    is($plugin->_pick_fetch, 'HTTPTiny');
+    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
     is($plugin->scheme, 'http');
   
   };
@@ -24,7 +24,7 @@ subtest 'pick fetch' => sub {
   
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
     
-    is($plugin->_pick_fetch, 'HTTPTiny');
+    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
     is($plugin->scheme, 'https');
   
   };
@@ -33,7 +33,7 @@ subtest 'pick fetch' => sub {
   
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('ftp://mytest.test/');
     
-    is($plugin->_pick_fetch, 'NetFTP');
+    is([$plugin->pick], ['Fetch::NetFTP']);
     is($plugin->scheme, 'ftp');
     
   };
@@ -44,7 +44,7 @@ subtest 'pick fetch' => sub {
   
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('ftp://mytest.test/');
     
-    is($plugin->_pick_fetch, 'LWP');
+    is([$plugin->pick], ['Fetch::LWP','Decode::DirListing','Decode::HTML']);
     is($plugin->scheme, 'ftp');
     
   };
@@ -55,7 +55,7 @@ subtest 'pick fetch' => sub {
   
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('file:///foo/bar/baz');
     
-    is($plugin->_pick_fetch, 'Local');
+    is([$plugin->pick], ['Fetch::Local']);
     is($plugin->scheme, 'file');
     
   };
@@ -66,7 +66,7 @@ subtest 'pick fetch' => sub {
   
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('/foo/bar/baz');
     
-    is($plugin->_pick_fetch, 'Local');
+    is([$plugin->pick], ['Fetch::Local']);
     is($plugin->scheme, 'file');
     
   };

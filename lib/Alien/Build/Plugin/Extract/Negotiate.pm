@@ -6,6 +6,7 @@ use Alien::Build::Plugin;
 use Alien::Build::Plugin::Extract::ArchiveTar;
 use Alien::Build::Plugin::Extract::ArchiveZip;
 use Alien::Build::Plugin::Extract::CommandLine;
+use Alien::Build::Plugin::Extract::Directory;
 
 # ABSTRACT: Extraction negotiation plugin
 # VERSION
