@@ -51,6 +51,21 @@ sub handles
   return;
 }
 
+=head2 available
+
+ Alien::Build::Plugin::Extract::ArchiveZip->available($ext);
+
+Returns true if the plugin has what it needs right now to extract from the given format
+
+=cut
+
+sub available
+{
+  my(undef, $ext) = @_;
+  
+  !! ( $ext eq 'zip' && eval { require Archive::Zip; 1} );
+}
+
 sub init
 {
   my($self, $meta) = @_;

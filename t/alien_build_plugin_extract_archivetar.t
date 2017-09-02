@@ -5,6 +5,96 @@ use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
 use Alien::Build::Util qw( _dump );
+use Test2::Mock;
+
+subtest 'available' => sub {
+
+  subtest 'zip' => sub {
+  
+    # should always be false...
+    is(Alien::Build::Plugin::Extract::ArchiveTar->available('zip'), F());
+  
+  };
+
+  subtest 'tar' => sub {
+  
+    # should always be true...
+    is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar'), T());
+  
+  };
+  
+  subtest 'tar.gz' => sub {
+  
+    my $has_it;
+
+    skip_all 'test requires Archive::Tar with has_zlib_support' unless eval { require Archive::Tar; Archive::Tar->can('has_zlib_support') };
+  
+    my $mock = Test2::Mock->new(
+      class => 'Archive::Tar',
+      override => [
+        has_zlib_support => sub {
+          note "has_it = $has_it";
+          $has_it;
+        },
+      ],
+    );
+  
+    subtest 'has it' => sub {
+    
+      $has_it = 1;
+
+      is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.gz'), T());
+    
+    };
+    
+    subtest 'does not' => sub {
+    
+      $has_it = 0;
+    
+      is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.gz'), F());
+
+    };
+  
+  };
+
+  subtest 'tar.bz2' => sub {
+  
+    my $has_it;
+
+    skip_all 'test requires Archive::Tar with has_bzip2_support' unless eval { require Archive::Tar; Archive::Tar->can('has_bzip2_support') };
+  
+    my $mock = Test2::Mock->new(
+      class => 'Archive::Tar',
+      override => [
+        has_bzip2_support => sub {
+          note "has_it = $has_it";
+          $has_it;
+        },
+      ],
+    );
+  
+    todo 'detection in Archive::Tar is sometimes broken' => sub {
+    
+      subtest 'has it' => sub {
+    
+        $has_it = 1;
+
+        is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.bz2'), T());
+    
+      };
+    
+      subtest 'does not' => sub {
+    
+        $has_it = 0;
+    
+        is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.bz2'), F());
+
+      };
+    };
+  
+  };
+  
+};
 
 subtest 'archive' => sub {
 

@@ -46,8 +46,24 @@ given format.  Only returns true for C<d> (for directory).
 
 sub handles
 {
-  my($class, $ext) = @_;
+  my(undef, $ext) = @_;
   $ext eq 'd' ? 1 : ();
+}
+
+=head2 available
+
+ Alien::Build::Plugin::Extract::Directory->available($ext);
+ $plugin->available($ext);
+
+Returns true if the plugin can extract the given format with
+what is already installed.
+
+=cut
+
+sub available
+{
+  my(undef, $ext) = @_;
+  __PACKAGE__->handles($ext);
 }
 
 sub init

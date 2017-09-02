@@ -3,6 +3,9 @@ package Alien::Build::Plugin::Extract::Negotiate;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use Alien::Build::Plugin::Extract::ArchiveTar;
+use Alien::Build::Plugin::Extract::ArchiveZip;
+use Alien::Build::Plugin::Extract::CommandLine;
 
 # ABSTRACT: Extraction negotiation plugin
 # VERSION
@@ -61,24 +64,9 @@ sub pick
 {
   my(undef, $format) = @_;
   
-  if($format eq 'tar')
+  if($format =~ /^tar(\.(gz|bz2))?$/)
   {
-    return 'Extract::ArchiveTar';
-  }
-  elsif($format eq 'tar.gz')
-  {
-    if(eval { require Archive::Tar; Archive::Tar->has_zlib_support })
-    {
-      return 'Extract::ArchiveTar';
-    }
-    else
-    {
-      return 'Extract::CommandLine';
-    }
-  }
-  elsif($format eq 'tar.bz2')
-  {
-    if(eval { require Alien::Build::Plugin::Extract::ArchiveTar; Alien::Build::Plugin::Extract::ArchiveTar->_can_bz2 })
+    if(Alien::Build::Plugin::Extract::ArchiveTar->available($format))
     {
       return 'Extract::ArchiveTar';
     }
@@ -90,18 +78,20 @@ sub pick
   elsif($format eq 'zip')
   {
     # Archive::Zip is not that reliable.  But if it is already installed it is probably working
-    if(eval { require Archive::Zip; 1 })
+    if(Alien::Build::Plugin::Extract::ArchiveZip->available($format))
     {
       return 'Extract::ArchiveZip';
     }
     
     # if we don't have Archive::Zip, check if we have the unzip command
-    elsif(eval { require Alien::Build::Plugin::Extract::CommandLine; Alien::Build::Plugin::Extract::CommandLine->new->unzip_cmd })
+    elsif(Alien::Build::Plugin::Extract::CommandLine->available($format))
     {
       return 'Extract::CommandLine';
     }
     
     # okay fine.  I will try to install Archive::Zip :(
+    # if this becomes a problem in the future we can
+    # create Alien::unzip and fallback on CommandLine instead.
     else
     {
       return 'Extract::ArchiveZip';

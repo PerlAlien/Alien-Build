@@ -5,6 +5,43 @@ use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
 
+subtest 'available' => sub {
+
+  is(
+    Alien::Build::Plugin::Extract::ArchiveZip->available('tar'),
+    F(),
+    'tar is always false',
+  );
+  
+  subtest 'with Archive::Zip' => sub {
+  
+    local $INC{'Archive/Zip.pm'} = __FILE__;
+    
+    is(
+      Alien::Build::Plugin::Extract::ArchiveZip->available('zip'),
+      T(),
+    );
+
+  };
+
+  subtest 'with Archive::Zip' => sub {
+
+    skip_all 'subtest requires Devel::Hide' unless eval { require Devel::Hide };
+    
+    note scalar capture_merged { Devel::Hide->import(qw( Archive::Zip )) };
+  
+    local %INC;
+    delete $INC{'Archive/Zip.pm'};
+    
+    is(
+      Alien::Build::Plugin::Extract::ArchiveZip->available('zip'),
+      F(),
+    );
+
+  };
+
+};
+
 subtest 'archive' => sub {
 
   foreach my $ext (qw( zip ))

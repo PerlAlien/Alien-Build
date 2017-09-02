@@ -4,6 +4,34 @@ use Alien::Build::Plugin::Extract::Directory;
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 
+subtest 'handles' => sub {
+
+  is(
+    Alien::Build::Plugin::Extract::Directory->handles('d'),
+    T(),
+  );
+
+  is(
+    Alien::Build::Plugin::Extract::Directory->handles('tar'),
+    F(),
+  );
+
+};
+
+subtest 'available' => sub {
+
+  is(
+    Alien::Build::Plugin::Extract::Directory->available('d'),
+    T(),
+  );
+
+  is(
+    Alien::Build::Plugin::Extract::Directory->available('tar'),
+    F(),
+  );
+
+};
+
 subtest 'basic' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';

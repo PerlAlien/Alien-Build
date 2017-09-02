@@ -51,11 +51,37 @@ given format.
 
 sub handles
 {
-  my($class, $ext) = @_;
+  my(undef, $ext) = @_;
   
   return 1 if $ext =~ /^(tar|tar.gz|tar.bz2|tbz|taz)$/;
   
   return;
+}
+
+=head2 available
+
+ Alien::Build::Plugin::Extract::ArchiveTar->available($ext);
+
+Returns true if the plugin has what it needs right now to extract from the given format
+
+=cut
+
+sub available
+{
+  my(undef, $ext) = @_;
+  
+  if($ext eq 'tar.gz')
+  {
+    return !! eval { require Archive::Tar; Archive::Tar->has_zlib_support };
+  }
+  elsif($ext eq 'tar.bz2')
+  {
+    return !! eval { require Archive::Tar; Archive::Tar->has_bzip2_support && __PACKAGE__->_can_bz2 };
+  }
+  else
+  {
+    return $ext eq 'tar';
+  }
 }
 
 sub init

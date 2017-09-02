@@ -207,6 +207,23 @@ sub handles
   return;
 }
 
+=head2 available
+
+ Alien::Build::Plugin::Extract::CommandLine->available($ext);
+
+Returns true if the plugin is available to extract without
+installing anything new.
+
+=cut
+
+sub available
+{
+  my(undef, $ext) = @_;
+
+  # this is actually the same as handles
+  __PACKAGE__->handles($ext);  
+}
+
 sub init
 {
   my($self, $meta) = @_;
