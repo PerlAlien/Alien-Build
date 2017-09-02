@@ -28,7 +28,6 @@ subtest 'available' => sub {
 
   subtest 'new enough' => sub {
     local $PkgConfig::LibPkgConf::VERSION = '0.04';
-    $DB::single = 1;
     is(Alien::Build::Plugin::PkgConfig::LibPkgConf->available, T());
   };
   

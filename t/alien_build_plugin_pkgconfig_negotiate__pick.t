@@ -48,6 +48,13 @@ subtest 'LibPkgConf' => sub {
   
 };
 
+my $make_pkgconfig_libpkgconf_unavailable = Test2::Mock->new(
+  class => 'Alien::Build::Plugin::PkgConfig::LibPkgConf',
+  override => [
+    available => sub { 0 },
+  ],
+);
+
 subtest 'CommandLine' => sub {
 
   my %which;

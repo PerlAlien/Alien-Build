@@ -3,6 +3,9 @@ package Alien::Build::Plugin::PkgConfig::Negotiate;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use Alien::Build::Plugin::PkgConfig::CommandLine;
+use Alien::Build::Plugin::PkgConfig::LibPkgConf;
+use Alien::Build::Plugin::PkgConfig::PP;
 use Config;
 use Carp ();
 
@@ -57,13 +60,12 @@ sub pick
 
   return $ENV{ALIEN_BUILD_PKG_CONFIG} if $ENV{ALIEN_BUILD_PKG_CONFIG};
   
-  if(eval { require PkgConfig::LibPkgConf; PkgConfig::LibPkgConf->VERSION(0.04) })
+  if(Alien::Build::Plugin::PkgConfig::LibPkgConf->available)
   {
     return 'PkgConfig::LibPkgConf';
   }
   
-  require Alien::Build::Plugin::PkgConfig::CommandLine;
-  if(Alien::Build::Plugin::PkgConfig::CommandLine->new(pkg_name => 'foo')->bin_name)
+  if(Alien::Build::Plugin::PkgConfig::CommandLine->available)
   {
     unless($^O eq 'solaris' && $Config{ptrsize} == 8)
     {
@@ -71,7 +73,14 @@ sub pick
     }
   }
   
-  return 'PkgConfig::PP';
+  if(Alien::Build::Plugin::PkgConfig::PP->available)
+  {
+    return 'PkgConfig::PP';
+  }
+  else
+  {
+    Carp::carp("Could not find an appropriate pkg-config implementation, please install PkgConfig.pm, PkgConfig::LibPkgConf, pkg-config or pkgconf");
+  }
 }
 
 sub init
