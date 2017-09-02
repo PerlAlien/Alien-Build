@@ -42,39 +42,49 @@ sub init
   $format = 'tar.bz2' if $format eq 'tbz';
   $format = 'tar.xz'  if $format eq 'txz';
   
-  my $extract = $self->_pick($format);
-  
-  $self->_plugin($meta, 'Extract', $extract, format => $format);
+  my $plugin = $self->pick($format);
+  $self->subplugin($plugin, format => $format)->init($meta);
+  $self;
 }
 
-sub _pick
+=head1 METHODS
+
+=head2 pick
+
+ my $name = Alien::Build::Plugin::Extract::Negotiate->pick($format);
+
+Returns the name of the best plugin for the given format.
+
+=cut
+
+sub pick
 {
   my(undef, $format) = @_;
   
   if($format eq 'tar')
   {
-    return 'ArchiveTar';
+    return 'Extract::ArchiveTar';
   }
   elsif($format eq 'tar.gz')
   {
     if(eval { require Archive::Tar; Archive::Tar->has_zlib_support })
     {
-      return 'ArchiveTar';
+      return 'Extract::ArchiveTar';
     }
     else
     {
-      return 'CommandLine';
+      return 'Extract::CommandLine';
     }
   }
   elsif($format eq 'tar.bz2')
   {
     if(eval { require Alien::Build::Plugin::Extract::ArchiveTar; Alien::Build::Plugin::Extract::ArchiveTar->_can_bz2 })
     {
-      return 'ArchiveTar';
+      return 'Extract::ArchiveTar';
     }
     else
     {
-      return 'CommandLine';
+      return 'Extract::CommandLine';
     }
   }
   elsif($format eq 'zip')
@@ -82,43 +92,33 @@ sub _pick
     # Archive::Zip is not that reliable.  But if it is already installed it is probably working
     if(eval { require Archive::Zip; 1 })
     {
-      return 'ArchiveZip';
+      return 'Extract::ArchiveZip';
     }
     
     # if we don't have Archive::Zip, check if we have the unzip command
     elsif(eval { require Alien::Build::Plugin::Extract::CommandLine; Alien::Build::Plugin::Extract::CommandLine->new->unzip_cmd })
     {
-      return 'CommandLine';
+      return 'Extract::CommandLine';
     }
     
     # okay fine.  I will try to install Archive::Zip :(
     else
     {
-      return 'ArchiveZip';
+      return 'Extract::ArchiveZip';
     }
   }
   elsif($format eq 'tar.xz' || $format eq 'tar.Z')
   {
-    return 'CommandLine';
+    return 'Extract::CommandLine';
   }
   elsif($format eq 'd')
   {
-    return 'Directory';
+    return 'Extract::Directory';
   }
   else
   {
     die "do not know how to handle format: $format";
   }
-}
-
-sub _plugin
-{
-  my($self, $meta, $type, $name, @args) = @_;
-  my $class = "Alien::Build::Plugin::${type}::$name";
-  my $pm    = "Alien/Build/Plugin/$type/$name.pm";
-  require $pm;
-  my $plugin = $class->new(@args);
-  $plugin->init($meta); 
 }
 
 1;

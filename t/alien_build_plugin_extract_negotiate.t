@@ -48,7 +48,7 @@ subtest 'picks' => sub {
 
   foreach my $ext (qw( tar tar.gz tar.bz2 zip d ))
   {
-    my $pick = Alien::Build::Plugin::Extract::Negotiate->_pick($ext);
+    my $pick = Alien::Build::Plugin::Extract::Negotiate->pick($ext);
     ok $pick, 'we have a pick';
     note "the pick is: $pick";
   }
