@@ -67,7 +67,7 @@ sub pick
   
   if(Alien::Build::Plugin::PkgConfig::CommandLine->available)
   {
-    unless($^O eq 'solaris' && _perl_config('ptrsize') == 8)
+    unless(_perl_config('osname') eq 'solaris' && _perl_config('ptrsize') == 8)
     {
       return 'PkgConfig::CommandLine';
     }

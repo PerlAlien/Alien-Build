@@ -145,11 +145,16 @@ subtest 'CommandLine' => sub {
       local $^O = 'solaris';
       
       my $mock2 = Test2::Mock->new(
-        class => 'Alien::Build::Util',
+        class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
         override => [
           _perl_config => sub {
             my($key) = @_;
-            $key eq 'ptrsize' ? 8 : $Config{$key};
+            if($key eq 'ptrsize')
+            { return 8 }
+            elsif($key eq 'osname')
+            { return 'solaris' }
+            else
+            { return $Config{$key} }
           },
         ],
       );
