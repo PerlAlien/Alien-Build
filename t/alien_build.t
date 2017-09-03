@@ -290,6 +290,45 @@ subtest 'hook' => sub {
 
 subtest 'probe' => sub {
 
+  subtest 'default' => sub {
+
+    local $ENV{ALIEN_INSTALL_TYPE} = 'default';
+    
+    subtest 'system' => sub {
+    
+      alienfile_ok q{
+        use alienfile;
+        probe sub { 'system' };
+      };
+      
+      alien_install_type_is 'system';
+    
+    };
+    
+    subtest 'share' => sub {
+    
+      alienfile_ok q{
+        use alienfile;
+        probe sub { 'share' };
+      };
+      
+      alien_install_type_is 'share';
+    
+    };
+    
+    subtest 'die' => sub {
+    
+      alienfile_ok q{
+        use alienfile;
+        probe sub { die };
+      };
+      
+      alien_install_type_is 'share';
+    
+    };
+  
+  };
+
   subtest 'system' => sub {
   
     my $build = alienfile filename => 'corpus/blank/alienfile';

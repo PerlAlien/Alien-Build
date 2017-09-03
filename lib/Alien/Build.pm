@@ -870,6 +870,8 @@ sub probe
   my $type;
   my $error;
   
+  $env = '' if $env eq 'default';
+  
   if($env eq 'share')
   {
     $type = 'share';
@@ -1645,6 +1647,8 @@ L<Alien::Build> responds to these environment variables:
 =item ALIEN_INSTALL_TYPE
 
 If set to C<share> or C<system>, it will override the system detection logic.
+If set to C<default>, it will use the default setting for the L<alienfile>.
+The behavior of other values is undefined.
 
 =item ALIEN_BUILD_RC
 
