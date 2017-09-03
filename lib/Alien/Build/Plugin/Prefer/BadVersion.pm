@@ -83,7 +83,7 @@ sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires('configure', __PACKAGE__() => '1.05');
+  $meta->add_requires('configure', __PACKAGE__, '1.05');
   
   my $filter;
   

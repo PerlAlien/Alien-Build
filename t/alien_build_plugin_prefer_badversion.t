@@ -1,5 +1,5 @@
 use lib 'corpus/lib';
-use Test2::Require::Module 'Sort::Version';
+use Test2::Require::Module 'Sort::Versions';
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Prefer::BadVersion;
