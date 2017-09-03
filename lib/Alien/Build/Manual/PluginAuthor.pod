@@ -250,8 +250,9 @@ a hash reference containing a list of files:
      #   filename portion, no path or url.
      # url: each url should be the complete url
      #   needed to fetch the file.
-     { filename => $filename1, url => $url1 },
-     { filename => $filename2, url => $url2 },
+     # version: OPTIONAL, may be provided by some fetch or prefer
+     { filename => $filename1, url => $url1, version => $version1 },
+     { filename => $filename2, url => $url2, version => $version2 },
    ]
  };
 

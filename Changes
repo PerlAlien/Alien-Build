@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add Alien::Build::Plugin::Prefer::BadVersion
 
 1.05      2017-08-28 20:08:29 -0400
   - add %{make_path} helper to Alien::Build::Interpolate::Default.

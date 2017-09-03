@@ -11,7 +11,7 @@ use Alien::Build::Plugin;
 
  use alienfile;
  
- plugin 'Prefer::SortVersions' => ();
+ plugin 'Prefer::SortVersions';
 
 =head1 DESCRIPTION
 
@@ -22,6 +22,9 @@ In some cases you may need to use this plugin directly instead.
 This Prefer plugin sorts the packages that were retrieved from a dir listing, either
 directly from a Fetch plugin, or from a Decode plugin.  It Returns a listing with the
 items sorted from post preferable to least, and filters out any undesirable candidates.
+
+This plugin updates the file list to include the versions that are extracted, so they
+can be used by other plugins, such as L<Alien::Build::Plugin::Prefer::BadVersion>.
 
 =head1 PROPERTIES
 

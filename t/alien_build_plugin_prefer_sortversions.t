@@ -63,6 +63,7 @@ subtest 'prefer' => sub {
     my $build = $builder->();
     
     my $res = $build->prefer($make_list->(qw(roger-0.0.0.tar.gz abc-2.3.4.tar.gz xyz-1.0.0.tar.gz)));
+    note _dump($res);
     is( $res, $make_cmp->(qw( abc-2.3.4.tar.gz xyz-1.0.0.tar.gz roger-0.0.0.tar.gz )) );
   
   };
@@ -71,6 +72,7 @@ subtest 'prefer' => sub {
   
     my $build = $builder->(filter => qr/abc|xyz/);
     my $res = $build->prefer($make_list->(qw(roger-0.0.0.tar.gz abc-2.3.4.tar.gz xyz-1.0.0.tar.gz)));
+    note _dump($res);
     is( $res, $make_cmp->(qw( abc-2.3.4.tar.gz xyz-1.0.0.tar.gz )) );
   
   };
@@ -79,6 +81,7 @@ subtest 'prefer' => sub {
   
     my $build = $builder->(qr/^foo-[0-9\.]+-bar-([0-9\.](?:[0-9\.]*[0-9])?)/);
     my $res = $build->prefer($make_list->(qw( foo-10.0-bar-0.1.0.tar.gz foo-5-bar-2.1.0.tar.gz bogus.tar.gz )));
+    note _dump($res);
     is( $res, $make_cmp->(qw( foo-5-bar-2.1.0.tar.gz foo-10.0-bar-0.1.0.tar.gz )) );
     
   };
