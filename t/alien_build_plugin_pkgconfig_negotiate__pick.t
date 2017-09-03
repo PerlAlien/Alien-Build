@@ -131,22 +131,43 @@ subtest 'CommandLine' => sub {
   
   };
 
-};
+  subtest 'PP' => sub {
 
-subtest 'PP' => sub {
-
-  subtest '64 bit solaris' => sub {
+    subtest '64 bit solaris' => sub {
   
-    # From the old AB::MB days we prefer PkgConfig.pm
-    # for 64 bit solaris over the command line pkg-config
-    local $^O = 'solaris';
-    local %Alien::Build::Plugin::PkgConfig::Negotiate::Config = %Config;
-    $Alien::Build::Plugin::PkgConfig::Negotiate::Config{ptrsize} = 8;
+      %which = ( 'pkg-config' => '/usr/bin/pkg-config' );
 
-    is(
-      Alien::Build::Plugin::PkgConfig::Negotiate->pick,
-      'PkgConfig::PP',
-    );
+      # From the old AB::MB days we prefer PkgConfig.pm
+      # for 64 bit solaris over the command line pkg-config
+      local $^O = 'solaris';
+      
+      my $mock2 = Test2::Mock->new(
+        class => 'Alien::Build::Util',
+        override => [
+          _perl_config => sub {
+            my($key) = @_;
+            $key eq 'ptrsize' ? 8 : $Config{$key};
+          },
+        ],
+      );
+      
+      is(
+        Alien::Build::Plugin::PkgConfig::Negotiate->pick,
+        'PkgConfig::PP',
+      );
+
+    };
+    
+    subtest 'PP is fallback' => sub {
+
+      %which = ();
+
+      is(
+        Alien::Build::Plugin::PkgConfig::Negotiate->pick,
+        'PkgConfig::PP',
+      );
+
+    };
 
   };
 

@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base qw( Exporter );
 use Path::Tiny qw( path );
+use Config;
 
 # ABSTRACT: Private utility functions for Alien::Build
 # VERSION
@@ -24,7 +25,7 @@ L<Alien::Build>
 
 =cut
 
-our @EXPORT_OK = qw( _mirror _dump _destdir_prefix );
+our @EXPORT_OK = qw( _mirror _dump _destdir_prefix _perl_config );
 
 # usage: _mirror $source_directory, $dest_direction, \%options
 #
@@ -120,6 +121,12 @@ sub _destdir_prefix
   my($destdir, $prefix) = @_;
   $prefix =~ s{^/?([a-z]):}{$1}i if $^O eq 'MSWin32';
   path($destdir)->child($prefix)->stringify;
+}
+
+sub _perl_config
+{
+  my($key) = @_;
+  $Config{$key};
 }
 
 1;

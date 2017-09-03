@@ -6,7 +6,7 @@ use Alien::Build::Plugin;
 use Alien::Build::Plugin::PkgConfig::CommandLine;
 use Alien::Build::Plugin::PkgConfig::LibPkgConf;
 use Alien::Build::Plugin::PkgConfig::PP;
-use Config;
+use Alien::Build::Util qw( _perl_config );
 use Carp ();
 
 # ABSTRACT: Package configuration negotiation plugin
@@ -67,7 +67,7 @@ sub pick
   
   if(Alien::Build::Plugin::PkgConfig::CommandLine->available)
   {
-    unless($^O eq 'solaris' && $Config{ptrsize} == 8)
+    unless($^O eq 'solaris' && _perl_config('ptrsize') == 8)
     {
       return 'PkgConfig::CommandLine';
     }
