@@ -2,6 +2,7 @@ package Alien::Build::CommandSequence;
 
 use strict;
 use warnings;
+use Text::ParseWords qw( shellwords );
 use Capture::Tiny qw( capture );
 
 # ABSTRACT: Alien::Build command sequence
@@ -55,11 +56,46 @@ sub apply_requirements
   $self;
 }
 
-sub _run
+my %built_in = (
+
+  cd => sub {
+    my(undef, $dir) = @_;
+    if(!defined $dir)
+    {
+      die "undef passed to cd";
+    }
+    elsif(-d $dir)
+    {
+      chdir($dir) || die "unable to cd $dir $!";
+    }
+    else
+    {
+      die "unable to cd $dir, does not exist";
+    }
+  },
+
+);
+
+sub _run_list
 {
   my($build, @cmd) = @_;
   $build->log("+ @cmd");
+  return $built_in{$cmd[0]}->(@cmd) if $built_in{$cmd[0]};
   system @cmd;
+  die "external command failed" if $?;
+}
+
+sub _run_string
+{
+  my($build, $cmd) = @_;
+  $build->log("+ $cmd");
+  
+  {
+    my @cmd = shellwords($cmd);
+    return $built_in{$cmd[0]}->(@cmd) if $built_in{$cmd[0]};
+  }
+  
+  system $cmd;
   die "external command failed" if $?;
 }
 
@@ -69,9 +105,23 @@ sub _run_with_code
   my $code = pop @cmd;
   $build->log("+ @cmd");
   my %args = ( command => \@cmd );
-  ($args{out}, $args{err}, $args{exit}) = capture {
-    system @cmd; $?
-  };
+  
+  if($built_in{$cmd[0]})
+  {
+    my $error;
+    ($args{out}, $args{err}, $error) = capture {
+      eval { $built_in{$cmd[0]}->(@cmd) };
+      $@;
+    };
+    $args{exit} = $error eq '' ? 0 : 2;
+    $args{builtin} = 1;
+  }
+  else
+  {
+    ($args{out}, $args{err}, $args{exit}) = capture {
+      system @cmd; $?
+    };
+  }
   $build->log("[output consumed by Alien::Build recipe]");
   $code->($build, \%args);
 }
@@ -142,13 +192,13 @@ sub execute
       }
       else
       {
-        _run $build, $command, @args;
+        _run_list $build, $command, @args;
       }
     }
     else
     {
       my $command = $intr->interpolate($command,$prop);
-      _run $build, $command;
+      _run_string $build, $command;
     }
   }
 }
