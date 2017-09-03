@@ -58,7 +58,7 @@ my $make_pkgconfig_libpkgconf_unavailable = Test2::Mock->new(
 subtest 'CommandLine' => sub {
 
   local $INC{'PkgConfig.pm'} = __FILE__;
-  $PkgConfig::VERSION = '0.14026';
+  local $PkgConfig::VERSION = '0.14026';
 
   my %which;
 
