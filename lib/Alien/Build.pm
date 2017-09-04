@@ -534,7 +534,7 @@ sub load
     $class->meta;
   }};
 
-  my @preload = qw( Core::Setup Core::Download Core::FFI );
+  my @preload = qw( Core::Setup Core::Download Core::FFI Core::Override );
   push @preload, @Alien::Build::rc::PRELOAD;
   push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
@@ -866,7 +866,7 @@ sub probe
   local $CWD = $self->root;
   my $dir;
   
-  my $env = $ENV{ALIEN_INSTALL_TYPE} || '';
+  my $env = $self->_call_hook('override');
   my $type;
   my $error;
   

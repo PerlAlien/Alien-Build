@@ -290,45 +290,6 @@ subtest 'hook' => sub {
 
 subtest 'probe' => sub {
 
-  subtest 'default' => sub {
-
-    local $ENV{ALIEN_INSTALL_TYPE} = 'default';
-    
-    subtest 'system' => sub {
-    
-      alienfile_ok q{
-        use alienfile;
-        probe sub { 'system' };
-      };
-      
-      alien_install_type_is 'system';
-    
-    };
-    
-    subtest 'share' => sub {
-    
-      alienfile_ok q{
-        use alienfile;
-        probe sub { 'share' };
-      };
-      
-      alien_install_type_is 'share';
-    
-    };
-    
-    subtest 'die' => sub {
-    
-      alienfile_ok q{
-        use alienfile;
-        probe sub { die };
-      };
-      
-      alien_install_type_is 'share';
-    
-    };
-  
-  };
-
   subtest 'system' => sub {
   
     my $build = alienfile filename => 'corpus/blank/alienfile';
@@ -380,82 +341,6 @@ subtest 'probe' => sub {
     is($type, 'share');
     is($build->runtime_prop->{install_type}, 'share');
   
-  };
-  
-  subtest 'env' => sub {
-  
-    subtest 'share' => sub {
-    
-      local $ENV{ALIEN_INSTALL_TYPE} = 'share';
-      
-      my $build = alienfile filename => 'corpus/blank/alienfile';
-      my $meta = $build->meta;
-      
-      $meta->register_hook(
-        probe => sub {
-          die "should not get into here!";
-        },
-      );
-      
-      is( $build->probe, 'share' );
-    
-    };
-    
-    subtest 'system' => sub {
-    
-      local $ENV{ALIEN_INSTALL_TYPE} = 'system';
-    
-      subtest 'probe okay' => sub {
-      
-        my $build = alienfile filename => 'corpus/blank/alienfile';
-        my $meta = $build->meta;
-
-        $meta->register_hook(
-          probe => sub {
-            'system';
-          },
-        );
-        
-        is( $build->probe, 'system' );
-      
-      };
-      
-      subtest 'probe share' => sub {
-      
-        my $build = alienfile filename => 'corpus/blank/alienfile';
-        my $meta = $build->meta;
-        
-        $meta->register_hook(
-          probe => sub {
-            'share';
-          }
-        );
-        
-        eval { $build->probe };
-        my $error = $@;
-        like $error, qr/requested system install not available/;
-      
-      };
-      
-      subtest 'probe exception' => sub {
-      
-        my $build = alienfile filename => 'corpus/blank/alienfile';
-        my $meta = $build->meta;
-        
-        $meta->register_hook(
-          probe => sub {
-            die "oops!";
-          },
-        );
-        
-        eval { $build->probe };
-        my $error = $@;
-        like $error, qr/oops!/;
-      
-      };
-    
-    };
-
   };
   
 };

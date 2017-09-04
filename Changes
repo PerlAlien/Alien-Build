@@ -4,6 +4,7 @@ Revision history for {{$dist->name}}
   - Add Alien::Build::Plugin::Prefer::BadVersion
   - Support for cd in a command sequence
   - Added support for ALIEN_INSTALL_TYPE=default
+  - Added override hook (see Alien::Build::Manual::PluginAuthor)
 
 1.05      2017-08-28 20:08:29 -0400
   - add %{make_path} helper to Alien::Build::Interpolate::Default.

@@ -604,6 +604,8 @@ a method.  For example, this will add a probe system requirement:
 - ALIEN\_INSTALL\_TYPE
 
     If set to `share` or `system`, it will override the system detection logic.
+    If set to `default`, it will use the default setting for the [alienfile](https://metacpan.org/pod/alienfile).
+    The behavior of other values is undefined.
 
 - ALIEN\_BUILD\_RC
 

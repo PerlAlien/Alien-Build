@@ -384,4 +384,16 @@ install.
 This is the same as C<gatehr_share>, except it fires after a C<share> FFI
 install.
 
+=head2 override hook
+
+ $meta->register_hook( override => asub {
+   my($build) = @_;
+ });
+
+This allows you to alter the override logic.  It should return one of
+C<share>, C<system>, C<defaul> or C<''>.  The default implementation is
+just this:
+
+ return $ENV{ALIEN_INSTALL_TYPE} || '';
+
 =cut
