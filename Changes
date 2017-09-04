@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.06_01   2017-09-04 12:07:38 -0400
   - Add Alien::Build::Plugin::Prefer::BadVersion
   - Support for cd in a command sequence
   - Added support for ALIEN_INSTALL_TYPE=default
