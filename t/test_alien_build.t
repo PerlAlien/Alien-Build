@@ -415,4 +415,35 @@ subtest 'alien_extract_ok' => sub {
   
 };
 
+subtest 'alien_rc' => sub {
+
+  subtest 'create rc' => sub {
+
+    alien_rc q{
+  
+      preload 'Foo::Bar';
+    
+      package Alien::Build::Plugin::Foo::Bar;
+    
+      use Alien::Build::Plugin;
+    
+      sub init
+      {
+        my($self, $meta) = @_;
+        $meta->prop->{x} = 'y';
+      }
+  
+    };
+
+    note path($ENV{ALIEN_BUILD_RC})->slurp;
+
+    my $build = alienfile_ok q{ use alienfile };
+  
+    is(
+      $build->meta_prop->{x}, 'y',
+    );
+  };
+  
+};
+
 done_testing;

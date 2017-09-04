@@ -11,7 +11,7 @@ use Test2::API qw( context );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 
-our @EXPORT = qw( alienfile alienfile_ok alien_download_ok alien_extract_ok alien_build_ok alien_build_clean alien_install_type_is );
+our @EXPORT = qw( alienfile alienfile_ok alien_download_ok alien_extract_ok alien_build_ok alien_build_clean alien_install_type_is alien_rc );
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
@@ -493,6 +493,32 @@ sub alien_build_clean
     $ctx->note("no build to clean");
   }
   $ctx->release;
+}
+
+=head2 alien_rc
+
+ alien_rc $code;
+
+Creates C<rc.pl> file in a temp directory and sets ALIEN_BUILD_RC.  Useful for testing
+plugins that should be called from C<~/.alienbuild/rc.pl>.  Note that because of the 
+nature of how the C<~/.alienbuild/rc.pl> file works, you can only use this once!
+
+=cut
+
+sub alien_rc
+{
+  my($code) = @_;
+  
+  croak "passed in undef rc" unless defined $code;
+  croak "looks like you have already defined a rc.pl file" if $ENV{ALIEN_BUILD_RC} ne '-';
+  
+  my(undef, $filename, $line) = caller;
+  my $code2 = "use strict; use warnings;\n" .
+              '# line ' . $line . ' "' . path($filename)->absolute . "\n$code";
+  my $rc = path(tempdir( CLEANUP => 1 ), 'rc.pl');
+  $rc->spew($code2);
+  $ENV{ALIEN_BUILD_RC} = "$rc";
+  return 1;
 }
 
 delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_BUILD_POSTLOAD ALIEN_INSTALL_TYPE );

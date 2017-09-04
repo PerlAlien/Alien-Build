@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add alien_rc to Test::Alien::Build
 
 1.06_01   2017-09-04 12:07:38 -0400
   - Add Alien::Build::Plugin::Prefer::BadVersion
