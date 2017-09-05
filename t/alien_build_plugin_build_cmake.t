@@ -12,91 +12,102 @@ $Alien::Build::Plugin::Fetch::LocalDir::VERSION        ||= '0.99';
 $Alien::Build::Plugin::Build::CMake::VERSION           ||= '0.99';
 $Alien::Build::Plugin::Gather::IsolateDynamic::VERSION ||= '0.99';
 
-subtest 'basic' => sub {
+my $xs = do { local $/; <DATA> };
 
-  my $build = alienfile_ok q{
-    use alienfile;
-    use Path::Tiny qw( path );
-  
-    meta->prop->{start_url} = path('corpus/cmake-libpalindrome')->absolute->stringify;
+foreach my $type (qw( basic out-of-source ))
+{
 
-    probe sub { 'share' };
+  subtest $type => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+
+      meta->prop->{start_url} = path('corpus/cmake-libpalindrome')->absolute->stringify;
+
+      probe sub { 'share' };
   
-    share {
-      plugin 'Fetch::LocalDir';
-      plugin 'Extract' => 'd';
-      plugin 'Build::CMake';
-      plugin 'Gather::IsolateDynamic';
+      share {
+        plugin 'Fetch::LocalDir';
+        plugin 'Extract' => 'd';
+        plugin 'Build::CMake';
+        plugin 'Gather::IsolateDynamic';
       
-      gather sub {
-        my($build) = @_;
-        my $prefix = $build->runtime_prop->{prefix};
-        $build->runtime_prop->{$_} = "-I$prefix/include" for qw( cflags cflags_static );
+        gather sub {
+          my($build) = @_;
+          my $prefix = $build->runtime_prop->{prefix};
+          $build->runtime_prop->{$_} = "-I$prefix/include" for qw( cflags cflags_static );
 
-        if($build->meta_prop->{platform}->{compiler_type} eq 'microsoft')
-        {
-          $build->runtime_prop->{$_} = "-LIBPATH:$prefix/lib palindromeStatic.lib" for qw( libs libs_static );
-        }
-        else
-        {
-          my $lib    = $^O =~ /^(cygwin|MSWin32)$/ ? '-lpalindromeStatic' : '-lpalindrome';
-          $build->runtime_prop->{$_} = "-L$prefix/lib $lib" for qw( libs libs_static );
-        }
+          if($build->meta_prop->{platform}->{compiler_type} eq 'microsoft')
+          {
+            $build->runtime_prop->{$_} = "-LIBPATH:$prefix/lib palindromeStatic.lib" for qw( libs libs_static );
+          }
+          else
+          {
+            my $lib = $^O =~ /^(cygwin|MSWin32)$/ ? '-lpalindromeStatic' : '-lpalindrome';
+            $build->runtime_prop->{$_} = "-L$prefix/lib $lib" for qw( libs libs_static );
+          }
+        };
       };
     };
+    
+    if($type eq 'out-of-source')
+    {
+      $build->meta->prop->{out_of_source} = 1;
+    }
+
+    if($build->requires('share')->{'Alien::gmake'})
+    {
+      if(!eval { $build->load_requires($build->install_type); 1 })
+      {
+        note "prereqs not met";
+        return;
+      }
+    }
+
+    my $alien = alien_build_ok;
+
+    if(! defined $alien)
+    {
+      if($^O eq 'MSWin32')
+      {
+        my $tmp = $build->root;
+        $tmp =~ s{/}{\\}g;
+        $tmp .= "\\..";
+        diag "dir $tmp /s";
+        diag `dir $tmp /s`;
+      }
+      else
+      {
+        my $tmp = Path::Tiny->new($build->root)->parent;
+        diag `ls -lR $tmp`;
+      }
+    }
+  
+    alien_ok $alien;
+
+    note 'cflags = ', $alien->cflags;
+    note 'libs   = ', $alien->libs;
+  
+    xs_ok { xs => $xs, verbose => 1 }, with_subtest {
+      my($mod) = @_;
+      is($mod->is_palindrome("Something that is not a palindrome"), 0);
+      is($mod->is_palindrome("Was it a car or a cat I saw?"), 1);
+    };
+  
+    run_ok(['palx', 'Something that is not a palindrome'])
+      ->note
+      ->exit_is(2);
+
+    run_ok(['palx', 'Was it a car or a cat I saw?'])
+      ->note
+      ->success;
+
+    run_ok(['palx', 'racecar'])
+      ->note
+      ->success;
+  
   };
-
-  if($build->requires('share')->{'Alien::gmake'})
-  {
-    if(!eval { $build->load_requires($build->install_type); 1 })
-    {
-      note "prereqs not met";
-      return;
-    }
-  }
-
-  my $alien = alien_build_ok;
-
-  if(! defined $alien)
-  {
-    if($^O eq 'MSWin32')
-    {
-      my $tmp = $build->root;
-      $tmp =~ s{/}{\\}g;
-      $tmp .= "\\..";
-      diag "dir $tmp /s";
-      diag `dir $tmp /s`;
-    }
-    else
-    {
-      my $tmp = Path::Tiny->new($build->root)->parent;
-      diag `ls -lR $tmp`;
-    }
-  }
-  
-  alien_ok $alien;
-
-  note 'cflags = ', $alien->cflags;
-  note 'libs   = ', $alien->libs;
-  
-  xs_ok { xs => do { local $/; <DATA> }, verbose => 1 }, with_subtest {
-    my($mod) = @_;
-    is($mod->is_palindrome("Something that is not a palindrome"), 0);
-    is($mod->is_palindrome("Was it a car or a cat I saw?"), 1);
-  };
-  
-  run_ok(['palx', 'Something that is not a palindrome'])
-    ->note
-    ->exit_is(2);
-
-  run_ok(['palx', 'Was it a car or a cat I saw?'])
-    ->note
-    ->success;
-
-  run_ok(['palx', 'racecar'])
-    ->note
-    ->success;
-  
 };
 
 done_testing

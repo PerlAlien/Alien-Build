@@ -21,7 +21,7 @@ use Capture::Tiny qw( capture );
      [ '%{cmake}',
          @{ meta->prop->{plugin_build_cmake}->{args} },
          # ... put extra cmake args here ...
-         '.'
+         '%{.install.extract}'
      ],
      '%{make}',
      '%{make} install',
@@ -158,7 +158,7 @@ sub init
 
   $meta->default_hook(
     build => [
-      ['%{cmake}', @args, '.' ],
+      ['%{cmake}', @args, '%{.install.extract}' ],
       ['%{make}' ],
       ['%{make}', 'install' ],
     ],

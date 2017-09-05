@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add support for out-of-source builds
+  - The Build::CMake plugin now supports out-of-source builds
+  - Add extract install property
+  - Add out_of_source meta property
 
 1.07_01   2017-09-05 09:21:13 -0400
   - Fix windows test bug introduced in 1.06_01

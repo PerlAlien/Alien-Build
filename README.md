@@ -188,6 +188,15 @@ but if you do not follow this rule your recipe will likely be broken.
         Note that `cygwin` and `msys` are considered `unix` even though they run
         on windows!
 
+- out\_of\_source
+
+    Build in a different directory from the where the source code is stored.
+    In autoconf this is referred to as a "VPATH" build.  Everyone else calls this
+    an "out-of-source" build.  When this property is true, instead of extracting
+    to the source build root, the downloaded source will be extracted to an source
+    extraction directory and the source build root will be empty.  You can use the
+    `extract` install property to get the location of the extracted source.
+
 - start\_url
 
     The default or start URL used by fetch plugins.
@@ -210,9 +219,20 @@ based module.
     only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
     your [alienfile](https://metacpan.org/pod/alienfile).
 
+- download
+
+    The location of the downloaded archive (tar.gz, or similar) or directory.
+
 - env
 
     Environment variables to override during the build stage.
+
+- extract
+
+    The location of the last source extraction.  For a "out-of-source" build
+    (see the `out_of_source` meta property above), this will only be set once.
+    For other types of builds, the source code may be extracted multiple times,
+    and thus this property may change.
 
 - old
 
