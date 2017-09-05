@@ -44,6 +44,11 @@ subtest 'turn off --with-pic' => sub {
 
 subtest 'out-of-source' => sub {
 
+  if($^O eq 'MSWin32')
+  {
+    skip_all 'test requires Alien::MSYS on MSWin32' unless eval { require Alien::MSYS };
+  }
+
   my $build = alienfile_ok q{
     use alienfile;
     use Alien::Build::Util qw( _dump );
