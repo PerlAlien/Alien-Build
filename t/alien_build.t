@@ -1101,6 +1101,8 @@ subtest 'requires of Alien::Build or Alien::Base' => sub {
 
 subtest 'out-of-source build' => sub {
 
+  local $Alien::Build::VERSION = '1.08';
+
   subtest 'basic' => sub {
   
     alienfile_ok q{

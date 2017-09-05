@@ -21,6 +21,7 @@ require_ok 'Alien::Build::Plugin::Core::Gather';
 require_ok 'Alien::Build::Plugin::Core::Legacy';
 require_ok 'Alien::Build::Plugin::Core::Override';
 require_ok 'Alien::Build::Plugin::Core::Setup';
+require_ok 'Alien::Build::Plugin::Core::Tail';
 require_ok 'Alien::Build::Plugin::Decode::DirListing';
 require_ok 'Alien::Build::Plugin::Decode::DirListingFtpcopy';
 require_ok 'Alien::Build::Plugin::Decode::HTML';

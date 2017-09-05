@@ -4,7 +4,7 @@ use Alien::Build::Plugin::Core::Setup;
 
 subtest 'compiler type' => sub {
 
-  my $build = alienfile q{
+  my $build = alienfile_ok q{
     use alienfile;
   };
 

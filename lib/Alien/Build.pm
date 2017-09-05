@@ -558,7 +558,7 @@ sub load
   push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
   
-  my @postload = qw( Core::Legacy Core::Gather );
+  my @postload = qw( Core::Legacy Core::Gather Core::Tail );
   push @postload, @Alien::Build::rc::POSTLOAD;
   push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
     if defined $ENV{ALIEN_BUILD_POSTLOAD};

@@ -44,6 +44,8 @@ subtest 'turn off --with-pic' => sub {
 
 subtest 'out-of-source' => sub {
 
+  local $Alien::Build::VERSION = '1.08';
+
   my $build = alienfile_ok q{
     use alienfile;
     use Alien::Build::Util qw( _dump );
