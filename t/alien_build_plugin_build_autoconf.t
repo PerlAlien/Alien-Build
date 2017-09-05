@@ -44,11 +44,6 @@ subtest 'turn off --with-pic' => sub {
 
 subtest 'out-of-source' => sub {
 
-  if($^O eq 'MSWin32')
-  {
-    skip_all 'test requires Alien::MSYS on MSWin32' unless eval { require Alien::MSYS };
-  }
-
   my $build = alienfile_ok q{
     use alienfile;
     use Alien::Build::Util qw( _dump );
@@ -64,7 +59,12 @@ subtest 'out-of-source' => sub {
         my($build) = @_;
         $build->log(_dump($build->install_prop));
         path('file1')->touch;
-        my $file2 = path($ENV{DESTDIR})->child($build->install_prop->{prefix})->child('file2');
+
+        my $prefix = $build->install_prop->{prefix};
+        $prefix =~ s{^([a-z]):/}{$1/}i if $^O eq 'MSWin32';
+
+        $build->log("prefix = $prefix");        
+        my $file2 = path($ENV{DESTDIR})->child($prefix)->child('file2');
         $file2->parent->mkpath;
         $file2->touch;
       };
@@ -108,9 +108,22 @@ done_testing;
   package
     Alien::MSYS;
     
+  use File::Temp qw( tempdir );
+
   BEGIN {
     our $VERSION = '0.07';
     $INC{'Alien/MSYS.pm'} = __FILE__;
+  }
+
+  my $path;
+
+  sub msys_path
+  {
+    if(!$path)
+    {
+      $path = tempdir( CLEANUP => 1);
+    }
+    $path;
   }
   
 }
