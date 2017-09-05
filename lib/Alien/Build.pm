@@ -216,7 +216,6 @@ future, but for now, will be one of:
 
 On Windows when using Microsoft Visual C++
 
-
 =item unix
 
 Virtually everything else, including gcc on windows.
@@ -256,6 +255,15 @@ on windows!
 
 =back
 
+=item out_of_source
+
+Build in a different directory from the where the source code is stored.
+In autoconf this is referred to as a "VPATH" build.  Everyone else calls this
+an "out-of-source" build.  When this property is true, instead of extracting
+to the source build root, the downloaded source will be extracted to an source
+extraction directory and the source build root will be empty.  You can use the
+C<extract> install property to get the location of the extracted source.
+
 =item start_url
 
 The default or start URL used by fetch plugins.
@@ -290,9 +298,20 @@ which are understood by the MSYS tools, but not by Perl.  You should
 only use this if you are using L<Alien::Build::Plugin::Autoconf> in
 your L<alienfile>.
 
+=item download
+
+The location of the downloaded archive (tar.gz, or similar) or directory.
+
 =item env
 
 Environment variables to override during the build stage.
+
+=item extract
+
+The location of the last source extraction.  For a "out-of-source" build
+(see the C<out_of_source> meta property above), this will only be set once.
+For other types of builds, the source code may be extracted multiple times,
+and thus this property may change.
 
 =item old
 
@@ -1073,6 +1092,15 @@ sub extract
   {
     die "tried to call extract before download";
   }
+
+  my $nick_name = 'build';
+
+  if($self->meta_prop->{out_of_source})
+  {
+    $nick_name = 'extract';
+    my $extract = $self->install_prop->{extract};
+    return $extract if defined $extract && -d $extract;
+  }
   
   my $tmp;
   local $CWD;
@@ -1084,7 +1112,7 @@ sub extract
       # called build instead of extract, because this 
       # will be used for the build step, and technically
       # extract is a substage of build anyway.
-      $tmp = Alien::Build::TempDir->new($self, "build");
+      $tmp = Alien::Build::TempDir->new($self, $nick_name);
       $CWD = "$tmp";
     },
     verify => sub {
@@ -1112,6 +1140,7 @@ sub extract
   
   }, 'extract', $archive);
   
+  $self->install_prop->{extract} = $ret;
   $ret ? $ret : ();
 }
 
@@ -1149,6 +1178,8 @@ sub build
   my $stage = _path($self->install_prop->{stage});
   $stage->mkpath;
   
+  my $tmp;
+  
   if($self->install_type eq 'share')
   {
     foreach my $suffix ('', '_ffi')
@@ -1164,7 +1195,15 @@ sub build
       $self->_call_hook(
       {
         before => sub {
-          $CWD = $self->extract;
+          if($self->meta_prop->{out_of_source})
+          {
+            $self->extract;
+            $CWD = $tmp = Alien::Build::TempDir->new($self, 'build');
+          }
+          else
+          {
+            $CWD = $tmp = $self->extract;
+          }
           if($self->meta_prop->{destdir})
           {
             $destdir = Alien::Build::TempDir->new($self, 'destdir');

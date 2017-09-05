@@ -576,7 +576,9 @@ subtest 'extract' => sub {
   
   skip_all 'test requires command line tar' unless $tar_cmd;
 
-  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $build = alienfile_ok q{
+    use alienfile;
+  };
   my $meta = $build->meta;
   
   $meta->register_hook(
@@ -599,7 +601,13 @@ subtest 'extract' => sub {
     my $file = path($dir)->child($name);
     ok -f $file, "$name exists";
   }
-
+  
+  my $extract = $build->install_prop->{extract};
+  
+  note "build.install.extract = $extract";
+  ok( -d $extract, "build.install.extract is a directory" );
+  ok( -f "$extract/configure", "has configure" );
+  ok( -f "$extract/foo.c", "has foo.c" );
 };
 
 subtest 'build' => sub {
@@ -976,7 +984,7 @@ subtest 'system' => sub {
     },
   ;
 
-  my $build = alienfile q{
+  my $build = alienfile_ok q{
     use alienfile;
   };
   
@@ -988,14 +996,14 @@ subtest 'system' => sub {
     bar => sub { 'xor' },
   );
   
-  $build->system('frooble', '%{foo}');
+  note scalar capture_merged { $build->system('frooble', '%{foo}') };
   
   is(
     \@args,
     [ 'frooble', '1234' ],
   );
   
-  $build->system('%{bar}');
+  note scalar capture_merged { $build->system('%{bar}') };
   
   is(
     \@args,
@@ -1087,6 +1095,38 @@ subtest 'requires of Alien::Build or Alien::Base' => sub {
     
     is $@, '';
     
+  };
+
+};
+
+subtest 'out-of-source build' => sub {
+
+  subtest 'basic' => sub {
+  
+    alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+
+      meta->prop->{out_of_source} = 1;
+      plugin 'Download::Foo';
+
+      share {
+        build sub {
+          my($build) = @_;
+          my $extract = $build->install_prop->{extract};
+          
+          die 'no extract'             unless -d $extract;
+          die 'no $extract/configure'  unless -f "$extract/configure";
+          die 'no $extract/foo.c'      unless -f "$extract/foo.c";
+          
+          die 'found $build/configure' if -f 'configure';
+          die 'found $build/foo.c'     if -f 'foo.c';
+        };
+      };
+    };
+    
+    alien_build_ok;
+  
   };
 
 };
