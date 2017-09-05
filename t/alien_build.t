@@ -1128,6 +1128,40 @@ subtest 'out-of-source build' => sub {
     alien_build_ok;
   
   };
+  
+  subtest 'from bundled source' => sub {
+
+    local $Alien::Build::Plugin::Fetch::LocalDir::VERSION = '1.07';
+  
+    my $build = alienfile_ok q{
+      use alienfile;
+      
+      meta->prop->{out_of_source} = 1;
+      meta->prop->{start_url}     = 'corpus/dist/foo-1.00';
+      
+      share {
+        plugin 'Fetch::LocalDir';
+        plugin 'Extract' => 'd';
+        build sub {
+          my($build) = @_;
+          my $extract = $build->install_prop->{extract};
+          
+          die 'no extract'             unless -d $extract;
+          die 'no $extract/configure'  unless -f "$extract/configure";
+          die 'no $extract/foo.c'      unless -f "$extract/foo.c";
+          
+          die 'found $build/configure' if -f 'configure';
+          die 'found $build/foo.c'     if -f 'foo.c';
+        };
+      };
+    };
+    
+    alien_build_ok;
+    
+    my $extract = $build->install_prop->{extract};
+    note "extract = $extract";
+  
+  };
 
 };
 

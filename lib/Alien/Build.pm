@@ -1116,7 +1116,14 @@ sub extract
       $CWD = "$tmp";
     },
     verify => sub {
-      my @list = grep { $_->basename !~ /^\./ && $_->basename ne 'pax_global_header' } _path('.')->children;
+    
+      my $path = '.';
+      if($self->meta_prop->{out_of_source} && $self->install_prop->{extract})
+      {
+        $path = $self->install_prop->{extract};
+      }
+    
+      my @list = grep { $_->basename !~ /^\./ && $_->basename ne 'pax_global_header' } _path($path)->children;
       
       my $count = scalar @list;
       
@@ -1140,7 +1147,7 @@ sub extract
   
   }, 'extract', $archive);
   
-  $self->install_prop->{extract} = $ret;
+  $self->install_prop->{extract} ||= $ret;
   $ret ? $ret : ();
 }
 

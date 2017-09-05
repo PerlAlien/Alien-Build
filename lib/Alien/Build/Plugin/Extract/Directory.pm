@@ -73,13 +73,22 @@ sub init
   $meta->register_hook(
     extract => sub {
       my($build, $src) = @_;
+      
       die "not a directory: $src" unless -d $src;
-      my $dst = Path::Tiny::path('.')->absolute;
-      # Please note: _mirror and Alien::Build::Util are ONLY
-      # allowed to be used by core plugins.  If you are writing
-      # a non-core plugin it may be removed.  That is why it
-      # is private.
-      _mirror $src => $dst, { verbose => 1 };
+
+      if($build->meta_prop->{out_of_source})
+      {
+        $build->install_prop->{extract} = Path::Tiny->new($src)->absolute->stringify;
+      }
+      else
+      {
+        my $dst = Path::Tiny->new('.')->absolute;
+        # Please note: _mirror and Alien::Build::Util are ONLY
+        # allowed to be used by core plugins.  If you are writing
+        # a non-core plugin it may be removed.  That is why it
+        # is private.
+        _mirror $src => $dst, { verbose => 1 };
+      }
     }
   );
 }
