@@ -16,9 +16,8 @@ subtest 'cd list' => sub {
 
   my $where;
 
-  my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->stringify;
-  $dir =~ s{/}{\\}g if $^O eq 'MSWin32';
-  
+  my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->canonpath;
+
   my $seq = Alien::Build::CommandSequence->new(
     [ "%{make_path} $dir" ],
     [ "cd", "$dir" ],
@@ -42,8 +41,7 @@ subtest 'cd list' => sub {
 
   my $where;
 
-  my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->stringify;
-  $dir =~ s{/}{\\}g if $^O eq 'MSWin32';
+  my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->canonpath;
   
   my $seq = Alien::Build::CommandSequence->new(
     [ "%{make_path} $dir" ],
@@ -68,8 +66,7 @@ subtest 'cd list with code ref' => sub {
 
   my $where;
 
-  my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->stringify;
-  $dir =~ s{/}{\\}g if $^O eq 'MSWin32';
+  my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->canonpath;
   
   my $seq = Alien::Build::CommandSequence->new(
     [ "%{make_path} $dir" ],

@@ -91,6 +91,8 @@ sub _run_string
   $build->log("+ $cmd");
   
   {
+    my $cmd = $cmd;
+    $cmd =~ s{\\}{\\\\}g if $^O eq 'MSWin32';
     my @cmd = shellwords($cmd);
     return $built_in{$cmd[0]}->(@cmd) if $built_in{$cmd[0]};
   }
