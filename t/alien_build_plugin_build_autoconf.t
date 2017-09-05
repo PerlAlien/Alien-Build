@@ -70,6 +70,8 @@ subtest 'out-of-source' => sub {
       };
     };
   };
+  
+  $build->load_requires('share');
 
   note _dump($build->install_prop);
 
