@@ -10,7 +10,7 @@ subtest 'out-of-source build' => sub {
   };
 
   is(
-    $build->requires('share'),
+    $build->requires('configure'),
     hash {
       field 'Alien::Build' => '1.08';
       etc;

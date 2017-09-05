@@ -28,7 +28,7 @@ sub init
 
   if($meta->prop->{out_of_source})
   {
-    $meta->add_requires('share' => 'Alien::Build' => '1.08');
+    $meta->add_requires('configure' => 'Alien::Build' => '1.08');
   }
 }
 
