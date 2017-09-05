@@ -1,6 +1,9 @@
+use lib 'corpus/lib';
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Build::Autoconf;
+use Alien::Build::Util qw( _dump );
+use Path::Tiny qw( path );
 
 subtest 'basic' => sub {
 
@@ -8,7 +11,7 @@ subtest 'basic' => sub {
   isa_ok $plugin, 'Alien::Build::Plugin';
   isa_ok $plugin, 'Alien::Build::Plugin::Build::Autoconf';
 
-  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $build = alienfile_ok q{ use alienfile };
   my $meta = $build->meta;
   
   $plugin->init($meta);
@@ -28,7 +31,7 @@ subtest 'turn off --with-pic' => sub {
 
   is( $plugin->with_pic, 0 );
   
-  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $build = alienfile_ok q{ use alienfile };
   my $meta = $build->meta;
   
   $plugin->init($meta);
@@ -37,6 +40,59 @@ subtest 'turn off --with-pic' => sub {
   isnt $configure, '', "\%{configure} = $configure";
   like $configure, qr{configure$};
 
+};
+
+subtest 'out-of-source' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    use Alien::Build::Util qw( _dump );
+    use Path::Tiny qw( path );
+    
+    share {
+      meta->prop->{out_of_source} = 1;
+      plugin 'Download::Foo' => ();
+      plugin 'Build::Autoconf' => (
+        with_pic => 0,
+      );
+      build sub {
+        my($build) = @_;
+        $build->log(_dump($build->install_prop));
+        path('file1')->touch;
+        my $file2 = path($ENV{DESTDIR})->child($build->install_prop->{prefix})->child('file2');
+        $file2->parent->mkpath;
+        $file2->touch;
+      };
+    };
+  };
+
+  note _dump($build->install_prop);
+
+  subtest 'before build' => sub {
+    my $configure = $build->meta->interpolator->interpolate('%{configure}');
+    note "%{configure} = $configure";
+    ok 1;
+  };
+  
+  alien_build_ok;
+  
+  note _dump($build->install_prop);
+
+  subtest 'after build' => sub {
+    my $configure = $build->meta->interpolator->interpolate('%{configure}');
+    note "%{configure} = $configure";
+
+    my $regex = $^O eq 'MSWin32' ? qr/^sh (.*?)\s/ : qr/^(.*)\s/;
+    like $configure, $regex, 'matches';
+
+    if($configure =~ $regex)
+    {
+      my $path = path($1);
+      ok(-f $path, "configure is in the right spot" );
+      ok(-f $path->sibling('foo.c'), "foo.c is in the right spot" );
+    }
+
+  };
 };
 
 done_testing;

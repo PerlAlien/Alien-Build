@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Add support for out-of-source builds
   - The Build::CMake plugin now supports out-of-source builds
+  - The Build::Autoconf plugin now supports out-of-source builds
   - Add extract install property
   - Add out_of_source meta property
 

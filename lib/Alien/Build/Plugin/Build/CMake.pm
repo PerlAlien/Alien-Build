@@ -42,6 +42,8 @@ but for the moment includes:
  -DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix} \
  -DCMAKE_MAKE_PROGRAM:PATH=%{make}
 
+This plugin supports out-of-source builds via the meta property C<out_of_source>.
+
 =head1 METHODS
 
 =head2 cmake_generator
