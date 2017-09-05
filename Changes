@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.07_01   2017-09-05 09:21:13 -0400
+  - Fix windows test bug introduced in 1.06_01
   - Add alien_rc to Test::Alien::Build
 
 1.06_01   2017-09-04 12:07:38 -0400
