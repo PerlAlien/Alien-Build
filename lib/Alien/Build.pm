@@ -1778,4 +1778,23 @@ L<Alien::Build::Manual::PluginAuthor>
 
 L<alienfile>, L<Alien::Build::MM>, L<Alien::Build::Plugin>, L<Alien::Base>, L<Alien>
 
+=head1 THANKS
+
+L<Alien::Base> was originally written by Joel Berger, the rest of this project would
+not have been possible without him getting the project started.  Thanks to his support
+I have been able to augment the original L<Alien::Base> system with a reliable set
+of tools (L<Alien::Build>, L<alienfile>, L<Test::Alien>), which make up this toolset.
+
+The original L<Alien::Base> is still copyright (c) 2012-2017 Joel Berger.  It has
+the same license as the rest of the Alien::Build and related tools distributed as
+C<Alien-Build>.  Joel Berger thanked a number of people who helped in in the development
+of L<Alien::Base>, in the documentation for that module.
+
+I would also like to acknowledge the other memebers of the Perl5-Alien github
+organization, Zakariyya Mughal (sivoais, ZMUGHAL) and mohawk (ETJ).  Also important
+in the early development of L<Alien::Build> were the early adopters Chase Whitener
+(genio, CAPOEIRAB, author of L<Alien::libuv>), William N. Braswell, Jr (willthechill,
+WBRASWELL, author of L<Alien::JPCRE2> and L<Alien::PCRE2>) and Ahmad Fatoum (a3f,
+ATHREEF, author of L<Alien::libudev> and L<Alien::LibUSB>).
+
 =cut

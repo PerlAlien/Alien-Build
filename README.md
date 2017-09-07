@@ -695,6 +695,25 @@ don't have an IRC client handy, you can use this web interface:
 
 [alienfile](https://metacpan.org/pod/alienfile), [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM), [Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin), [Alien::Base](https://metacpan.org/pod/Alien::Base), [Alien](https://metacpan.org/pod/Alien)
 
+# THANKS
+
+[Alien::Base](https://metacpan.org/pod/Alien::Base) was originally written by Joel Berger, the rest of this project would
+not have been possible without him getting the project started.  Thanks to his support
+I have been able to augment the original [Alien::Base](https://metacpan.org/pod/Alien::Base) system with a reliable set
+of tools ([Alien::Build](https://metacpan.org/pod/Alien::Build), [alienfile](https://metacpan.org/pod/alienfile), [Test::Alien](https://metacpan.org/pod/Test::Alien)), which make up this toolset.
+
+The original [Alien::Base](https://metacpan.org/pod/Alien::Base) is still copyright (c) 2012-2017 Joel Berger.  It has
+the same license as the rest of the Alien::Build and related tools distributed as
+`Alien-Build`.  Joel Berger thanked a number of people who helped in in the development
+of [Alien::Base](https://metacpan.org/pod/Alien::Base), in the documentation for that module.
+
+I would also like to acknowledge the other memebers of the Perl5-Alien github
+organization, Zakariyya Mughal (sivoais, ZMUGHAL) and mohawk (ETJ).  Also important
+in the early development of [Alien::Build](https://metacpan.org/pod/Alien::Build) were the early adopters Chase Whitener
+(genio, CAPOEIRAB, author of [Alien::libuv](https://metacpan.org/pod/Alien::libuv)), William N. Braswell, Jr (willthechill,
+WBRASWELL, author of [Alien::JPCRE2](https://metacpan.org/pod/Alien::JPCRE2) and [Alien::PCRE2](https://metacpan.org/pod/Alien::PCRE2)) and Ahmad Fatoum (a3f,
+ATHREEF, author of [Alien::libudev](https://metacpan.org/pod/Alien::libudev) and [Alien::LibUSB](https://metacpan.org/pod/Alien::LibUSB)).
+
 # AUTHOR
 
 Author: Graham Ollis <plicease@cpan.org>
@@ -717,7 +736,7 @@ Brian Wightman (MidLifeXis)
 
 Zaki Mughal (zmughal)
 
-mohawk2
+mohawk (mohawk2, ETJ)
 
 Vikas N Kumar (vikasnkumar)
 
@@ -734,6 +753,10 @@ Kang-min Liu (劉康民, gugod)
 Nicholas Shipp (nshp)
 
 Juan Julián Merelo Guervós (JJ)
+
+Joel Berger (JBERGER)
+
+Petr Pisar (ppisar)
 
 # COPYRIGHT AND LICENSE
 
