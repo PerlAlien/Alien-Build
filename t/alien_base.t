@@ -42,8 +42,18 @@ unshift @PKG_CONFIG_PATH, path('corpus/pkgconfig')->absolute->stringify;
 
 subtest 'AB::MB sys install' => sub {
 
-  skip_all 'test requires Alien::Base::PkgConfig'
-    unless eval { require Alien::Base::PkgConfig; 1 };
+  skip_all 'test requires Alien::Base::PkgConfig 0.040'
+    unless eval {
+      require Alien::Base::PkgConfig;
+      # when AB::PkgConfig is merged into Alien-Build
+      # VERSION will be undef when testing out of git.
+      # when that merge happens, this skip should
+      # really be removed, but we are patching it here
+      # so that the test doesn't get skipped in case
+      # removing this skip is forgotten
+      $Alien::Base::PkgConfig::VERSION ||= '0.040';
+      Alien::Base::PkgConfig->VERSION('0.040')
+    };
 
   require Alien::Foo1;
 

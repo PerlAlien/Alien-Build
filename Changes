@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix test regression introduced in 1.08_01
 
 1.08_01   2017-09-05 22:26:36 -0400
   - Add support for out-of-source builds
