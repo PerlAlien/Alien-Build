@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.09_01   2017-09-07 07:34:40 -0400
   - Fix test regression introduced in 1.08_01
 
 1.08_01   2017-09-05 22:26:36 -0400
