@@ -36,7 +36,7 @@ subtest 'basic' => sub {
   {
     path('MANIFEST')->spew(
       "lib/MyTest.pm\n",
-      "MANIFEST	\t\tThis list of files\n",
+      "MANIFEST\t\t\tThis list of files\n",
     );
     path('lib')->mkpath;
     path('lib/MyTest.pm')->spew(
