@@ -44,6 +44,7 @@ $modules{$_} = $_ for qw(
   Path::Tiny
   PkgConfig
   PkgConfig::LibPkgConf
+  Readonly
   Sort::Versions
   Test2::API
   Test2::Mock

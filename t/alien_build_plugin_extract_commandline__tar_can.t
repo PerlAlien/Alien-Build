@@ -1,4 +1,4 @@
-use Test2::Require::Module 'Readonly';
+use Test2::Require::Module 'Readonly' => '1.60';
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::CommandLine;
