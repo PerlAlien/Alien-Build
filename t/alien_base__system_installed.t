@@ -27,94 +27,110 @@ skip_all 'test requires Alien::Base::ModuleBuild 0.040 and Alien::Base::PkgConfi
     Alien::Base::ModuleBuild->VERSION('0.040');
   });
 
-# Since this is not a complete distribution, it complains about missing files/folders
-local $SIG{__WARN__} = sub { warn $_[0] unless $_[0] =~ /Can't (?:stat)|(?:find)/ };
+subtest 'basic' => sub {
 
-$ENV{ALIEN_BLIB} = 0;
+  # Since this is not a complete distribution, it complains about missing files/folders
+  local $SIG{__WARN__} = sub { warn $_[0] unless $_[0] =~ /Can't (?:stat)|(?:find)/ };
+  local $CWD = tempdir( CLEANUP => 1 );
 
-local $CWD;
-push @CWD, qw/ corpus system_installed/;
+  {
+    path('MANIFEST')->spew(
+      "lib/MyTest.pm\n",
+      "MANIFEST			This list of files\n",
+    );
+    path('lib')->mkpath;
+    path('lib/MyTest.pm')->spew(
+      "package MyTest;\n",
+      "\n",
+      "use strict;\n",
+      "use warnings;\n",
+      "use base 'Alien::Base';\n",
+      "\n",
+      "1;\n",
+    );
+  }
 
-my $lib    = 'libfoo';
-my $cflags = '-I/opt/foo/bar/baz/include';
-my $libs   = '-L/opt/foo/bar/baz/lib -lfoo';
+  my $lib    = 'libfoo';
+  my $cflags = '-I/opt/foo/bar/baz/include';
+  my $libs   = '-L/opt/foo/bar/baz/lib -lfoo';
 
-my $gard = system_fake
-  'pkg-config' => sub {
-    my(@args) = @_;
+  my $gard = system_fake
+    'pkg-config' => sub {
+      my(@args) = @_;
     
-    if($args[0] eq '--modversion' && $args[1])
-    {
-      print "1.2.3\n";
-      return 0;
-    }
-    if($args[0] eq '--cflags' && $args[1])
-    {
-      print "$cflags \n";
-      return 0;
-    }
-    if($args[0] eq '--libs' && $args[1])
-    {
-      print "$libs \n";
-      return 0;
-    }
+      if($args[0] eq '--modversion' && $args[1])
+      {
+        print "1.2.3\n";
+        return 0;
+      }
+      if($args[0] eq '--cflags' && $args[1])
+      {
+        print "$cflags \n";
+        return 0;
+      }
+      if($args[0] eq '--libs' && $args[1])
+      {
+        print "$libs \n";
+        return 0;
+      }
     
-    use Alien::Build::Util qw( _dump );
-    diag _dump(\@args);
-    ok 0, 'bad command';
-    return 2;
-  },
-;
-
-my $mock = Test2::Mock->new(
-  class => 'Alien::Base::PkgConfig',
-  override => [
-    pkg_config_command => sub {
-      'pkg-config',
+      use Alien::Build::Util qw( _dump );
+      diag _dump(\@args);
+      ok 0, 'bad command';
+      return 2;
     },
-  ],
-);
+  ;
 
-my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
+  my $mock = Test2::Mock->new(
+    class => 'Alien::Base::PkgConfig',
+    override => [
+      pkg_config_command => sub {
+        'pkg-config',
+      },
+    ],
+  );
 
-note "lib    = $lib\n";
-note "cflags = $cflags\n";
-note "libs   = $libs\n";
+  my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
 
-my($builder) = do {
-  my($out, $builder) = capture_merged {
-    Alien::Base::ModuleBuild->new( 
-      module_name => 'MyTest',
-      dist_version => 0.01,
-      alien_name => $lib,
-      share_dir => 't',
-    ); 
+  note "lib    = $lib\n";
+  note "cflags = $cflags\n";
+  note "libs   = $libs\n";
+
+  my($builder) = do {
+    my($out, $builder) = capture_merged {
+      Alien::Base::ModuleBuild->new( 
+        module_name => 'MyTest',
+        dist_version => 0.01,
+        alien_name => $lib,
+        share_dir => 't',
+      ); 
+    };
+    note $out;
+    $builder;
   };
-  note $out;
-  $builder;
+
+  note scalar capture_merged { $builder->depends_on('build') };
+
+  {
+    local $CWD;
+    push @CWD, qw/blib lib/;
+  
+    use lib '.';
+    require './MyTest.pm';
+    my $alien = MyTest->new;
+  
+    isa_ok($alien, 'MyTest');
+    isa_ok($alien, 'Alien::Base');
+  
+    note "alien->cflags = ", $alien->cflags;
+    note "alien->libs   = ", $alien->libs;
+  
+    is($alien->cflags, $cflags, "get cflags from system-installed library");
+    is($alien->libs  , $libs  , "get libs from system-installed library"  );
+  }
+
+  note scalar capture_merged { $builder->depends_on('realclean') };
 };
-
-note scalar capture_merged { $builder->depends_on('build') };
-
-{
-  local $CWD;
-  push @CWD, qw/blib lib/;
-
-  use lib '.';
-  require './MyTest.pm';
-  my $alien = MyTest->new;
-
-  isa_ok($alien, 'MyTest');
-  isa_ok($alien, 'Alien::Base');
-
-  note "alien->cflags = ", $alien->cflags;
-  note "alien->libs   = ", $alien->libs;
-
-  is($alien->cflags, $cflags, "get cflags from system-installed library");
-  is($alien->libs  , $libs  , "get libs from system-installed library"  );
-}
-
-note scalar capture_merged { $builder->depends_on('realclean') };
 
 done_testing;
 
