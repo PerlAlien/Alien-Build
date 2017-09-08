@@ -71,6 +71,8 @@ sub call
   
   if(@args == 0)
   {
+    if($^O eq 'MSWin32' && $command =~ /^"(.*)"$/)
+    { $command = $1 }
     ($command, @args) = shellwords $command;
   }
   
