@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.11_01   2017-09-08 18:19:46 -0400
   - Require Readonly 1.60 for tests that use it (it is an optional dependency)
     to avoid test failure on Perl 5.8.x
   - Fix infrequent test failure on t/alien_base__system_installed.t triggered
