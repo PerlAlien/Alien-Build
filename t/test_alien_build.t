@@ -516,12 +516,12 @@ subtest 'test for custom subtest' => sub {
 
 };
 
-subtest 'alien_build_checkpoint_ok' => sub {
+subtest 'alien_checkpoint_ok' => sub {
 
   alien_subtest 'without build' => sub {
   
     is(
-      intercept { alien_build_checkpoint_ok },
+      intercept { alien_checkpoint_ok },
       array {
         event Ok => sub {
           call pass => F();
@@ -551,7 +551,7 @@ subtest 'alien_build_checkpoint_ok' => sub {
     );
     
     is(
-      intercept { alien_build_checkpoint_ok },
+      intercept { alien_checkpoint_ok },
       array {
         event Ok => sub {
           call pass => F();
@@ -572,7 +572,7 @@ subtest 'alien_build_checkpoint_ok' => sub {
     alienfile_ok q{ use alienfile };
     
     is(
-      intercept { alien_build_checkpoint_ok },
+      intercept { alien_checkpoint_ok },
       array {
         event Ok => sub {
           call pass => T();
@@ -586,12 +586,12 @@ subtest 'alien_build_checkpoint_ok' => sub {
 
 };
 
-subtest 'alien_build_resume_ok' => sub {
+subtest 'alien_resume_ok' => sub {
 
   alien_subtest 'with no build' => sub {
   
     is(
-      intercept { alien_build_resume_ok },
+      intercept { alien_resume_ok },
       array {
         event Ok => sub {
           call pass => F();
@@ -612,7 +612,7 @@ subtest 'alien_build_resume_ok' => sub {
     alienfile_ok q{ use alienfile };
   
     is(
-      intercept { alien_build_resume_ok },
+      intercept { alien_resume_ok },
       array {
         event Ok => sub {
           call pass => F();
@@ -641,10 +641,10 @@ subtest 'alien_build_resume_ok' => sub {
       ],
     );
     
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
     
     is(
-      intercept { alien_build_resume_ok },
+      intercept { alien_resume_ok },
       array {
         event Ok => sub {
           call pass => F();
@@ -663,12 +663,12 @@ subtest 'alien_build_resume_ok' => sub {
   subtest 'goodness and light' => sub {
   
     alienfile_ok q{ use alienfile };
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
     
     my $build;
     
     is(
-      intercept { $build = alien_build_resume_ok },
+      intercept { $build = alien_resume_ok },
       array {
         event Ok => sub {
           call pass => T();

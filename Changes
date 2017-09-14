@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Add alien_subtest, alien_build_checkpoint_ok and alien_build_resume_ok
+  - Add alien_subtest, alien_checkpoint_ok and alien_resume_ok
     to Test::Alien::Build
   - add test directive to alienfile
   - add test method to Alien::Build

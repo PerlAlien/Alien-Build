@@ -19,8 +19,8 @@ our @EXPORT = qw(
   alien_build_ok
   alien_build_clean
   alien_install_type_is
-  alien_build_checkpoint_ok
-  alien_build_resume_ok
+  alien_checkpoint_ok
+  alien_resume_ok
   alien_subtest
   alien_rc
 );
@@ -516,16 +516,16 @@ sub alien_build_clean
   $ctx->release;
 }
 
-=head2 alien_build_checkpoint_ok
+=head2 alien_checkpoint_ok
 
- alien_build_checkpoint_ok;
- alien_build_checkpoint_ok $test_name;
+ alien_checkpoint_ok;
+ alien_checkpoint_ok $test_name;
 
 Test the checkpoint of a build.
 
 =cut
 
-sub alien_build_checkpoint_ok
+sub alien_checkpoint_ok
 {
   my($name) = @_;
   
@@ -561,16 +561,16 @@ sub alien_build_checkpoint_ok
   $ok;
 }
 
-=head2 alien_build_resume_ok
+=head2 alien_resume_ok
 
- alien_build_resume_ok;
- alien_build_resume_ok $test_name;
+ alien_resume_ok;
+ alien_resume_ok $test_name;
 
 Test a resume a checkpointed build.
 
 =cut
 
-sub alien_build_resume_ok
+sub alien_resume_ok
 {
   my($name) = @_;
   

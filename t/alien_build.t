@@ -1198,12 +1198,12 @@ subtest 'test' => sub {
     };
     
     alien_install_type_is 'share';
-    alien_build_checkpoint_ok;
-    alien_build_resume_ok;
+    alien_checkpoint_ok;
+    alien_resume_ok;
     alien_build_ok;
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
 
-    my $build = alien_build_resume_ok;
+    my $build = alien_resume_ok;
     
     my($out, $error) = capture_merged {
       eval { $build->test };
@@ -1235,12 +1235,12 @@ subtest 'test' => sub {
     };
     
     alien_install_type_is 'share';
-    alien_build_checkpoint_ok;
-    alien_build_resume_ok;
+    alien_checkpoint_ok;
+    alien_resume_ok;
     alien_build_ok;
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
 
-    my $build = alien_build_resume_ok;
+    my $build = alien_resume_ok;
 
     my($out, $error) = capture_merged {
       eval { $build->test };
@@ -1285,12 +1285,12 @@ subtest 'test' => sub {
     };
     
     alien_install_type_is 'share';
-    alien_build_checkpoint_ok;
-    alien_build_resume_ok;
+    alien_checkpoint_ok;
+    alien_resume_ok;
     alien_build_ok;
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
 
-    my $build = alien_build_resume_ok;
+    my $build = alien_resume_ok;
 
     my($out, $error) = capture_merged {
       eval { $build->test };
@@ -1332,12 +1332,12 @@ subtest 'test' => sub {
     };
     
     alien_install_type_is 'share';
-    alien_build_checkpoint_ok;
-    alien_build_resume_ok;
+    alien_checkpoint_ok;
+    alien_resume_ok;
     alien_build_ok;
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
 
-    my $build = alien_build_resume_ok;
+    my $build = alien_resume_ok;
 
     my($out, $error) = capture_merged {
       eval { $build->test };
@@ -1363,12 +1363,12 @@ subtest 'test' => sub {
     };
     
     alien_install_type_is 'system';
-    alien_build_checkpoint_ok;
-    alien_build_resume_ok;
+    alien_checkpoint_ok;
+    alien_resume_ok;
     alien_build_ok;
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
 
-    my $build = alien_build_resume_ok;
+    my $build = alien_resume_ok;
     my($out, $error) = capture_merged {
       eval { $build->test };
       $@;
@@ -1397,12 +1397,12 @@ subtest 'test' => sub {
     };
     
     alien_install_type_is 'system';
-    alien_build_checkpoint_ok;
-    alien_build_resume_ok;
+    alien_checkpoint_ok;
+    alien_resume_ok;
     alien_build_ok;
-    alien_build_checkpoint_ok;
+    alien_checkpoint_ok;
 
-    my $build = alien_build_resume_ok;
+    my $build = alien_resume_ok;
     my($out, $error) = capture_merged {
       eval { $build->test };
       $@;
