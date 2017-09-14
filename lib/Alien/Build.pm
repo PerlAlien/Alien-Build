@@ -1223,6 +1223,8 @@ sub build
         },
       }, "build${suffix}");
 
+      $self->install_prop->{"_ab_build@{[ $suffix || '_share' ]}"} = "$CWD";
+
       $self->_call_hook("gather@{[ $suffix || '_share' ]}");
     }
   }
@@ -1250,6 +1252,43 @@ sub build
   }
   
   $self;
+}
+
+=head2 test
+
+ $build->test;
+
+Run the test phase
+
+=cut
+
+sub test
+{
+  my($self) = @_;
+
+  if($self->install_type eq 'share')
+  {
+    foreach my $suffix ('_share', '_ffi')
+    {
+      if($self->meta->has_hook("test$suffix"))
+      {
+        my $dir = $self->install_prop->{"_ab_build$suffix"};
+        Carp::croak("no build directory to run tests") unless $dir && -d $dir;
+        local $CWD = $dir;
+        $self->_call_hook("test$suffix");
+      }
+    }
+  }
+  else
+  {
+    if($self->meta->has_hook("test_system"))
+    {
+      my $dir = Alien::Build::TempDir->new($self, "test");
+      local $CWD = "$dir";
+      $self->_call_hook("test_system");
+    }
+  }
+
 }
 
 =head2 system
@@ -1473,10 +1512,16 @@ sub _instr
       prefer        => 'share',
       extract       => 'share',
       patch         => 'share',
+      patch_ffi     => 'share',
       build         => 'share',
+      build_ffi     => 'share',
       stage         => 'share',
+      gather_ffi    => 'share',
       gather_share  => 'share',
       gather_system => 'system',
+      test_ffi      => 'share',
+      test_share    => 'share',
+      test_system   => 'system',
     );
     require Alien::Build::CommandSequence;
     my $seq = Alien::Build::CommandSequence->new(@$instr);

@@ -71,7 +71,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test );
 
 =head1 DIRECTIVES
 
@@ -632,6 +632,51 @@ sub log
 {
   unshift @_, 'Alien::Build';
   goto &Alien::Build::log;
+}
+
+=head2 test
+
+ share {
+   test \&code;
+   test \@commandlist;
+ };
+ sys {
+   test \&code;
+   test \@commandlist;
+ };
+
+Run the tests
+
+=cut
+
+sub test
+{
+  my($instr) = @_;
+  my $caller = caller;
+  my $meta = $caller->meta;
+  my $phase = $meta->{phase};
+  Carp::croak "test is not allowed in $phase block"
+    if $phase eq 'any' || $phase eq 'configure';
+  
+  $meta->add_requires('configure' => 'Alien::Build' => '1.14');
+  
+  if($phase eq 'share')
+  {
+    my $suffix = $caller->meta->{build_suffix} || '_share';
+    $meta->register_hook(
+      "test$suffix" => $instr,
+    );
+  }
+  elsif($phase eq 'system')
+  {
+    $meta->register_hook(
+      "test_system" => $instr,
+    );
+  }
+  else
+  {
+    die "unknown phase: $phase";
+  }
 }
 
 sub import

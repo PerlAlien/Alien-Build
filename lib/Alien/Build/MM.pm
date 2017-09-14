@@ -283,6 +283,10 @@ sub mm_postamble
   # append to all
   $postamble .= "pure_all :: _alien/mm/build\n\n";
   
+  $postamble .= "subdirs-test_dynamic :: alien_test\n\n";
+  $postamble .= "alien_test :\n" .
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e test\n\n";
+  
   # prop
   $postamble .= "alien_prop :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop\n\n";
@@ -399,6 +403,12 @@ sub import
         
         $build->checkpoint;
         _touch('build');
+      };
+      
+      *test = sub
+      {
+        my($build) = _args();
+        $build->test;
       };
       
       *dumpprop = sub

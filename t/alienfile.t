@@ -433,4 +433,64 @@ subtest 'meta' => sub {
 
 };
 
+subtest 'test' => sub {
+
+  subtest 'basic' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      share {
+        test [];
+      };
+    };
+    
+    is(
+      $build->requires('configure'),
+      hash {
+        field 'Alien::Build' => '1.14';
+        etc;
+      },
+    );
+  };
+  
+  alienfile_ok q{
+  
+    use alienfile;
+    
+    sys {
+      test [];
+    };
+  
+  };
+  
+  alienfile_ok q{
+  
+    use alienfile;
+    
+    share {
+      ffi {
+        test [];
+      };
+    };
+  
+  };
+  
+  eval {
+    alienfile q{
+      use alienfile;
+      test [];
+    };
+  };
+  like $@, qr/test is not allowed in any block/, 'not allowed in root block';
+  
+  eval {
+    alienfile q{
+      use alienfile;
+      configure { test[] };
+    };
+  };
+  like $@, qr/test is not allowed in configure block/, 'not allowed in configure block';
+
+};
+
 done_testing;

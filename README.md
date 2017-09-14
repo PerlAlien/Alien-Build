@@ -517,6 +517,12 @@ type of install:
 
     The `gather_system` hook will be executed.
 
+## test
+
+    $build->test;
+
+Run the test phase
+
 ## system
 
     $build->system($command);
