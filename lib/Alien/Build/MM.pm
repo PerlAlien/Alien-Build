@@ -409,6 +409,7 @@ sub import
       {
         my($build) = _args();
         $build->test;
+        $build->checkpoint;
       };
       
       *dumpprop = sub
