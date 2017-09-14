@@ -1,4 +1,5 @@
 use Test2::V0 -no_srand => 1;
+use Test2::Mock;
 use Test::Alien::Build;
 use Path::Tiny qw( path );
 
@@ -444,6 +445,243 @@ subtest 'alien_rc' => sub {
     );
   };
   
+};
+
+subtest 'test for custom subtest' => sub {
+
+  subtest 'basic pass' => sub {
+  
+    my $ok;
+  
+    my $events = intercept {
+      $ok = alien_subtest 'foo' => sub {
+        ok 1;
+      };
+    };
+    
+    is(
+      $events,
+      array {
+        event Subtest => sub {
+          call pass => T();
+          call name => 'foo';
+          call buffered => T();
+          call subevents => array {
+            etc;
+          };
+        };
+        end;
+      },
+    );
+    
+    is(
+      $ok,
+      T(),
+    );
+  
+  };
+  
+  subtest 'basic fail' => sub {
+
+    my $ok;
+  
+    my $events = intercept {
+      $ok = alien_subtest 'foo' => sub {
+        ok 0;
+      };
+    };
+    
+    is(
+      $events,
+      array {
+        event Subtest => sub {
+          call pass => F();
+          call name => 'foo';
+          call buffered => T();
+          call subevents => array {
+            etc;
+          };
+        };
+        event Diag => sub {};
+        end;
+      },
+    );
+    
+    is(
+      $ok,
+      F(),
+    );
+
+  };
+
+};
+
+subtest 'alien_build_checkpoint_ok' => sub {
+
+  alien_subtest 'without build' => sub {
+  
+    is(
+      intercept { alien_build_checkpoint_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => "alien checkpoint ok";
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => 'no build to checkpoint';
+        };
+        end;
+      },
+    );
+  
+  };
+  
+  alien_subtest 'with failure in checkpont' => sub {
+  
+    alienfile_ok q{ use alienfile };
+    
+    my $mock = Test2::Mock->new(
+      class => 'Alien::Build',
+      override => [
+        checkpoint => sub {
+          die 'some error in checkpoint';
+        },
+      ],
+    );
+    
+    is(
+      intercept { alien_build_checkpoint_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => "alien checkpoint ok";
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => match qr/error in checkpoint: some error in checkpoint/
+        };
+        end;
+      },
+    );
+  
+  };
+  
+  alien_subtest 'with goodness and light' => sub {
+  
+    alienfile_ok q{ use alienfile };
+    
+    is(
+      intercept { alien_build_checkpoint_ok },
+      array {
+        event Ok => sub {
+          call pass => T();
+          call name => 'alien checkpoint ok';
+        };
+        end;
+      },
+    );
+  
+  };
+
+};
+
+subtest 'alien_build_resume_ok' => sub {
+
+  alien_subtest 'with no build' => sub {
+  
+    is(
+      intercept { alien_build_resume_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'alien resume ok';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => 'no build to resume';
+        };
+        end;
+      },
+    );
+  
+  };
+  
+  subtest 'without checkpoint' => sub {
+  
+    alienfile_ok q{ use alienfile };
+  
+    is(
+      intercept { alien_build_resume_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'alien resume ok';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => 'build has not been checkpointed';
+        };
+        end;
+      },
+    );
+  
+  };
+  
+  subtest 'die in resume' => sub {
+  
+    alienfile_ok q{ use alienfile };
+    
+    my $mock = Test2::Mock->new(
+      class => 'Alien::Build',
+      override => [
+        resume => sub {
+          die 'some error in resume';
+        },
+      ],
+    );
+    
+    alien_build_checkpoint_ok;
+    
+    is(
+      intercept { alien_build_resume_ok },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'alien resume ok';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => match(qr/error in resume: some error in resume/);
+        };
+        end;
+      },
+    );
+
+  };
+  
+  subtest 'goodness and light' => sub {
+  
+    alienfile_ok q{ use alienfile };
+    alien_build_checkpoint_ok;
+    
+    my $build;
+    
+    is(
+      intercept { $build = alien_build_resume_ok },
+      array {
+        event Ok => sub {
+          call pass => T();
+          call name => 'alien resume ok';
+        };
+        end;
+      },
+    );
+    
+    isa_ok $build, 'Alien::Build';
+  
+  };
+
 };
 
 done_testing;

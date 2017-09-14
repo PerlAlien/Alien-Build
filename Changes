@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add alien_subtest, alien_build_checkpoint_ok and alien_build_resume_ok
+    to Test::Alien::Build
 
 1.12      2017-09-11 10:11:14 -0400
   - Production release identical to 1.11_01

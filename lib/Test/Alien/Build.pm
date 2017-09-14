@@ -7,11 +7,23 @@ use base qw( Exporter);
 use Path::Tiny qw( path );
 use Carp qw( croak );
 use File::Temp qw( tempdir );
-use Test2::API qw( context );
+use Test2::API qw( context run_subtest );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 
-our @EXPORT = qw( alienfile alienfile_ok alien_download_ok alien_extract_ok alien_build_ok alien_build_clean alien_install_type_is alien_rc );
+our @EXPORT = qw(
+  alienfile
+  alienfile_ok
+  alien_download_ok
+  alien_extract_ok
+  alien_build_ok
+  alien_build_clean
+  alien_install_type_is
+  alien_build_checkpoint_ok
+  alien_build_resume_ok
+  alien_subtest
+  alien_rc
+);
 
 # ABSTRACT: Tools for testing Alien::Build + alienfile
 # VERSION
@@ -96,6 +108,7 @@ The install prefix for the build.
 =cut
 
 my $build;
+my $build_alienfile;
 my $build_root;
 
 sub alienfile
@@ -144,8 +157,7 @@ sub alienfile
 
   require Alien::Build;
   
-  undef $build;
-  undef $build_root;
+  _alienfile_clear();
   my $out = capture_merged {
     $build = Alien::Build->load($args{filename}, root => $args{root});
     $build->set_stage($args{stage});
@@ -156,8 +168,17 @@ sub alienfile
   $ctx->note($out) if $out;
   $ctx->release;
 
-  $build_root = $get_temp_root->();
+  $build_alienfile = $args{filename};
+  $build_root      = $get_temp_root->();
   $build
+}
+
+sub _alienfile_clear
+{
+  defined $build_root && -d $build_root && path($build_root)->remove_tree;
+  undef $build;
+  undef $build_alienfile;
+  undef $build_root;
 }
 
 =head2 alienfile_ok
@@ -495,6 +516,102 @@ sub alien_build_clean
   $ctx->release;
 }
 
+=head2 alien_build_checkpoint_ok
+
+ alien_build_checkpoint_ok;
+ alien_build_checkpoint_ok $test_name;
+
+Test the checkpoint of a build.
+
+=cut
+
+sub alien_build_checkpoint_ok
+{
+  my($name) = @_;
+  
+  $name ||= "alien checkpoint ok";
+  my $ok;
+  my @diag;
+  
+  if($build)
+  {
+    eval { $build->checkpoint };
+    if($@)
+    {
+      push @diag, "error in checkpoint: $@";
+      $ok = 0;
+    }
+    else
+    {
+      $ok = 1;
+    }
+    undef $build;
+  }
+  else
+  {
+    push @diag, "no build to checkpoint";
+    $ok = 0;
+  }
+  
+  my $ctx = context();
+  $ctx->ok($ok, $name);
+  $ctx->diag($_) for @diag;
+  $ctx->release;
+  
+  $ok;
+}
+
+=head2 alien_build_resume_ok
+
+ alien_build_resume_ok;
+ alien_build_resume_ok $test_name;
+
+Test a resume a checkpointed build.
+
+=cut
+
+sub alien_build_resume_ok
+{
+  my($name) = @_;
+  
+  $name ||= "alien resume ok";
+  my $ok;
+  my @diag;
+  
+  if($build_alienfile && $build_root && !defined $build)
+  {
+    $build = eval { Alien::Build->resume($build_alienfile, "$build_root/root") };
+    if($@)
+    {
+      push @diag, "error in resume: $@";
+      $ok = 0;
+    }
+    else
+    {
+      $ok = 1;
+    }
+  }
+  else
+  {
+    if($build)
+    {
+      push @diag, "build has not been checkpointed";
+    }
+    else
+    {
+      push @diag, "no build to resume";
+    }
+    $ok = 0;
+  }
+  
+  my $ctx = context();
+  $ctx->ok($ok, $name);
+  $ctx->diag($_) for @diag;
+  $ctx->release;  
+  
+  ($ok && $build) || $ok;
+}
+
 =head2 alien_rc
 
  alien_rc $code;
@@ -519,6 +636,31 @@ sub alien_rc
   $rc->spew($code2);
   $ENV{ALIEN_BUILD_RC} = "$rc";
   return 1;
+}
+
+=head2 alien_subtest
+
+ alienfile_subtest $test_name => sub {
+   ...
+ };
+
+Clear the build object and clear the build object before and after the subtest.
+
+=cut
+
+sub alien_subtest
+{
+  my($name, $code, @args) = @_;
+
+  _alienfile_clear;
+
+  my $ctx = context();
+  my $pass = run_subtest($name, $code, { buffered => 1 }, @args);
+  $ctx->release;
+  
+  _alienfile_clear;
+  
+  $pass;
 }
 
 delete $ENV{$_} for qw( ALIEN_BUILD_PRELOAD ALIEN_BUILD_POSTLOAD ALIEN_INSTALL_TYPE );

@@ -566,7 +566,7 @@ subtest 'download' => sub {
   
 };
 
-subtest 'extract' => sub {
+alien_subtest 'extract' => sub {
 
   my $tar_cmd = do {
     require Alien::Build::Plugin::Extract::CommandLine;
@@ -971,7 +971,7 @@ subtest 'first probe returns share' => sub {
 
 };
 
-subtest 'system' => sub {
+alien_subtest 'system' => sub {
 
   my @args;
 
@@ -1026,7 +1026,7 @@ subtest 'requires pulls helpers' => sub {
 
 };
 
-subtest 'around bug?' => sub {
+alien_subtest 'around bug?' => sub {
 
   my $build = alienfile_ok q{
   
@@ -1065,7 +1065,7 @@ subtest 'around bug?' => sub {
 
 subtest 'requires of Alien::Build or Alien::Base' => sub {
 
-  subtest 'Alien::Build' => sub {
+  alien_subtest 'Alien::Build' => sub {
   
     my $build = alienfile_ok q{
       use alienfile;
@@ -1081,7 +1081,7 @@ subtest 'requires of Alien::Build or Alien::Base' => sub {
     
   };
 
-  subtest 'Alien::Base' => sub {
+  alien_subtest 'Alien::Base' => sub {
   
     my $build = alienfile_ok q{
       use alienfile;
@@ -1103,7 +1103,7 @@ subtest 'out-of-source build' => sub {
 
   local $Alien::Build::VERSION = '1.08';
 
-  subtest 'basic' => sub {
+  alien_subtest 'basic' => sub {
   
     alienfile_ok q{
       use alienfile;
@@ -1131,7 +1131,7 @@ subtest 'out-of-source build' => sub {
   
   };
   
-  subtest 'from bundled source' => sub {
+  alien_subtest 'from bundled source' => sub {
 
     local $Alien::Build::Plugin::Fetch::LocalDir::VERSION = '1.07';
   
