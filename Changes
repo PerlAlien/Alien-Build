@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix for race condition introduced in 1.14_01
 
 1.14_01   2017-09-14 16:35:29 -0400
   - Add alien_subtest, alien_checkpoint_ok and alien_resume_ok

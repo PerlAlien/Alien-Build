@@ -175,7 +175,7 @@ sub alienfile
 
 sub _alienfile_clear
 {
-  defined $build_root && -d $build_root && path($build_root)->remove_tree;
+  eval { defined $build_root && -d $build_root && path($build_root)->remove_tree };
   undef $build;
   undef $build_alienfile;
   undef $build_root;
