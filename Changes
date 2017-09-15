@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Removed unused internal module Alien::Build::Util::Win32::RegistryDump
 
 1.15_01   2017-09-15 03:24:43 -0400
   - Fix for race condition introduced in 1.14_01
