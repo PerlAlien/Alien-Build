@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.16      2017-09-17 16:30:02 -0400
   - Removed unused internal module Alien::Build::Util::Win32::RegistryDump
 
 1.15_01   2017-09-15 03:24:43 -0400
