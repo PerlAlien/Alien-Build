@@ -79,7 +79,12 @@ sub pick
   }
   else
   {
-    Carp::carp("Could not find an appropriate pkg-config implementation, please install PkgConfig.pm, PkgConfig::LibPkgConf, pkg-config or pkgconf");
+    # this is a fata error.  because we check for a pkg-config implementation
+    # at configure time, we expect at least one of these to work.  (and we
+    # fallback on installing PkgConfig.pm as a prereq if nothing else is avail).
+    # we therefore expect at least one of these to work, if not, then the configuration
+    # of the system has shifted from underneath us.
+    Carp::croak("Could not find an appropriate pkg-config implementation, please install PkgConfig.pm, PkgConfig::LibPkgConf, pkg-config or pkgconf");
   }
 }
 
