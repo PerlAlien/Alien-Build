@@ -63,10 +63,9 @@ sub init
 {
   my($self, $meta) = @_;
   
-  require Alien::Build::Plugin::Build::MSYS;
-  Alien::Build::Plugin::Build::MSYS->new(
+  $meta->apply_plugin('Build::MSYS',
     (defined $self->msys_version ? (msys_version => $self->msys_version) : ()),
-  )->init($meta);
+  );
   
   $meta->prop->{destdir} = 1;
   $meta->prop->{autoconf} = 1;
