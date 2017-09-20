@@ -49,23 +49,26 @@ subtest 'invalid alienfile' => sub {
 
 subtest 'load requires' => sub {
 
-  my $build = alienfile filename => 'corpus/blank/alienfile';
-  my $meta = $build->meta;
-  
-  note(_dump $meta);
-  
-  is( $build->load_requires, 1, 'empty loads okay' );
+  subtest 'basic' => sub {
 
-  $meta->add_requires( 'any' => 'Foo::Bar::Baz' => '1.00');
-  is( $build->load_requires, 1, 'have it okay' );
-  ok $INC{'Foo/Bar/Baz.pm'};
-  note "inc=$INC{'Foo/Bar/Baz.pm'}";
+    my $build = alienfile q{ use alienfile };
+    my $meta = $build->meta;
+  
+    note(_dump $meta);
+  
+    is( $build->load_requires, 1, 'empty loads okay' );
 
-  $meta->add_requires( 'any' => 'Foo::Bar::Baz1' => '2.00');
-  eval { $build->load_requires };
-  my $error = $@;
-  isnt $error, '';
-  note "error=$error";
+    $meta->add_requires( 'any' => 'Foo::Bar::Baz' => '1.00');
+    is( $build->load_requires, 1, 'have it okay' );
+    ok $INC{'Foo/Bar/Baz.pm'};
+    note "inc=$INC{'Foo/Bar/Baz.pm'}";
+
+    $meta->add_requires( 'any' => 'Foo::Bar::Baz1' => '2.00');
+    eval { $build->load_requires };
+    my $error = $@;
+    isnt $error, '';
+    note "error=$error";
+  };
 };
 
 subtest 'hook' => sub {

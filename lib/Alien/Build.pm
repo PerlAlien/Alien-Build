@@ -779,8 +779,12 @@ sub load_requires
   foreach my $mod (keys %$reqs)
   {
     my $ver = $reqs->{$mod};
-    eval qq{ use $mod @{[ $ver ? $ver : '' ]} () };
-    die if $@;
+    require do {
+      my $pm = "$mod.pm";
+      $pm =~ s{::}{/}g;
+      $pm;
+    };
+    die "Required $mod $ver, have @{[ $mod->VERSION || 0 ]}" if $ver && ! $mod->VERSION($ver);
     
     # allow for requires on Alien::Build or Alien::Base
     next if $mod eq 'Alien::Build';
