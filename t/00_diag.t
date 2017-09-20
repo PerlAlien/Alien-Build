@@ -56,7 +56,27 @@ $modules{$_} = $_ for qw(
   YAML
 );
 
-
+$post_diag = sub {
+  eval {
+    require Alien::Build::Plugin::Core::Setup;
+    require Alien::Build::Plugin::Build::CMake;
+    require Alien::Build::Util;
+    require File::Which;
+  };
+  if($@)
+  {
+    diag "error: $@";
+  }
+  else
+  {
+    my %hash;
+    Alien::Build::Plugin::Core::Setup->_platform(\%hash);
+    $hash{cmake_generator} = Alien::Build::Plugin::Build::CMake::cmake_generator();
+    $hash{'pkg-config'}->{$_} = File::Which::which($_) for qw( pkg-config pkgconf );
+    $hash{'pkg-config'}->{PKG_CONFIG} = File::Which::which($ENV{PKG_CONFIG}) if defined $ENV{PKG_CONFIG};
+    diag Alien::Build::Util::_dump(\%hash);
+  }
+};
 
 my @modules = sort keys %modules;
 
