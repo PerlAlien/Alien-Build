@@ -138,7 +138,7 @@ subtest 'use start_url' => sub {
 subtest 'uri' => sub {
 
   skip_all 'Test requires URI'
-    unless eval q{ use URI::file; 1 };
+    unless eval { require URI::file; 1 };
 
   my $url = URI::file->new(path('corpus/dist')->absolute)->as_string;
   

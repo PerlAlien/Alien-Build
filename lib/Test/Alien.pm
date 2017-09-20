@@ -751,8 +751,7 @@ sub ffi_ok
     my $min = '0.12'; # the first CPAN release
     $min = '0.15' if $opt->{ignore_not_found};
     $min = '0.18' if $opt->{lang};
-    eval qq{ use FFI::Platypus $min };
-    if($@)
+    unless(eval { require FFI::Platypus; FFI::Platypus->VERSION($min) })
     {
       $ok = 0;
       $skip = "Test requires FFI::Platypus $min";
