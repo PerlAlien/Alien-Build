@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.17_01   2017-09-20 14:36:41 -0400
   - Add apply_plugin to Alien::Build::Meta
   - Deprecated Alien::Build::Plugin subplugin method (use apply_plugin instead)
 
