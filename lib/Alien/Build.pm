@@ -570,19 +570,24 @@ sub load
   
   require alienfile;
 
+  foreach my $preload (@preload)
+  {
+    ref $preload eq 'CODE' ? $preload->($self->meta) : $self->meta->apply_plugin($preload);
+  }
+
+  # TODO: do this without a string eval ?
   eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
     package ${class}::Alienfile;
-    foreach my \$preload (\@preload) {
-      ref \$preload eq 'CODE' ? \$preload->(meta()) : alienfile::plugin(\$preload);
-    }
     do '@{[ $file->absolute->stringify ]}';
     die \$\@ if \$\@;
-    foreach my \$postload (\@postload) {
-      ref \$postload eq 'CODE' ? \$postload->(meta()) : alienfile::plugin(\$postload);
-    }
   };
   die $@ if $@;
-  
+
+  foreach my $postload (@postload)
+  {
+    ref $postload eq 'CODE' ? $postload->($self->meta) : $self->meta->apply_plugin($postload);
+  }
+
   $self->{args} = \@args;
   unless(defined $self->meta->prop->{arch})
   {
