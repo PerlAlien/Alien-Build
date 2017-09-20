@@ -95,10 +95,11 @@ sub init
     $meta->add_requires('configure', 'Alien::Build::Plugin::PkgConfig::Negotiate' => '0.79');
   }
   
-  $self->subplugin($plugin,
-    pkg_name        => $self->pkg_name,
-    minimum_version => $self->minimum_version,
-  )->init($meta);
+  my @args;
+  push @args, pkg_name        => $self->pkg_name;
+  push @args, minimum_version => $self->minimum_version if defined $self->minimum_version;
+  
+  $meta->apply_plugin($plugin, @args);
 
   $self;
 }

@@ -1701,6 +1701,61 @@ sub call_hook
   $value;
 }
 
+=head2 apply_plugin
+
+ Alien::Build->meta->apply_plugin($name);
+ Alien::Build->meta->apply_plugin($name, @args);
+
+Apply the given plugin with the given arguments.
+
+=cut
+
+sub apply_plugin
+{
+  my($self, $name, @args) = @_;
+
+  my $class;
+  my $pm;
+  my $found;
+  
+  if($name =~ /^=(.*)$/)
+  {
+    $class = $1;
+    $pm    = "$class.pm";
+    $pm    =~ s!::!/!g;
+    $found = 1;
+  }
+  
+  if($name !~ /::/ && !$found)
+  {
+    foreach my $inc (@INC)
+    {
+      # TODO: allow negotiators to work with @INC hooks
+      next if ref $inc;
+      my $file = Path::Tiny->new("$inc/Alien/Build/Plugin/$name/Negotiate.pm");
+      if(-r $file)
+      {
+        $class = "Alien::Build::Plugin::${name}::Negotiate";
+        $pm    = "Alien/Build/Plugin/$name/Negotiate.pm";
+        $found = 1;
+        last;
+      }
+    }
+  }
+  
+  unless($found)
+  {
+    $class = "Alien::Build::Plugin::$name";
+    $pm    = "Alien/Build/Plugin/$name.pm";
+    $pm    =~ s{::}{/}g;
+  }
+  
+  require $pm unless $class->can('new');
+  my $plugin = $class->new(@args);
+  $plugin->init($self);
+  $self;
+}
+
 package Alien::Build::TempDir;
 
 use Path::Tiny qw( path );

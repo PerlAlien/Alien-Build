@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add apply_plugin to Alien::Build::Meta
+  - Deprecated Alien::Build::Plugin subplugin method (use apply_plugin instead)
 
 1.16      2017-09-17 16:30:02 -0400
   - Removed unused internal module Alien::Build::Util::Win32::RegistryDump

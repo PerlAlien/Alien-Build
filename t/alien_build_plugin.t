@@ -64,7 +64,15 @@ subtest 'subplugin' => sub {
   }
   
   my $plugin1 = Alien::Build::Plugin::RogerRamjet->new;
-  my $plugin2 = $plugin1->subplugin('Foo::Bar', foo => 1, bar => undef);
+  my $plugin2;
+  is(
+    warnings { $plugin2 = $plugin1->subplugin('Foo::Bar', foo => 1, bar => undef) },
+    array {
+      item match qr/subplugin method is deprecated/;
+      end;
+    },
+    'warns',
+  );
   isa_ok $plugin2, 'Alien::Build::Plugin';
   isa_ok $plugin2, 'Alien::Build::Plugin::Foo::Bar';
   is $plugin2->foo, 1;

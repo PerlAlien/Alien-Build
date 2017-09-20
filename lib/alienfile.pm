@@ -171,51 +171,8 @@ sub plugin
 {
   my($name, @args) = @_;
   
-  my $class;
-  my $pm;
-  my $found;
-  
-  if($name =~ /^=(.*)$/)
-  {
-    $class = $1;
-    $pm    = $class;
-    $pm =~ s!::!/!g;
-    $pm .= ".pm";
-    $found = 1;
-  }
-  
-  if($name !~ /::/ && ! $found)
-  {
-    foreach my $inc (@INC)
-    {
-      # TODO: allow negotiators to work with
-      # @INC hooks
-      next if ref $inc;
-      my $file = _path("$inc/Alien/Build/Plugin/$name/Negotiate.pm");
-      if(-r $file)
-      {
-        $class = "Alien::Build::Plugin::${name}::Negotiate";
-        $pm    = "Alien/Build/Plugin/$name/Negotiate.pm";
-        $found = 1;
-        last;
-      }
-    }
-  }
-  
-  unless($found)
-  {
-    $class = "Alien::Build::Plugin::$name";
-    $pm    = do {
-      my $name = $name;
-      $name =~ s!::!/!g;
-      "Alien/Build/Plugin/$name.pm";
-    };
-  }
-
-  require $pm unless $class->can('new');  
   my $caller = caller;
-  my $plugin = $class->new(@args);
-  $plugin->init($caller->meta);
+  $caller->meta->apply_plugin($name, @args);
   return;
 }
 

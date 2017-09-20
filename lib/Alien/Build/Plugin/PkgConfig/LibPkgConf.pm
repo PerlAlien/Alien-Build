@@ -70,7 +70,7 @@ sub init
 {
   my($self, $meta) = @_;
 
-  my $caller = caller;
+  my $caller = caller(2);
   
   if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
   {

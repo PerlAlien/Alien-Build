@@ -623,6 +623,13 @@ a method.  For example, this will add a probe system requirement:
       },
     );
 
+## apply\_plugin
+
+    Alien::Build->meta->apply_plugin($name);
+    Alien::Build->meta->apply_plugin($name, @args);
+
+Apply the given plugin with the given arguments.
+
 # ENVIRONMENT
 
 [Alien::Build](https://metacpan.org/pod/Alien::Build) responds to these environment variables:

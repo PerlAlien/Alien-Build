@@ -141,19 +141,19 @@ sub init
 
   my($fetch, @decoders) = $self->pick;
   
-  $self->subplugin($fetch,
+  $meta->apply_plugin($fetch,
     url     => $self->url,
     ssl     => $self->ssl,
     ($fetch eq 'Fetch::NetFTP' ? (passive => $self->passive) : ()),
-  )->init($meta);
+  );
   
   if($self->version)
   {
-    $self->subplugin($_)->init($meta) for @decoders;
-    $self->subplugin('Prefer::SortVersions', 
+    $meta->apply_plugin($_) for @decoders;
+    $meta->apply_plugin('Prefer::SortVersions', 
       (defined $self->filter ? (filter => $self->filter) : ()),
       version => $self->version,
-    )->init($meta);
+    );
   }
 }
 

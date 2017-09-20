@@ -47,7 +47,7 @@ sub init
   $format = 'tar.xz'  if $format eq 'txz';
   
   my $plugin = $self->pick($format);
-  $self->subplugin($plugin, format => $format)->init($meta);
+  $meta->apply_plugin($plugin, format => $format);
   $self;
 }
 

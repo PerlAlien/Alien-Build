@@ -54,6 +54,7 @@ $modules{$_} = $_ for qw(
   Text::ParseWords
   URI
   YAML
+  do
 );
 
 $post_diag = sub {

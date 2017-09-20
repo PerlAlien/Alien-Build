@@ -5,7 +5,7 @@ use warnings;
 use Module::Load ();
 use Carp ();
 
-our @CARP_NOT = qw( alienfile );
+our @CARP_NOT = qw( alienfile Alien::Build Alien::Build::Meta );
 
 # ABSTRACT: Plugin base class for Alien::Build
 # VERSION
@@ -156,6 +156,8 @@ sub import
 
 =head2 subplugin
 
+B<DEPRECATED>: Maybe removed, but not before 1 October 2018.
+
  my $plugin2 = $plugin1->subplugin($plugin_name, %args);
 
 Finds the given plugin and loads it using L<Module::Load> (unless already loaded)
@@ -178,6 +180,7 @@ like this:
 sub subplugin
 {
   my(undef, $name, %args) = @_;
+  Carp::carp("subplugin method is deprecated");
   my $class = "Alien::Build::Plugin::$name";
   Module::Load::load($class) unless eval { $class->can('new') };
   delete $args{$_} for grep { ! defined $args{$_} } keys %args;

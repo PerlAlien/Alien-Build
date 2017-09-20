@@ -36,10 +36,10 @@ subtest 'override' => sub {
           my %subplugin;
           
           my $mock = Test2::Mock->new(
-            class => 'Alien::Build::Plugin',
+            class => 'Alien::Build::Meta',
           );
           
-          $mock->before(subplugin => sub {
+          $mock->before(apply_plugin => sub {
             (undef, $subplugin, %subplugin) = @_;
           });
           
@@ -49,9 +49,10 @@ subtest 'override' => sub {
             [$subplugin, \%subplugin ],
             [
               "PkgConfig::$name",
-              {
-                pkg_name        => 'libfoo',
-                minimum_version => $minimum_version,
+              hash {
+                field pkg_name        => 'libfoo';
+                field minimum_version => $minimum_version if defined $minimum_version;
+                end;
               },
             ],
             'arguments to subplugin are correct',
@@ -68,14 +69,14 @@ subtest 'override' => sub {
 subtest 'list of pkg_name' => sub {
 
   my $mock = Test2::Mock->new(
-    class => 'Alien::Build::Plugin',
+    class => 'Alien::Build::Meta',
   );
 
   my $subplugin;
-  my %subplugin;
+  my @subplugin;
 
-  $mock->before(subplugin => sub {
-    (undef, $subplugin, %subplugin) = @_;
+  $mock->before(apply_plugin => sub {
+    (undef, $subplugin, @subplugin) = @_ if $_[1] eq 'PkgConfig';
   });
 
   my $build = alienfile_ok q{
@@ -84,8 +85,8 @@ subtest 'list of pkg_name' => sub {
   };
   
   is(
-    $subplugin{pkg_name},
-    [ qw( foo bar baz ) ],
+    \@subplugin,
+    [ [ qw( foo bar baz ) ] ],
     'passes pkg_name correctly',
   );
 
