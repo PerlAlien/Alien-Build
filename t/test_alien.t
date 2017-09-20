@@ -357,6 +357,8 @@ subtest 'xs_ok' => sub {
   skip_all 'test requires a compiler'
     unless ExtUtils::CBuilder->new->have_compiler;
 
+  _reset();
+
   is(
     intercept { xs_ok '' },
     array {
