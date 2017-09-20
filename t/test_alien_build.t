@@ -684,4 +684,13 @@ subtest 'alien_resume_ok' => sub {
 
 };
 
+subtest 'targ' => sub {
+
+  alienfile_ok source => q{
+    use alienfile;
+    die "targ = @{[ targ ]}" unless targ == 42;
+  }, targ => 42;
+
+};
+
 done_testing;

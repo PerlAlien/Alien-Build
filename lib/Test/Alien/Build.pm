@@ -110,6 +110,12 @@ The install prefix for the build.
 my $build;
 my $build_alienfile;
 my $build_root;
+my $build_targ;
+
+sub alienfile::targ
+{
+  $build_targ;
+}
 
 sub alienfile
 {
@@ -117,6 +123,9 @@ sub alienfile
   ($package, $filename, $line) = caller(2) if $package eq __PACKAGE__;
   $filename = path($filename)->absolute;
   my %args = @_ == 0 ? (filename => 'alienfile') : @_ % 2 ? ( source => do { '# line '. $line . ' "' . path($filename)->absolute . qq("\n) . $_[0] }) : @_;
+
+  require alienfile;
+  push @alienfile::EXPORT, 'targ' unless grep /^targ$/, @alienfile::EXPORT;
 
   my $get_temp_root = do{
     my $root; # may be undef;
@@ -159,11 +168,12 @@ sub alienfile
   
   _alienfile_clear();
   my $out = capture_merged {
+    $build_targ = $args{targ};
     $build = Alien::Build->load($args{filename}, root => $args{root});
     $build->set_stage($args{stage});
     $build->set_prefix($args{prefix});
   };
-
+  
   my $ctx = context();
   $ctx->note($out) if $out;
   $ctx->release;
@@ -179,6 +189,7 @@ sub _alienfile_clear
   undef $build;
   undef $build_alienfile;
   undef $build_root;
+  undef $build_targ;
 }
 
 =head2 alienfile_ok
