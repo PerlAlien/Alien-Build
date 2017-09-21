@@ -58,6 +58,9 @@ Returns true if the necessary prereqs for this plugin are I<already> installed.
 
 use constant _min_version => '0.14026';
 
+# private for now, used by negotiator
+has register_prereqs => 1;
+
 sub available
 {
   !!eval { require PkgConfig; PkgConfig->VERSION(_min_version) };
@@ -74,9 +77,7 @@ sub init
 {
   my($self, $meta) = @_;
   
-  my $caller = caller;
-  
-  if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
+  if($self->register_prereqs)
   {
     $meta->add_requires('configure' => 'PkgConfig' => _min_version);
   }

@@ -101,8 +101,9 @@ sub init
   }
   
   my @args;
-  push @args, pkg_name        => $self->pkg_name;
-  push @args, minimum_version => $self->minimum_version if defined $self->minimum_version;
+  push @args, pkg_name         => $self->pkg_name;
+  push @args, register_prereqs => 0;
+  push @args, minimum_version  => $self->minimum_version if defined $self->minimum_version;
   
   $meta->apply_plugin($plugin, @args);
 

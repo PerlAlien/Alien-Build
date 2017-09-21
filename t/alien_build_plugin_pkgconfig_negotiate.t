@@ -50,8 +50,9 @@ subtest 'override' => sub {
             [
               "PkgConfig::$name",
               hash {
-                field pkg_name        => 'libfoo';
-                field minimum_version => $minimum_version if defined $minimum_version;
+                field pkg_name         => 'libfoo';
+                field minimum_version  => $minimum_version if defined $minimum_version;
+                field register_prereqs => 0;
                 end;
               },
             ],

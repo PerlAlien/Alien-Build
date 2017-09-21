@@ -151,4 +151,47 @@ subtest 'system multiple' => sub {
 
 };
 
+subtest 'prereqs' => sub {
+
+  subtest 'are specified when user asks for plugin directly' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      plugin 'PkgConfig::PP' => 'foo';
+    };
+
+    is(
+      $build->requires('configure'),
+      hash {
+        field 'PkgConfig' => T();
+        etc;
+      },
+      'prereqs'
+    );
+
+  };
+  
+  subtest 'are not specified when user asks for plugin IN-directly' => sub {
+
+    local $ENV{ALIEN_BUILD_PKG_CONFIG} = 'PkgConfig::PP';
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      plugin 'PkgConfig' => 'foo';
+    };
+
+    is(
+      $build->requires('configure'),
+      hash {
+        field 'PkgConfig'                     => DNE();
+        field 'PkgConfig::LibPkgConf::Client' => DNE();
+        field 'PkgConfig::LibPkgConf::Util'   => DNE();
+        etc;
+      },
+      'prereqs'
+    );
+
+  };
+};
+
 done_testing;

@@ -49,6 +49,9 @@ The minimum required version that is acceptable version as provided by the syste
 
 has minimum_version => undef;
 
+# private for now, used by negotiator
+has register_prereqs => 1;
+
 =head1 METHODS
 
 =head2 available
@@ -70,9 +73,7 @@ sub init
 {
   my($self, $meta) = @_;
 
-  my $caller = caller(2);
-  
-  if($caller ne 'Alien::Build::Plugin::PkgConfig::Negotiate')
+  if($self->register_prereqs)
   {
     # Also update in Neotiate.pm
     $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => _min_version);

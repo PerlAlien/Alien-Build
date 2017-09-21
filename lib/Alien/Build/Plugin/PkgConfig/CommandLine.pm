@@ -37,6 +37,9 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
+# NOT used, for compat with other PkgConfig plugins
+has register_prereqs => 1;
+
 sub _bin_name {
 
   # We prefer pkgconf to pkg-config because it seems to be the future.
