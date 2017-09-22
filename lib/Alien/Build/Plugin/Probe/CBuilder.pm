@@ -198,6 +198,10 @@ sub init
       {
         $build->runtime_prop->{$_} = $p->{$_} for keys %$p;
       }
+      else
+      {
+        die "cbuilder unable to gather; if you are using multiple probe steps you may need to provide your own gather.";
+      }
     },
   );
 }

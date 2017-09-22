@@ -162,6 +162,53 @@ subtest 'program' => sub {
   is( $build->runtime_prop->{version}, '1.2.3', 'version matches' );
 };
 
+subtest 'fail' => sub {
+
+  my $mock = Test2::Mock->new(
+    class => 'ExtUtils::CBuilder',
+  );
+  
+  $mock->add('new' => sub {
+    bless {}, 'ExtUtils::CBuilder';
+  });
+
+  subtest 'compile' => sub {
+  
+    $mock->add('compile' => sub {
+      my(undef, %args) = @_;
+      die "error building mytest.o from mytest.c";
+    });
+    
+    my $build = alienfile_ok q{
+    
+      use alienfile;
+      plugin 'Probe::CBuilder' => (
+        cflags => '-DX=1',
+        libs   => '-lfoo',
+      );
+      
+      probe sub {
+        my($build) = @_;
+        # some other plugin tries system
+        # but doesn't add a gather step
+        'system';
+      };
+    
+    };
+    
+    alien_install_type_is 'system';
+    
+    my($out, $err) = capture_merged {
+      eval { $build->build };
+      $@;
+    };
+    
+    like $err, qr/cbuilder unable to gather;/;
+  
+  };
+  
+};
+
 done_testing;
 
 package
