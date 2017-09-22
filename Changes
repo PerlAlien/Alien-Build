@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug where Probe::CBuilder plugin might not play nice with other
+    probes.
 
 1.17_01   2017-09-20 14:36:41 -0400
   - Add apply_plugin to Alien::Build::Meta

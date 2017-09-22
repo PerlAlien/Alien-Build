@@ -171,20 +171,21 @@ sub init
       my($out, $err, $ret) = capture { system($^O eq 'MSWin32' ? $exe : "./$exe") };
       die "execute failed" if $ret;
       
-      if(defined $self->version)
-      {
-        ($build->runtime_prop->{version}) = $out =~ $self->version;
-      }
-      
       my $cflags = $self->cflags;
       my $libs   = $self->libs;
       
       $cflags =~ s{\s*$}{ };
       $libs =~ s{\s*$}{ };
       
-      $build->runtime_prop->{cflags} = $cflags;
-      $build->runtime_prop->{libs}   = $libs;
-      $build->install_prop->{plugin_probe_cbuilder_gather} = 1;
+      $build->install_prop->{plugin_probe_cbuilder_gather} = {
+        cflags  => $cflags,
+        libs    => $libs,
+      };
+      
+      if(defined $self->version)
+      {
+        ($build->install_prop->{plugin_probe_cbuilder_gather}->{version}) = $out =~ $self->version;
+      }
       
       'system';
     }
@@ -193,9 +194,9 @@ sub init
   $meta->register_hook(
     gather_system => sub {
       my($build) = @_;
-      unless($build->install_prop->{plugin_probe_cbuilder_gather})
+      if(my $p = $build->install_prop->{plugin_probe_cbuilder_gather})
       {
-        die "cbuilder plugin failed to gather";
+        $build->runtime_prop->{$_} = $p->{$_} for keys %$p;
       }
     },
   );
