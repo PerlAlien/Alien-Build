@@ -15,7 +15,7 @@ sub cap (&)
 
 sub build 
 {
-  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $build = alienfile_ok q{ use alienfile };
   my $meta = $build->meta;
   
   if(ref $_[-1] eq 'CODE')

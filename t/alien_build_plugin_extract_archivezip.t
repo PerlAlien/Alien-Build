@@ -48,7 +48,7 @@ subtest 'archive' => sub {
   {
     subtest "with extension $ext" => sub {
     
-      my $build = alienfile filename => 'corpus/blank/alienfile';
+      my $build = alienfile '';
       my $meta = $build->meta;
 
       my $plugin = Alien::Build::Plugin::Extract::ArchiveZip->new;
