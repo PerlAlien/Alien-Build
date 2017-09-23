@@ -78,16 +78,20 @@ The C<tar> command, if available.  C<undef> if not available.
 has tar_cmd => sub {
   _which('bsdtar')
     ? 'bsdtar'
-    # TODO: GNU tar can be iffy on windows, where absolute
-    # paths get confused with remote tars.  *sigh* fix later
-    # if we can, for now just assume that 'tar.exe' is borked
-    # on windows to be on the safe side.  The Fetch::ArchiveTar
-    # is probably a better plugin to use on windows anyway.
-    : _which('tar') && $^O ne 'MSWin32'
-      ? 'tar'
-      : _which('ptar')
-        ? 'ptar'
-        : undef;
+    # Slowlaris /usr/bin/tar doesn't seem to like pax global header
+    # but seems to have gtar in the path by default, which is okay with it
+    : $^O eq 'solaris' && _which('gtar')
+      ? 'gtar'
+      # TODO: GNU tar can be iffy on windows, where absolute
+      # paths get confused with remote tars.  *sigh* fix later
+      # if we can, for now just assume that 'tar.exe' is borked
+      # on windows to be on the safe side.  The Fetch::ArchiveTar
+      # is probably a better plugin to use on windows anyway.
+      : _which('tar') && $^O ne 'MSWin32'
+        ? 'tar'
+        : _which('ptar')
+          ? 'ptar'
+          : undef;
 };
 
 =head2 unzip_cmd
