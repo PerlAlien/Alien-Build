@@ -89,6 +89,22 @@ subtest 'CommandLine' => sub {
     ],
   );
   
+  my $mock2 = Test2::Mock->new(
+    class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
+  );
+  
+  if($^O eq 'solaris') {
+    $mock2->override(
+      _perl_config => sub {
+        my($key) = @_;
+        if($key eq 'osname')
+        { return 'linux' }
+        else
+        { return $Config{$key} }
+      },
+    );
+  }
+
   subtest 'no command line' => sub {
 
     %which = ();
@@ -142,7 +158,6 @@ subtest 'CommandLine' => sub {
 
       # From the old AB::MB days we prefer PkgConfig.pm
       # for 64 bit solaris over the command line pkg-config
-      local $^O = 'solaris';
       
       my $mock2 = Test2::Mock->new(
         class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
