@@ -248,7 +248,7 @@ L<Alien::Build::Plugin::Extract::Negotiate>
  share {
    plugin 'Download' => (
      url => 'http://www.libfoo.org/src',
-     match => qr/^libfoo-[0-9\.]+\.tar\.gz$/,
+     filter => qr/^libfoo-[0-9\.]+\.tar\.gz$/,
      version => qr/^libfoo-([0-9\.]+)\.tar\.gz$/,
    );
    plugin 'Extract' => 'tar.gz';
