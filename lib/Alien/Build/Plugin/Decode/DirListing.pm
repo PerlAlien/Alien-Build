@@ -11,7 +11,7 @@ use File::Basename ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Decode::DirListing' => ();
+ plugin 'Decode::DirListing';
 
 =head1 DESCRIPTION
 

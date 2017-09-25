@@ -11,7 +11,7 @@ use File::Basename ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Decode::DirListingFtpcopy' => ();
+ plugin 'Decode::DirListingFtpcopy';
 
 =head1 DESCRIPTION
 

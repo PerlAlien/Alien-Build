@@ -12,7 +12,7 @@ use Carp ();
 
  use alienfile;
  meta->prop->{start_url} = 'http://ftp.gnu.org/gnu/make';
- plugin 'Fetch::LWP' => ();
+ plugin 'Fetch::LWP';
 
 =head1 DESCRIPTION
 

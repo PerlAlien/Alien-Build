@@ -11,7 +11,7 @@ use File::Basename ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Decode::HTML' => ();
+ plugin 'Decode::HTML';
 
 =head1 DESCRIPTION
 

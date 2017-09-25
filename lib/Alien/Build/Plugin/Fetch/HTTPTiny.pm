@@ -13,7 +13,7 @@ use Carp ();
 
  use alienfile;
  meta->prop->{start_url} = 'http://ftp.gnu.org/gnu/make';
- plugin 'Fetch::HTTPTiny' => ();
+ plugin 'Fetch::HTTPTiny';
 
 =head1 DESCRIPTION
 

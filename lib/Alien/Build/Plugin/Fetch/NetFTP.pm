@@ -14,7 +14,7 @@ use Path::Tiny qw( path );
 
  use alienfile;
  meta->prop->{start_url} = 'ftp://ftp.gnu.org/gnu/make';
- plugin 'Fetch::NetFTP' => ();
+ plugin 'Fetch::NetFTP';
 
 =head1 DESCRIPTION
 

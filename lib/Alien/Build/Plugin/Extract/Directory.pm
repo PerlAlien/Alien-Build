@@ -12,7 +12,7 @@ use Path::Tiny ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Extract::Directory' => ();
+ plugin 'Extract::Directory';
 
 =head1 DESCRIPTION
 

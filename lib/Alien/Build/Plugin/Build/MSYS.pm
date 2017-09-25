@@ -12,7 +12,7 @@ use Env qw( @PATH );
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Build::MSYS' => ();
+ plugin 'Build::MSYS';
 
 =head1 DESCRIPTION
 
