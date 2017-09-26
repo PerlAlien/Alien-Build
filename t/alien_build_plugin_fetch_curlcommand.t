@@ -1,6 +1,6 @@
 use lib 't/lib';
+use MyTest::Curl;
 use Test2::V0 -no_srand => 1;
-use Test2::Tools::Curl;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::CurlCommand;
 use Path::Tiny qw( path );
@@ -14,8 +14,6 @@ subtest 'fetch from http' => sub {
   skip_all 'Test requires httpd config' unless $config;
   
   my $base = $config->{url};
-  $base =~ s{dist/$}{alien_build_plugin_fetch_curlcommand};
-  note "base = $base";
 
   my $build = alienfile_ok qq{
     use alienfile;
@@ -94,8 +92,6 @@ subtest 'fetch from ftp' => sub {
   skip_all 'Test requires ftp config' unless $config;
   
   my $base = $config->{url};
-  $base =~ s{dist$}{alien_build_plugin_fetch_curlcommand};
-  note "base = $base";
 
   my $build = alienfile_ok qq{
     use alienfile;
