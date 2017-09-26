@@ -1,25 +1,11 @@
+use lib 't/lib';
 use Test2::V0 -no_srand => 1;
+use Test2::Tools::Curl;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::CurlCommand;
 use Path::Tiny qw( path );
 use Capture::Tiny ();
 use JSON::PP ();
-
-sub capture_note (&)
-{
-  my($code) = @_;
-  my($out, $error, @ret) = Capture::Tiny::capture_merged(sub { my @ret = eval { $code->() }; ($@, @ret) });
-  note $out;
-  die $error if $error;
-  wantarray ? @ret : $ret[0];
-}
-
-sub test_config
-{
-  my($name) = @_;
-  my $path = path("t/bin/$name.json");
-  return JSON::PP::decode_json(scalar $path->slurp) if -f $path;
-}
 
 subtest 'fetch from http' => sub {
 
