@@ -1,4 +1,4 @@
-package MyTest::Curl;
+package MyTest::FauxFetchCommand;
 
 use strict;
 use warnings;
@@ -25,16 +25,19 @@ sub capture_note (&)
   wantarray ? @ret : $ret[0];
 }
 
-my %record = %{ decode_json path('corpus/alien_build_plugin_fetch_curlcommand/record/old.json')->slurp };
+my($test_name) = $0 =~ m{/(.*)\.t$};
+my $command_name = $test_name =~ /curlcommand/ ? 'curl' : 'wget';
 
-sub real_curl
+my %record = %{ decode_json path("corpus/$test_name/record/old.json")->slurp };
+
+sub real_cmd
 {
   my(@args) = @_;
   
   my %old = map { $_->basename => 1 } path('.')->children;
   
   my($stdout, $stderr, $exit) = tee {
-    CORE::system 'curl', @args;
+    CORE::system $command_name, @args;
     $? >> 8;
   };
 
@@ -67,7 +70,7 @@ sub real_curl
   $exit;
 }
 
-sub faux_curl
+sub faux_cmd
 {
   my(@args) = @_;
   
@@ -76,7 +79,7 @@ sub faux_curl
   unless($record{$key})
   {
     my $ctx = context();
-    $ctx->bail("do not have a record for curl $key");
+    $ctx->bail("do not have a record for $command_name $key");
   }
   
   my $run = $record{$key};
@@ -103,14 +106,14 @@ sub test_config ($)
     
     my $guard = system_fake;
     
-    $guard->add('curl' => \&real_curl);
-    $guard->add('/bin/curl' => \&real_curl);
+    $guard->add($command_name        => \&real_cmd);
+    $guard->add("/bin/$command_name" => \&real_cmd);
     
-    $config->{url} =~ s{dist/?$}{alien_build_plugin_fetch_curlcommand/dir};
+    $config->{url} =~ s{dist/?$}{$test_name/dir};
     $config->{guard} = $guard;
 
     my $ctx = context();
-    $ctx->note("testing against real curl and real $name @{[ $config->{url} ]}");
+    $ctx->note("testing against real $command_name and real $name @{[ $config->{url} ]}");
     $ctx->release;
     
     return $config;
@@ -120,25 +123,26 @@ sub test_config ($)
     my %config;
     my $guard = system_fake;
     
-    $guard->add('curl' => \&faux_curl);
-    $guard->add('/bin/curl' => \&faux_curl);
+    $guard->add($command_name        => \&faux_cmd);
+    $guard->add("/bin/$command_name" => \&faux_cmd);
     
     $config{guard} = $guard;
     $config{url}   = $name eq 'httpd'
-      ? 'http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir'
-      : 'ftp://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir';
+      ? "http://localhost/corpus/$test_name/dir"
+      : "ftp://localhost/corpus/$test_name/dir";
     
     return \%config;
   }
 }
 
 delete $ENV{CURL};
+delete $ENV{WGET};
 
 END {
-  path('corpus/alien_build_plugin_fetch_curlcommand/record/new.json')->spew(encode_json( \%record ));
+  path("corpus/$test_name/record/new.json")->spew(encode_json( \%record ));
   if(eval { require YAML; 1 })
   {
-    YAML::DumpFile(path('corpus/alien_build_plugin_fetch_curlcommand/record/new.yml')->stringify, \%record );
+    YAML::DumpFile(path("corpus/$test_name/record/new.yml")->stringify, \%record );
   }
 }
 

@@ -1,5 +1,5 @@
 use lib 't/lib';
-use MyTest::Curl;
+use MyTest::FauxFetchCommand;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::CurlCommand;

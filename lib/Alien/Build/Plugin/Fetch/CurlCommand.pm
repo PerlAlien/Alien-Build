@@ -60,11 +60,6 @@ sub init
       my($build, $url) = @_;
       $url ||= $meta->prop->{start_url};
 
-      unless($self->curl_command)
-      {
-        die "Curl not found";
-      }
-
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
       
       if($scheme =~ /^https?$/)
@@ -177,7 +172,7 @@ sub init
       }
       
     },
-  );
+  ) if $self->curl_command;
   
   $self;  
 }
@@ -212,3 +207,4 @@ sub _execute
 =back
 
 =cut
+
