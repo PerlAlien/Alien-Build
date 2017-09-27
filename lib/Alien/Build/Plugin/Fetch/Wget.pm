@@ -25,7 +25,7 @@ sub init
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
       
-      if($scheme eq 'http')
+      if($scheme eq 'http' || $scheme eq 'https')
       {
         local $CWD = tempdir( CLEANUP => 1 );
         

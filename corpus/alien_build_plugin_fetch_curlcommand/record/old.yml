@@ -25,6 +25,32 @@
     ab-filename     :html_test.html
     ab-content_type :text/html;charset=UTF-8
     ab-url          :http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/html_test.html
+-L -f -o content -w @writeout http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/bogus.html:
+  exit: 22
+  files: {}
+  stderr: "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\ncurl: (22) The requested URL returned error: 404 Not Found\n"
+  stdout: |-
+    ab-filename     :content
+    ab-content_type :
+    ab-url          :http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/bogus.html
+-L -f -o content -w @writeout http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/foo-1.01.tar:
+  exit: 0
+  files:
+    content: "content:foo-1.01\n"
+  stderr: "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r100    17  100    17    0     0   3758      0 --:--:-- --:--:-- --:--:--  4250\n"
+  stdout: |-
+    ab-filename     :content
+    ab-content_type :text/plain
+    ab-url          :http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/foo-1.01.tar
+-L -f -o content -w @writeout http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/html_test.html:
+  exit: 0
+  files:
+    content: "<html><head><title>Hello World</title></head><body><p>Hello World</p></body></html>\n"
+  stderr: "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r100    84  100    84    0     0  19086      0 --:--:-- --:--:-- --:--:-- 21000\n"
+  stdout: |-
+    ab-filename     :content
+    ab-content_type :text/html;charset=UTF-8
+    ab-url          :http://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/html_test.html
 -l ftp://localhost/corpus/alien_build_plugin_fetch_curlcommand/dir/:
   exit: 0
   files: {}

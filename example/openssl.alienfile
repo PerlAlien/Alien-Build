@@ -1,0 +1,86 @@
+use alienfile;
+use Path::Tiny qw( path );
+
+# here is a somewhat complicated example that we hope to simplify in the
+# future, but it is a good example of why you might want a curl or wget
+# plugin.  The default download negotiator uses HTTP::Tiny + Net::SSLeay
+# + IO::Socket::SSL to download https URLs.  We can only get OpenSSL via
+# https or ftp.  It is better to use https, but you have the bootstrapping
+# problem that Net::SSLeay requires OpenSSL.  We can use ftp, which should
+# work most of the time (unless there is a firewall blocking SSL as where
+# I work), but then you are susceptible to man-in-the-middle attacks, which
+# is a bad look for a tool that downloads a secrutiy tool.
+
+plugin 'PkgConfig::PP' => (
+  pkg_name => 'openssl',
+);
+ 
+share {
+
+  my $try1 = 'https://www.openssl.org/source/';
+  my $try2 = 'ftp://ftp.openssl.org/source/';
+
+  meta->prop->{start_url} = 'https://www.openssl.org/source/index.html';
+
+  plugin 'Fetch::CurlCommand';
+  plugin 'Fetch::Wget';
+  plugin 'Fetch::NetFTP';
+  plugin 'Decode::HTML';
+  plugin 'Decode::DirListing';
+  plugin 'Prefer::SortVersions' => (
+    version => qr/^openssl-([0-9\.]+[a-z]*)\.tar.gz$/,
+  );
+  
+  download sub {
+    my($build) = @_;
+    
+    my @error;
+    
+    foreach my $try ($try1, $try2)
+    {
+      my $res = eval { $build->fetch($try) };
+      push @error, $@ if $@;
+      
+      if($res)
+      {
+        if($res->{type} eq 'html')
+        {
+          $res = $build->decode($res);
+        }
+        
+        $res = $build->prefer($res);
+        
+        my $url = $res->{list}->[0]->{url};
+        next unless $url;
+        
+        $res = $build->fetch($url);
+        
+        if($res->{type} eq 'file')
+        {
+          if($res->{path})
+          {
+            path($res->{path})->copy($res->{filename});
+          }
+          else
+          {
+            path($res->{filename})->spew($res->{content});
+          }
+          return;
+        }
+      }
+    }
+    
+    $build->log("errors in download: ");
+    $build->log(" - $_") for @error;
+    
+  };
+
+  plugin 'Extract' => 'tar.gz';
+
+  build [
+    '%{perl} Configure --prefix=%{.install.prefix} no-shared cc',
+    '%{make}',
+    '%{make} install',
+  ];
+
+};

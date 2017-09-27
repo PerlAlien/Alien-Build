@@ -33,7 +33,7 @@ it may be desirable to try C<curl> first.
 This plugin is not currently part of the L<Alien::Build> core, but the hope is that it
 will be declared stable enough in the near future to be included.
 
-Protocols supported: C<http>, C<https>, C<ftp>.
+Protocols supported: C<http>, C<https>
 
 =head1 PROPERTIES
 
@@ -76,7 +76,7 @@ sub init
       
         my @command = (
           $self->curl_command,
-          '-L', '-O', '-J', '-f',
+          '-L', '-f', -o => 'content',
           -w => '@writeout',
         );
       
@@ -88,6 +88,17 @@ sub init
 
         my %h = map { my($k,$v) = m/^ab-(.*?)\s*:(.*)$/; $k => $v } split /\n/, $stdout;
 
+        if($h{url} =~ m{/([^/]+)$})
+        {
+          $h{filename} = $1;
+        }
+        else
+        {
+          $h{filename} = 'index.html';
+        }
+        
+        rename 'content', $h{filename};
+
         if(-e 'head')
         {
           $build->log(" ~ $_ => $h{$_}") for sort keys %h;
@@ -96,7 +107,6 @@ sub init
       
         my($type) = split ';', $h{content_type};
 
-        # TODO: test for FTP to see what the content-type is, if any      
         if($type eq 'text/html')
         {
           return {
@@ -114,58 +124,58 @@ sub init
           };
         }
       }
-      elsif($scheme eq 'ftp')
-      {
-        if($url =~ m{/$})
-        {
-          my($stdout, $stderr) = $self->_execute($build, $self->curl_command, -l => $url);
-          chomp $stdout;
-          return {
-            type => 'list',
-            list => [
-              map { { filename => $_, url => "$url$_" } } sort split /\n/, $stdout,
-            ],
-          };
-        }
-
-        my $first_error;
-
-        {
-          local $CWD = tempdir( CLEANUP => 1 );
-
-          my($filename) = $url =~ m{/([^/]+)$};
-          $filename = 'unknown' if (! defined $filename) || ($filename eq '');
-          $DB::single = 1;
-          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -o => $filename, $url) };
-          $first_error = $@;
-          if($first_error eq '')
-          {
-            return {
-              type     => 'file',
-              filename => $filename,
-              path     => path($filename)->absolute->stringify,
-            };
-          }
-        }
-        
-        {
-          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -l => "$url/") };
-          if($@ eq '')
-          {
-            chomp $stdout;
-            return {
-              type => 'list',
-              list => [
-                map { { filename => $_, url => "$url/$_" } } sort split /\n/, $stdout,
-              ],
-            };
-          };
-        }
-
-        $first_error ||= 'unknown error';
-        die $first_error;
-
-      }
+#      elsif($scheme eq 'ftp')
+#      {
+#        if($url =~ m{/$})
+#        {
+#          my($stdout, $stderr) = $self->_execute($build, $self->curl_command, -l => $url);
+#          chomp $stdout;
+#          return {
+#            type => 'list',
+#            list => [
+#              map { { filename => $_, url => "$url$_" } } sort split /\n/, $stdout,
+#            ],
+#          };
+#        }
+#
+#        my $first_error;
+#
+#        {
+#          local $CWD = tempdir( CLEANUP => 1 );
+#
+#          my($filename) = $url =~ m{/([^/]+)$};
+#          $filename = 'unknown' if (! defined $filename) || ($filename eq '');
+#          $DB::single = 1;
+#          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -o => $filename, $url) };
+#          $first_error = $@;
+#          if($first_error eq '')
+#          {
+#            return {
+#              type     => 'file',
+#              filename => $filename,
+#              path     => path($filename)->absolute->stringify,
+#            };
+#          }
+#        }
+#        
+#        {
+#          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -l => "$url/") };
+#          if($@ eq '')
+#          {
+#            chomp $stdout;
+#            return {
+#              type => 'list',
+#              list => [
+#                map { { filename => $_, url => "$url/$_" } } sort split /\n/, $stdout,
+#              ],
+#            };
+#          };
+#        }
+#
+#        $first_error ||= 'unknown error';
+#        die $first_error;
+#
+#      }
       else
       {
         die "scheme $scheme is not supported by the Fetch::CurlCommand plugin";
