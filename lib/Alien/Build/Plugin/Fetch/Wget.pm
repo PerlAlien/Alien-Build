@@ -12,12 +12,47 @@ use File::chdir;
 # ABSTRACT: Plugin for fetching files using wget
 # VERSION
 
+=head1 SYNOPSIS
+
+ use alienfile;
+ 
+ share {
+   start_url 'https://www.openssl.org/source/';
+   plugin 'Fetch::Wget';
+ };
+
+=head1 DESCRIPTION
+
+B<WARNING>: This plugin is somwhat experimental at this time.
+
+This plugin provides a fetch based on the C<wget> command.  It works with other fetch
+plugins (that is, the first one which succeeds will be used).  Most of the time the best plugin
+to use will be L<Alien::Build::Plugin::Download::Negotiate>, but for some SSL bootstrapping
+it may be desirable to try C<wget> first.
+
+Protocols supported: C<http>, C<https>
+
+=head1 PROPERTIES
+
+=head2 wget_command
+
+The full path to the C<wget> command.  The default is usually correct.
+
+=head2 ssl
+
+Ignored by this plugin.  Provided for compatibility with some other fetch plugins.
+
+=cut
+
 has wget_command => sub { defined $ENV{WGET} ? which($ENV{WGET}) : which('wget') };
+has ssl => 0;
 
 sub init
 {
   my($self, $meta) = @_;
   
+  $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::Wget' => '1.19');
+
   $meta->register_hook(
     fetch => sub {
       my($build, $url) = @_;
@@ -83,3 +118,16 @@ sub _execute
 }
 
 1;
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<alienfile>
+
+=item L<Alien::Build>
+
+=back
+
+=cut
+

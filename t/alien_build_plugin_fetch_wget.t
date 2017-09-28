@@ -5,6 +5,8 @@ use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::Wget;
 use Path::Tiny qw( path );
 
+$Alien::Build::Plugin::Fetch::Wget::VERSION = '1.19';
+
 subtest 'fetch from http' => sub {
 
   my $config = test_config 'httpd';

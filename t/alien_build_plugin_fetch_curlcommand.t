@@ -7,6 +7,8 @@ use Path::Tiny qw( path );
 use Capture::Tiny ();
 use JSON::PP ();
 
+$Alien::Build::Plugin::Fetch::CurlCommand::VERSION = '1.19';
+
 subtest 'fetch from http' => sub {
 
   my $config = test_config 'httpd';

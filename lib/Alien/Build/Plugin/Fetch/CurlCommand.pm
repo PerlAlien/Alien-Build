@@ -18,20 +18,18 @@ use File::chdir;
  use alienfile;
  
  share {
-   meta->prop->{start_url} = 'https://www.openssl.org/source/';
+   start_url 'https://www.openssl.org/source/';
    plugin 'Fetch::CurlCommand';
- 
  };
 
 =head1 DESCRIPTION
+
+B<WARNING>: This plugin is somwhat experimental at this time.
 
 This plugin provides a fetch based on the C<curl> command.  It works with other fetch
 plugins (that is, the first one which succeeds will be used).  Most of the time the best plugin
 to use will be L<Alien::Build::Plugin::Download::Negotiate>, but for some SSL bootstrapping
 it may be desirable to try C<curl> first.
-
-This plugin is not currently part of the L<Alien::Build> core, but the hope is that it
-will be declared stable enough in the near future to be included.
 
 Protocols supported: C<http>, C<https>
 
@@ -54,6 +52,8 @@ has _see_headers => 0;
 sub init
 {
   my($self, $meta) = @_;
+
+  $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::CurlCommand' => '1.19');
 
   $meta->register_hook(
     fetch => sub {
