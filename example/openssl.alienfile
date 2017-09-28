@@ -6,11 +6,43 @@ plugin 'PkgConfig' => (
  
 share {
 
+  # when building OpenSSL from source we have a few challenges.
+  # - AB uses Net::SSLeay (vai HTTP::Tiny) by default when downloading https URLs
+  # - Net::SSLeay requires OpenSSL
+  # - We can download OpenSSL from FTP, but that is susceptible to man-in-the-middle attacks
+  #   (and that is a bad look for a security product)
+
+  # Solution:
+  # - try downloading with curl or wget via the 'bootstrap_ssl' option.
+  # - if that doesn't work, fallback on FTP
+  # - don't attempt FTP transfer if ALIEN_OPENSSL_FTP is set to 0
+  
   start_url 'https://www.openssl.org/source/';
   plugin Download => (
     version       => qr/^openssl-([0-9\.]+[a-z]*)\.tar\.gz$/,
     bootstrap_ssl => 1,
   );
+
+  unless(meta->has_hook('fetch'))
+  {
+    my $ftp_ok = $ENV{ALIEN_OPENSSL_FTP};
+    $ftp_ok = 1 unless defined $ftp_ok;
+    if($ftp_ok)
+    {
+      log(" ************************************************* ");
+      log(" *  WARNING downloading OpenSSL via FTP          * ");
+      log(" ************************************************* ");
+      start_url 'ftp://ftp.openssl.org/source/';
+      plugin 'Fetch::NetFTP';
+      plugin 'Decode::DirListing';
+    }
+    else
+    {
+      log("Unable to download OpenSSL via https without OpenSSL!");
+      log("Recommend installing wget or curl to bootstrap Alien::OpenSSL");
+      die "unable to download OpenSSL via https";
+    }
+  }
   
   plugin 'Extract' => 'tar.gz';
 
