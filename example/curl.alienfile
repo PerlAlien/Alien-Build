@@ -27,8 +27,8 @@ share {
   # regex to parse out the version number from the
   # tarball so that it can pick the most recent
   # version.
+  start_url 'https://curl.haxx.se/download/';
   plugin Download => (
-    url     => 'https://curl.haxx.se/download/',
     version => qr/^curl-([0-9\.]+)\.tar\.gz$/,
   );
 
@@ -46,6 +46,6 @@ share {
   # (ie when you install the Alien::xz module)
   # matches the prefix during runtime
   # (ie when you use it from XZ::XS).
-  plugin 'Build::Autoconf' => ();
+  plugin 'Build::Autoconf';
 
 };

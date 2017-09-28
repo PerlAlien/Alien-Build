@@ -54,7 +54,7 @@ subtest 'plugin' => sub {
   
     my $build = alienfile q{
       use alienfile;
-      plugin 'RogerRamjet' => ();
+      plugin 'RogerRamjet';
     };
   
     is(
@@ -118,7 +118,7 @@ subtest 'plugin' => sub {
   
     my $build = alienfile q{
       use alienfile;
-      plugin 'NesAdvantage::Controller' => ();
+      plugin 'NesAdvantage::Controller';
     };
     
     is($build->meta->prop->{nesadvantage}, 'controller');
@@ -129,7 +129,7 @@ subtest 'plugin' => sub {
   
     my $build = alienfile q{
       use alienfile;
-      plugin 'NesAdvantage' => ();
+      plugin 'NesAdvantage';
     };
     
     is($build->meta->prop->{nesadvantage}, 'negotiate');
@@ -140,7 +140,7 @@ subtest 'plugin' => sub {
   
     my $build = alienfile q{
       use alienfile;
-      plugin '=Alien::Build::Plugin::RogerRamjet' => ();
+      plugin '=Alien::Build::Plugin::RogerRamjet';
     };
   
     is(
@@ -490,6 +490,32 @@ subtest 'test' => sub {
     };
   };
   like $@, qr/test is not allowed in configure block/, 'not allowed in configure block';
+
+};
+
+subtest 'start_url' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    share {
+      start_url 'http://bogus.com';
+    };
+  };
+  
+  is(
+    $build,
+    object {
+      call meta_prop => hash {
+        field start_url => 'http://bogus.com';
+        etc;
+      };
+      call [requires => 'configure'] => hash {
+        field 'Alien::Build' => '1.19';
+        etc;
+      };
+    },
+    'build object'
+  );
 
 };
 

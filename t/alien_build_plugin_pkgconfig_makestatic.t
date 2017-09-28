@@ -12,7 +12,7 @@ subtest 'recursive' => sub {
     use alienfile;
     use Path::Tiny qw( path );
     
-    plugin 'PkgConfig::MakeStatic' => ();
+    plugin 'PkgConfig::MakeStatic';
     
     probe sub { 'share' };
     plugin 'PkgConfig::PP' => 'foo1';

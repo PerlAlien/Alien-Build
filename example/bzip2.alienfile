@@ -44,15 +44,15 @@ share {
   # The Build::MSYS plugin just makes sure that Alien::MSYS
   # is used to provide the necessary tools on Windows.  It
   # doesn't do anything on other platforms.
-  plugin 'Build::MSYS' => ();
+  plugin 'Build::MSYS';
 
   # The Download negotiator picks the best method for
   # downloading the package.  It uses the version
   # regex to parse out the version number from the
   # tarball so that it can pick the most recent
   # version.
+  start_url 'http://www.bzip.org/downloads.html';
   plugin 'Download' => (
-    url     => 'http://www.bzip.org/downloads.html',
     version => qr/^bzip2-([0-9\.]+)tar.gz$/,
   );
 

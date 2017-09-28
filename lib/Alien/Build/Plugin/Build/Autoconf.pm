@@ -12,7 +12,7 @@ use Path::Tiny ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Build::Autoconf' => ();
+ plugin 'Build::Autoconf';
 
 =head1 DESCRIPTION
 

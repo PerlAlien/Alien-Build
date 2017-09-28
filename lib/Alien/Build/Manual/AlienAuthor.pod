@@ -74,7 +74,9 @@ Here is the L<alienfile> that you might have:
  
  share {
    
-   download [ 'wget http://www.libfoo.org/src/libfoo-1.00.tar.gz' ];
+   start_url 'http://www.libfoo.org/src/libfoo-1.00.tar.gz';
+   
+   download [ 'wget %{.meta.start_url}' ];
    
    extract [ 'tar zxf %{.install.download}' ];
    
@@ -146,7 +148,8 @@ to group the directives which are used to download and install the
 library or tool in the event that it is not already installed.
 
  share {
-   download [ 'wget http://www.libfoo.org/src/libfoo-1.00.tar.gz' ];
+   start_url 'http://www.libfoo.org/src/libfoo-1.00.tar.gz';
+   download [ 'wget %{.meta.start_url}' ];
    extract [ 'tar zxf %{.install.download}' ];
    build [
      [ './configure --prefix=%{.install.prefix} --disable-shared' ],
@@ -155,10 +158,12 @@ library or tool in the event that it is not already installed.
    ];
  };
 
-The download directive as you might imagine specifies how to download 
-the library or tool.  The extract directive specifies how to extract the 
-archive once it is downloaded.  In the extract step, you can use the 
-variable C<%{.install.download> as a placeholder for the archive 
+The start_url specifies where to find the package that you are alienizing.
+It should be either a tarball (or zip file, or what have you) or an
+HTML index.  The download directive as you might imagine specifies how
+to download  the library or tool.  The extract directive specifies how
+to extract the archive once it is downloaded.  In the extract step, you
+can use the variable C<%{.install.download}> as a placeholder for the archive 
 that was downloaded in the download step.  This is also accessible if 
 you use a code reference from the L<Alien::Build> instance:
 
@@ -246,13 +251,13 @@ L<Alien::Build::Plugin::Extract::Negotiate>
  );
  
  share {
+   start_url 'http://www.libfoo.org/src';
    plugin 'Download' => (
-     url => 'http://www.libfoo.org/src',
      filter => qr/^libfoo-[0-9\.]+\.tar\.gz$/,
      version => qr/^libfoo-([0-9\.]+)\.tar\.gz$/,
    );
    plugin 'Extract' => 'tar.gz';
-   plugin 'Build::Autoconf' => ();
+   plugin 'Build::Autoconf';
    build [
      '%{configure} --disable-shared',
      '%{make}',
@@ -483,7 +488,7 @@ alien will work with any XS modules that are going to use it:
  #include "EXTERN.h"
  #include "perl.h"
  #include "XSUB.h"
- #include <libdontpanic.h>
+ #include <foo.h>
  
  MODULE = Foo PACKAGE = Foo
  
@@ -503,6 +508,22 @@ You can also use L<Test::Alien> to test tools instead of libraries:
 
 More details on testing L<Alien> modules can be found in the 
 L<Test::Alien> documentation.
+
+You can also run the tests that come with the package that you are alienizing,
+by using a C<test> block in your L<alienfile>.  Keep in mind that some packages
+use testing tools or have other prerequsites that will not be available on your
+users machines when they attempt to install your alien.  So you do not want to
+blindly add a test block without checking what the prereqs are.  For Autoconf
+style packages you typically test a package using the C<make check> command:
+
+ use alienfile;
+ 
+ plugin 'PkgConfig' => 'libfoo';
+ 
+ share {
+   ... # standard build steps.
+   test [ '%{make} check' ];
+ };
 
 =head2 Dist::Zilla
 

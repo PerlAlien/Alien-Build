@@ -11,8 +11,10 @@ use Carp ();
 =head1 SYNOPSIS
 
  use alienfile;
- meta->prop->{start_url} = 'http://ftp.gnu.org/gnu/make';
- plugin 'Fetch::LWP';
+ share {
+   start_url 'http://ftp.gnu.org/gnu/make';
+   plugin 'Fetch::LWP';
+ };
 
 =head1 DESCRIPTION
 

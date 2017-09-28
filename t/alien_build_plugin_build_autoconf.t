@@ -53,7 +53,7 @@ subtest 'out-of-source' => sub {
     
     share {
       meta->prop->{out_of_source} = 1;
-      plugin 'Download::Foo' => ();
+      plugin 'Download::Foo';
       plugin 'Build::Autoconf' => (
         with_pic => 0,
       );

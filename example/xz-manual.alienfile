@@ -13,9 +13,11 @@ probe [
 
 share {
 
+  start_url 'http://tukaani.org/xz/xz-5.2.3.tar.gz';
+
   # the first one which succeeds will be used
-  download [ 'wget http://tukaani.org/xz/xz-5.2.3.tar.gz' ];
-  download [ 'curl -O http://tukaani.org/xz/xz-5.2.3.tar.gz' ];
+  download [ 'wget %{.meta.start_url}' ];
+  download [ 'curl -O %{.meta.start_url}' ];
 
   # use tar to extract the tarball
   extract [ 'tar zxf %{.install.download}' ];

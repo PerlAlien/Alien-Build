@@ -13,8 +13,10 @@ use Path::Tiny qw( path );
 =head1 SYNOPSIS
 
  use alienfile;
- meta->prop->{start_url} = 'ftp://ftp.gnu.org/gnu/make';
- plugin 'Fetch::NetFTP';
+ share {
+   start_url 'ftp://ftp.gnu.org/gnu/make';
+   plugin 'Fetch::NetFTP';
+ };
 
 =head1 DESCRIPTION
 

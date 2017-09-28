@@ -4,15 +4,17 @@ probe sub { 'share' };
 
 share {
 
+  start_url 'https://github.com/Perl5-Alien/dontpanic.git';
+
   download [
-    [ "git clone --bare https://github.com/Perl5-Alien/dontpanic.git" ]
+    [ "git clone --bare %{.meta.start_url}" ]
   ];
 
   extract [
     [ "git clone %{.install.download}" ]
   ];
 
-  plugin 'Build::Autoconf' => ();
+  plugin 'Build::Autoconf';
 
   build [
     'git checkout v1.00',

@@ -5,7 +5,9 @@
 =head1 SYNOPSIS
 
  use alienfile
- plugin 'Extract' => 'tar.gz';
+ share {
+   plugin 'Extract' => 'tar.gz';
+ };
 
 =head1 DESCRIPTION
 

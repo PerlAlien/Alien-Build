@@ -33,18 +33,18 @@ provides a pkg-config C<.pc> file, then you can also use the PkgConfig plugin
  use alienfile
  plugin PkgConfig => 'libfoo';
  share {
+   start_url => 'http://example.org/dist';
    plugin Download => (
-     url => 'http://example.org/dist',
      version => qr/libfoo-([0-9\.])\.tar\.gz$/,
    );
    plugin Extract => 'tar.gz';
-   plugin 'Build::Autoconf' => ();
+   plugin 'Build::Autoconf';
  };
 
 If you need to provide custom flags to configure, you can do that too:
 
  share {
-   plugin 'Build::Autoconf' => ();
+   plugin 'Build::Autoconf';
    build [
      '%{configure} --disable-shared --enable-foo',
      '%{make}',
@@ -75,7 +75,7 @@ means that your package does not support C<DESTDIR>.  You should instead use the
 MSYS plugin and use a command sequence to do the build like this:
 
  share {
-   plugin 'Build::MSYS' => ();
+   plugin 'Build::MSYS';
    build [
      # explicitly running configure with "sh" will make sure that
      # it works on windows as well as UNIX.
@@ -282,8 +282,8 @@ C<system> install depending on how it is set.  For travis you can do something l
 
  env:
    matrix:
-     - ALIEN_FORCE=0
-     - ALIEN_FORCE=1
+     - ALIEN_INSTALL_TYPE=share
+     - ALIEN_INSTALL_TYPE=system
 
 =head2 How do I use Alien::Build from Dist::Zilla?
 

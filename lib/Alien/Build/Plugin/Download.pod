@@ -5,7 +5,10 @@
 =head1 SYNOPSIS
 
  use alienfile
- plugin 'Download' => 'http://ftp.gnu.org/gnu/make';
+ share {
+   start_url 'http://ftp.gnu.org/gnu/make';
+   plugin 'Download';
+ };
 
 =head1 DESCRIPTION
 

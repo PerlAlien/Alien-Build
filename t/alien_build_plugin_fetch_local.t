@@ -125,7 +125,7 @@ subtest 'use start_url' => sub {
       
       meta->prop->{start_url} = 'http://baz.bar.foo';
       
-      plugin 'Fetch::Local' => ();
+      plugin 'Fetch::Local';
     
     };
     

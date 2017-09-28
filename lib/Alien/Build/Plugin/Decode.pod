@@ -5,7 +5,8 @@
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Download' => 'http://ftp.gnu.org/gnu/make';
+ plugin 'Decode::HTML';
+ plugin 'Decode::DirListing';
 
 =head1 DESCRIPTION
 

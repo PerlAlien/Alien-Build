@@ -12,11 +12,13 @@ use Carp ();
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Download' => (
-   url => 'http://ftp.gnu.org/gnu/make',
-   filter => qr/^make-.*\.tar.\gz$/,
-   version => qr/([0-9\.]+)/,
- );
+ share {
+   start_url 'http://ftp.gnu.org/gnu/make';
+   plugin 'Download' => (
+     filter => qr/^make-.*\.tar.\gz$/,
+     version => qr/([0-9\.]+)/,
+   );
+ };
 
 =head1 DESCRIPTION
 
@@ -30,12 +32,14 @@ than the Fetch, Decode and Prefer plugins directly from your L<alienfile>.
 
 =head2 url
 
+[DEPRECATED] use C<start_url> instead.
+
 The Initial URL for your package.  This may be a directory listing (either in
 HTML or ftp listing format) or the final tarball intended to be downloaded.
 
 =cut
 
-has '+url' => sub { Carp::croak "url is a required property" };
+has '+url' => undef;
 
 =head2 filter
 
@@ -133,6 +137,18 @@ sub pick
 sub init
 {
   my($self, $meta) = @_;
+  
+  unless(defined $self->url)
+  {
+    if(defined $meta->prop->{start_url})
+    {
+      $self->url($meta->prop->{start_url});
+    }
+    else
+    {
+      Carp::croak "url is a required property unless you use the start_url directive";
+    }
+  }
   
   $meta->add_requires('share' => 'Alien::Build::Plugin::Download::Negotiate' => '0.61')
     if $self->passive;

@@ -12,8 +12,10 @@ use Path::Tiny ();
 =head1 SYNOPSIS
 
  use alienfile;
- meta->prop->{start_url} = 'patch/libfoo-1.00.tar.gz';
- plugin 'Fetch::Local';
+ share {
+   start_url 'patch/libfoo-1.00.tar.gz';
+   plugin 'Fetch::Local';
+ };
 
 =head1 DESCRIPTION
 

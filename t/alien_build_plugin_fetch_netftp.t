@@ -55,7 +55,7 @@ subtest 'use start_url' => sub {
       
       meta->prop->{start_url} = 'http://baz.bar.foo';
       
-      plugin 'Fetch::NetFTP' => ();
+      plugin 'Fetch::NetFTP';
     
     };
     

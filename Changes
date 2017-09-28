@@ -4,6 +4,7 @@ Revision history for {{$dist->name}}
   - Add Alien::Build::Version::Basic
   - Workaround for old tar on Solaris
   - Fix test for Solaris 64 bit
+  - Add start_url directive to alienfile
 
 1.18      2017-09-22 06:40:51 -0400
   - Fixed bug where Probe::CBuilder plugin might not play nice with other

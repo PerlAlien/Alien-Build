@@ -16,7 +16,7 @@ subtest basic => sub {
     share {
     
       plugin 'Download' => 'corpus/dist/foo-1.00.tar';
-      plugin 'Extract' => ();
+      plugin 'Extract';
     
     };
     

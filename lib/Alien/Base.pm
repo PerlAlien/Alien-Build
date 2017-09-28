@@ -679,7 +679,7 @@ need it.  From the L<alienfile> of C<Alien::nasm>:
  share {
    ...
    plugin 'Extract' => 'tar.gz';
-   plugin 'Build::MSYS' => ();
+   plugin 'Build::MSYS';
    
    build [
      'sh configure --prefix=%{alien.install.prefix}',

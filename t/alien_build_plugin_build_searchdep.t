@@ -22,7 +22,7 @@ subtest basic => sub {
     
     share {
     
-      plugin 'Download::Foo' => ();
+      plugin 'Download::Foo';
     
       plugin 'Build::SearchDep' => (
         aliens => 'Alien::libfoo2',
@@ -84,7 +84,7 @@ subtest public_I => sub {
     
     share {
     
-      plugin 'Download::Foo' => ();
+      plugin 'Download::Foo';
     
       plugin 'Build::SearchDep' => (
         aliens => 'Alien::libfoo2',
@@ -129,7 +129,7 @@ subtest public_l => sub {
     
     share {
     
-      plugin 'Download::Foo' => ();
+      plugin 'Download::Foo';
     
       plugin 'Build::SearchDep' => (
         aliens => 'Alien::libfoo2',
