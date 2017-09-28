@@ -10,3 +10,6 @@
 /example/Alien-*/pm_to_blib
 /example/Alien-*/MYMETA.*
 /testalien*
+/corpus/alien_build_plugin_fetch_curlcommand/record/new.*
+/corpus/alien_build_plugin_fetch_wget/record/new.*
+

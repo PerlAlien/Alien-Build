@@ -70,6 +70,42 @@ subtest 'pick fetch' => sub {
     is($plugin->scheme, 'file');
     
   };
+  
+  subtest 'bootstrap ssl' => sub {
+  
+    my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
+      url           => 'https://mytest.test/',
+      bootstrap_ssl => 1,
+    );
+  
+    is(
+      [$plugin->pick],
+      array {
+        item ['Fetch::CurlCommand','Fetch::Wget'];
+        item 'Decode::HTML';
+        end;
+      },
+    );
+
+  };
+
+  subtest 'bootstrap ssl http' => sub {
+  
+    my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
+      url           => 'http://mytest.test/',
+      bootstrap_ssl => 1,
+    );
+  
+    is(
+      [$plugin->pick],
+      array {
+        item 'Fetch::HTTPTiny';
+        item 'Decode::HTML';
+        end;
+      },
+    );
+
+  };
 
 };
 

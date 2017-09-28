@@ -87,6 +87,19 @@ has 'passive' => 0;
 
 has 'scheme'  => undef;
 
+=head2 bootstrap_ssl
+
+If set to true, then the download negotiator will avoid using plugins that have a dependency
+on L<Net::SSLeay>, or other Perl SSL modules.  The intent for this option is to allow
+OpenSSL to be alienized and be a useful optional dependency for L<Net::SSLeay>.
+
+The implementation may improve over time, but as of this writing, this option relies on you
+having a working C<curl> or C<wget> with SSL support in your C<PATH>.
+
+=cut
+
+has 'bootstrap_ssl' => 0;
+
 =head1 METHODS
 
 =head2 pick
@@ -107,7 +120,18 @@ sub pick
       : $self->url =~ m!^([a-z]+):!i
   ) unless defined $self->scheme;
   
-  if($self->scheme =~ /^https?$/)
+  if($self->scheme eq 'https' || ($self->scheme eq 'http' && $self->ssl))
+  {
+    if($self->bootstrap_ssl)
+    {
+      return (['Fetch::CurlCommand','Fetch::Wget'], 'Decode::HTML');
+    }
+    else
+    {
+      return ('Fetch::HTTPTiny', 'Decode::HTML');
+    }
+  }
+  elsif($self->scheme eq 'http')
   {
     return ('Fetch::HTTPTiny', 'Decode::HTML');
   }
@@ -157,11 +181,13 @@ sub init
 
   my($fetch, @decoders) = $self->pick;
   
-  $meta->apply_plugin($fetch,
+  $fetch = [ $fetch ] unless ref $fetch;
+  
+  $meta->apply_plugin($_,
     url     => $self->url,
     ssl     => $self->ssl,
-    ($fetch eq 'Fetch::NetFTP' ? (passive => $self->passive) : ()),
-  );
+    ($_ eq 'Fetch::NetFTP' ? (passive => $self->passive) : ()),
+  ) for @$fetch;
   
   if($self->version)
   {

@@ -7,6 +7,7 @@ Revision history for {{$dist->name}}
   - Workaround for old tar on Solaris
   - Fix test for Solaris 64 bit
   - Add start_url directive to alienfile
+  - Add bootstrap_ssl property to Alien::Build::Plugin::Download::Negotiate
 
 1.18      2017-09-22 06:40:51 -0400
   - Fixed bug where Probe::CBuilder plugin might not play nice with other
