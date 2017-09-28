@@ -1899,7 +1899,7 @@ the same license as the rest of the Alien::Build and related tools distributed a
 C<Alien-Build>.  Joel Berger thanked a number of people who helped in in the development
 of L<Alien::Base>, in the documentation for that module.
 
-I would also like to acknowledge the other memebers of the Perl5-Alien github
+I would also like to acknowledge the other members of the Perl5-Alien github
 organization, Zakariyya Mughal (sivoais, ZMUGHAL) and mohawk (ETJ).  Also important
 in the early development of L<Alien::Build> were the early adopters Chase Whitener
 (genio, CAPOEIRAB, author of L<Alien::libuv>), William N. Braswell, Jr (willthechill,

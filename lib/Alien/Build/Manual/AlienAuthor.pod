@@ -511,7 +511,7 @@ L<Test::Alien> documentation.
 
 You can also run the tests that come with the package that you are alienizing,
 by using a C<test> block in your L<alienfile>.  Keep in mind that some packages
-use testing tools or have other prerequsites that will not be available on your
+use testing tools or have other prerequisites that will not be available on your
 users machines when they attempt to install your alien.  So you do not want to
 blindly add a test block without checking what the prereqs are.  For Autoconf
 style packages you typically test a package using the C<make check> command:

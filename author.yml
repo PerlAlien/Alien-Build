@@ -103,6 +103,23 @@ pod_spelling_system:
     - alienize
     - umake
     - travis
+    - JBERGER
+    - Petr
+    - Pisar
+    - ppisar
+    - wget
+    - VPATH
+    - ATHREEF
+    - Braswell
+    - DLL
+    - CAPOEIRAB
+    - Fatoum
+    - OpenSSL
+    - WBRASWELL
+    - Zakariyya
+    - genio
+    - sivoais
+    - willthechill
 
 pod_coverage:
   skip: 0

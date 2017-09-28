@@ -23,7 +23,7 @@ use File::chdir;
 
 =head1 DESCRIPTION
 
-B<WARNING>: This plugin is somwhat experimental at this time.
+B<WARNING>: This plugin is somewhat experimental at this time.
 
 This plugin provides a fetch based on the C<wget> command.  It works with other fetch
 plugins (that is, the first one which succeeds will be used).  Most of the time the best plugin
