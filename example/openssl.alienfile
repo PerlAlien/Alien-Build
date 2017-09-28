@@ -7,7 +7,7 @@ plugin 'PkgConfig' => (
 share {
 
   # when building OpenSSL from source we have a few challenges.
-  # - AB uses Net::SSLeay (vai HTTP::Tiny) by default when downloading https URLs
+  # - AB uses Net::SSLeay (via HTTP::Tiny) by default when downloading https URLs
   # - Net::SSLeay requires OpenSSL
   # - We can download OpenSSL from FTP, but that is susceptible to man-in-the-middle attacks
   #   (and that is a bad look for a security product)
