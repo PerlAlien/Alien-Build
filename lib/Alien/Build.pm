@@ -489,9 +489,10 @@ sub _command_prop
       hook    => $self->hook_prop,
       meta    => $self->meta_prop,
     },
-    perl    => {
+    perl => {
       config => \%Config::Config,
     },
+    env => \%ENV,
   };
 }
 
