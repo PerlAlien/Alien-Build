@@ -182,12 +182,18 @@ sub init
   my($fetch, @decoders) = $self->pick;
   
   $fetch = [ $fetch ] unless ref $fetch;
+
+  foreach my $fetch (@$fetch)
+  {
+    my @args;
+    push @args, ssl => $self->ssl;
+    # For historical reasons, we pass the URL into older fetch plugins, because
+    # this used to be the interface.  Using start_url is now preferred!
+    push @args, url => $self->url if $fetch =~ /^Fetch::(HTTPTiny|LWP|Local|LocalDir|NetFTP)$/;
+    push @args, passive => $self->passive if $fetch eq 'Fetch::NetFTP';
   
-  $meta->apply_plugin($_,
-    url     => $self->url,
-    ssl     => $self->ssl,
-    ($_ eq 'Fetch::NetFTP' ? (passive => $self->passive) : ()),
-  ) for @$fetch;
+    $meta->apply_plugin($fetch, @args);
+  }
   
   if($self->version)
   {
