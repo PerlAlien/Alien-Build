@@ -10,13 +10,28 @@ use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 
 subtest 'simple new' => sub {
-  my $build = MyBuild->new;
-  
-  isa_ok $build, 'Alien::Build';
 
-  isa_ok( $build->meta, 'Alien::Build::Meta' );
-  isa_ok( MyBuild->meta, 'Alien::Build::Meta' );
-  note(_dump $build->meta);
+  subtest 'basic basic' => sub {
+    my $build = MyBuild->new;
+    isa_ok $build, 'Alien::Build';
+    isa_ok( $build->meta, 'Alien::Build::Meta' );
+    isa_ok( MyBuild->meta, 'Alien::Build::Meta' );
+    note(_dump $build->meta);
+  };
+  
+  subtest 'with meta_prop in new' => sub {
+    my $build = MyBuild2->new(meta_prop => { roger => 1, ramjet => [ 1,2,3] });
+    note(_dump $build->meta->prop);
+    is(
+      $build->meta_prop,
+      hash {
+        field roger => 1;
+        field ramjet => [1,2,3];
+        etc;
+      },
+      'has argument properties',
+    );
+  };
 
 };
 
@@ -1423,6 +1438,11 @@ done_testing;
 
 {
   package MyBuild;
+  use base 'Alien::Build';
+}
+
+{
+  package MyBuild2;
   use base 'Alien::Build';
 }
 

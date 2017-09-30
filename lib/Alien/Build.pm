@@ -104,6 +104,11 @@ sub new
     }
   );
   
+  if($args{meta_prop})
+  {
+    $self->meta->prop->{$_} = $args{meta_prop}->{$_} for keys %{ $args{meta_prop} };
+  }
+  
   $self;
 }
 

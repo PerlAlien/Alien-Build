@@ -57,12 +57,21 @@ sub new
   
   my $self = bless {}, $class;
   
+  my %meta = map { $_ => $prop{$_} } grep /^my_/, keys %prop;
+
   my $build = $self->{build} =
     Alien::Build->load('alienfile',
       root     => "_alien",
       (-d 'patch' ? (patch => 'patch') : ()),
+      meta_prop => \%meta,
     )
   ;
+  
+  if(%meta)
+  {
+    $build->meta->add_requires(configure => 'Alien::Build::MM' => '1.20');
+    $build->meta->add_requires(configure => 'Alien::Build' => '1.20');
+  }
   
   if(defined $prop{alienfile_meta})
   {
