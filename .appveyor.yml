@@ -1,25 +1,31 @@
----
+environment:
+    install_berry_perl: "cmd /C git clone https://github.com/stevieb9/berrybrew && cd berrybrew/bin && berrybrew.exe install %version% && berrybrew.exe switch %version%"
+
+    matrix:
+      - install_perl: "%install_berry_perl%"
+        version: "5.24.2_64"
+      - install_perl: "%install_berry_perl%"
+        version: "5.22.3_64"
+      - install_perl: "%install_berry_perl%"
+        version: "5.20.3_64"
+      - install_perl: "%install_berry_perl%"
+        version: "5.18.4_64"
+      - install_perl: "%install_berry_perl%"
+        version: "5.16.3_64"
 
 install:
-
-  - if not exist C:\strawberry type nul > installperl.txt
-  - if exist installperl.txt appveyor DownloadFile http://strawberryperl.com/download/5.24.0.1/strawberry-perl-5.24.0.1-32bit.msi
-  - if exist installperl.txt msiexec /i strawberry-perl-5.24.0.1-32bit.msi /quiet /qn /norestart
-  - if exist installperl.txt del strawberry-perl-5.24.0.1-32bit.msi
-  - if exist installperl.txt del installperl.txt
-  - SET PATH=C:\Perl5\bin;C:\strawberry\c\bin;C:\strawberry\perl\site\bin;C:\strawberry\perl\bin;%PATH%
-  - perl -v
-  - gcc --version
-  - gmake --version
-  - if not exist C:\Perl5 mkdir C:\Perl5
-  - SET PERL5LIB=C:/Perl5/lib/perl5
-  - SET PERL_LOCAL_LIB_ROOT=C:/Perl5
-  - SET PERL_MB_OPT=--install_base C:/Perl5
-  - SET PERL_MM_OPT=INSTALL_BASE=C:/Perl5
+  # Install perl
+  - cmd: "%install_perl%"
+  # Make sure we are in project root
+  - cmd: "cd %APPVEYOR_BUILD_FOLDER%"
+  # Set path for berrybrew
+  - SET PATH=C:\berrybrew\%version%\c\bin;C:\berrybrew\%version%\perl\site\bin;C:\berrybrew\%version%\perl\bin;%PATH%
+  - cpanm -n Log::Dispatch::Output Software::LicenseUtils Config::MVP::Reader::INI Config::MVP::Assembler Text::Template Data::Section App::Cmd::Tester Log::Dispatchouli MooseX::Types::Perl String::Formatter MooseX::SetOnce CPAN::Uploader Config::MVP::Section Perl::PrereqScanner App::Cmd::Setup Config::MVP::Reader Software::License Config::MVP::Reader::Findable::ByExtension Config::MVP::Reader::Finder Pod::Eventual Mixin::Linewise::Readers Config::MVP::Assembler::WithBundles App::Cmd::Command::version Config::INI::Reader App::Cmd::Tester::CaptureExternal Term::Encoding
   - cpanm -n Dist::Zilla
   - cpanm Dist::Zilla::Plugin::Git::Check
-  - dzil authordeps --missing | cpanm -n
-  - dzil listdeps --missing | cpanm -n
+  - dzil authordeps | cpanm -n
+  - dzil listdeps | cpanm -n
+
 
 build: off
 
