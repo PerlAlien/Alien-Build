@@ -8,21 +8,12 @@ use Capture::Tiny qw( capture_merged );
 use File::chdir;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
+use Alien::Base::PkgConfig;
 
 BEGIN { $ENV{ALIEN_FORCE} = 0; delete $ENV{ALIEN_INSTALL_TYPE} }
 
-skip_all 'test requires Alien::Base::ModuleBuild 0.040 and Alien::Base::PkgConfig 0.040'
+skip_all 'test requires Alien::Base::ModuleBuild'
   unless (eval {
-    require Alien::Base::PkgConfig;
-    # when AB::PkgConfig is merged into Alien-Build
-    # VERSION will be undef when testing out of git.
-    # when that merge happens, this skip should
-    # really be removed, but we are patching it here
-    # so that the test doesn't get skipped in case
-    # removing this skip is forgotten
-    $Alien::Base::PkgConfig::VERSION ||= '0.040';
-    Alien::Base::PkgConfig->VERSION('0.040');
-  }) && (eval {
     require Alien::Base::ModuleBuild;
     Alien::Base::ModuleBuild->VERSION('0.040');
   });

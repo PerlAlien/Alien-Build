@@ -3,6 +3,7 @@ use Test2::V0 -no_srand => 1;
 sub require_ok ($);
 
 require_ok 'Alien::Base';
+require_ok 'Alien::Base::PkgConfig';
 require_ok 'Alien::Base::Wrapper';
 require_ok 'Alien::Build';
 require_ok 'Alien::Build::CommandSequence';
@@ -59,6 +60,7 @@ require_ok 'Test::Alien::Run';
 require_ok 'Test::Alien::Synthetic';
 require_ok 'alienfile';
 ok(-f 't/alien_base.t', 'test for Alien::Base');
+ok(-f 't/alien_base_pkgconfig.t', 'test for Alien::Base::PkgConfig');
 ok(-f 't/alien_base_wrapper.t', 'test for Alien::Base::Wrapper');
 ok(-f 't/alien_build.t', 'test for Alien::Build');
 ok(-f 't/alien_build_commandsequence.t', 'test for Alien::Build::CommandSequence');

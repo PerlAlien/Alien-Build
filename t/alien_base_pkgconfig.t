@@ -4,7 +4,7 @@ use Capture::Tiny qw( capture_merged );
 
 subtest 'basic' => sub {
 
-  my $file = 'corpus/alien_base_modulebuild_pkgconfig/test.pc';
+  my $file = 'corpus/alien_base_pkgconfig/test.pc';
   ok( -e $file, "Test file found" );
 
   my $pc = Alien::Base::PkgConfig->new($file);
@@ -67,6 +67,10 @@ subtest 'basic' => sub {
 };
 
 subtest 'version' => sub {
+
+  skip_all 'Test requires Alien::Base::ModuleBuild'
+    unless eval { require Alien::Base::ModuleBuild; Alien::Base::ModuleBuild->VERSION('1.00') };
+
   my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
 
   my(undef,$ret) = capture_merged { system( "$pkg_config --version" ); $? };

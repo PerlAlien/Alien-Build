@@ -2,13 +2,34 @@ package Alien::Base::PkgConfig;
 
 use strict;
 use warnings;
-
-our $VERSION = '0.046';
-
 use Carp;
 use Config;
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_stderr );
+
+# ABSTRACT: Private legacy pkg-config class for Alien::Base
+# VERSION
+
+=head1 DESCRIPTION
+
+This class is used internally by L<Alien::Base> and L<Alien::Base::ModuleBuild>
+to store information from pkg-config about installed Aliens.  It is not used
+internally by the newer L<alienfile> and L<Alien::Build>.  It should never
+be used externally, should not be used for new inside of C<Alien-Build>.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Alien::Base>
+
+=item L<alienfile>
+
+=item L<Alien::Build>
+
+=back
+
+=cut
 
 sub new {
   my $class   = shift;

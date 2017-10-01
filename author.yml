@@ -137,4 +137,5 @@ pod_coverage:
     - Test::Alien::CanPlatypus#skip
     - Test::Alien#with_subtest
     - Test::Alien#capture_merged
+    - Alien::Base::PkgConfig
 
