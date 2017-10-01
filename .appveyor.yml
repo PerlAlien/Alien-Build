@@ -1,6 +1,6 @@
 environment:
     install_berry_perl: "cmd /C git clone https://github.com/stevieb9/berrybrew && cd berrybrew/bin && berrybrew.exe install %version% && berrybrew.exe switch %version%"
-    install_active_perl: "cmd /C choco install activeperl -version %version%"
+    install_active_perl: "cmd /C choco install activeperl -version %version% && ppm install App-cpanminus && ppm install MinGW"
 
     matrix:
       - install_perl: "%install_berry_perl%"
@@ -13,8 +13,6 @@ environment:
         version: "5.18.4_64"
       - install_perl: "%install_berry_perl%"
         version: "5.16.3_64"
-      - install_perl: "%install_active_perl%"
-        version: "5.24.1.2402"
 
 
 install:
