@@ -771,6 +771,8 @@ Joel Berger (JBERGER)
 
 Petr Pisar (ppisar)
 
+Lance Wicks (LANCEW)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2017 by Graham Ollis.
