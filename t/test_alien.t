@@ -609,4 +609,51 @@ subtest 'xs_ok without no compiler' => sub {
   
 };
 
+subtest 'overrides no overrides' => sub {
+
+  _reset();
+  
+  alien_ok synthetic { cflags => '-DD1=22' };
+
+  my $xs = <<'EOF';
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+int
+answer(const char *klass)
+{
+#ifdef D1
+#ifdef D2
+  return D1+D2;
+#else
+  return D1;
+#endif
+#else
+#ifdef D2
+  return D2;
+#else
+  return 0;
+#endif
+#endif
+}
+
+MODULE = TA_MODULE PACKAGE = TA_MODULE
+
+int answer(klass);
+    const char *klass;
+EOF
+
+  xs_ok { xs => $xs, cbuilder_compile => { extra_compiler_flags => '-DD2=20' }, verbose => 1 }, 'extra compiler flags as string', with_subtest {
+    my($mod) = @_;
+    is($mod->answer, 42);
+  };
+
+  xs_ok { xs => $xs, cbuilder_compile => { extra_compiler_flags => ['-DD2=20'] }, verbose => 1 }, 'extra compiler flags as array ref', with_subtest {
+    my($mod) = @_;
+    is($mod->answer, 42);
+  };
+
+};
+
 done_testing;

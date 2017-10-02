@@ -454,7 +454,7 @@ sub xs_ok
   }
   else
   {
-    $xs->{c_ext} = 'c';
+    $xs->{c_ext} ||= 'c';
   }
 
   my $verbose = $xs->{verbose} || 0;
@@ -533,9 +533,15 @@ sub xs_ok
 
     my %compile_options = (
       source               => $c_filename,
-      extra_compiler_flags => [shellwords map { _flags $_, 'cflags' } @aliens],
       %{ $xs->{cbuilder_compile} },
     );
+    
+    if(defined $compile_options{extra_compiler_flags} && ref($compile_options{extra_compiler_flags}) eq '')
+    {
+      $compile_options{extra_compiler_flags} = [ shellwords $compile_options{extra_compiler_flags} ];
+    }
+    
+    push @{ $compile_options{extra_compiler_flags} }, shellwords map { _flags $_, 'cflags' } @aliens;
 
     my($out, $obj, $err) = capture_merged {
       my $obj = eval {
@@ -567,9 +573,15 @@ sub xs_ok
       my %link_options = (
         objects            => [$obj],
         module_name        => $module,
-        extra_linker_flags => [shellwords map { _flags $_, 'libs' } @aliens],
         %{ $xs->{cbuilder_link} },
       );
+
+      if(defined $link_options{extra_linker_flags} && ref($link_options{extra_linker_flags}) eq '')
+      {
+        $link_options{extra_linker_flags} = [ shellwords $link_options{extra_linker_flags} ];
+      }
+      
+      push @{ $link_options{extra_linker_flags} }, shellwords map { _flags $_, 'libs' } @aliens;
 
       my($out, $lib, $err) = capture_merged {
         my $lib = eval { 
