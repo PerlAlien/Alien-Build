@@ -120,6 +120,7 @@ pod_spelling_system:
     - genio
     - sivoais
     - willthechill
+    - LANCEW
 
 pod_coverage:
   skip: 0
