@@ -15,7 +15,7 @@ use Capture::Tiny qw( capture_stderr );
 This class is used internally by L<Alien::Base> and L<Alien::Base::ModuleBuild>
 to store information from pkg-config about installed Aliens.  It is not used
 internally by the newer L<alienfile> and L<Alien::Build>.  It should never
-be used externally, should not be used for new inside of C<Alien-Build>.
+be used externally, should not be used for code new inside of C<Alien-Build>.
 
 =head1 SEE ALSO
 
