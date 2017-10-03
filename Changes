@@ -1,8 +1,6 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Fix bug where cmake plugin attempts out-of-source build without
-    out-of-source build enabled
   - Improved bootstrap_ssl to allow use of Net::SSLeay, if it is already
     installed.
 

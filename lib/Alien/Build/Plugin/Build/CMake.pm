@@ -15,7 +15,6 @@ use Capture::Tiny qw( capture );
  use alienfile;
  
  share {
-   meta->prop->{out_of_source} = 1;
    plugin 'Build::CMake';
    build [
      # this is the default build step, if you do not specify one.
@@ -161,7 +160,7 @@ sub init
 
   $meta->default_hook(
     build => [
-      ['%{cmake}', @args, $meta->prop->{out_of_source} ? ('%{.install.extract}') : ('.') ],
+      ['%{cmake}', @args, '%{.install.extract}' ],
       ['%{make}' ],
       ['%{make}', 'install' ],
     ],

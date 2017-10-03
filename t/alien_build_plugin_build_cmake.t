@@ -17,11 +17,7 @@ my $xs = do { local $/; <DATA> };
 foreach my $type (qw( basic out-of-source ))
 {
 
-  $Alien::Build::VERSION ||= '1.21';
-
   subtest $type => sub {
-
-    local $ENV{OUT_OF_SOURCE} = $type eq 'out-of-source' ? 1 : 0;
 
     my $build = alienfile_ok q{
       use alienfile;
@@ -32,7 +28,6 @@ foreach my $type (qw( basic out-of-source ))
       probe sub { 'share' };
   
       share {
-        meta->prop->{out_of_source} = $ENV{OUT_OF_SOURCE};
         plugin 'Fetch::LocalDir';
         plugin 'Extract' => 'd';
         plugin 'Build::CMake';
@@ -56,6 +51,11 @@ foreach my $type (qw( basic out-of-source ))
       };
     };
     
+    if($type eq 'out-of-source')
+    {
+      $build->meta->prop->{out_of_source} = 1;
+    }
+
     if($build->requires('share')->{'Alien::gmake'})
     {
       if(!eval { $build->load_requires($build->install_type); 1 })
