@@ -810,12 +810,14 @@ sub load_requires
     if(($mod->can('runtime_prop') && $mod->runtime_prop)
     || ($mod->isa('Alien::Base')  && $mod->install_type('share')))
     {
-      my $path = _path($mod->dist_dir)->child('lib/pkgconfig');
-      if(-d $path)
-      {
-        push @{ $self->{pkg_config_path} }, $path->stringify;
+      for my $dir (qw(lib share)) {
+          my $path = _path($mod->dist_dir)->child("$dir/pkgconfig");
+          if(-d $path)
+          {
+            push @{ $self->{pkg_config_path} }, $path->stringify;
+          }
       }
-      $path = _path($mod->dist_dir)->child('share/aclocal');
+      my $path = _path($mod->dist_dir)->child('share/aclocal');
       if(-d $path)
       {
         $path = "$path";

@@ -137,16 +137,19 @@ sub init
       if(_win)
       {
         my $real_prefix = Path::Tiny->new($build->install_prop->{prefix});
-        my $pkgconf_dir = Path::Tiny->new($ENV{DESTDIR})->child($prefix)->child('lib/pkgconfig');
+        my @pkgconf_dirs;
+        push @pkgconf_dirs, Path::Tiny->new($ENV{DESTDIR})->child($prefix)->child("$_/pkgconfig") for qw(lib share);
       
         # for any pkg-config style .pc files that are dropped, we need
         # to convert the MSYS /C/Foo style paths to C:/Foo
-        if(-d $pkgconf_dir)
-        {
-          foreach my $pc_file ($pkgconf_dir->children)
-          {
-            $pc_file->edit(sub {s/\Q$prefix\E/$real_prefix->stringify/eg;});
-          }
+        for my $pkgconf_dir (@pkgconf_dirs) {
+            if(-d $pkgconf_dir)
+            {
+              foreach my $pc_file ($pkgconf_dir->children)
+              {
+                $pc_file->edit(sub {s/\Q$prefix\E/$real_prefix->stringify/eg;});
+              }
+            }
         }
       }
       
