@@ -43,8 +43,11 @@ sub init
       local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
       unshift @PATH, Path::Tiny->new('bin')->absolute->stringify
         if -d 'bin';
-      unshift @PKG_CONFIG_PATH, Path::Tiny->new('lib/pkgconfig')->absolute->stringify
-        if -d 'lib/pkgconfig';
+
+      for my $dir (qw(share lib)) {
+          unshift @PKG_CONFIG_PATH, Path::Tiny->new("$dir/pkgconfig")->absolute->stringify
+            if -d "$dir/pkgconfig";
+      }
       
       $orig->($build) 
     }
