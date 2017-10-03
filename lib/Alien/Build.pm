@@ -407,7 +407,8 @@ Linux and C<gmake> on FreeBSD.
 The name DLL or shared object "name" to use when searching for dynamic
 libraries at runtime.  This is passed into L<FFI::CheckLib>, so if
 your library is something like C<libarchive.so> or C<archive.dll> you
-would set this to C<archive>.
+would set this to C<archive>.  This may be a string or an array of 
+strings.
 
 =item install_type
 

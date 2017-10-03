@@ -308,7 +308,8 @@ relevant once the install process is complete.
     The name DLL or shared object "name" to use when searching for dynamic
     libraries at runtime.  This is passed into [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), so if
     your library is something like `libarchive.so` or `archive.dll` you
-    would set this to `archive`.
+    would set this to `archive`.  This may be a string or an array of 
+    strings.
 
 - install\_type
 
