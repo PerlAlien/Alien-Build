@@ -122,7 +122,7 @@ sub pick
   
   if($self->scheme eq 'https' || ($self->scheme eq 'http' && $self->ssl))
   {
-    if($self->bootstrap_ssl)
+    if($self->bootstrap_ssl && ! eval { require Net::SSLeay; 1 })
     {
       return (['Fetch::CurlCommand','Fetch::Wget'], 'Decode::HTML');
     }

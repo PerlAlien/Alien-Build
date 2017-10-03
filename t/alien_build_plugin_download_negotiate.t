@@ -73,19 +73,48 @@ subtest 'pick fetch' => sub {
   
   subtest 'bootstrap ssl' => sub {
   
-    my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
-      url           => 'https://mytest.test/',
-      bootstrap_ssl => 1,
-    );
+    skip_all 'subtest requires Devel::Hide' unless eval { require Devel::Hide };
+
+    subtest 'without Net::SSLeay' => sub {
   
-    is(
-      [$plugin->pick],
-      array {
-        item ['Fetch::CurlCommand','Fetch::Wget'];
-        item 'Decode::HTML';
-        end;
-      },
-    );
+      local @INC = @INC;
+      note scalar capture_merged { Devel::Hide->import(qw( Net::SSLeay )) };
+
+      my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
+        url           => 'https://mytest.test/',
+        bootstrap_ssl => 1,
+      );
+  
+      is(
+        [$plugin->pick],
+        array {
+          item ['Fetch::CurlCommand','Fetch::Wget'];
+          item 'Decode::HTML';
+          end;
+        },
+      );
+    };
+    
+    subtest 'with Net::SSLeay' => sub {
+
+      local %INC = %INC;    
+      $INC{'Net/SSLeay.pm'} = __FILE__;
+
+      my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
+        url           => 'https://mytest.test/',
+        bootstrap_ssl => 1,
+      );
+  
+      is(
+        [$plugin->pick],
+        array {
+          item 'Fetch::HTTPTiny';
+          item 'Decode::HTML';
+          end;
+        },
+      );
+    
+    };
 
   };
 
