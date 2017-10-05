@@ -25,7 +25,7 @@ sub capture_note (&)
   wantarray ? @ret : $ret[0];
 }
 
-my($test_name) = $0 =~ m{/(.*)\.t$};
+my($test_name) = $0 =~ m{[/\\](.*)\.t$};
 my $command_name = $test_name =~ /curlcommand/ ? 'curl' : 'wget';
 
 my %record = %{ decode_json path("corpus/$test_name/record/old.json")->slurp };

@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Improved bootstrap_ssl to allow use of Net::SSLeay, if it is already
     installed.
+  - Windows path fix in test suite
 
 1.21      2017-10-02 15:36:33 -0400
   - Fix bug in Test::Alien where extra_compiler_flags or extra_linker_flags
