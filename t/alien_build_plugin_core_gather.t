@@ -92,4 +92,52 @@ subtest 'patch' => sub {
   ok( -f $stage->child('_alien/patch/foo.diff') );  
 };
 
+subtest 'pkg-config path during gather' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    use Path::Tiny qw( path );
+    use Env qw( @PKG_CONFIG_PATH );
+    probe sub { 'share' };
+    share {
+      download sub { path('file1')->touch };
+      extract  sub { path('file2')->touch };
+      build    sub {
+        my($build) = @_;
+        my $prefix = path($build->install_prop->{prefix});
+        $build->log("prefix = $prefix");
+        $prefix->child('lib/pkgconfig')->mkpath;
+        $prefix->child('lib/pkgconfig/x3.pc')->spew("Name: x3\n");
+        $prefix->child('share/pkgconfig')->mkpath;
+        $prefix->child('share/pkgconfig/x4.pc')->spew("Name: x4\n");
+      };
+      gather   sub {
+        my($build) = @_;
+        $build->install_prop->{my_pkg_config_path} = [@PKG_CONFIG_PATH];
+      };
+    };
+  };
+  
+  alien_build_ok;
+  
+  is(
+    $build->install_prop,
+    hash {
+      field my_pkg_config_path => array {
+        item validator(sub {
+          return -f "$_/x3.pc";
+        });
+        item validator(sub {
+          return -f "$_/'x4.pc";
+        });
+        end;
+      };
+      etc;
+    },
+    'has arch and arch-indy pkg-config paths',
+  );
+  
+
+};
+
 done_testing;

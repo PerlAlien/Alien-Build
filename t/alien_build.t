@@ -1434,6 +1434,51 @@ subtest 'test' => sub {
 
 };
 
+alien_subtest 'pkg-config path during build' => sub {
+
+  my $build = alienfile_ok q{
+  
+    use alienfile;
+    use Path::Tiny qw( path );
+    use Env qw( @PKG_CONFIG_PATH );
+  
+    probe sub { 'share' };
+  
+    share {
+    
+      requires 'Alien::libfoo2';
+      download sub { path('file1')->touch };
+      extract sub { path('file2')->touch };
+      build sub {
+        my($build) = @_;
+        $build->runtime_prop->{my_pkg_config_path} = [@PKG_CONFIG_PATH];
+      };
+    
+    };
+  
+  };
+
+  alien_build_ok;
+
+  is(
+    $build->runtime_prop,
+    hash {
+      field my_pkg_config_path => array {
+        item validator(sub {
+          return -f "$_/x1.pc";
+        });
+        item validator(sub {
+          return -f "$_/x2.pc";
+        });
+        end;
+      };
+      etc;
+    },
+    'has arch and arch-indy pkg-config paths',
+  );
+  
+};
+
 done_testing;
 
 {
