@@ -774,6 +774,8 @@ Petr Pisar (ppisar)
 
 Lance Wicks (LANCEW)
 
+Ahmad Fatoum (a3f, ATHREEF)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2017 by Graham Ollis.
