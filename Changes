@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.24_01   2017-10-08 10:40:11 -0400
+  - Build process now considers share/pkgconfig in addition to lib/pkgconfig
+    for all things pkg-config related (gh#39, gh#40 a3f++)
+
 1.23_01   2017-10-07 20:58:52 -0400
   - Improve SSL diagnostics for Download::Negotiate and Fetch::HTTPTiny
     plugins.
