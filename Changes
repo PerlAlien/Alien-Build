@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.23_01   2017-10-07 20:58:52 -0400
+  - Improve SSL diagnostics for Download::Negotiate and Fetch::HTTPTiny
+    plugins.
+
 1.22      2017-10-05 11:43:25 -0400
   - Improved bootstrap_ssl to allow use of Net::SSLeay, if it is already
     installed.
