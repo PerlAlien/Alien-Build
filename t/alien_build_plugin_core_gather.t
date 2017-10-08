@@ -119,7 +119,7 @@ subtest 'pkg-config path during gather' => sub {
   };
   
   alien_build_ok;
-  
+
   is(
     $build->install_prop,
     hash {
@@ -128,7 +128,7 @@ subtest 'pkg-config path during gather' => sub {
           return -f "$_/x3.pc";
         });
         item validator(sub {
-          return -f "$_/'x4.pc";
+          return -f "$_/x4.pc";
         });
         end;
       };
