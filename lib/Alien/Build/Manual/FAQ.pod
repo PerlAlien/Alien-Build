@@ -255,6 +255,25 @@ You can also patch using Perl if that is easier:
    build [ ... ];
  };
 
+=head2 599 Internal Exception errors downloading packages from the internet
+
+ Alien::Build::Plugin::Fetch::HTTPTiny> 599 Internal Exception fetching http://dist.libuv.org/dist/v1.15.0
+ Alien::Build::Plugin::Fetch::HTTPTiny> exception: IO::Socket::SSL 1.42 must be installed for https support
+ Alien::Build::Plugin::Fetch::HTTPTiny> exception: Net::SSLeay 1.49 must be installed for https support
+ Alien::Build::Plugin::Fetch::HTTPTiny> An attempt at a SSL URL https was made, but your HTTP::Tiny does not appear to be able to use https.
+ Alien::Build::Plugin::Fetch::HTTPTiny> Please see: https://metacpan.org/pod/Alien::Build::Manual::FAQ#599-Internal-Exception-errors-downloading-packages-from-the-internet
+ error fetching http://dist.libuv.org/dist/v1.15.0: 599 Internal Exception at /Users/ollisg/.perlbrew/libs/perl-5.26.0@test1/lib/perl5/Alien/Build/Plugin/Fetch/HTTPTiny.pm line 68.
+
+(Older versions of L<Alien::Build> produced a less verbose more confusing version of this diagnostic).
+
+This indicates an "internal" exception from L<HTTP::Tiny>.  This could mean a number of different
+problems, but most frequently indicates that a SSL request was made without the required modules
+(L<Net::SSLeay> and L<IO::Socket::SSL>).  Normally the L<Alien::Build::Plugin::Download::Negotiate>
+and L<Alien::Build::Plugin::Fetch::HTTPTiny> will make sure that the appropriate modules are added
+to your prerequsites for you if you specify a C<https> URL.  Some websites allow an initial request
+from C<http> but then redirect to C<https>.  If you can it is better to specify C<https>, if you
+cannot, then you can instead use the C<ssl> property on either of those two plugins.
+
 =head2 I would really prefer you not download stuff off the internet
 
 The idea of L<Alien> is to download missing packages and build them automatically to make installing
