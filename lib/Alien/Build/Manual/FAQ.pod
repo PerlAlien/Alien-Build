@@ -270,7 +270,7 @@ This indicates an "internal" exception from L<HTTP::Tiny>.  This could mean a nu
 problems, but most frequently indicates that a SSL request was made without the required modules
 (L<Net::SSLeay> and L<IO::Socket::SSL>).  Normally the L<Alien::Build::Plugin::Download::Negotiate>
 and L<Alien::Build::Plugin::Fetch::HTTPTiny> will make sure that the appropriate modules are added
-to your prerequsites for you if you specify a C<https> URL.  Some websites allow an initial request
+to your prerequisites for you if you specify a C<https> URL.  Some websites allow an initial request
 from C<http> but then redirect to C<https>.  If you can it is better to specify C<https>, if you
 cannot, then you can instead use the C<ssl> property on either of those two plugins.
 
