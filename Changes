@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
 
 1.25      2017-10-09 08:57:34 -0400
+  - Production release identical to 1.24_01
 
 1.24_01   2017-10-08 10:40:11 -0400
   - Build process now considers share/pkgconfig in addition to lib/pkgconfig
