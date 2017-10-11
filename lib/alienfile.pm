@@ -82,27 +82,27 @@ our @EXPORT = qw( requires on plugin probe configure share sys download fetch de
 "any" requirement (either share or system):
 
  requires $module;
- requires $module => $verson;
+ requires $module => $version;
 
 configure time requirement:
 
  configure {
    requires $module;
-   requires $module => $verson;
+   requires $module => $version;
  };
 
 system requirement:
 
  sys {
    requires $module;
-   requires $module => $verson;
+   requires $module => $version;
  };
 
 share requirement:
 
  share {
    requires $module;
-   requires $module => $verson;
+   requires $module => $version;
  };
 
 specifies a requirement.  L<Alien::Build> takes advantage of dynamic requirements, so only
