@@ -17,7 +17,8 @@ if [ ! -e ~/.travis-dzil-first ]; then
   if [ ! -e ~/mylib/dzil/.perl-$DZIL_PERL_VERSION ]; then
     rm -rf ~/mylib/dzil
   fi
-  cpanm -n -l $PREFIX Dist::Zilla Archive::Tar::Wrapper
+  cpanm --reinstall -n -l $PREFIX Dist::Zilla
+  cpanm -n -l $PREFIX Archive::Tar::Wrapper
   dzil authordeps --missing | cpanm -l $PREFIX -n
   dzil listdeps   --missing | cpanm -l $PREFIX -n
   touch ~/.travis-dzil-first
