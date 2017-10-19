@@ -6,7 +6,7 @@ subtest 'basic' => sub {
 
   my $build = alienfile_ok qq{ use alienfile };
   my $meta = $build->meta;
-  
+
   isa_ok( $build->meta, 'Alien::Build::Meta' );
 
 };

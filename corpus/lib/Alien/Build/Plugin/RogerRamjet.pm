@@ -11,12 +11,12 @@ has 'baz'  => undef;
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->prop->{ramjet} = 'roger';
   $meta->prop->{foo}    = $self->foo;
   $meta->prop->{bar}    = $self->bar;
   $meta->prop->{baz}    = $self->baz;
-  
+
 }
 
 1;

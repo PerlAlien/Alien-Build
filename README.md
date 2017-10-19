@@ -17,8 +17,8 @@ Build external dependencies for use in CPAN
 
 # DESCRIPTION
 
-This module provides tools for building external (non-CPAN) dependencies 
-for CPAN.  It is mainly designed to be used at install time of a CPAN 
+This module provides tools for building external (non-CPAN) dependencies
+for CPAN.  It is mainly designed to be used at install time of a CPAN
 client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base) which is used at runtime.
 
 This is the detailed documentation for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
@@ -68,8 +68,8 @@ properties may need to be serialized into something primitive like JSON
 that does not support: regular expressions, code references of blessed
 objects.
 
-If you are writing a plugin ([Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin)) you should use a 
-prefix like "plugin\__name_" (where _name_ is the name of your plugin) 
+If you are writing a plugin ([Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin)) you should use a
+prefix like "plugin\__name_" (where _name_ is the name of your plugin)
 so that it does not interfere with other plugin or future versions of
 [Alien::Build](https://metacpan.org/pod/Alien::Build).  For example, if you were writing
 `Alien::Build::Plugin::Fetch::NewProtocol`, please use the prefix
@@ -78,9 +78,9 @@ so that it does not interfere with other plugin or future versions of
     sub init
     {
       my($self, $meta) = @_;
-      
+
       $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
-      
+
       $meta->register_hook(
         some_hook => sub {
           my($build) = @_;
@@ -93,9 +93,9 @@ so that it does not interfere with other plugin or future versions of
 If you are writing a [alienfile](https://metacpan.org/pod/alienfile) recipe please use the prefix `my_`:
 
     use alienfile;
-    
+
     meta_prop->{my_foo} = 'some value';
-    
+
     probe sub {
       my($build) = @_;
       $build->install_prop->{my_bar} = 'some other value';
@@ -308,7 +308,7 @@ relevant once the install process is complete.
     The name DLL or shared object "name" to use when searching for dynamic
     libraries at runtime.  This is passed into [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), so if
     your library is something like `libarchive.so` or `archive.dll` you
-    would set this to `archive`.  This may be a string or an array of 
+    would set this to `archive`.  This may be a string or an array of
     strings.
 
 - install\_type
@@ -393,7 +393,7 @@ This is just a shortcut for:
 
     my $root = $build->install_prop->{root};
 
-Except that it will be created if it does not already exist.  
+Except that it will be created if it does not already exist.
 
 ## install\_type
 
@@ -678,22 +678,22 @@ Apply the given plugin with the given arguments.
 
 # SUPPORT
 
-The intent of the `Alien-Build` team is to support as best as possible 
-all Perls from 5.8.1 to the latest production version.  So long as they 
+The intent of the `Alien-Build` team is to support as best as possible
+all Perls from 5.8.1 to the latest production version.  So long as they
 are also supported by the Perl toolchain.
 
-Please feel encouraged to report issues that you encounter to the 
+Please feel encouraged to report issues that you encounter to the
 project GitHub Issue tracker:
 
 - [https://github.com/Perl5-Alien/Alien-Build/issues](https://github.com/Perl5-Alien/Alien-Build/issues)
 
-Better if you can fix the issue yourself, please feel encouraged to open 
+Better if you can fix the issue yourself, please feel encouraged to open
 pull-request on the project GitHub:
 
 - [https://github.com/Perl5-Alien/Alien-Build/pulls](https://github.com/Perl5-Alien/Alien-Build/pulls)
 
-If you are confounded and have questions, join us on the `#native` 
-channel on irc.perl.org.  The `Alien-Build` developers frequent this 
+If you are confounded and have questions, join us on the `#native`
+channel on irc.perl.org.  The `Alien-Build` developers frequent this
 channel and can probably help point you in the right direction.  If you
 don't have an IRC client handy, you can use this web interface:
 

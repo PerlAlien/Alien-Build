@@ -13,9 +13,9 @@ subtest 'updates requires' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
-  
+
   is( $build->requires('share')->{'HTTP::Tiny'}, '0.044' );
   is( $build->requires('share')->{'URI'},         0 );
 
@@ -26,41 +26,41 @@ subtest 'updates requires' => sub {
 subtest 'use start_url' => sub {
 
   subtest 'sets start_url' => sub {
-  
+
     my $build = alienfile_ok q{
-  
+
       use alienfile;
-    
+
       plugin 'Fetch::HTTPTiny' => 'http://foo.bar.baz';
-  
+
     };
-  
+
     is $build->meta_prop->{start_url}, 'http://foo.bar.baz';
-    
+
   };
-  
+
   subtest 'uses start_url' => sub {
-  
+
     my $mock = Test2::Mock->new(class => 'Alien::Build::Plugin::Fetch::HTTPTiny');
     my $plugin;
-    
+
     $mock->after(init => sub {
       my($self, $meta) = @_;
       $plugin = $self;
     });
-  
+
     my $build = alienfile_ok q{
-    
+
       use alienfile;
-      
+
       meta->prop->{start_url} = 'http://baz.bar.foo';
-      
+
       plugin 'Fetch::HTTPTiny';
-    
+
     };
-    
+
     is $plugin->url, 'http://baz.bar.foo';
-  
+
   };
 
 };
@@ -80,7 +80,7 @@ subtest 'fetch' => sub {
   $plugin->init($meta);
   eval { $build->load_requires('share') };
   skip_all 'test requires HTTP::Tiny' if $@;
-  
+
   subtest 'listing' => sub {
     my $res = $build->fetch;
     is(
@@ -92,13 +92,13 @@ subtest 'fetch' => sub {
       },
     );
   };
-  
+
   subtest 'file' => sub {
     my $furl = URI->new_abs("foo-1.00.tar.gz", $url);
     note "url = $furl";
 
     my $expected_content = path('corpus/dist/foo-1.00.tar.gz')->slurp_raw;
-  
+
     my $res = $build->fetch("$furl");
     is(
       $res,

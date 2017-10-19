@@ -12,8 +12,8 @@
 =head1 DESCRIPTION
 
 Extract plugins extract packages that have been downloaded from the internet.
-Unless you are doing something unusual you will likely want to use the 
-L<Alien::Build::Plugin::Extract::Negotiate> plugin to select the best 
+Unless you are doing something unusual you will likely want to use the
+L<Alien::Build::Plugin::Extract::Negotiate> plugin to select the best
 Extract plugin available.
 
 =over 4

@@ -15,7 +15,7 @@ use File::chdir;
 =head1 SYNOPSIS
 
  use alienfile;
- 
+
  share {
    start_url 'https://www.openssl.org/source/';
    plugin 'Fetch::Wget';
@@ -50,7 +50,7 @@ has ssl => 0;
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::Wget' => '1.19');
 
   $meta->register_hook(
@@ -59,11 +59,11 @@ sub init
       $url ||= $meta->prop->{start_url};
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
-      
+
       if($scheme eq 'http' || $scheme eq 'https')
       {
         local $CWD = tempdir( CLEANUP => 1 );
-        
+
         my($stdout, $stderr) = $self->_execute(
           $build,
           $self->wget_command,

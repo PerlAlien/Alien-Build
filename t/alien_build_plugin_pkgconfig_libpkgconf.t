@@ -30,7 +30,7 @@ subtest 'available' => sub {
     local $PkgConfig::LibPkgConf::VERSION = '0.04';
     is(Alien::Build::Plugin::PkgConfig::LibPkgConf->available, T());
   };
-  
+
   subtest 'too old!' => sub {
     local $PkgConfig::VERSION = '0.03';
     is(Alien::Build::Plugin::PkgConfig::LibPkgConf->available, F());
@@ -51,9 +51,9 @@ subtest 'system not available' => sub {
 
   my($out, $type) = capture_merged { $build->probe };
   note $out;
-  
+
   is( $type, 'share' );
-  
+
 };
 
 subtest 'system available, wrong version' => sub {
@@ -62,10 +62,10 @@ subtest 'system available, wrong version' => sub {
     pkg_name => 'foo',
     minimum_version => '1.2.4',
   );
-  
+
   my($out, $type) = capture_merged { $build->probe };
   note $out;
-  
+
   is( $type, 'share' );
 
 };
@@ -76,16 +76,16 @@ subtest 'system available, okay' => sub {
     pkg_name => 'foo',
     minimum_version => '1.2.3',
   );
-  
+
   my($out, $type) = capture_merged { $build->probe };
   note $out;
-  
+
   is( $type, 'system' );
-  
+
   return unless $type eq 'system';
-  
+
   note capture_merged { $build->build; () };
-  
+
   is(
     $build->runtime_prop,
     hash {
@@ -97,31 +97,31 @@ subtest 'system available, okay' => sub {
       etc;
     },
   );
-  
+
   is(
     $build->runtime_prop->{alt},
     U(),
   );
-  
+
 };
 
 subtest 'system multiple' => sub {
 
   subtest 'all found in system' => sub {
-  
+
     my $build = alienfile_ok q{
-  
+
       use alienfile;
       plugin 'PkgConfig::LibPkgConf' => (
         pkg_name => [ 'xor', 'xor-chillout' ],
       );
-  
+
     };
 
-    alien_install_type_is 'system';  
-    
+    alien_install_type_is 'system';
+
     my $alien = alien_build_ok;
-    
+
     use Alien::Build::Util qw( _dump );
     note _dump($alien->runtime_prop);
 
@@ -154,7 +154,7 @@ subtest 'system multiple' => sub {
         etc;
       },
     );
-    
+
   };
 
 };
@@ -178,7 +178,7 @@ subtest 'prereqs' => sub {
     );
 
   };
-  
+
   subtest 'minimum version requires util module' => sub {
 
     my $build = alienfile_ok q{
@@ -199,7 +199,7 @@ subtest 'prereqs' => sub {
       'prereqs'
     );
   };
-  
+
   subtest 'are not specified when user asks for plugin IN-directly' => sub {
 
     local $ENV{ALIEN_BUILD_PKG_CONFIG} = 'PkgConfig::LibPkgConf';

@@ -48,9 +48,9 @@ has ssl => 0;
 sub init
 {
   my($self, $meta) = @_;
-  
+
   my $url = $meta->prop->{start_url} || 'patch';
-  
+
   $meta->add_requires('configure' => 'Alien::Build::Plugin::Fetch::LocalDir' => '0.72' );
 
   if($url =~ /^file:/)
@@ -71,13 +71,13 @@ sub init
     }
     $self->root($root);
   }
-  
+
   $meta->register_hook(
     fetch => sub {
       my($build, $path) = @_;
-      
+
       $path ||= $url;
-      
+
       if($path =~ /^file:/)
       {
         my $root = URI::file->new($self->root);
@@ -85,9 +85,9 @@ sub init
         $path = $url->path;
         $path =~ s{^/([a-z]:)}{$1}i if $^O eq 'MSWin32';
       }
-      
+
       $path = Path::Tiny->new($path)->absolute($self->root);
-      
+
       if(-d $path)
       {
         return {

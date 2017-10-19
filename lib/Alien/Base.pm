@@ -32,7 +32,7 @@ Then a C<MyLibrary::XS> can use C<Alien::MyLibrary> in its C<Makefile.PL>:
  use ExtUtils::MakeMaker;
  use Alien::Base::Wrapper qw( Alien::MyLibrary !export );
  use Config;
- 
+
  WriteMakefile(
    ...
    Alien::Base::Wrapper->mm_args,
@@ -44,13 +44,13 @@ Or if you prefer L<Module::Build>, in its C<Build.PL>:
  use Alien::MyLibrary;
  use Module::Build 0.28; # need at least 0.28
  use Alien::Base::Wrapper qw( Alien::MyLibrary !export );
- 
+
  my $builder = Module::Build->new(
    ...
    Alien::Base::Wrapper->mb_args,
    ...
  );
- 
+
  $builder->create_build_script;
 
 Or if you are using L<ExtUtils::Depends>:
@@ -68,27 +68,27 @@ and L<alienfile>, then in your C<MyLibrary::XS> module, you may need something l
 this in your main C<.pm> file IF your library uses dynamic libraries:
 
  package MyLibrary::XS;
- 
+
  use Alien::MyLibrary; # may only be needed if you are using Alien::Base::ModuleBuild
- 
+
  ...
 
 Or you can use it from an FFI module:
 
  package MyLibrary::FFI;
- 
+
  use Alien::MyLibrary;
  use FFI::Platypus;
- 
+
  my $ffi = FFI::Platypus->new;
  $ffi->lib(Alien::MyLibrary->dynamic_libs);
- 
+
  $ffi->attach( 'my_library_function' => [] => 'void' );
 
 You can even use it with L<Inline> (C and C++ languages are supported):
 
  package MyLibrary::Inline;
- 
+
  use Alien::MyLibrary;
  # Inline 0.56 or better is required
  use Inline 0.56 with => 'Alien::MyLibrary';
@@ -142,7 +142,7 @@ sub import {
   require DynaLoader;
 
   # Sanity check in order to ensure that dist_dir can be found.
-  # This will throw an exception otherwise.  
+  # This will throw an exception otherwise.
   $class->dist_dir;
 
   # get a reference to %Alien::MyLibrary::AlienLoaded
@@ -200,10 +200,10 @@ C<install_type> is C<share>).
 sub _dist_dir ($)
 {
   my($dist_name) = @_;
-  
+
   my @pm = split /-/, $dist_name;
   $pm[-1] .= ".pm";
-  
+
   foreach my $inc (@INC)
   {
     my $pm = Path::Tiny->new($inc, @pm);
@@ -226,8 +226,8 @@ sub dist_dir {
   my $dist = blessed $class || $class;
   $dist =~ s/::/-/g;
 
-  my $dist_dir = 
-    $class->config('finished_installing') 
+  my $dist_dir =
+    $class->config('finished_installing')
       ? _dist_dir $dist
       : $class->config('working_directory');
 
@@ -251,7 +251,7 @@ sub new { return bless {}, $_[0] }
 sub _flags
 {
   my($class, $key) = @_;
-  
+
   my $config = $class->runtime_prop;
   my $flags = $config->{$key};
 
@@ -259,16 +259,16 @@ sub _flags
   $prefix =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
   my $distdir = $config->{distdir};
   $distdir =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
-  
+
   if($prefix ne $distdir)
   {
-    $flags = join ' ', map { 
+    $flags = join ' ', map {
       s/^(-I|-L|-LIBPATH:)?\Q$prefix\E/$1$distdir/;
       s/(\s)/\\$1/g;
       $_;
     } $class->split_flags($flags);
   }
-  
+
   $flags;
 }
 
@@ -423,7 +423,7 @@ sub _pkgconfig_keyword {
   my @pc = $self->_pkgconfig(@_);
   my @strings =
     grep defined,
-    map { $_->keyword($keyword, 
+    map { $_->keyword($keyword,
       #{ pcfiledir => $dist_dir }
     ) }
     @pc;
@@ -456,14 +456,14 @@ sub _pkgconfig {
     $all{$pkg->{package}} = $pkg;
   };
   File::Find::find( $wanted, $self->dist_dir );
-    
+
   croak "No Alien::Base::PkgConfig objects are stored!"
     unless keys %all;
-  
+
   # Run through all pkgconfig objects and ensure that their modules are loaded:
   for my $pkg_obj (values %all) {
     my $perl_module_name = blessed $pkg_obj;
-    eval "require $perl_module_name"; 
+    eval "require $perl_module_name";
   }
 
   return @all{@_} if @_;
@@ -482,7 +482,7 @@ sub _pkgconfig {
  my $value = Alien::MyLibrary->config($key);
 
 Returns the configuration data as determined during the install
-of L<Alien::MyLibrary>.  For the appropriate config keys, see 
+of L<Alien::MyLibrary>.  For the appropriate config keys, see
 L<Alien::Base::ModuleBuild::API#CONFIG-DATA>.
 
 This is not typically used by L<Alien::Base> and L<alienfile>,
@@ -547,9 +547,9 @@ alien software.
 
 sub dynamic_libs {
   my ($class) = @_;
-  
+
   require FFI::CheckLib;
-  
+
   if($class->install_type('system')) {
 
     if(my $prop = $class->runtime_prop)
@@ -566,14 +566,14 @@ sub dynamic_libs {
       # strip trailing version numbers
       $name =~ s/-[0-9\.]+$//;
     }
-    
+
     return FFI::CheckLib::find_lib(lib => $name);
-  
+
   } else {
-  
+
     my $dir = $class->dist_dir;
     my $dynamic = Path::Tiny->new($class->dist_dir, 'dynamic');
-    
+
     if(-d $dynamic)
     {
       return FFI::CheckLib::find_lib(
@@ -605,7 +605,7 @@ get installed into non-standard locations.
 Example usage:
 
  use Env qw( @PATH );
- 
+
  unshft @PATH, Alien::MyLibrary->bin_dir;
 
 =cut
@@ -640,18 +640,18 @@ to override the method to create your own helpers.
 For use with commands specified in and L<alienfile> or in your C<Build.Pl>
 when used with L<Alien::Base::ModuleBuild>.
 
-Helpers allow users of your Alien module to use platform or environment 
+Helpers allow users of your Alien module to use platform or environment
 determined logic to compute command names or arguments in your installer
 logic.  Helpers allow you to do this without making your Alien module a
 requirement when a build from source code is not necessary.
 
-As a concrete example, consider L<Alien::gmake>, which provides the 
+As a concrete example, consider L<Alien::gmake>, which provides the
 helper C<gmake>:
 
  package Alien::gmake;
- 
+
  ...
- 
+
  sub alien_helper {
    my($class) = @_;
    return {
@@ -664,30 +664,30 @@ helper C<gmake>:
    },
  }
 
-Now consider L<Alien::nasm>.  C<nasm> requires GNU Make to build from 
-source code, but if the system C<nasm> package is installed we don't 
+Now consider L<Alien::nasm>.  C<nasm> requires GNU Make to build from
+source code, but if the system C<nasm> package is installed we don't
 need it.  From the L<alienfile> of C<Alien::nasm>:
 
  use alienfile;
- 
+
  plugin 'Probe::CommandLine' => (
    command => 'nasm',
    args    => ['-v'],
    match   => qr/NASM version/,
  );
- 
+
  share {
    ...
    plugin 'Extract' => 'tar.gz';
    plugin 'Build::MSYS';
-   
+
    build [
      'sh configure --prefix=%{alien.install.prefix}',
      '%{gmake}',
      '%{gmake} install',
    ];
  };
- 
+
  ...
 
 =cut
@@ -703,7 +703,7 @@ sub alien_helper {
 List of header files to automatically include in inline C and C++
 code when using L<Inline::C> or L<Inline::CPP>.  This is provided
 as a public interface primarily so that it can be overridden at run
-time.  This can also be specified in your C<Build.PL> with 
+time.  This can also be specified in your C<Build.PL> with
 L<Alien::Base::ModuleBuild> using the C<alien_inline_auto_include>
 property.
 
@@ -722,11 +722,11 @@ sub Inline {
     CCFLAGSEX    => $class->cflags,
     LIBS         => $class->libs,
   };
-  
+
   if (@{ $class->inline_auto_include } > 0) {
     $config->{AUTO_INCLUDE} = join "\n", map { "#include \"$_\"" } @{ $class->inline_auto_include };
   }
-  
+
   $config;
 }
 
@@ -746,10 +746,10 @@ then this will return undef.
   sub runtime_prop
   {
     my($class) = @_;
-  
+
     return $alien_build_config_cache{$class} if
       exists $alien_build_config_cache{$class};
-  
+
     $alien_build_config_cache{$class} ||= do {
       my $dist = ref $class ? ref $class : $class;
       $dist =~ s/::/-/g;
@@ -777,7 +777,7 @@ First check the L<Alien::Build::Manual::FAQ> for questions that have already bee
 
 IRC: #native on irc.perl.org
 
-L<(click for instant chatroom login)|http://chat.mibbit.com/#native@irc.perl.org> 
+L<(click for instant chatroom login)|http://chat.mibbit.com/#native@irc.perl.org>
 
 If you find a bug, please report it on the projects issue tracker on GitHub:
 
@@ -797,7 +797,7 @@ in GitHub.
 
 =back
 
-If you have implemented a new feature or fixed a bug, please open a pull 
+If you have implemented a new feature or fixed a bug, please open a pull
 request.
 
 =over 4
@@ -808,9 +808,9 @@ request.
 
 =head1 SEE ALSO
 
-=over 
+=over
 
-=item * 
+=item *
 
 L<Alien::Build>
 

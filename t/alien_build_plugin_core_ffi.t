@@ -11,11 +11,11 @@ subtest basic => sub {
     use Alien::Build::Util qw( _destdir_prefix );
 
     probe sub { 'share' };
-    
+
     meta_prop->{destdir} = 1;
-    
+
     share {
-    
+
       download sub { path('foo-1.00.tar.gz')->touch };
       extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
@@ -26,10 +26,10 @@ subtest basic => sub {
         $dir->child('lib', 'libfoo.a')->touch;
       };
 
-      ffi { 
+      ffi {
 
         patch sub { shift->{runtime_prop}->{my_did_patch_ffi} = 1 };
-      
+
         build sub {
           my($build) = @_;
           print "in build_ffi DESTDIR = $ENV{DESTDIR}\n";
@@ -40,14 +40,14 @@ subtest basic => sub {
           $dir->child('lib', 'libgarbage.a')->touch;
           $build->{runtime_prop}->{my_did_build_ffi} = 1;
         };
-      
+
         gather sub {
           my($build) = @_;
           print "in gather_ffi\n";
           $build->{runtime_prop}->{my_did_gather_ffi} = 1;
         };
       };
-    
+
     };
   };
 
@@ -62,11 +62,11 @@ subtest basic => sub {
   ok($build->{runtime_prop}->{my_did_gather_ffi}, 'did gather_ffi');
 
   my $stage = $build->install_prop->{stage};
-  
+
   ok(-f "$stage/lib/libfoo.a", 'has static lib');
   ok(-f "$stage/dynamic/libfoo.so", 'has dynamic lib');
   ok(!-f "$stage/lib/libgarbage.a", "filter out garbage");
-  
+
 };
 
 subtest deprecated => sub {
@@ -77,11 +77,11 @@ subtest deprecated => sub {
     use Alien::Build::Util qw( _destdir_prefix );
 
     probe sub { 'share' };
-    
+
     meta_prop->{destdir} = 1;
-    
+
     share {
-    
+
       download sub { path('foo-1.00.tar.gz')->touch };
       extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
@@ -93,7 +93,7 @@ subtest deprecated => sub {
       };
 
       patch_ffi sub { shift->{runtime_prop}->{my_did_patch_ffi} = 1 };
-      
+
       build_ffi sub {
         my($build) = @_;
         print "in build_ffi DESTDIR = $ENV{DESTDIR}\n";
@@ -104,16 +104,16 @@ subtest deprecated => sub {
         $dir->child('lib', 'libgarbage.a')->touch;
         $build->{runtime_prop}->{my_did_build_ffi} = 1;
       };
-      
+
       gather_ffi sub {
         my($build) = @_;
         print "in gather_ffi\n";
         $build->{runtime_prop}->{my_did_gather_ffi} = 1;
       };
-    
+
     };
   } };
-  
+
   note "build warnings: $out";
 
   note scalar capture_merged {
@@ -127,11 +127,11 @@ subtest deprecated => sub {
   ok($build->{runtime_prop}->{my_did_gather_ffi}, 'did gather_ffi');
 
   my $stage = $build->install_prop->{stage};
-  
+
   ok(-f "$stage/lib/libfoo.a", 'has static lib');
   ok(-f "$stage/dynamic/libfoo.so", 'has dynamic lib');
   ok(!-f "$stage/lib/libgarbage.a", "filter out garbage");
-  
+
 };
 
 done_testing;

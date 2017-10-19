@@ -26,13 +26,13 @@ foreach my $type (qw( basic out-of-source ))
       meta->prop->{start_url} = path('corpus/cmake-libpalindrome')->absolute->stringify;
 
       probe sub { 'share' };
-  
+
       share {
         plugin 'Fetch::LocalDir';
         plugin 'Extract' => 'd';
         plugin 'Build::CMake';
         plugin 'Gather::IsolateDynamic';
-      
+
         gather sub {
           my($build) = @_;
           my $prefix = $build->runtime_prop->{prefix};
@@ -50,7 +50,7 @@ foreach my $type (qw( basic out-of-source ))
         };
       };
     };
-    
+
     if($type eq 'out-of-source')
     {
       $build->meta->prop->{out_of_source} = 1;
@@ -83,18 +83,18 @@ foreach my $type (qw( basic out-of-source ))
         diag `ls -lR $tmp`;
       }
     }
-  
+
     alien_ok $alien;
 
     note 'cflags = ', $alien->cflags;
     note 'libs   = ', $alien->libs;
-  
+
     xs_ok { xs => $xs, verbose => 1 }, with_subtest {
       my($mod) = @_;
       is($mod->is_palindrome("Something that is not a palindrome"), 0);
       is($mod->is_palindrome("Was it a car or a cat I saw?"), 1);
     };
-  
+
     run_ok(['palx', 'Something that is not a palindrome'])
       ->note
       ->exit_is(2);
@@ -106,7 +106,7 @@ foreach my $type (qw( basic out-of-source ))
     run_ok(['palx', 'racecar'])
       ->note
       ->success;
-  
+
   };
 };
 

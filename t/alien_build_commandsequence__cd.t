@@ -23,11 +23,11 @@ subtest 'cd list' => sub {
     [ "cd", "$dir" ],
     sub { path('foo.txt')->spew('here') },
   );
-  
+
   note scalar capture_merged { $seq->execute($build) };
-  
+
   my $foo_txt = path($dir)->child('foo.txt');
-  
+
   is( -f $foo_txt, T(), "created file" );
   is( $foo_txt->slurp, "here", "content" );
 
@@ -42,17 +42,17 @@ subtest 'cd list' => sub {
   my $where;
 
   my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->canonpath;
-  
+
   my $seq = Alien::Build::CommandSequence->new(
     [ "%{make_path} $dir" ],
     "cd $dir",
     sub { path('foo.txt')->spew('here') },
   );
-  
+
   note scalar capture_merged { $seq->execute($build) };
-  
+
   my $foo_txt = path($dir)->child('foo.txt');
-  
+
   is( -f $foo_txt, T(), "created file" );
   is( $foo_txt->slurp, "here", "content" );
 
@@ -67,16 +67,16 @@ subtest 'cd list with code ref' => sub {
   my $where;
 
   my $dir = path(tempdir( CLEANUP => 1 ))->child('foo')->canonpath;
-  
+
   my $seq = Alien::Build::CommandSequence->new(
     [ "%{make_path} $dir" ],
     [ "cd", "$dir", sub { path('foo.txt')->spew('here') } ],
   );
-  
+
   note scalar capture_merged { $seq->execute($build) };
-  
+
   my $foo_txt = path($dir)->child('foo.txt');
-  
+
   is( -f $foo_txt, T(), "created file" );
   is( $foo_txt->slurp, "here", "content" );
 

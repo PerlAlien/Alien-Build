@@ -95,11 +95,11 @@ has lang => 'C';
 sub init
 {
   my($self, $meta) = @_;
-  
-  $meta->add_requires('configure' => 'ExtUtils::CBuilder' => 0 );  
+
+  $meta->add_requires('configure' => 'ExtUtils::CBuilder' => 0 );
 
   if(@{ $self->aliens })
-  {  
+  {
     die "You can't specify both 'aliens' and either 'cflags' or 'libs' for the Probe::CBuilder plugin" if $self->cflags || $self->libs;
 
     $meta->add_requires('configure' => $_ => 0 ) for @{ $self->aliens };
@@ -117,26 +117,26 @@ sub init
     $self->cflags($cflags);
     $self->libs($libs);
   }
-  
+
   my @cpp;
-  
+
   if($self->lang ne 'C')
   {
     $meta->add_requires('Alien::Build::Plugin::Probe::CBuilder' => '0.53');
     @cpp = ('C++' => 1) if $self->lang eq 'C++';
   }
-  
+
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
       local $CWD = File::Temp::tempdir( CLEANUP => 1 );
-      
+
       open my $fh, '>', 'mytest.c';
       print $fh $self->program;
       close $fh;
-      
+
       $build->log("trying: cflags=@{[ $self->cflags ]} libs=@{[ $self->libs ]}");
-      
+
       my $b = ExtUtils::CBuilder->new(%{ $self->options });
 
       my($out1, $obj) = capture_merged { eval {
@@ -146,47 +146,47 @@ sub init
           @cpp,
         );
       } };
-      
+
       if(my $error = $@)
       {
         $build->log("compile failed: $error");
         $build->log("compile failed: $out1");
         die $@;
       }
-      
+
       my($out2, $exe) = capture_merged { eval {
         $b->link_executable(
           objects              => [$obj],
           extra_linker_flags   => $self->libs,
         );
       } };
-      
+
       if(my $error = $@)
       {
         $build->log("link failed: $error");
         $build->log("link failed: $out2");
         die $@;
-      }      
-      
+      }
+
       my($out, $err, $ret) = capture { system($^O eq 'MSWin32' ? $exe : "./$exe") };
       die "execute failed" if $ret;
-      
+
       my $cflags = $self->cflags;
       my $libs   = $self->libs;
-      
+
       $cflags =~ s{\s*$}{ };
       $libs =~ s{\s*$}{ };
-      
+
       $build->install_prop->{plugin_probe_cbuilder_gather} = {
         cflags  => $cflags,
         libs    => $libs,
       };
-      
+
       if(defined $self->version)
       {
         ($build->install_prop->{plugin_probe_cbuilder_gather}->{version}) = $out =~ $self->version;
       }
-      
+
       'system';
     }
   );

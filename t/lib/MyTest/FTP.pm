@@ -43,7 +43,7 @@ sub ftp_url
   my $ftp = Net::FTP->new($url->host, Port =>  $url->port) or do {
     return ftp_error("Connot connect to @{[ $url->host ]}");
   };
-  
+
   eval {
     $ftp->login($url->user, $url->password) or die;
     $ftp->binary;
@@ -53,12 +53,12 @@ sub ftp_url
     -e $path || die;
     $ftp->quit;
   };
-  
+
   return ftp_error($ftp->message) if $@;
 
   $url->path($url->path . '/')
     unless $url->path =~ m!/$!;
-  
+
   return $url;
 }
 

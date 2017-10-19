@@ -76,12 +76,12 @@ sub _cleanup
 sub init
 {
   my($self, $meta) = @_;
-  
+
   if($self->register_prereqs)
   {
     $meta->add_requires('configure' => 'PkgConfig' => _min_version);
   }
-  
+
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
 
   $meta->register_hook(
@@ -101,13 +101,13 @@ sub init
           die "package @{[ $pkg_name ]} is not recent enough";
         }
       }
-      
+
       foreach my $alt (@alt_names)
       {
         my $pkg = PkgConfig->find($alt);
         die "package $alt not found" if $pkg->errmsg;
       }
-      
+
       'system';
     },
   );
@@ -148,7 +148,7 @@ sub init
       delete $build->runtime_prop->{alt};
     }
   };
-  
+
   $meta->register_hook(
     gather_system => $gather,
   );
@@ -156,7 +156,7 @@ sub init
   $meta->register_hook(
     gather_share => $gather,
   );
-  
+
   $self;
 }
 

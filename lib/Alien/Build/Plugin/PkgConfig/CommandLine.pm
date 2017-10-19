@@ -99,13 +99,13 @@ sub available
 sub init
 {
   my($self, $meta) = @_;
-  
+
   my $pkgconf = $self->bin_name;
 
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
-  
+
   my @probe = map { [$pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
-  
+
   if(defined $self->minimum_version)
   {
     push @probe, [ $pkgconf, '--atleast-version=' . $self->minimum_version, $pkg_name ];
@@ -115,13 +115,13 @@ sub init
     my($build) = @_;
     $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
   };
-  
+
   $meta->register_hook(
     probe => \@probe
   );
 
   my @gather = map { [ $pkgconf, '--exists', $_] } ($pkg_name, @alt_names);
-  
+
   foreach my $prop_name (qw( cflags libs version ))
   {
     my $flag = $prop_name eq 'version' ? '--modversion' : "--$prop_name";
@@ -150,7 +150,7 @@ sub init
       }
     }
   }
-  
+
   $meta->register_hook(gather_system => [@gather]);
 
   if($meta->prop->{platform}->{system_type} eq 'windows-mingw')
@@ -172,7 +172,7 @@ sub init
       }
     },
   ) for qw( gather_system gather_share );
-  
+
   $self;
 }
 

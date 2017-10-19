@@ -9,13 +9,13 @@ use warnings;
 =head1 SYNOPSIS
 
  package Alien::libfoo;
- 
+
  use base qw( Alien::Base );
  use Role::Tiny::With qw( with );
- 
+
  with 'Alien::Role::Dino';
  with 'Alien::Role::Alt';
- 
+
  1;
 
 =head1 DESCRIPTION

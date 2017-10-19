@@ -42,7 +42,7 @@ sub add_helper
     require Carp;
     Carp::croak("duplicate implementation for interpolated key $name");
   }
-  
+
   while(@_)
   {
     my $module = shift;
@@ -50,7 +50,7 @@ sub add_helper
     $version ||= 0;
     $self->{helper}->{$name}->{require}->{$module} = $version;
   }
-  
+
   $self->{helper}->{$name}->{code} = $code;
 }
 
@@ -104,9 +104,9 @@ sub has_helper
       $self->{classes}->{$module} = 1;
     }
   }
-  
+
   my $code = $self->{helper}->{$name}->{code};
-  
+
   return unless defined $code;
 
   if(ref($code) ne 'CODE')
@@ -119,7 +119,7 @@ sub has_helper
       $value;
     };
   }
-  
+
   $code;
 }
 
@@ -132,10 +132,10 @@ sub has_helper
 sub execute_helper
 {
   my($self, $name) = @_;
-  
+
   my $code = $self->has_helper($name);
   die "no helper defined for $name" unless defined $code;
-  
+
   $code->();
 }
 
@@ -148,9 +148,9 @@ sub execute_helper
 sub _get_prop
 {
   my($name, $prop, $orig) = @_;
-  
+
   $name =~ s/^\./alien./;
-  
+
   if($name =~ /^(.*?)\.(.*)$/)
   {
     my($key,$rest) = ($1,$2);
@@ -171,7 +171,7 @@ sub interpolate
 {
   my($self, $string, $prop) = @_;
   $prop ||= {};
-  
+
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
   $string =~ s{(?<!\%)\%\{([a-zA-Z_\.][a-zA-Z_0-9\.]+)\}}{_get_prop($1,$prop,$1)}eg;
   $string =~ s/\%(?=\%)//g;
@@ -202,9 +202,9 @@ sub requires
 sub clone
 {
   my($self) = @_;
-  
+
   require Storable;
-  
+
   my %help;
   foreach my $helper (keys %{ $self->{helper} })
   {

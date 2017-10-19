@@ -16,7 +16,7 @@ use File::chdir;
 =head1 SYNOPSIS
 
  use alienfile;
- 
+
  share {
    start_url 'https://www.openssl.org/source/';
    plugin 'Fetch::CurlCommand';
@@ -61,11 +61,11 @@ sub init
       $url ||= $meta->prop->{start_url};
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
-      
+
       if($scheme =~ /^https?$/)
       {
         local $CWD = tempdir( CLEANUP => 1 );
-      
+
         path('writeout')->spew(
           join("\\n",
             "ab-filename     :%{filename_effective}",
@@ -73,17 +73,17 @@ sub init
             "ab-url          :%{url_effective}",
           ),
         );
-      
+
         my @command = (
           $self->curl_command,
           '-L', '-f', -o => 'content',
           -w => '@writeout',
         );
-      
+
         push @command, -D => 'head' if $self->_see_headers;
-      
+
         push @command, $url;
-      
+
         my($stdout, $stderr) = $self->_execute($build, @command);
 
         my %h = map { my($k,$v) = m/^ab-(.*?)\s*:(.*)$/; $k => $v } split /\n/, $stdout;
@@ -96,7 +96,7 @@ sub init
         {
           $h{filename} = 'index.html';
         }
-        
+
         rename 'content', $h{filename};
 
         if(-e 'head')
@@ -104,7 +104,7 @@ sub init
           $build->log(" ~ $_ => $h{$_}") for sort keys %h;
           $build->log(" header: $_") for path('headers')->lines;
         }
-      
+
         my($type) = split ';', $h{content_type};
 
         if($type eq 'text/html')
@@ -157,7 +157,7 @@ sub init
 #            };
 #          }
 #        }
-#        
+#
 #        {
 #          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -l => "$url/") };
 #          if($@ eq '')
@@ -180,11 +180,11 @@ sub init
       {
         die "scheme $scheme is not supported by the Fetch::CurlCommand plugin";
       }
-      
+
     },
   ) if $self->curl_command;
-  
-  $self;  
+
+  $self;
 }
 
 sub _execute

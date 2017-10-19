@@ -10,9 +10,9 @@ subtest 'updates requires' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
-  
+
   is( $build->requires('share')->{'File::Listing'}, 0 );
   is( $build->requires('share')->{'URI'}, 0 );
 
@@ -26,7 +26,7 @@ subtest 'decode' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
 
   eval { $build->load_requires('share') };

@@ -16,9 +16,9 @@ In your Makefile.PL:
 
  use ExtUtils::MakeMaker;
  use Alien::Build::MM;
- 
+
  my $abmm = Alien::Build::MM->new;
- 
+
  WriteMakefile($abmm->mm_args(
    ABSTRACT     => 'Discover or download and install libfoo',
    DISTNAME     => 'Alien-Libfoo',
@@ -26,7 +26,7 @@ In your Makefile.PL:
    VERSION_FROM => 'lib/Alien/Libfoo.pm',
    ...
  ));
- 
+
  sub MY::postamble {
    $abmm->mm_postamble;
  }
@@ -54,9 +54,9 @@ Create a new instance of L<Alien::Build::MM>.
 sub new
 {
   my($class, %prop) = @_;
-  
+
   my $self = bless {}, $class;
-  
+
   my %meta = map { $_ => $prop{$_} } grep /^my_/, keys %prop;
 
   my $build = $self->{build} =
@@ -66,13 +66,13 @@ sub new
       meta_prop => \%meta,
     )
   ;
-  
+
   if(%meta)
   {
     $build->meta->add_requires(configure => 'Alien::Build::MM' => '1.20');
     $build->meta->add_requires(configure => 'Alien::Build' => '1.20');
   }
-  
+
   if(defined $prop{alienfile_meta})
   {
     $self->{alienfile_meta} = $prop{alienfile_meta};
@@ -81,7 +81,7 @@ sub new
   {
     $self->{alienfile_meta} = 1;
   }
-  
+
   $self->build->load_requires('configure');
   $self->build->root;
   $self->build->checkpoint;
@@ -130,7 +130,7 @@ Adjust the arguments passed into C<WriteMakefile> as needed by L<Alien::Build>.
 sub mm_args
 {
   my($self, %args) = @_;
-  
+
   if($args{DISTNAME})
   {
     $self->build->set_stage(Path::Tiny->new("blib/lib/auto/share/dist/$args{DISTNAME}")->absolute->stringify);
@@ -161,9 +161,9 @@ sub mm_args
   {
     Carp::croak "DISTNAME is required";
   }
-  
+
   my $ab_version = '0.25';
-  
+
   $args{CONFIGURE_REQUIRES} = Alien::Build::_merge(
     'Alien::Build::MM' => $ab_version,
     %{ $args{CONFIGURE_REQUIRES} || {} },
@@ -190,15 +190,15 @@ sub mm_args
   {
     die "unknown install type: @{[ $self->build->install_type ]}"
   }
-  
+
   $args{PREREQ_PM} = Alien::Build::_merge(
     'Alien::Build' => $ab_version,
     %{ $args{PREREQ_PM} || {} },
   );
- 
+
   #$args{META_MERGE}->{'meta-spec'}->{version} = 2;
   $args{META_MERGE}->{dynamic_config} = 1;
-  
+
   if($self->alienfile_meta)
   {
     $args{META_MERGE}->{x_alienfile} = {
@@ -212,7 +212,7 @@ sub mm_args
       },
     };
   }
-  
+
   $self->build->checkpoint;
   %args;
 }
@@ -248,16 +248,16 @@ system or share install).
 
 Prints the meta, install and runtime properties for the Alien.
 
-=back 
+=back
 
 =cut
 
 sub mm_postamble
 {
   my($self) = @_;
-  
+
   my $postamble = '';
-  
+
   # remove the _alien directory on a make realclean:
   $postamble .= "realclean :: alien_realclean\n" .
                 "\n" .
@@ -288,14 +288,14 @@ sub mm_postamble
   $postamble .= "alien_build : _alien/mm/build\n\n" .
                 "_alien/mm/build : _alien/mm/download\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e build\n\n";
-  
+
   # append to all
   $postamble .= "pure_all :: _alien/mm/build\n\n";
-  
+
   $postamble .= "subdirs-test_dynamic :: alien_test\n\n";
   $postamble .= "alien_test :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e test\n\n";
-  
+
   # prop
   $postamble .= "alien_prop :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop\n\n";
@@ -305,7 +305,7 @@ sub mm_postamble
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop install\n\n";
   $postamble .= "alien_prop_runtime :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop install\n\n";
-  
+
   $postamble;
 }
 
@@ -317,7 +317,7 @@ sub import
     if($arg eq 'cmd')
     {
       package main;
-      
+
       *_args = sub
       {
         my $build = Alien::Build->resume('alienfile', '_alien');
@@ -325,14 +325,14 @@ sub import
         $build->load_requires($build->install_type);
         ($build, @ARGV)
       };
-      
+
       *_touch = sub {
         my($name) = @_;
         my $path = Path::Tiny->new("_alien/mm/$name");
         $path->parent->mkpath;
         $path->touch;
       };
-      
+
       *prefix = sub
       {
         my($build, $type, $perl, $site, $vendor) = _args();
@@ -353,16 +353,16 @@ sub import
         $build->checkpoint;
         _touch('prefix');
       };
-      
+
       *version = sub
       {
         my($build, $version) = _args();
-        
+
         $build->runtime_prop->{perl_module_version} = $version;
         $build->checkpoint;
         _touch('version');
       };
-      
+
       *download = sub
       {
         my($build) = _args();
@@ -370,11 +370,11 @@ sub import
         $build->checkpoint;
        _touch('download');
       };
-      
+
       *build = sub
       {
         my($build) = _args();
-        
+
         $build->build;
 
         my $distname = $build->install_prop->{mm}->{distname};
@@ -386,10 +386,10 @@ sub import
           my $archfile = $archdir->child($archdir->basename . '.txt');
           $archfile->spew('Alien based distribution with architecture specific file in share');
         }
-        
+
         my $cflags = $build->runtime_prop->{cflags};
         my $libs   = $build->runtime_prop->{libs};
-        
+
         if(($cflags && $cflags !~ /^\s*$/)
         || ($libs   && $libs   !~ /^\s*$/))
         {
@@ -409,28 +409,28 @@ sub import
             "=cut\n",
           );
         }
-        
+
         $build->checkpoint;
         _touch('build');
       };
-      
+
       *test = sub
       {
         my($build) = _args();
         $build->test;
         $build->checkpoint;
       };
-      
+
       *dumpprop = sub
       {
         my($build, $type) = _args();
-        
+
         my %h = (
           meta    => $build->meta_prop,
           install => $build->install_prop,
           runtime => $build->runtime_prop,
         );
-        
+
         require Alien::Build::Util;
         print Alien::Build::Util::_dump($type ? $h{$type} : \%h);
       }

@@ -14,22 +14,22 @@ subtest 'export' => sub {
     package
       Alien::Foo1;
 
-    sub install_type { 'share' }    
+    sub install_type { 'share' }
     sub cflags {}
     sub libs {}
 
     package
       Alien::Bar1;
 
-    sub install_type { 'share' }    
+    sub install_type { 'share' }
     sub cflags {}
     sub libs {}
-  
+
     package
       Foo::Bar1;
     use Alien::Base::Wrapper qw( Alien::Foo1 Alien::Bar1 );
   }
-  
+
   ok(
     Foo::Bar1->can('cc'),
     'can cc',
@@ -49,16 +49,16 @@ subtest 'system' => sub {
   {
     package
       Alien::Foo2;
-    
+
     sub install_type { 'system' }
     sub cflags { '-I/foo/include -DBAR=1' }
     sub cflags_static { 'wrong' }
     sub libs   { '-L/foo/lib -lfoo'   }
     sub libs_static { 'wrong' }
   }
-  
+
   Alien::Base::Wrapper->import('Foo2');
-  
+
   is(
     exec_arrayref {
       local @ARGV = qw( one two three );
@@ -86,14 +86,14 @@ subtest 'share' => sub {
   {
     package
       Alien::Foo3;
-    
+
     sub install_type { 'share' }
     sub cflags { '-I/foo/include -DBAR=1' }
     sub cflags_static { '-I/foo/include -DBAR=2' }
     sub libs   { '-L/foo/lib -lfoo'   }
     sub libs_static { '-L/foo/lib -lfoo -lbaz' }
   }
-  
+
   Alien::Base::Wrapper->import('Alien::Foo3');
 
   is(
@@ -123,12 +123,12 @@ subtest 'share sans static' => sub {
   {
     package
       Alien::Foo4;
-    
+
     sub install_type { 'share' }
     sub cflags { '-I/foo/include -DBAR=1' }
     sub libs   { '-L/foo/lib -lfoo'   }
   }
-  
+
   Alien::Base::Wrapper->import('Alien::Foo4');
 
   is(
@@ -154,25 +154,25 @@ subtest 'share sans static' => sub {
 subtest 'combine aliens' => sub {
 
   Alien::Base::Wrapper::_reset();
-  
+
   {
     package
       Alien::Foo5;
-      
+
     sub install_type { 'system' }
     sub cflags { '-I/foo/include -DFOO5=1' }
     sub libs   { '-L/foo/lib --ld-foo -lfoo' }
-    
+
     package
       Alien::Bar5;
-    
+
     sub install_type { 'share' }
     sub cflags { '-I/bar/include -DBAR5=1' }
     sub libs   { '-L/foo/lib --ld-bar -lbar' }
   }
 
   Alien::Base::Wrapper->import('Alien::Foo5', 'Alien::Bar5');
-  
+
   is(
     exec_arrayref {
       local @ARGV = qw( one two three );
@@ -207,15 +207,15 @@ subtest 'combine aliens' => sub {
         field LDFLAGS   => T();
       },
     );
-    
+
   };
-  
+
   subtest 'mb_args' => sub {
 
     my %mb_args = Alien::Base::Wrapper->mb_args;
 
     note _dump(\%mb_args);
-    
+
     is(
       \%mb_args,
       hash {
@@ -227,7 +227,7 @@ subtest 'combine aliens' => sub {
         };
       },
     );
-  
+
 
   };
 

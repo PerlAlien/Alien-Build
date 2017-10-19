@@ -22,7 +22,7 @@ their own C<dynamic> directory.  This allows them to be used by FFI modules, but
 by XS modules.
 
 This plugin provides the equivalent functionality of the C<alien_isolate_dynamic> attribute
-from L<Alien::Base::ModuleBuild>.  
+from L<Alien::Base::ModuleBuild>.
 
 =cut
 
@@ -30,9 +30,9 @@ sub init
 {
   my($self, $meta) = @_;
 
-  # plugin was introduced in 0.42, but had a bug which was fixed in 0.48  
+  # plugin was introduced in 0.42, but had a bug which was fixed in 0.48
   $meta->add_requires('share' => 'Alien::Build::Plugin::Gather::IsolateDynamic' => '0.48' );
-  
+
   $meta->after_hook(
     gather_share => sub {
       my($build) = @_;

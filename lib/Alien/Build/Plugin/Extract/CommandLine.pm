@@ -156,7 +156,7 @@ sub _dcon
     $self->xz_cmd(_which('xz')) unless defined $self->xz_cmd;
     $cmd = $self->xz_cmd unless $self->_tar_can('tar.xz');
   }
-  
+
   if($cmd && $src =~ /\.(gz|bz2|xz|Z)$/)
   {
     $name = $src;
@@ -167,7 +167,7 @@ sub _dcon
     $name = $src;
     $name =~ s/\.(tgz|tbz|txz|taz)$/.tar/;
   }
-  
+
   ($name,$cmd);
 }
 
@@ -186,7 +186,7 @@ given format.
 sub handles
 {
   my($class, $ext) = @_;
-  
+
   my $self = ref $class
   ? $class
   : __PACKAGE__->new;
@@ -200,14 +200,14 @@ sub handles
   return 1 if $ext eq 'tar.Z' && $self->_tar_can('tar.Z');
   return 1 if $ext eq 'tar.bz2' && $self->_tar_can('tar.bz2');
   return 1 if $ext eq 'tar.xz' && $self->_tar_can('tar.xz');
-  
+
   return if $ext =~ s/\.(gz|Z)$// && (!$self->gzip_cmd);
   return if $ext =~ s/\.bz2$//    && (!$self->bzip2_cmd);
   return if $ext =~ s/\.xz$//     && (!$self->xz_cmd);
-  
+
   return 1 if $ext eq 'tar' && $self->tar_cmd;
   return 1 if $ext eq 'zip' && $self->unzip_cmd;
-  
+
   return;
 }
 
@@ -225,13 +225,13 @@ sub available
   my(undef, $ext) = @_;
 
   # this is actually the same as handles
-  __PACKAGE__->handles($ext);  
+  __PACKAGE__->handles($ext);
 }
 
 sub init
 {
   my($self, $meta) = @_;
-  
+
   if($self->format eq 'tar.xz' && !$self->handles('tar.xz'))
   {
     $meta->add_requires('share' => 'Alien::xz' => '0.06');
@@ -244,13 +244,13 @@ sub init
   {
     $meta->add_requires('share' => 'Alien::gzip' => '0.03');
   }
-  
+
   $meta->register_hook(
     extract => sub {
       my($build, $src) = @_;
-      
+
       my($dcon_name, $dcon_cmd) = _dcon($self, $src);
-      
+
       if($dcon_name)
       {
         unless($dcon_cmd)
@@ -276,7 +276,7 @@ sub init
         }
         $src = $dcon_name;
       }
-      
+
       if($src =~ /\.zip$/i)
       {
         $self->_run($build, $self->unzip_cmd, $src);
@@ -302,7 +302,7 @@ sub _tar_can
   my $tar = $self->tar_cmd;
 
   return 1 if $ext eq 'tar';
-  
+
   unless(%tars)
   {
     my $name = '';
@@ -318,7 +318,7 @@ sub _tar_can
         $tars{$name} .= $_;
       }
     }
-    
+
     foreach my $key (keys %tars)
     {
       $tars{$key} = unpack "u", $tars{$key};
@@ -330,7 +330,7 @@ sub _tar_can
   return 0 unless $tars{$name};
 
   local $CWD = tempdir( CLEANUP => 1 );
-  
+
   my $cleanup = sub {
     my $save = $CWD;
     unlink $name;
@@ -338,23 +338,23 @@ sub _tar_can
     $CWD = '..';
     rmdir $save;
   };
-  
+
   Path::Tiny->new($name)->spew_raw($tars{$name});
 
   my(undef, $exit) = capture_merged {
     system($self->tar_cmd, 'xf', $name);
     $?;
   };
-  
+
   if($exit)
   {
     $cleanup->();
     return 0;
   }
-  
+
   my $content = eval { Path::Tiny->new('xx.txt')->slurp };
   $cleanup->();
-  
+
   return defined $content && $content eq "xx\n";
 }
 

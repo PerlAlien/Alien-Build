@@ -36,12 +36,12 @@ subtest 'basic' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   my $plugin = Alien::Build::Plugin::Extract::Directory->new;
   $plugin->init($meta);
-  
+
   $build->install_prop->{download} = path('corpus/dist/foo-1.00')->absolute->stringify;
-  
+
   my($out, $dir) = capture_merged { $build->extract };
 
   $dir = path($dir);
@@ -54,7 +54,7 @@ subtest 'basic' => sub {
     my $file = $dir->child($name);
     ok -f $file, "$name exists";
   }
-  
+
 };
 
 done_testing;

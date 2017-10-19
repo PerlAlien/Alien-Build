@@ -19,25 +19,25 @@ our @EXPORT_OK = qw( version );
 OO interface:
 
  use Alien::Build::Version::Basic;
- 
+
  my $version = Alien::Build::Version::Basic->new('1.2.3');
  if($version > '1.2.2')  # true
  {
    ...
  }
- 
+
 Function interface:
 
  use Alien::Build::Version::Basic qw( version );
- 
+
  if(version('1.2.3') > version('1.2.2')) # true
  {
    ...
  }
- 
+
  my @sorted = sort map { version($_) } qw( 2.1 1.2.3 1.2.2 );
  # will come out in the order 1.2.2, 1.2.3, 2.1
- 
+
 =head1 DESCRIPTION
 
 This module provides a very basic class for comparing versions.
@@ -61,7 +61,7 @@ compare versions like numbers, or sort them using sort.
  {
    ...
  }
- 
+
  my @sorted = sort map { version($_) } @unsorted;
 
 it also overloads C<""> to stringify as whatever string value you
@@ -136,14 +136,14 @@ sub cmp
 {
   my @a = split /\./, ${$_[0]};
   my @b = split /\./, ${ref($_[1]) ? $_[1] : version($_[1])};
-  
+
   while(@a or @b)
   {
     my $a = (shift @a) || 0;
     my $b = (shift @b) || 0;
     return $a <=> $b if $a <=> $b;
   }
-  
+
   0;
 }
 

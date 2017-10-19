@@ -62,14 +62,14 @@ has msys_version   => undef;
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->apply_plugin('Build::MSYS',
     (defined $self->msys_version ? (msys_version => $self->msys_version) : ()),
   );
-  
+
   $meta->prop->{destdir} = 1;
   $meta->prop->{autoconf} = 1;
-  
+
   my $intr = $meta->interpolator;
 
   my $set_autoconf_prefix = sub {
@@ -112,11 +112,11 @@ sub init
       my $prefix = $build->install_prop->{autoconf_prefix};
       die "Prefix is not set.  Did you forget to run 'make alien_prefix'?"
         unless $prefix;
-      
+
       $intr->replace_helper(
         configure => sub {
           my $configure;
-          
+
           if($build->meta_prop->{out_of_source})
           {
             my $extract = $build->install_prop->{extract};
@@ -139,7 +139,7 @@ sub init
         my $real_prefix = Path::Tiny->new($build->install_prop->{prefix});
         my @pkgconf_dirs;
         push @pkgconf_dirs, Path::Tiny->new($ENV{DESTDIR})->child($prefix)->child("$_/pkgconfig") for qw(lib share);
-      
+
         # for any pkg-config style .pc files that are dropped, we need
         # to convert the MSYS /C/Foo style paths to C:/Foo
         for my $pkgconf_dir (@pkgconf_dirs) {
@@ -152,7 +152,7 @@ sub init
             }
         }
       }
-      
+
       $ret;
     },
   );
@@ -175,7 +175,7 @@ Some reasonable default flags will be provided.
       $configure;
     },
   );
-  
+
   $meta->default_hook(
     build => [
       '%{configure} --disable-shared',
@@ -183,7 +183,7 @@ Some reasonable default flags will be provided.
       '%{make} install',
     ]
   );
-  
+
   $self;
 }
 

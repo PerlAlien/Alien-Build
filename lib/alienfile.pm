@@ -17,28 +17,28 @@ sub _path { Path::Tiny::path(@_) }
 Do-it-yourself approach:
 
  use alienfile;
- 
+
  probe [ 'pkg-config --exists libarchive' ];
- 
+
  share {
-   
+
    start_url 'http://libarchive.org/downloads/libarchive-3.2.2.tar.gz';
-   
+
    # the first one which succeeds will be used
    download [ 'wget %{.meta.start_url}' ];
    download [ 'curl -o %{.meta.start_url}' ];
-   
+
    extract [ 'tar xf %{.install.download}' ];
-   
-   build [ 
+
+   build [
      # Note: will not work on Windows, better to use Build::Autoconf plugin
      # if you need windows support
      './configure --prefix=%{.install.prefix} --disable-shared',
      '%{make}',
      '%{make} install',
-   ];   
+   ];
  }
- 
+
  gather [
    [ 'pkg-config', '--modversion', 'libarchive', \'%{.runtime.version}' ],
    [ 'pkg-config', '--cflags',     'libarchive', \'%{.runtime.cflags}'  ],
@@ -48,9 +48,9 @@ Do-it-yourself approach:
 With plugins (better):
 
  use alienfile;
- 
+
  plugin 'PkgConfig' => 'libarchive';
- 
+
  share {
    start_url 'http://libarchive.org/downloads/';
    plugin Download => (
@@ -157,7 +157,7 @@ Examples:
  # which will pick the best Alien::Build::Plugin::Fetch
  # plugin based on the URL, and system configuration
  plugin 'Fetch' => 'http://ftp.gnu.org/gnu/gcc';
- 
+
  # loads the plugin with the badly named class!
  plugin '=Badly::Named::Plugin::Not::In::Alien::Build::Namespace';
 
@@ -166,13 +166,13 @@ Examples:
    filter => qr/^gcc-.*\.tar\.gz$/,
    version => qr/([0-9\.]+)/,
  );
- 
+
 =cut
 
 sub plugin
 {
   my($name, @args) = @_;
-  
+
   my $caller = caller;
   $caller->meta->apply_plugin($name, @args);
   return;
@@ -491,12 +491,12 @@ sub build_ffi
 
  gather \&code;
  gather \@commandlist;
- 
+
  share {
    gather \&code;
    gather \@commandlist;
  };
- 
+
  sys {
    gather \&code;
    gather \@commandlist;
@@ -637,9 +637,9 @@ sub test
   my $phase = $meta->{phase};
   Carp::croak "test is not allowed in $phase block"
     if $phase eq 'any' || $phase eq 'configure';
-  
+
   $meta->add_requires('configure' => 'Alien::Build' => '1.14');
-  
+
   if($phase eq 'share')
   {
     my $suffix = $caller->meta->{build_suffix} || '_share';

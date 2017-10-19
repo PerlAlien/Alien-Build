@@ -44,8 +44,8 @@ After 0.043_01 Alien-Base was merged with Alien-Build
     reference
 
 0.032 2017-02-09 13:36:07 -0500
-  - Automatically add SSL modules as prereqs if we can tell with 
-    certainity that we will need to use HTTP::Tiny with SSL (plicease 
+  - Automatically add SSL modules as prereqs if we can tell with
+    certainity that we will need to use HTTP::Tiny with SSL (plicease
     gh#178)
   - Add environment override of repository settings (gh#180 nshp++)
 
@@ -174,7 +174,7 @@ After 0.043_01 Alien-Base was merged with Alien-Build
 
 0.019_01  Mon Jul  6, 2015
   - Improved documentation: added a FAQ at Alien::Base::FAQ
-  - Added helpers for source code builds see 
+  - Added helpers for source code builds see
     Alien::Base#alien_helper
     and
     Alien::Base::ModuleBuild::API#alien_helper
@@ -417,7 +417,7 @@ After 0.043_01 Alien-Base was merged with Alien-Build
 
 0.000_020  Jun 22, 2012
 	- Windows now passes the test suite (another cleanup error trapped)
-	- Begin overloading copy_if_modified for relocalizing dylibs on mac 
+	- Begin overloading copy_if_modified for relocalizing dylibs on mac
             (this is not working yet, this release is for windows testers)
 
 0.000_019  Jun 21, 2012
@@ -468,7 +468,7 @@ After 0.043_01 Alien-Base was merged with Alien-Build
 	- More bugfixes
 
 0.000_006  Apr 3, 2012
-	- Yet anther bugfix(?) release 
+	- Yet anther bugfix(?) release
 
 0.000_005  Apr 2, 2012
 	- Bugfix: A::B::PkgConfig _manual key shouldn't emit undef values

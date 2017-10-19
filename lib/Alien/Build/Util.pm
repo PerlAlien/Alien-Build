@@ -43,7 +43,7 @@ sub _mirror
   require Alien::Build;
   require File::Find;
   require File::Copy;
-  
+
   File::Find::find({
     wanted => sub {
       next unless -e $File::Find::name;
@@ -99,7 +99,7 @@ sub _mirror
     },
     no_chdir => 1,
   }, "$src_root");
-  
+
   ();
 }
 

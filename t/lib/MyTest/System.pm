@@ -35,10 +35,10 @@ my @stack;
 {
   my $old = \&File::Which::which;
   no warnings 'redefine';
-  *File::Which::which = sub 
+  *File::Which::which = sub
   {
     my $system = $stack[-1];
-    
+
     if($system)
     {
       $system->can_run(@_);
@@ -68,14 +68,14 @@ sub add
 sub call
 {
   my($self, $command, @args) = @_;
-  
+
   if(@args == 0)
   {
     if($^O eq 'MSWin32' && $command =~ /^"(.*)"$/)
     { $command = $1 }
     ($command, @args) = shellwords $command;
   }
-  
+
   if($self->{$command})
   {
     my $exit = $self->{$command}->(@args);
@@ -94,7 +94,7 @@ sub can_run
 
   # we only really use can_run to figure out if
   # we CAN run an executable, but make up some
-  # path just for pretends.  
+  # path just for pretends.
   $self->{$command}
   ? "/bin/$command"
   : undef;

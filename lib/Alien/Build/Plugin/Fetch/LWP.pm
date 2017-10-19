@@ -52,7 +52,7 @@ sub init
   my($self, $meta) = @_;
 
   $meta->add_requires('share' => 'LWP::UserAgent' => 0 );
-  
+
   $meta->prop->{start_url} ||= $self->url;
   $self->url($meta->prop->{start_url});
   $self->url || Carp::croak('url is a required property');
@@ -102,7 +102,7 @@ sub init
         content  => $res->content,
       };
     }
-    
+
   });
 
   $self;

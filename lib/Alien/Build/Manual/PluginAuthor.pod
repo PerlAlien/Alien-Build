@@ -7,20 +7,20 @@
 your plugin:
 
  package Alien::Build::Plugin::Build::MyPlugin;
- 
+
  use strict;
  use warnings;
  use Alien::Build::Plugin;
- 
+
  has arg1 => 'default_for arg1';
  has arg2 => sub { [ 'default', 'for', 'arg2' ] };
- 
+
  sub init
  {
    my($self, $meta) = @_;
    ...
  }
- 
+
  1;
 
 and then from L<alienfile>:
@@ -69,7 +69,7 @@ You can also modify hooks using C<before_hook>, C<around_hook> and C<after_hook>
  sub init
  {
    my($self, $meta) = @_;
-   
+
    $meta->before_hook(
      build => sub {
        my($build) = @_;
@@ -83,14 +83,14 @@ You can also modify hooks using C<before_hook>, C<around_hook> and C<after_hook>
        $build->log('this runs after the build');
      },
    );
-   
+
    $meta->around_hook(
      build => sub {
        my $orig = shift;
-       
+
        # around hooks are useful for setting environment variables
        local $ENV{CPPFLAGS} = '-I/foo/include';
-       
+
        $orig->(@_);
      },
    );
@@ -102,7 +102,7 @@ inline L<alienfile> in your test.
 
  use Test::V0;
  use Test::Alien::Build;
- 
+
  my $build = alienfile_ok q{
    use alienfile;
    plugin 'Build::MyPlugin' => (
@@ -111,11 +111,11 @@ inline L<alienfile> in your test.
    );
    ...
  };
- 
+
  # you can interrogate $build, it is an instance of L<Alien::Build>.
- 
+
  my $alien = alien_build_ok;
- 
+
  # you can interrogate $alien, it is an instance of L<Alien::Base>.
 
 =head1 HOOKS
@@ -127,7 +127,7 @@ inline L<alienfile> in your test.
    return 'system' if ...; # system install
    return 'share';         # otherwise
  });
- 
+
  $meta->register_hook( probe => [ $command ] );
 
 This hook should return the string C<system> if the operating
@@ -178,35 +178,35 @@ an archive (like tar, zip, etc), or as a directory of files (git clone,
 etc).  When the hook is called, the current working directory will be a
 new empty directory, so you can save the download to the current
 directory.  If you store a single file in the directory, L<Alien::Build>
-will assume that it is an archive, which will be processed by the 
+will assume that it is an archive, which will be processed by the
 extract hook below.  If you store multiple files, L<Alien::Build> will
 assume the current directory is the source root.  If no files are stored
 at all, an exception with an appropriate diagnostic will be thrown.
 
-B<Note>: If you register this hook, then the fetch, decode and prefer 
+B<Note>: If you register this hook, then the fetch, decode and prefer
 hooks will NOT be called.
 
 =head2 fetch hook
 
  package Alien::Build::Plugin::MyPlugin;
- 
+
  use strict;
  use warnings;
  use Alien::Build::Plugin;
  use Carp ();
- 
+
  has '+url' => sub { Carp::croak "url is required property" };
 
  sub init
  {
    my($self, $meta) = @_;
-   
+
    $meta->register_hook( fetch => sub {
      my($build, $url) = @_;
      ...
    }
  }
- 
+
  1;
 
 Used to fetch a resource.  The first time it will be called without an
@@ -225,7 +225,7 @@ with the following keys:
    content  => $content,
    version  => $version,  # optional, if known
  };
- 
+
  # content of file stored in the filesystem
  return {
    type     => 'file',
@@ -280,7 +280,7 @@ reference:
  sub init
  {
    my($self, $meta) = @_;
-   
+
    $meta->register_hook( decode => sub {
      my($build, $res) = @_;
      ...
@@ -300,7 +300,7 @@ hash references.
  sub init
  {
    my($self, $meta) = @_;
-   
+
    $meta->register_hook( prefer => sub {
      my($build, $res) = @_;
      return {
@@ -368,7 +368,7 @@ This is the same as C<build>, except it fires only on a FFI build.
 
  $meta->register_hook( register_hook => sub {
    my($build) = @_;
-   ... 
+   ...
  });
 
 This is the same as C<gather_system>, except it fires after a C<share>
@@ -378,7 +378,7 @@ install.
 
  $meta->register_hook( register_ffi => sub {
    my($build) = @_;
-   ... 
+   ...
  });
 
 This is the same as C<gatehr_share>, except it fires after a C<share> FFI

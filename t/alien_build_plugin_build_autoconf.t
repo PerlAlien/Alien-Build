@@ -13,14 +13,14 @@ subtest 'basic' => sub {
 
   my $build = alienfile_ok q{ use alienfile };
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
-  
+
   my $configure = $meta->interpolator->interpolate('%{configure}');
   isnt $configure, '', "\%{configure} = $configure";
   like $configure, qr{configure};
   like $configure, qr{--with-pic};
-  
+
   is($build->meta_prop->{destdir}, 1);
   is($meta->prop->{destdir}, 1);
 };
@@ -30,10 +30,10 @@ subtest 'turn off --with-pic' => sub {
   my $plugin = Alien::Build::Plugin::Build::Autoconf->new( with_pic => 0 );
 
   is( $plugin->with_pic, 0 );
-  
+
   my $build = alienfile_ok q{ use alienfile };
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
 
   my $configure = $meta->interpolator->interpolate('%{configure}');
@@ -50,7 +50,7 @@ subtest 'out-of-source' => sub {
     use alienfile;
     use Alien::Build::Util qw( _dump );
     use Path::Tiny qw( path );
-    
+
     share {
       meta->prop->{out_of_source} = 1;
       plugin 'Download::Foo';
@@ -65,14 +65,14 @@ subtest 'out-of-source' => sub {
         my $prefix = $build->install_prop->{prefix};
         $prefix =~ s{^([a-z]):/}{$1/}i if $^O eq 'MSWin32';
 
-        $build->log("prefix = $prefix");        
+        $build->log("prefix = $prefix");
         my $file2 = path($ENV{DESTDIR})->child($prefix)->child('file2');
         $file2->parent->mkpath;
         $file2->touch;
       };
     };
   };
-  
+
   $build->load_requires('share');
 
   note _dump($build->install_prop);
@@ -82,9 +82,9 @@ subtest 'out-of-source' => sub {
     note "%{configure} = $configure";
     ok 1;
   };
-  
+
   alien_build_ok;
-  
+
   note _dump($build->install_prop);
 
   subtest 'after build' => sub {
@@ -109,7 +109,7 @@ done_testing;
 {
   package
     Alien::MSYS;
-    
+
   use File::Temp qw( tempdir );
 
   BEGIN {
@@ -127,5 +127,5 @@ done_testing;
     }
     $path;
   }
-  
+
 }

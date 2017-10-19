@@ -8,7 +8,7 @@ use Capture::Tiny qw( capture_merged );
 subtest 'pick' => sub {
 
   my $pick = Alien::Build::Plugin::PkgConfig::Negotiate->pick;
-  
+
   ok $pick, 'has a pick';
   note "pick = $pick";
 
@@ -20,7 +20,7 @@ subtest 'override' => sub {
   {
     local $ENV{ALIEN_BUILD_PKG_CONFIG} = "PkgConfig::$name";
     subtest $ENV{ALIEN_BUILD_PKG_CONFIG} => sub {
-    
+
       foreach my $minimum_version (undef, '1.2.3')
       {
         subtest "minimum_version = @{[ $minimum_version || 'undef' ]}" => sub {
@@ -29,22 +29,22 @@ subtest 'override' => sub {
             pkg_name        => 'libfoo',
             (defined $minimum_version ? (minimum_version => $minimum_version ) : ()),
           );
-          
+
           my $build = alienfile_ok q{ use alienfile };
-          
+
           my $subplugin;
           my %subplugin;
-          
+
           my $mock = Test2::Mock->new(
             class => 'Alien::Build::Meta',
           );
-          
+
           $mock->before(apply_plugin => sub {
             (undef, $subplugin, %subplugin) = @_;
           });
-          
+
           note scalar capture_merged { $plugin->init($build->meta) };
-          
+
           is(
             [$subplugin, \%subplugin ],
             [
@@ -59,9 +59,9 @@ subtest 'override' => sub {
             'arguments to subplugin are correct',
           );
         }
-          
+
       }
-    
+
     };
   }
 
@@ -84,7 +84,7 @@ subtest 'list of pkg_name' => sub {
     use alienfile;
     plugin 'PkgConfig' => [qw( foo bar baz )];
   };
-  
+
   is(
     \@subplugin,
     [ [ qw( foo bar baz ) ] ],

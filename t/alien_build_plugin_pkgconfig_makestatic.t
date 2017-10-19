@@ -11,14 +11,14 @@ subtest 'recursive' => sub {
   my $build = alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
-    
+
     plugin 'PkgConfig::MakeStatic';
-    
+
     probe sub { 'share' };
     plugin 'PkgConfig::PP' => 'foo1';
-    
+
     share {
-    
+
       download sub { path('file1')->touch };
       extract sub  { path('file2')->touch };
       build sub {
@@ -43,13 +43,13 @@ subtest 'recursive' => sub {
   };
 
   note capture_merged {
-    $build->download;  
+    $build->download;
     $build->build;
     ();
   };
 
   like $build->runtime_prop->{libs}, qr{-L/foo/bar -lxml2 -lpthread -lz -liconv -lm};
-  
+
 };
 
 done_testing;

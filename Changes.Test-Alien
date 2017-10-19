@@ -25,7 +25,7 @@ After 0.15 Test-Alien was merged with Alien-Build
     by the Alien module.
 
 0.09      2017-01-13 07:13:38 -0500
-  - Test::Alien::Run#note and #diag can be chained like the other 
+  - Test::Alien::Run#note and #diag can be chained like the other
     methods
 
 0.08      2016-12-29 18:03:35 -0500

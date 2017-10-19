@@ -31,7 +31,7 @@ subtest 'destdir filter' => sub {
   };
 
   note capture_merged {
-    eval { 
+    eval {
       $build->probe;
       $build->download;
       $build->build;
@@ -43,7 +43,7 @@ subtest 'destdir filter' => sub {
   note _dump $build->install_prop;
 
   my $stage = path($build->install_prop->{stage});
-  
+
   ok( -f $stage->child('bin/foo.exe'), 'bin/foo.exe' );
   ok( -f $stage->child('lib/libfoo.a'), 'lib/libfoo.a' );
   ok( !-f $stage->child('etc/foorc'), 'etc/foorc' );
@@ -75,7 +75,7 @@ subtest 'patch' => sub {
 
   my $error = $@;
   note capture_merged {
-    eval { 
+    eval {
       $build->probe;
       $build->download;
       $build->build;
@@ -84,12 +84,12 @@ subtest 'patch' => sub {
     warn $error if $error;
     ();
   };
-  
+
   is $error, '';
-  
+
   note _dump $build->install_prop;
 
-  ok( -f $stage->child('_alien/patch/foo.diff') );  
+  ok( -f $stage->child('_alien/patch/foo.diff') );
 };
 
 subtest 'pkg-config path during gather' => sub {
@@ -117,7 +117,7 @@ subtest 'pkg-config path during gather' => sub {
       };
     };
   };
-  
+
   alien_build_ok;
 
   is(
@@ -136,7 +136,7 @@ subtest 'pkg-config path during gather' => sub {
     },
     'has arch and arch-indy pkg-config paths',
   );
-  
+
 
 };
 

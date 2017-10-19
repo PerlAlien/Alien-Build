@@ -22,18 +22,18 @@ subtest 'basic' => sub {
       };
     };
   };
-  
+
   capture_merged {
     $build->probe;
     $build->download;
     $build->build;
   };
-  
+
   is( $build->runtime_prop->{cflags},        '-DFOO=1', 'cflags'        );
   is( $build->runtime_prop->{libs},          '-lfoo',   'libs'          );
   is( $build->runtime_prop->{cflags_static}, '-DFOO=1', 'cflags_static' );
   is( $build->runtime_prop->{libs_static},   '-lfoo',   'libs_static'   );
-  
+
   is(
     $build->runtime_prop->{legacy},
     hash {

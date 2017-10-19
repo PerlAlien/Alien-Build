@@ -20,7 +20,7 @@ has regex => qr/\.tar\.gz$/;
 sub init
 {
   my($self, $meta) = @_;
-  
+
   my $list = {
     type => 'list',
     list => [
@@ -33,13 +33,13 @@ sub init
       } ((map { $_->basename } grep { -f $_ } _path('corpus/dist')->children), map { sprintf "foo-0.%02d.tar.gz", $_ } 0..99),
     ],
   };
-  
+
   $meta->register_hook(
     fetch => sub {
       my(undef, $url) = @_;
-      
+
       $url ||= $self->url;
-      
+
       if($url =~ qr!^http://test1\.test/foo/bar/baz/?$!)
       {
         if($self->return_listing_as eq 'list')
@@ -89,21 +89,21 @@ sub init
       }
     },
   );
-  
+
   $meta->register_hook(
     decode => sub {
       return $list;
     }
   );
-  
+
   $meta->register_hook(
     prefer => sub {
       my(undef, $res) = @_;
-      
+
       my @list = sort { $b->{filename} cmp $a->{filename} }
                  grep { $_->{filename} =~ $self->regex }
                  @{ $res->{list} };
-      
+
       return {
         type => 'list',
         list => \@list,

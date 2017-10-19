@@ -9,10 +9,10 @@ subtest 'archive' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   my $plugin = Alien::Build::Plugin::Extract::CommandLine->new;
   $plugin->init($meta);
-  
+
   subtest 'command probe' => sub {
 
     foreach my $cmd (qw( gzip bzip2 xz tar unzip ))
@@ -25,22 +25,22 @@ subtest 'archive' => sub {
 
     ok 1;
   };
-  
+
   foreach my $ext (qw( tar tar.Z tar.bz2 tar.gz tar.xz zip ))
   {
     subtest "with extension $ext" => sub {
-    
+
       skip_all "system does not support $ext" unless $plugin->handles($ext);
-    
+
       my $archive = do {
         my $original = path("corpus/dist/foo-1.00.$ext");
         my $new = path(tempdir( CLEANUP => 1))->child("foo-1.00.$ext");
         $original->copy($new);
         $new->stringify;
       };
-      
+
       note "archive = $archive";
-      
+
       my($out, $dir, $error) = capture_merged {
         my $dir = eval { $build->extract($archive) };
         ($dir, $@);
@@ -48,7 +48,7 @@ subtest 'archive' => sub {
 
       note $out if $out ne '';
       note $error if $error;
-      
+
       $dir = path($dir);
 
       ok( defined $dir && -d $dir, "directory created"   );
@@ -61,7 +61,7 @@ subtest 'archive' => sub {
       }
     }
   }
-  
+
 };
 
 subtest 'archive with pax_global_header' => sub {
@@ -69,7 +69,7 @@ subtest 'archive with pax_global_header' => sub {
   skip_all "system does not support tar" unless Alien::Build::Plugin::Extract::CommandLine->new->handles('tar');
 
   my $build = alienfile_ok q{
-  
+
     use alienfile;
     use Path::Tiny qw( path );
     probe sub { 'share' };
@@ -80,9 +80,9 @@ subtest 'archive with pax_global_header' => sub {
       };
       plugin 'Extract::CommandLine';
     };
-  
+
   };
-  
+
   my $dir = alien_extract_ok;
 
   if(defined $dir)
@@ -90,7 +90,7 @@ subtest 'archive with pax_global_header' => sub {
     my $file = path($dir)->child('foo.txt');
     my $content = eval { $file->slurp };
     is($content, "xx\n", "file content matches");
-    
+
     unless(-f $file)
     {
       diag "listing:";
@@ -99,7 +99,7 @@ subtest 'archive with pax_global_header' => sub {
         diag $child;
       }
     }
-    
+
   }
 
 };

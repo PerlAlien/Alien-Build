@@ -12,18 +12,18 @@ $Alien::Build::Plugin::Fetch::CurlCommand::VERSION = '1.19';
 subtest 'fetch from http' => sub {
 
   my $config = test_config 'httpd';
-  
+
   skip_all 'Test requires httpd config' unless $config;
-  
+
   my $base = $config->{url};
 
   my $build = alienfile_ok qq{
     use alienfile;
-    
+
     meta->prop->{start_url} = '$base/html_test.html';
-    
+
     probe sub { 'share' };
-    
+
     share {
       plugin 'Fetch::CurlCommand';
     };
@@ -32,9 +32,9 @@ subtest 'fetch from http' => sub {
   alien_install_type_is 'share';
 
   subtest 'directory listing' => sub {
-  
+
     my $list = capture_note { $build->fetch };
-    
+
     is(
       $list,
       hash {
@@ -47,11 +47,11 @@ subtest 'fetch from http' => sub {
     );
 
   };
-  
+
   subtest 'file' => sub {
-  
+
     my $file = capture_note { $build->fetch("$base/foo-1.01.tar") };
-    
+
     is(
       $file,
       hash {
@@ -62,57 +62,57 @@ subtest 'fetch from http' => sub {
       },
       'file meta',
     );
-    
+
     is(
       scalar path($file->{path})->slurp,
       "content:foo-1.01\n",
       'file content',
     );
-  
+
   };
-  
+
   subtest '404' => sub {
-  
+
     my($file, $error) = capture_note {
       my $file = eval {
         $build->fetch("$base/bogus.html");
       };
       ($file, $@);
     };
-    
+
     isnt $error, '', 'throws error';
     note "error is: $error";
-  
+
   };
-  
+
 };
 
 #subtest 'fetch from ftp' => sub {
 #
 #  my $config = test_config 'ftpd';
-#  
+#
 #  skip_all 'Test requires ftp config' unless $config;
-#  
+#
 #  my $base = $config->{url};
 #
 #  my $build = alienfile_ok qq{
 #    use alienfile;
-#    
+#
 #    meta->prop->{start_url} = '$base/html_test.html';
-#    
+#
 #    probe sub { 'share' };
-#    
+#
 #    share {
 #      plugin 'Fetch::CurlCommand';
 #    };
 #  };
 #
 #  alien_install_type_is 'share';
-#  
+#
 #  subtest 'get directory listing with trailing slash' => sub {
 #
 #    my $list = capture_note { $build->fetch("$base/") };
-#    
+#
 #    is(
 #      $list,
 #      hash {
@@ -131,25 +131,25 @@ subtest 'fetch from http' => sub {
 #      },
 #      'list',
 #    );
-#  
+#
 #  };
-#  
+#
 #  subtest 'get non-existant directory listing with trailing slash' => sub {
-#  
+#
 #    my $error = capture_note {
 #      eval {
 #        $build->fetch("$base/bogus/")
 #      };
 #      $@;
 #    };
-#    
+#
 #    isnt $error, '', 'throws error';
 #    note "error = $error";
-#  
+#
 #  };
-#  
+#
 #  subtest 'get file' => sub {
-#  
+#
 #    my $file = capture_note { $build->fetch("$base/foo-1.01.tar") };
 #
 #    is(
@@ -162,7 +162,7 @@ subtest 'fetch from http' => sub {
 #      },
 #      'file meta',
 #    );
-#  
+#
 #    is(
 #      scalar path($file->{path})->slurp,
 #      "content:foo-1.01\n",
@@ -170,25 +170,25 @@ subtest 'fetch from http' => sub {
 #    );
 #
 #  };
-#  
+#
 #  subtest 'get missing file' => sub {
-#  
+#
 #    my($error) = capture_note {
 #      eval {
 #        $build->fetch("$base/bogus.txt");
 #      };
 #      $@;
 #    };
-#    
+#
 #    isnt $error, '', 'throws error';
 #    note "error is : $error";
-#  
+#
 #  };
 #
 #  subtest 'get directory listing sans trailing slash' => sub {
 #
 #    my $list = capture_note { $build->fetch("$base") };
-#    
+#
 #    is(
 #      $list,
 #      hash {
@@ -207,7 +207,7 @@ subtest 'fetch from http' => sub {
 #      },
 #      'list',
 #    );
-#  
+#
 #  };
 #
 #};

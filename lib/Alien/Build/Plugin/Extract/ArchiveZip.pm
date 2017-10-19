@@ -45,9 +45,9 @@ given format.
 sub handles
 {
   my($class, $ext) = @_;
-  
+
   return 1 if $ext eq 'zip';
-  
+
   return;
 }
 
@@ -62,16 +62,16 @@ Returns true if the plugin has what it needs right now to extract from the given
 sub available
 {
   my(undef, $ext) = @_;
-  
+
   !! ( $ext eq 'zip' && eval { require Archive::Zip; 1} );
 }
 
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->add_requires('share' => 'Archive::Zip' => 0);
-  
+
   $meta->register_hook(
     extract => sub {
       my($build, $src) = @_;

@@ -10,7 +10,7 @@ subtest 'alienfile_ok' => sub {
     my $build = alienfile q{
       use alienfile;
     };
-  
+
     isa_ok $build, 'Alien::Build';
 
     ok(-d $build->install_prop->{prefix}, "has prefix dir");
@@ -27,7 +27,7 @@ subtest 'alienfile_ok' => sub {
   subtest 'from file' => sub {
 
     my $build = alienfile filename => 'corpus/basic/alienfile';
-  
+
     isa_ok $build, 'Alien::Build';
 
     ok(-d $build->install_prop->{prefix}, "has prefix dir");
@@ -64,7 +64,7 @@ subtest 'alienfile_ok' => sub {
 
   alienfile_ok q{
     use alienfile;
-  
+
     log('hey there');
   };
 
@@ -73,11 +73,11 @@ subtest 'alienfile_ok' => sub {
 subtest alien_build_ok => sub {
 
   subtest 'no alienfile' => sub {
-  
+
     eval { alienfile q{ die } };
-    
+
     my $ret;
-    
+
     is(
       intercept { $ret = alien_build_ok },
       array {
@@ -92,26 +92,26 @@ subtest alien_build_ok => sub {
         end;
       },
     );
-    
+
     is $ret, U();
-  
+
   };
-  
+
   subtest 'alienfile compiles but does not run' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
-      
+
       probe sub { 'share' };
-      
+
       share {
         download sub { die 'dinosaurs and transformers' };
         build sub {};
       }
     };
-    
+
     my $ret;
-    
+
     is(
       intercept { $ret = alien_build_ok },
       array {
@@ -127,12 +127,12 @@ subtest alien_build_ok => sub {
         end;
       },
     );
-  
+
     is $ret, U();
   };
-  
+
   subtest 'good system' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       probe sub { 'system' };
@@ -144,18 +144,18 @@ subtest alien_build_ok => sub {
         };
       };
     };
-    
+
     my $alien = alien_build_ok;
-    
+
     isa_ok $alien, 'Alien::Base';
-    
+
     is $alien->cflags,  '-DFOO=1';
     is $alien->libs,    '-lfoo';
-  
+
   };
-  
+
   subtest 'good share' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       use Path::Tiny qw( path );
@@ -175,16 +175,16 @@ subtest alien_build_ok => sub {
         };
       };
     };
-    
+
     my $alien = alien_build_ok;
-    
+
     isa_ok $alien, 'Alien::Base';
-    
+
     my $prefix = $alien->runtime_prop->{prefix};
-    
+
     is $alien->cflags, "-I$prefix/include -DFOO=1";
     is $alien->libs,   "-L$prefix/lib -lfoo";
-    
+
     ok -f path($prefix)->child('file3');
   };
 
@@ -198,7 +198,7 @@ subtest 'alien_install_type_is' => sub {
   subtest 'no alienfile' => sub {
 
     eval { alienfile q{ die } };
-    
+
     is(
       intercept { $ret = alien_install_type_is 'system' },
       array {
@@ -214,17 +214,17 @@ subtest 'alien_install_type_is' => sub {
       },
       'test for anything',
     );
-  
+
     is $ret, F(), 'return false';
   };
-  
+
   subtest 'is system' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       probe sub { 'system' };
     };
-    
+
     is(
       intercept { $ret = alien_install_type_is 'system', 'some name' },
       array {
@@ -236,7 +236,7 @@ subtest 'alien_install_type_is' => sub {
       },
       'check for system',
     );
-    
+
     is $ret, T(), 'return true';
 
     is(
@@ -254,18 +254,18 @@ subtest 'alien_install_type_is' => sub {
       },
       'check for share',
     );
-    
+
     is $ret, F(), 'return false';
-  
+
   };
 
   subtest 'is share' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       probe sub { 'share' };
     };
-    
+
     is(
       intercept { $ret = alien_install_type_is 'share', 'some other name' },
       array {
@@ -277,7 +277,7 @@ subtest 'alien_install_type_is' => sub {
       },
       'check for share',
     );
-    
+
     is $ret, T(), 'return true';
 
     is(
@@ -295,11 +295,11 @@ subtest 'alien_install_type_is' => sub {
       },
       'check for system',
     );
-    
+
     is $ret, F(), 'return false';
-  
+
   };
-  
+
 };
 
 subtest 'alien_download_ok' => sub {
@@ -316,9 +316,9 @@ subtest 'alien_download_ok' => sub {
         };
       };
     };
-    
+
     my $file = alien_download_ok;
-    
+
     is(
       path($file)->slurp,
       "xx\n",
@@ -337,9 +337,9 @@ subtest 'alien_download_ok' => sub {
         };
       };
     };
-    
+
     my $file;
-    
+
     is(
       intercept { $file = alien_download_ok },
       array {
@@ -350,7 +350,7 @@ subtest 'alien_download_ok' => sub {
       },
       'test fails',
     );
-    
+
     is($file, U(), 'return value is undef');
 
   };
@@ -360,7 +360,7 @@ subtest 'alien_download_ok' => sub {
 subtest 'alien_extract_ok' => sub {
 
   subtest 'good extract' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       use Path::Tiny qw( path );
@@ -374,15 +374,15 @@ subtest 'alien_extract_ok' => sub {
         };
       };
     };
-    
+
     my $dir = alien_extract_ok;
-    
+
     is(-d $dir, T(), "dir is dir" );
     is(-f path("$dir/file2"), T(), "has file2" );
     is(-f path("$dir/file3"), T(), "has file3" );
-  
+
   };
-  
+
   subtest 'bad extract' => sub {
 
     alienfile_ok q{
@@ -399,7 +399,7 @@ subtest 'alien_extract_ok' => sub {
       };
     };
 
-    my $dir;    
+    my $dir;
     is(
       intercept { $dir = alien_extract_ok },
       array {
@@ -410,10 +410,10 @@ subtest 'alien_extract_ok' => sub {
       },
       'test fails',
     );
-    
+
     is( $dir, U(), "dir is undef");
   };
-  
+
 };
 
 subtest 'alien_rc' => sub {
@@ -421,44 +421,44 @@ subtest 'alien_rc' => sub {
   subtest 'create rc' => sub {
 
     alien_rc q{
-  
+
       preload 'Foo::Bar';
-    
+
       package Alien::Build::Plugin::Foo::Bar;
-    
+
       use Alien::Build::Plugin;
-    
+
       sub init
       {
         my($self, $meta) = @_;
         $meta->prop->{x} = 'y';
       }
-  
+
     };
 
     note path($ENV{ALIEN_BUILD_RC})->slurp;
 
     my $build = alienfile_ok q{ use alienfile };
-  
+
     is(
       $build->meta_prop->{x}, 'y',
     );
   };
-  
+
 };
 
 subtest 'test for custom subtest' => sub {
 
   subtest 'basic pass' => sub {
-  
+
     my $ok;
-  
+
     my $events = intercept {
       $ok = alien_subtest 'foo' => sub {
         ok 1;
       };
     };
-    
+
     is(
       $events,
       array {
@@ -473,24 +473,24 @@ subtest 'test for custom subtest' => sub {
         end;
       },
     );
-    
+
     is(
       $ok,
       T(),
     );
-  
+
   };
-  
+
   subtest 'basic fail' => sub {
 
     my $ok;
-  
+
     my $events = intercept {
       $ok = alien_subtest 'foo' => sub {
         ok 0;
       };
     };
-    
+
     is(
       $events,
       array {
@@ -506,7 +506,7 @@ subtest 'test for custom subtest' => sub {
         end;
       },
     );
-    
+
     is(
       $ok,
       F(),
@@ -519,7 +519,7 @@ subtest 'test for custom subtest' => sub {
 subtest 'alien_checkpoint_ok' => sub {
 
   alien_subtest 'without build' => sub {
-  
+
     is(
       intercept { alien_checkpoint_ok },
       array {
@@ -534,13 +534,13 @@ subtest 'alien_checkpoint_ok' => sub {
         end;
       },
     );
-  
+
   };
-  
+
   alien_subtest 'with failure in checkpont' => sub {
-  
+
     alienfile_ok q{ use alienfile };
-    
+
     my $mock = Test2::Mock->new(
       class => 'Alien::Build',
       override => [
@@ -549,7 +549,7 @@ subtest 'alien_checkpoint_ok' => sub {
         },
       ],
     );
-    
+
     is(
       intercept { alien_checkpoint_ok },
       array {
@@ -564,13 +564,13 @@ subtest 'alien_checkpoint_ok' => sub {
         end;
       },
     );
-  
+
   };
-  
+
   alien_subtest 'with goodness and light' => sub {
-  
+
     alienfile_ok q{ use alienfile };
-    
+
     is(
       intercept { alien_checkpoint_ok },
       array {
@@ -581,7 +581,7 @@ subtest 'alien_checkpoint_ok' => sub {
         end;
       },
     );
-  
+
   };
 
 };
@@ -589,7 +589,7 @@ subtest 'alien_checkpoint_ok' => sub {
 subtest 'alien_resume_ok' => sub {
 
   alien_subtest 'with no build' => sub {
-  
+
     is(
       intercept { alien_resume_ok },
       array {
@@ -604,13 +604,13 @@ subtest 'alien_resume_ok' => sub {
         end;
       },
     );
-  
+
   };
-  
+
   subtest 'without checkpoint' => sub {
-  
+
     alienfile_ok q{ use alienfile };
-  
+
     is(
       intercept { alien_resume_ok },
       array {
@@ -625,13 +625,13 @@ subtest 'alien_resume_ok' => sub {
         end;
       },
     );
-  
+
   };
-  
+
   subtest 'die in resume' => sub {
-  
+
     alienfile_ok q{ use alienfile };
-    
+
     my $mock = Test2::Mock->new(
       class => 'Alien::Build',
       override => [
@@ -640,9 +640,9 @@ subtest 'alien_resume_ok' => sub {
         },
       ],
     );
-    
+
     alien_checkpoint_ok;
-    
+
     is(
       intercept { alien_resume_ok },
       array {
@@ -659,14 +659,14 @@ subtest 'alien_resume_ok' => sub {
     );
 
   };
-  
+
   subtest 'goodness and light' => sub {
-  
+
     alienfile_ok q{ use alienfile };
     alien_checkpoint_ok;
-    
+
     my $build;
-    
+
     is(
       intercept { $build = alien_resume_ok },
       array {
@@ -677,9 +677,9 @@ subtest 'alien_resume_ok' => sub {
         end;
       },
     );
-    
+
     isa_ok $build, 'Alien::Build';
-  
+
   };
 
 };

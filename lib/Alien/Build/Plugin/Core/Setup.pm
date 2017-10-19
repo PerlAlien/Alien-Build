@@ -26,7 +26,7 @@ L<Alien::Build>, L<Alien::Base::ModuleBuild>
 
 sub init
 {
-  my($self, $meta) = @_;  
+  my($self, $meta) = @_;
   $meta->prop->{platform} ||= {};
   $self->_platform($meta->prop->{platform});
 }
@@ -34,7 +34,7 @@ sub init
 sub _platform
 {
   my(undef, $hash) = @_;
-  
+
   if($^O eq 'MSWin32' && $Config{ccname} eq 'cl')
   {
     $hash->{compiler_type} = 'microsoft';
@@ -43,7 +43,7 @@ sub _platform
   {
     $hash->{compiler_type} = 'unix';
   }
-  
+
   if($^O eq 'MSWin32')
   {
     $hash->{system_type} = 'windows-unknown';

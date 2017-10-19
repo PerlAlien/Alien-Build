@@ -84,9 +84,9 @@ sub init
   my($self, $meta) = @_;
 
   $meta->add_requires('configure', __PACKAGE__, '1.05');
-  
+
   my $filter;
-  
+
   if(ref($self->filter) eq '')
   {
     my $string = $self->filter;
@@ -112,13 +112,13 @@ sub init
   {
     Carp::croak("unknown filter type for Prefer::BadVersion");
   }
-  
+
   $meta->around_hook(
     prefer => sub {
       my($orig, $build, @therest) = @_;
       my $res1 = $orig->($build, @therest);
       return $res1 unless $res1->{type} eq 'list';
-      
+
       return {
         type => 'list',
         list => [

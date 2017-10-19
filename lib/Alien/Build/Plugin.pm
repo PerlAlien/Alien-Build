@@ -15,14 +15,14 @@ our @CARP_NOT = qw( alienfile Alien::Build Alien::Build::Meta );
 Create your plugin:
 
  package Alien::Build::Plugin::Type::MyPlugin;
- 
+
  use Alien::Build::Plugin;
  use Carp ();
- 
+
  has prop1 => 'default value';
  has prop2 => sub { 'default value' };
  has prop3 => sub { Carp::croak 'prop3 is a required property' };
- 
+
  sub init
  {
    my($self, $meta) = @_;
@@ -30,7 +30,7 @@ Create your plugin:
    my $prop1 = $self->prop1;
    my $prop2 = $self->prop2;
    my $prop3 = $self->prop3;
-   
+
    $meta->register_hook(sub {
      build => [ '%{make}', '%{make} install' ],
    });
@@ -100,22 +100,22 @@ sub new
   my $class = shift;
   my %args = @_ == 1 ? ($class->meta->default => $_[0]) : @_;
   my $self = bless {}, $class;
-  
+
   my $prop = $self->meta->prop;
   foreach my $name (keys %$prop)
   {
-    $self->{$name} = defined $args{$name} 
-      ? delete $args{$name} 
+    $self->{$name} = defined $args{$name}
+      ? delete $args{$name}
       : ref($prop->{$name}) eq 'CODE'
         ? $prop->{$name}->()
         : $prop->{$name};
   }
-  
+
   foreach my $name (keys %args)
   {
     Carp::carp "$class has no $name property";
   }
-  
+
   $self;
 }
 
@@ -144,13 +144,13 @@ sub import
 
   my $caller = caller;
   { no strict 'refs'; @{ "${caller}::ISA" } = __PACKAGE__ }
-  
+
   my $meta = $caller->meta;
   my $has = sub {
     my($name, $default) = @_;
     $meta->add_property($name, $default);
   };
-  
+
   { no strict 'refs'; *{ "${caller}::has" } = $has }
 }
 
@@ -246,7 +246,7 @@ sub add_property
     $self->{$name} = $new if defined $new;
     $self->{$name};
   };
-  
+
   # add the accessor
   { no strict 'refs'; *{ $self->{class} . '::' . $name} = $accessor }
 

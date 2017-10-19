@@ -11,7 +11,7 @@ use Test2::API qw( context );
 
  use Test2::V0;
  use Test::Alien;
- 
+
  run_ok([ $^X, -e => 'print "some output"; exit 22'])
    ->exit_is(22)
    ->out_like(qr{some});
@@ -100,10 +100,10 @@ Passes if the process terminated with the given exit value.
 sub exit_is
 {
   my($self, $exit, $message) = @_;
-  
+
   $message ||= "command exited with value $exit";
   my $ok = $self->exit == $exit;
-  
+
   my $ctx = context();
   $ctx->ok($ok, $message);
   $ctx->diag("  actual exit value was: @{[ $self->exit ]}") unless $ok;
@@ -124,10 +124,10 @@ but the given value.
 sub exit_isnt
 {
   my($self, $exit, $message) = @_;
-  
+
   $message ||= "command exited with value not $exit";
   my $ok = $self->exit != $exit;
-  
+
   my $ctx = context();
   $ctx->ok($ok, $message);
   $ctx->diag("  actual exit value was: @{[ $self->exit ]}") unless $ok;
@@ -147,11 +147,11 @@ Passes if the output of the run matches the given pattern.
 sub _like
 {
   my($self, $regex, $source, $not, $message) = @_;
-  
+
   my $ok = $self->{$source} =~ $regex;
   $ok = !$ok if $not;
-  
-  my $ctx = context();  
+
+  my $ctx = context();
   $ctx->ok($ok, $message);
   unless($ok)
   {
@@ -161,7 +161,7 @@ sub _like
     $ctx->diag("    $regex");
   }
   $ctx->release;
-  
+
   $self;
 }
 
@@ -231,7 +231,7 @@ Send the output and standard error as test note.
 sub note
 {
   my($self) = @_;
-  my $ctx = context();  
+  my $ctx = context();
   $ctx->note("[cmd]");
   $ctx->note("  @{$self->{cmd}}");
   if($self->out ne '')

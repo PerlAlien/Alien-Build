@@ -8,27 +8,27 @@ use Path::Tiny qw( path );
 subtest basic => sub {
 
   my $build = alienfile q{
-  
+
     use alienfile;
-    
+
     probe sub { 'share' };
-    
+
     share {
-    
+
       plugin 'Download' => 'corpus/dist/foo-1.00.tar';
       plugin 'Extract';
-    
+
     };
-    
+
   };
-  
+
   note scalar capture_merged {
     $build->load_requires($build->install_type);
     $build->download;
   };
-  
+
   my $dir = $build->extract;
-  
+
   ok(-d $dir, "extracted to directory");
   note "dir = $dir";
 
@@ -36,9 +36,9 @@ subtest basic => sub {
   {
     my $old  = path('corpus/dist/foo-1.00')->child($filename);
     my $new  = path($dir)->child($filename);
-    
+
     ok(-f $new, "created file $filename");
-    
+
     is($new->slurp, $old->slurp, 'content matches');
   }
 
@@ -54,7 +54,7 @@ subtest 'picks' => sub {
   }
 
   subtest 'tar' => sub {
-  
+
     subtest 'plain' => sub {
       # always
       is(
@@ -62,9 +62,9 @@ subtest 'picks' => sub {
         'Extract::ArchiveTar',
       );
     };
-    
+
     my %available;
-    
+
     my $mock = Test2::Mock->new(
       class => 'Alien::Build::Plugin::Extract::ArchiveTar',
       override => [
@@ -75,9 +75,9 @@ subtest 'picks' => sub {
         },
       ]
     );
-    
+
     subtest 'tar.gz' => sub {
-    
+
       %available = ( 'tar.gz' => 1 );
 
       is(
@@ -96,12 +96,12 @@ subtest 'picks' => sub {
 
     };
   };
-  
+
   subtest 'zip' => sub {
-  
+
     my $have_archive_zip = 0;
     my $have_info_zip    = 0;
-    
+
     my $mock1 = Test2::Mock->new(
       class => 'Alien::Build::Plugin::Extract::ArchiveZip',
       override => [
@@ -111,7 +111,7 @@ subtest 'picks' => sub {
         },
       ],
     );
-    
+
 
     my $mock2 = Test2::Mock->new(
       class => 'Alien::Build::Plugin::Extract::CommandLine',
@@ -122,56 +122,56 @@ subtest 'picks' => sub {
         },
       ],
     );
-    
+
     subtest 'nada' => sub {
-    
+
       is(
         Alien::Build::Plugin::Extract::Negotiate->pick('zip'),
         'Extract::ArchiveZip',
       );
-    
+
     };
 
     subtest 'just Archive::Zip' => sub {
-    
+
       $have_archive_zip = 1;
       $have_info_zip    = 0;
-    
+
       is(
         Alien::Build::Plugin::Extract::Negotiate->pick('zip'),
         'Extract::ArchiveZip',
       );
-    
+
     };
 
     subtest 'just info zip' => sub {
-    
+
       $have_archive_zip = 0;
       $have_info_zip    = 1;
-    
+
       is(
         Alien::Build::Plugin::Extract::Negotiate->pick('zip'),
         'Extract::CommandLine',
       );
-    
+
     };
 
     subtest 'both' => sub {
-    
+
       $have_archive_zip = 1;
       $have_info_zip    = 1;
-    
+
       # Not 100% sure this is the best choice now that I think of it.
       is(
         Alien::Build::Plugin::Extract::Negotiate->pick('zip'),
         'Extract::ArchiveZip',
       );
-    
+
     };
-    
-  
+
+
   };
-  
+
 };
 
 done_testing;

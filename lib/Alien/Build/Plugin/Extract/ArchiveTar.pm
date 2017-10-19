@@ -52,9 +52,9 @@ given format.
 sub handles
 {
   my(undef, $ext) = @_;
-  
+
   return 1 if $ext =~ /^(tar|tar.gz|tar.bz2|tbz|taz)$/;
-  
+
   return;
 }
 
@@ -69,7 +69,7 @@ Returns true if the plugin has what it needs right now to extract from the given
 sub available
 {
   my(undef, $ext) = @_;
-  
+
   if($ext eq 'tar.gz')
   {
     return !! eval { require Archive::Tar; Archive::Tar->has_zlib_support };
@@ -87,7 +87,7 @@ sub available
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->add_requires('share' => 'Archive::Tar' => 0);
   if($self->format eq 'tar.gz' || $self->format eq 'tgz')
   {
@@ -98,7 +98,7 @@ sub init
     $meta->add_requires('share' => 'IO::Uncompress::Bunzip2' => 0);
     $meta->add_requires('share' => 'IO::Compress::Bzip2' => 0);
   }
-  
+
   $meta->register_hook(
     extract => sub {
       my($build, $src) = @_;

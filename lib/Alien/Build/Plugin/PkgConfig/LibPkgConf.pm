@@ -77,20 +77,20 @@ sub init
   {
     # Also update in Neotiate.pm
     $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => _min_version);
-  
+
     if(defined $self->minimum_version)
     {
       $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => _min_version);
     }
   }
-  
+
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
 
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
-    
+
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($pkg_name);
@@ -103,29 +103,29 @@ sub init
           die "package $pkg_name is not recent enough";
         }
       }
-      
+
       foreach my $alt (@alt_names)
       {
         my $pkg = $client->find($alt);
         die "package $alt not found" unless $pkg;
       }
-      
+
       'system';
     },
   );
-  
+
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
-      
+
       foreach my $name ($pkg_name, @alt_names)
       {
         my $pkg = $client->find($name);
         die "reload of package $name failed" unless defined $pkg;
 
-        my %prop;      
+        my %prop;
         $prop{version}        = $pkg->version;
         $prop{cflags}         = $pkg->cflags;
         $prop{libs}           = $pkg->libs;
@@ -133,7 +133,7 @@ sub init
         $prop{libs_static}    = $pkg->libs_static;
         $build->runtime_prop->{alt}->{$name} = \%prop;
       }
-      
+
       foreach my $key (keys %{ $build->runtime_prop->{alt}->{$pkg_name} })
       {
         $build->runtime_prop->{$key} = $build->runtime_prop->{alt}->{$pkg_name}->{$key};
@@ -145,7 +145,7 @@ sub init
       }
     },
   ) for qw( gather_system gather_share );
-  
+
   $self;
 }
 

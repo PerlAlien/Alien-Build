@@ -88,11 +88,11 @@ MSYS plugin and use a command sequence to do the build like this:
 =head3 CMake
 
 There is an alien L<Alien::cmake3> that provides C<cmake> 3.x or better (It is preferred to the
-older L<Alien::CMake>).  Though it is recommended that you use the C<cmake> 
+older L<Alien::CMake>).  Though it is recommended that you use the C<cmake>
 (L<Alien::Build::Plugin::Build::CMake>) plugin instead of using L<Alien::cmake3>.
 
  use alienfile;
- 
+
  share {
    plugin 'Build::CMake';
    build [
@@ -150,7 +150,7 @@ C<cflags> and C<libs> properties on either a C<system> or C<share> install.
 The various pkg-config plugins all support a minimum_version field:
 
  use alienfile;
- 
+
  plugin 'PkgConfig', pkg_name => foo, minimum_version => '1.2.3';
 
 =head2 How to create an Alien module for a packages that do not support pkg-config?
@@ -162,18 +162,18 @@ and linker flags.  For those packages you can just use the commands in your L<al
 Something like this:
 
  use alienfile;
- 
+
  probe [ 'foo-config --version' ];
- 
+
  share {
    ...
- 
+
    build [
      '%{make} PREFIX=%{.runtime.prefix}',
      '%{amek} install PREFIX=%{.runtime.prefix}',
    ];
  };
- 
+
  gather [
    [ 'foo-config', '--version', \'%{.runtime.version}' ],
    [ 'foo-config', '--cflags',  \'%{.runtime.cflags}'  ],
@@ -190,7 +190,7 @@ the C<cbuilder> plugin (L<Alien::Build::Plugin::Probe::CBuilder>.
    cflags => '-I/opt/libfoo/include',
    libs   => '-L/opt/libfoo/lib -lfoo',
  );
- 
+
  share {
    ...
    gather sub {
@@ -215,7 +215,7 @@ the L<Alien::Build> toolset.  A good example of how to do this is L<Alien::nasm>
 to use the 'Probe::CommandLine':
 
  use alienfile;
- 
+
  plugin 'Probe::CommandLine' => (
    command => 'gzip',
  );
@@ -229,23 +229,23 @@ Use L<Test::Alien>.  It has extensive documentation, and integrates nicely with 
 If you have a diff file you can use patch:
 
  use alienfile;
- 
+
  probe sub { 'share' }; # replace with appropriate probe
- 
+
  share {
    ...
    patch [ '%{patch} -p1 < %{.install.patch}/mypatch.diff' ];
    build [ ... ] ;
  }
- 
+
  ...
 
 You can also patch using Perl if that is easier:
 
  use alienfile;
- 
+
  probe sub { 'share' };
- 
+
  share {
    ...
    patch sub {
@@ -291,7 +291,7 @@ you will get an error, allowing you to install the library, and retry the alien 
 also set the environment variable on just some aliens.
 
  % export ALIEN_INSTALL_TYPE=system  # for everyone
- 
+
  % env ALIEN_INSTALL_TYPE=system cpanm -v Alien::libfoo
 
 =head2 For testing I would like to test both system and share installs!
@@ -330,7 +330,7 @@ L<https://groups.google.com/forum/#!forum/perl5-alien>
 
 =item Open a support ticket
 
-If you have an issue with L<Alie::Build> itself, then please open a support ticket on the project's GitHub issue 
+If you have an issue with L<Alie::Build> itself, then please open a support ticket on the project's GitHub issue
 tracker.
 
 L<https://github.com/plicease/Alien-Build/issues>

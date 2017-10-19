@@ -32,20 +32,20 @@ our @EXPORT = qw(
 
  use Test2::V0;
  use Test::Alien::Build;
- 
+
  # returns an instance of Alien::Build.
  my $build = alienfile_ok q{
    use alienfile;
-   
+
    plugin 'My::Plugin' => (
      foo => 1,
      bar => 'string',
      ...
    );
  };
- 
+
  alien_build_ok 'builds okay.';
- 
+
  done_testing;
 
 =head1 DESCRIPTION
@@ -131,7 +131,7 @@ sub alienfile
     my $root; # may be undef;
     sub {
       $root ||= Path::Tiny->new(tempdir( CLEANUP => 1 ));
-      
+
       if(@_)
       {
         my $path = $root->child(@_);
@@ -144,7 +144,7 @@ sub alienfile
       }
     };
   };
-  
+
   if($args{source})
   {
     my $file = $get_temp_root->()->child('alienfile');
@@ -159,13 +159,13 @@ sub alienfile
     }
     $args{filename} = path($args{filename})->absolute->stringify;
   }
-  
+
   $args{stage}  ||= $get_temp_root->('stage')->stringify;
   $args{prefix} ||= $get_temp_root->('prefix')->stringify;
   $args{root}   ||= $get_temp_root->('root')->stringify;
 
   require Alien::Build;
-  
+
   _alienfile_clear();
   my $out = capture_merged {
     $build_targ = $args{targ};
@@ -173,7 +173,7 @@ sub alienfile
     $build->set_stage($args{stage});
     $build->set_prefix($args{prefix});
   };
-  
+
   my $ctx = context();
   $ctx->note($out) if $out;
   $ctx->release;
@@ -208,12 +208,12 @@ sub alienfile_ok
   my $build = eval { alienfile(@_) };
   my $error = $@;
   my $ok = !! $build;
-  
+
   my $ctx = context();
   $ctx->ok($ok, 'alienfile compiles');
   $ctx->diag("error: $error") if $error;
   $ctx->release;
-  
+
   $build;
 }
 
@@ -231,12 +231,12 @@ sub alien_install_type_is
 {
   my($type, $name) = @_;
 
-  croak "invalid install type" unless defined $type && $type =~ /^(system|share)$/;  
+  croak "invalid install type" unless defined $type && $type =~ /^(system|share)$/;
   $name ||= "alien install type is $type";
-  
+
   my $ok = 0;
   my @diag;
-  
+
   if($build)
   {
     my($out, $actual) = capture_merged {
@@ -256,7 +256,7 @@ sub alien_install_type_is
   {
     push @diag, 'no alienfile'
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
@@ -278,13 +278,13 @@ the file or directory if successful.  Returns C<undef> otherwise.
 sub alien_download_ok
 {
   my($name) = @_;
-  
+
   $name ||= 'alien download';
-  
+
   my $ok;
   my $file;
   my @diag;
-  
+
   if($build)
   {
     my($out, $error) = capture_merged {
@@ -320,7 +320,7 @@ sub alien_download_ok
     $ok = 0;
     push @diag, 'no alienfile';
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
@@ -344,12 +344,12 @@ the directory if successful.  Returns C<undef> otherwise.
 sub alien_extract_ok
 {
   my($archive, $name) = @_;
-  
+
   $name ||= $archive ? "alien extraction of $archive" : 'alien extraction';
   my $ok;
   my $dir;
   my @diag;
-  
+
   if($build)
   {
     my($out, $error);
@@ -386,7 +386,7 @@ sub alien_extract_ok
     $ok = 0;
     push @diag, 'no alienfile';
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
@@ -433,7 +433,7 @@ sub alien_build_ok
   my @diag;
   my @note;
   my $alien;
-  
+
   if($build)
   {
     my($out,$error) = capture_merged {
@@ -454,27 +454,27 @@ sub alien_build_ok
     else
     {
       $ok = 1;
-      
+
       push @note, $out if defined $out;
-      
+
       require Alien::Base;
-      
+
       my $prefix = $build->runtime_prop->{prefix};
       my $stage  = $build->install_prop->{stage};
       my %prop   = %{ $build->runtime_prop };
-      
+
       $prop{distdir} = $prefix;
-      
+
       _mirror $stage, $prefix;
-      
+
       my $dist_dir = sub {
         $prefix;
       };
-      
+
       my $runtime_prop = sub {
         \%prop;
       };
-      
+
       $alien = sprintf 'Test::Alien::Build::Faux%04d', $count++;
       {
         no strict 'refs';
@@ -489,13 +489,13 @@ sub alien_build_ok
     $ok = 0;
     push @diag, 'no alienfile';
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
   $ctx->note($_) for @note;
   $ctx->release;
-  
+
   $alien;
 }
 
@@ -539,11 +539,11 @@ Test the checkpoint of a build.
 sub alien_checkpoint_ok
 {
   my($name) = @_;
-  
+
   $name ||= "alien checkpoint ok";
   my $ok;
   my @diag;
-  
+
   if($build)
   {
     eval { $build->checkpoint };
@@ -563,12 +563,12 @@ sub alien_checkpoint_ok
     push @diag, "no build to checkpoint";
     $ok = 0;
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
   $ctx->release;
-  
+
   $ok;
 }
 
@@ -584,11 +584,11 @@ Test a resume a checkpointed build.
 sub alien_resume_ok
 {
   my($name) = @_;
-  
+
   $name ||= "alien resume ok";
   my $ok;
   my @diag;
-  
+
   if($build_alienfile && $build_root && !defined $build)
   {
     $build = eval { Alien::Build->resume($build_alienfile, "$build_root/root") };
@@ -614,12 +614,12 @@ sub alien_resume_ok
     }
     $ok = 0;
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $name);
   $ctx->diag($_) for @diag;
-  $ctx->release;  
-  
+  $ctx->release;
+
   ($ok && $build) || $ok;
 }
 
@@ -628,7 +628,7 @@ sub alien_resume_ok
  alien_rc $code;
 
 Creates C<rc.pl> file in a temp directory and sets ALIEN_BUILD_RC.  Useful for testing
-plugins that should be called from C<~/.alienbuild/rc.pl>.  Note that because of the 
+plugins that should be called from C<~/.alienbuild/rc.pl>.  Note that because of the
 nature of how the C<~/.alienbuild/rc.pl> file works, you can only use this once!
 
 =cut
@@ -636,10 +636,10 @@ nature of how the C<~/.alienbuild/rc.pl> file works, you can only use this once!
 sub alien_rc
 {
   my($code) = @_;
-  
+
   croak "passed in undef rc" unless defined $code;
   croak "looks like you have already defined a rc.pl file" if $ENV{ALIEN_BUILD_RC} ne '-';
-  
+
   my(undef, $filename, $line) = caller;
   my $code2 = "use strict; use warnings;\n" .
               '# line ' . $line . ' "' . path($filename)->absolute . "\n$code";
@@ -668,9 +668,9 @@ sub alien_subtest
   my $ctx = context();
   my $pass = run_subtest($name, $code, { buffered => 1 }, @args);
   $ctx->release;
-  
+
   _alienfile_clear;
-  
+
   $pass;
 }
 
