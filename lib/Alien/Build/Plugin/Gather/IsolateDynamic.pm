@@ -7,7 +7,7 @@ use Path::Tiny ();
 use Alien::Build::Util qw( _destdir_prefix );
 use File::Copy ();
 
-# ABSTRACT: LWP plugin for fetching files
+# ABSTRACT: Plugin to gather dynamic libraries into a separate directory
 # VERSION
 
 =head1 SYNOPSIS
