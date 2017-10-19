@@ -6,7 +6,7 @@ use Alien::Build::Plugin;
 use File::Basename ();
 use Carp ();
 
-# ABSTRACT: LWP plugin for fetching files
+# ABSTRACT: Plugin for fetching files using HTTP::Tiny
 # VERSION
 
 =head1 SYNOPSIS

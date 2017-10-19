@@ -7,7 +7,7 @@ use Carp ();
 use File::Temp ();
 use Path::Tiny qw( path );
 
-# ABSTRACT: Net::FTP plugin for fetching files
+# ABSTRACT: Plugin for fetching files using Net::FTP
 # VERSION
 
 =head1 SYNOPSIS

@@ -6,7 +6,7 @@ use Alien::Build::Plugin;
 use File::chdir;
 use Path::Tiny ();
 
-# ABSTRACT: Local directory plugin for fetching files
+# ABSTRACT: Plugin for fetching a local directory
 # VERSION
 
 =head1 SYNOPSIS

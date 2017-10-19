@@ -10,7 +10,7 @@ use Capture::Tiny qw( capture );
 use File::Temp qw( tempdir );
 use File::chdir;
 
-# ABSTRACT: Curl command line plugin for fetching files
+# ABSTRACT: Plugin for fetching files using curl
 # VERSION
 
 =head1 SYNOPSIS

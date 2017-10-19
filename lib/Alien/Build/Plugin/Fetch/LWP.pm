@@ -5,7 +5,7 @@ use warnings;
 use Alien::Build::Plugin;
 use Carp ();
 
-# ABSTRACT: LWP plugin for fetching files
+# ABSTRACT: Plugin for fetching files using LWP
 # VERSION
 
 =head1 SYNOPSIS

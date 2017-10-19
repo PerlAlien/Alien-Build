@@ -5,7 +5,7 @@ use warnings;
 use Alien::Build::Plugin;
 use Carp ();
 
-# ABSTRACT: Filter out known bad versions
+# ABSTRACT: Plugin to filter out known bad versions
 # VERSION
 
 =head1 SYNOPSIS
