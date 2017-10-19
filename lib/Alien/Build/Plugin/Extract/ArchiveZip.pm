@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 
-# ABSTRACT: Plugin to extract a tarball using Archive::Tar
+# ABSTRACT: Plugin to extract a tarball using Archive::Zip
 # VERSION
 
 =head1 SYNOPSIS
