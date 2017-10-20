@@ -124,6 +124,8 @@ pod_spelling_system:
     - JJATRIA
     - Joaqu
     - Jos
+    - Leto
+    - LETO
 
 pod_coverage:
   skip: 0

@@ -778,6 +778,8 @@ Ahmad Fatoum (a3f, ATHREEF)
 
 José Joaquín Atria (JJATRIA)
 
+Duke Leto (LETO)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2017 by Graham Ollis.
