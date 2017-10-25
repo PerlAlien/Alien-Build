@@ -362,12 +362,6 @@ Extra The L<ExtUtils::CBuilder> arguments passed in as a hash reference.
 
 Spew copious debug information via test note.
 
-=item C++ or cpp
-
-[EXPERIMENTAL]
-
-XS should be compiled as C++.
-
 =back
 
 You can use the C<with_subtest> keyword to conditionally
@@ -395,26 +389,6 @@ sub _flags
   $class->can($static) && $class->can('install_type') && $class->install_type eq 'share' && (!$class->can('xs_load'))
     ? $class->$static
     : $class->$method;
-}
-
-{
-  my $seen = 0;
-  sub _warn_cpp
-  {
-    return if $seen;
-    my $ctx = context();
-    $ctx->diag('');
-    $ctx->diag('');
-    $ctx->diag(' !!!');
-    $ctx->diag('');
-    $ctx->diag("Test::Alien xs_ok C++ is DEPRECATED and will be removed on or after 31 August 2017");
-    $ctx->diag("Please use Test::Alien::CPP instead");
-    $ctx->diag('');
-    $ctx->diag(' !!!');
-    $ctx->diag('');
-    $ctx->release;
-    $seen++;
-  }
 }
 
 sub xs_ok
@@ -446,10 +420,8 @@ sub xs_ok
 
   if($xs->{cpp} || $xs->{'C++'})
   {
-    _warn_cpp();
-    $xs->{pxs}->{'C++'} = 1;
-    $xs->{cbuilder_compile}->{'C++'} = 1;
-    $xs->{c_ext} = 'cpp';
+    my $ctx = context();
+    $ctx->bail("The cpp and C++ options have been removed from xs_ok");
   }
   else
   {
