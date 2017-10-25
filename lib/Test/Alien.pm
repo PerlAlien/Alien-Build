@@ -6,9 +6,7 @@ use 5.008001;
 use Env qw( @PATH );
 use File::Which 1.10 qw( which );
 use Capture::Tiny qw( capture capture_merged );
-use File::Temp ();
-use Carp qw( croak );
-use File::Basename qw( dirname );
+use File::Temp qw( tempdir );
 use File::Copy qw( move );
 use Text::ParseWords qw( shellwords );
 use Test2::API qw( context run_subtest );
@@ -934,7 +932,7 @@ sub _tempdir {
   # makes sure /tmp or whatever isn't mounted noexec,
   # which will cause xs_ok tests to fail.
 
-  my $dir = File::Temp::tempdir(@_);
+  my $dir = tempdir(@_);
 
   if($^O ne 'MSWin32')
   {
@@ -947,7 +945,7 @@ sub _tempdir {
     system $filename, 'foo';
     if($?)
     {
-      $dir = File::Temp::tempdir( DIR => path('.')->absolute->stringify );
+      $dir = tempdir( DIR => path('.')->absolute->stringify );
     }
   }
   
