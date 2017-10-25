@@ -15,6 +15,7 @@ use Test2::API qw( context run_subtest );
 use base qw( Exporter );
 use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
+use Config;
 
 our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is );
 
@@ -529,7 +530,11 @@ sub xs_ok
 
   if($ok)
   {
-    my $cb = ExtUtils::CBuilder->new;
+    my $cb = ExtUtils::CBuilder->new(
+      config => {
+        lddlflags => join(' ', grep !/^-l/, shellwords map { _flags $_, 'libs' } @aliens) . " $Config{lddlflags}",
+      },
+    );
 
     my %compile_options = (
       source               => $c_filename,
@@ -581,7 +586,7 @@ sub xs_ok
         $link_options{extra_linker_flags} = [ shellwords $link_options{extra_linker_flags} ];
       }
       
-      push @{ $link_options{extra_linker_flags} }, shellwords map { _flags $_, 'libs' } @aliens;
+      push @{ $link_options{extra_linker_flags} }, grep /^-l/, shellwords map { _flags $_, 'libs' } @aliens;
 
       my($out, $lib, $err) = capture_merged {
         my $lib = eval { 
@@ -613,9 +618,8 @@ sub xs_ok
       
       if($ok)
       {
-        require Config;
         my @modparts = split(/::/,$module);
-        my $dl_dlext = $Config::Config{dlext};
+        my $dl_dlext = $Config{dlext};
         my $modfname = $modparts[-1];
 
         my $libpath = path($dir)->child('auto', @modparts, "$modfname.$dl_dlext");

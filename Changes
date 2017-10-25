@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix Test::Alien bug where -L could be placed after directories specified in %Config
+    (this was already handled correctly by Alien::Base::Wrapper).
 
 1.25      2017-10-09 08:57:34 -0400
   - Production release identical to 1.24_01
