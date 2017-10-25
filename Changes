@@ -1,10 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.26_01   2017-10-25 12:28:58 -0400
   - Fix Test::Alien bug where -L could be placed after directories specified in %Config
     (this was already handled correctly by Alien::Base::Wrapper).
   - Remove cpp and C++ options for xs_ok (I don't believe these were used in practice
     and were issuing deprecation warnings for a while).
+  - A number of documentation errors have been fixed (jjatria++ leto++)
 
 1.25      2017-10-09 08:57:34 -0400
   - Production release identical to 1.24_01
