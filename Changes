@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix incompatibility with older versions of ExtUtils::MakeMaker where test
+    directive in alienfile was ignored.
 
 1.26_01   2017-10-25 12:28:58 -0400
   - Fix Test::Alien bug where -L could be placed after directories specified in %Config

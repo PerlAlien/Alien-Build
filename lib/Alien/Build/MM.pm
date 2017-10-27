@@ -292,7 +292,7 @@ sub mm_postamble
   # append to all
   $postamble .= "pure_all :: _alien/mm/build\n\n";
   
-  $postamble .= "subdirs-test_dynamic :: alien_test\n\n";
+  $postamble .= "subdirs-test_dynamic subdirs-test_static subdirs-test :: alien_test\n\n";
   $postamble .= "alien_test :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e test\n\n";
   
