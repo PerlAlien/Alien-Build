@@ -134,7 +134,7 @@ is provided on the command line.
 
 =cut
 
-sub myexec
+sub _myexec
 {
   my @command = @_;
   if($^O eq 'MSWin32')
@@ -173,7 +173,7 @@ sub cc
     @ARGV,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
-  myexec @command;
+  _myexec @command;
 }
 
 =head2 ld
@@ -195,7 +195,7 @@ sub ld
     @ldflags_l,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
-  myexec @command;
+  _myexec @command;
 }
 
 =head2 mm_args

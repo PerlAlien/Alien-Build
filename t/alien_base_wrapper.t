@@ -16,7 +16,7 @@ sub exec_arrayref (&)
   my $mock = Test2::Mock->new(
     class    => 'Alien::Base::Wrapper',
     override => [
-      myexec => sub {
+      _myexec => sub {
         @answer = @_;
       },
     ],
