@@ -3,6 +3,8 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Fix bug in Alien::Base::Wrapper where -l flags were being ignored by EUMM
   - MSYS plugin works with ffi build
+  - Windows specific fixes for Alien::Base::Wrapper
+  - Removed optional dependency on Test::Exec
 
 1.28      2017-10-29 19:39:19 -0400
   - Production release identical to 1.27_01

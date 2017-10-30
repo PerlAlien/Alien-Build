@@ -1,12 +1,31 @@
-use Test2::Require::Module 'Test::Exec';
 use Test2::V0 -no_srand => 1;
-use Test::Exec;
 use Config;
 use Alien::Base::Wrapper ();
 use Alien::Build::Util qw( _dump );
 use Text::ParseWords qw( shellwords );
+use Test2::Mock;
 
 $ENV{ALIEN_BASE_WRAPPER_QUIET} = 1;
+
+sub exec_arrayref (&)
+{
+  my($code) = @_;
+
+  my @answer;
+
+  my $mock = Test2::Mock->new(
+    class    => 'Alien::Base::Wrapper',
+    override => [
+      myexec => sub {
+        @answer = @_;
+      },
+    ],
+  );
+
+  $code->();
+
+  \@answer;
+}
 
 subtest 'export' => sub {
 

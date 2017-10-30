@@ -134,6 +134,36 @@ is provided on the command line.
 
 =cut
 
+sub myexec
+{
+  my @command = @_;
+  if($^O eq 'MSWin32')
+  {
+    # To handle weird quoting on MSWin32
+    # this logic needs to be improved.
+    my $command = "@command";
+    $command =~ s{"}{\\"}g;
+    system $command;
+
+    if($? == -1 )
+    {
+      die "failed to execute: $!\n";
+    }
+    elsif($? & 127)
+    {
+      die "child died with signal @{[ $? & 128 ]}";
+    }
+    else
+    {
+      exit($? >> 8);
+    }
+  }
+  else
+  {
+    exec @command;
+  }
+}
+
 sub cc
 {
   my @command = (
@@ -143,7 +173,7 @@ sub cc
     @ARGV,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
-  exec @command;
+  myexec @command;
 }
 
 =head2 ld
@@ -165,7 +195,7 @@ sub ld
     @ldflags_l,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
-  exec @command;
+  myexec @command;
 }
 
 =head2 mm_args
