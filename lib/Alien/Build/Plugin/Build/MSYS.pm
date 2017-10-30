@@ -47,7 +47,7 @@ sub init
     $meta->add_requires('share' => 'Alien::MSYS' => $self->msys_version);
     
     $meta->around_hook(
-      build => sub {
+      $_ => sub {
         my $orig = shift;
         my $build = shift;
 
@@ -56,7 +56,7 @@ sub init
 
         $orig->($build, @_);
       },
-    );
+    ) for qw( build build_ffi test_share test_ffi );
   }
 
 =head1 HELPERS
