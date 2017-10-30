@@ -202,7 +202,7 @@ subtest 'combine aliens' => sub {
       hash {
         field DEFINE    => '-DFOO5=1 -DBAR5=1';
         field INC       => '-I/foo/include -I/bar/include';
-        field LIBS      => [ '-lfoo', '-lbar' ];
+        field LIBS      => [ match(qr{-lfoo -lbar$}) ];
         field LDDLFLAGS => T();
         field LDFLAGS   => T();
       },

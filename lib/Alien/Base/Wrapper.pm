@@ -247,7 +247,8 @@ sub import
   push @mm, CCFLAGS   => _join(@cflags_other2) . " $Config{ccflags}" if @cflags_other2;
   push @mm, DEFINE    => _join(@cflags_define)                       if @cflags_define;
 
-  push @mm, LIBS      => [@ldflags_l];
+  # TODO: handle spaces in -L paths
+  push @mm, LIBS      => ["@ldflags_L @ldflags_l"];
   my @ldflags = (@ldflags_L, @ldflags_other);
   push @mm, LDDLFLAGS => _join(@ldflags) . " $Config{lddlflags}"     if @ldflags;
   push @mm, LDFLAGS   => _join(@ldflags) . " $Config{ldflags}"       if @ldflags;
