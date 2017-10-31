@@ -204,6 +204,12 @@ Same as C<destdir_filter> except applies to C<build_ffi> instead of C<build>.
 
 Environment variables to override during the build stage.
 
+=item local_source
+
+Set to true if source code package is available locally.  (that is not fetched
+over the internet).  This is computed by default based on the C<start_url>
+property.  Can be set by an L<alienfile> or plugin.
+
 =item platform
 
 Hash reference.  Contains information about the platform beyond just C<$^O>.
@@ -268,6 +274,12 @@ an "out-of-source" build.  When this property is true, instead of extracting
 to the source build root, the downloaded source will be extracted to an source
 extraction directory and the source build root will be empty.  You can use the
 C<extract> install property to get the location of the extracted source.
+
+=item network
+
+True if a network fetch is available.  This should NOT be set by an L<alienfile>
+or plugin.  This is computed based on the C<NO_NETWORK_TESTING> and 
+C<ALIEN_INSTALL_NETWORK> environment variables.
 
 =item start_url
 
@@ -599,6 +611,32 @@ sub load
   unless(defined $self->meta->prop->{arch})
   {
     $self->meta->prop->{arch} = 1;
+  }
+  
+  unless(defined $self->meta->prop->{network})
+  {
+    $self->meta->prop->{network} = 1;
+    $self->meta->prop->{network} = 0 if $ENV{NO_NETWORK_TESTING};
+    $self->meta->prop->{network} = 0 if (defined $ENV{ALIEN_INSTALL_NETWORK}) && ! $ENV{ALIEN_INSTALL_NETWORK};
+  }
+  
+  unless(defined $self->meta->prop->{local_source})
+  {
+    if(! defined $self->meta->prop->{start_url})
+    {
+      $self->meta->prop->{local_source} = 0;
+    }
+    # we assume URL schemes are at least two characters, that
+    # way Windows absolute paths can be used as local start_url
+    elsif($self->meta->prop->{start_url} =~ /^([a-z]{2,}):/i)
+    {
+      my $scheme = $1;
+      $self->meta->prop->{local_source} = $scheme eq 'file';
+    }
+    else
+    {
+      $self->meta->prop->{local_source} = 1;
+    }
   }
 
   return $self;
@@ -956,9 +994,16 @@ sub probe
   {
     Carp::croak "probe hook returned something other than system or share: $type";
   }
+
+  if($type eq 'share' && (!$self->meta_prop->{network}) && (!$self->meta_prop->{local_source}))
+  {
+    $self->log("install type share requested or detected, but network fetch is turned off");
+    $self->log("see https://metacpan.org/pod/Alien::Build::Manual::FAQ#Network-fetch-is-turned-off");
+    Carp::croak "network fetch is turned off";
+  }
   
   $self->runtime_prop->{install_type} = $type;
-  
+
   $type;
 }
 
@@ -1808,6 +1853,18 @@ L<Alien::Build> responds to these environment variables:
 
 =over 4
 
+=item ALIEN_INSTALL_NETWORK
+
+If set to true (the default), then network fetch will be allowed.  If set to
+false, then network fetch will not be allowed.
+
+What constitutes a local vs. network fetch is determined based on the C<start_url>
+and C<local_source> meta properties.  An L<alienfile> or plugin C<could> override
+this detection (possibly inappropriately), so this variable is not a substitute
+for properly auditing of Perl modules for environments that require that.
+
+This variable overrides C<NO_NETWORK_TESTING> if both are set.
+
 =item ALIEN_INSTALL_TYPE
 
 If set to C<share> or C<system>, it will override the system detection logic.
@@ -1848,6 +1905,17 @@ for some PkgConfig plugins: L<Alien::Build::Plugin::PkgConfig>.
 If these environment variables are set, it may influence the Download negotiation
 plugin L<Alien::Build::Plugin::Downaload::Negotiate>.  Other proxy variables may
 be used by some Fetch plugins, if they support it.
+
+=item NO_NETWORK_TESTING
+
+If set to true then network fetch will not be allowed.
+
+What constitutes a local vs. network fetch is determined based on the C<start_url>
+and C<local_source> meta properties.  An L<alienfile> or plugin C<could> override
+this detection (possibly inappropriately), so this variable is not a substitute
+for properly auditing of Perl modules for environments that require that.
+
+This variable is overridden by C<ALIEN_INSTALL_NETWORK> if both are set.
 
 =back
 

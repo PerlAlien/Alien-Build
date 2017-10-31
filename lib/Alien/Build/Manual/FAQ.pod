@@ -274,6 +274,19 @@ to your prerequisites for you if you specify a C<https> URL.  Some websites allo
 from C<http> but then redirect to C<https>.  If you can it is better to specify C<https>, if you
 cannot, then you can instead use the C<ssl> property on either of those two plugins.
 
+=head2 Network fetch is turned off
+
+If you get an error like this:
+
+ Alien::Build> install type share requested or detected, but network fetch is turned off
+ Alien::Build> see see https://metacpan.org/pod/Alien::Build::Manual::FAQ#Network-fetch-is-turned-off
+
+This is because your environment is setup not to install aliens that require the network.  You
+can turn network fetch back on by unsetting the environment variable C<NO_NETWORK_TESTING> or
+by setting C<ALIEN_INSTALL_NETWORK> to true, or by unsetting both of them.  These environment variables
+are designed for environments that don't ever want to install aliens that require downloading
+source packages over the internet.
+
 =head2 I would really prefer you not download stuff off the internet
 
 The idea of L<Alien> is to download missing packages and build them automatically to make installing

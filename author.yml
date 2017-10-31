@@ -126,6 +126,7 @@ pod_spelling_system:
     - Jos
     - Leto
     - LETO
+    - unsetting
 
 pod_coverage:
   skip: 0

@@ -1479,6 +1479,108 @@ alien_subtest 'pkg-config path during build' => sub {
   
 };
 
+subtest 'network available' => sub {
+
+  alien_subtest 'default' => sub {
+    my $build = alienfile_ok q{ use alienfile };
+    is($build->meta_prop->{network}, T());
+  };  
+
+  alien_subtest 'override' => sub {
+    my $build = alienfile_ok q{ use alienfile; meta->prop->{network} = 0 };
+    is($build->meta_prop->{network}, F());
+  };
+  
+  alien_subtest 'NO_NETWORK_TESTING' => sub {
+    local $ENV{NO_NETWORK_TESTING} = 1;
+    my $build = alienfile_ok q{ use alienfile };
+    is($build->meta_prop->{network}, F());
+  };
+
+  alien_subtest 'ALIEN_INSTALL_NETWORK=1' => sub {
+    local $ENV{ALIEN_INSTALL_NETWORK} = 1;
+    my $build = alienfile_ok q{ use alienfile };
+    is($build->meta_prop->{network}, T());
+  };
+
+  alien_subtest 'ALIEN_INSTALL_NETWORK=0' => sub {
+    local $ENV{ALIEN_INSTALL_NETWORK} = 0;
+    my $build = alienfile_ok q{ use alienfile };
+    is($build->meta_prop->{network}, F());
+  };
+
+};
+
+subtest 'local_source' => sub {
+
+  alien_subtest 'start_url undefined' => sub {
+    my $build = alienfile_ok q{ use alienfile };
+    is($build->meta_prop->{local_source}, F());
+  };
+
+  alien_subtest 'start_url undefined override' => sub {
+    my $build = alienfile_ok q{ use alienfile; meta->prop->{local_source} = 1; };
+    is($build->meta_prop->{local_source}, T());
+  };
+
+  alien_subtest 'start_url = foo/bar/baz' => sub {
+    my $build = alienfile_ok q{ use alienfile; share { start_url 'foo/bar/baz' } };
+    is($build->meta_prop->{local_source}, T());
+  };
+
+  alien_subtest 'start_url = C:/foo/bar/baz' => sub {
+    my $build = alienfile_ok q{ use alienfile; share { start_url 'C:/foo/bar/baz' } };
+    is($build->meta_prop->{local_source}, T());
+  };
+
+  alien_subtest 'start_url = /foo/bar/baz' => sub {
+    my $build = alienfile_ok q{ use alienfile; share { start_url '/foo/bar/baz' } };
+    is($build->meta_prop->{local_source}, T());
+  };
+
+  alien_subtest 'start_url = ./foo/bar/baz' => sub {
+    my $build = alienfile_ok q{ use alienfile; share { start_url './foo/bar/baz' } };
+    is($build->meta_prop->{local_source}, T());
+  };
+
+  alien_subtest 'start_url = http://foo.example/foo/bar/baz' => sub {
+    my $build = alienfile_ok q{ use alienfile; share { start_url 'http://foo.example/foo/bar/baz' } };
+    is($build->meta_prop->{local_source}, F());
+  };
+
+  alien_subtest 'start_url = http://foo.example/foo/bar/baz override' => sub {
+    my $build = alienfile_ok q{ use alienfile; share { start_url 'http://foo.example/foo/bar/baz'; meta->prop->{local_source} = 1; } };
+    is($build->meta_prop->{local_source}, T());
+  };
+
+};
+
+subtest 'do not allow network install' => sub {
+
+  alien_subtest 'share' => sub {
+
+    my $build = alienfile_ok q{ use alienfile; probe sub { 'share'}; meta->prop->{network} = 0; meta->prop->{local_source} = 0; };
+
+    my($out, $err) = capture_merged {
+      eval {
+        $build->probe;
+      };
+      $@;
+    };
+  
+    note $out;
+  
+    like $err, qr/network fetch is turned off/;
+    
+  };
+
+  alien_subtest 'system' => sub {
+    my $build = alienfile_ok q{ use alienfile; probe sub { 'system'}; meta->prop->{network} = 0; meta->prop->{local_source} = 0; };
+    alien_install_type_is 'system';
+  };
+  
+};
+
 done_testing;
 
 {
