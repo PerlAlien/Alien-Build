@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.31_01   2017-10-31 16:50:52 -0400
   - Fix testing prereq bug introduced in 1.30_01.
 
 1.30_01   2017-10-31 14:24:15 -0400
