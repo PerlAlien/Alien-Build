@@ -100,6 +100,30 @@ having a working C<curl> or C<wget> with SSL support in your C<PATH>.
 
 has 'bootstrap_ssl' => 0;
 
+=head2 prefer
+
+How to sort candidates for selection.  This should be one of three types of values:
+
+=over 4
+
+=item code reference
+
+This will be used as the prefer hook.
+
+=item true value
+
+Use L<Alien::Build::Plugin::Prefer::SortVersions>.
+
+=item false value
+
+Don't set any preference at all.  A hook must be installed, or another prefer plugin specified.
+
+=back
+
+=cut
+
+has 'prefer' => 1;
+
 =head1 METHODS
 
 =head2 pick
@@ -198,10 +222,25 @@ sub init
   if($self->version)
   {
     $meta->apply_plugin($_) for @decoders;
-    $meta->apply_plugin('Prefer::SortVersions', 
-      (defined $self->filter ? (filter => $self->filter) : ()),
-      version => $self->version,
-    );
+    
+    if(defined $self->prefer && ref($self->prefer) eq 'CODE')
+    {
+      $meta->add_requires('share' => 'Alien::Build::Plugin::Download::Negotiate' => '1.30');
+      $meta->register_hook(
+        prefer => $self->prefer,
+      );
+    }
+    elsif($self->prefer)
+    {
+      $meta->apply_plugin('Prefer::SortVersions', 
+        (defined $self->filter ? (filter => $self->filter) : ()),
+        version => $self->version,
+      );
+    }
+    else
+    {
+      $meta->add_requires('share' => 'Alien::Build::Plugin::Download::Negotiate' => '1.30');
+    }
   }
 }
 

@@ -4,6 +4,7 @@ use Alien::Build::Plugin::Download::Negotiate;
 use Path::Tiny;
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _dump );
+use Test2::Mock;
 
 delete $ENV{$_} for qw( ftp_proxy all_proxy );
 
@@ -140,6 +141,9 @@ subtest 'pick fetch' => sub {
 
 subtest 'get the version' => sub {
 
+  skip_all 'test requires Sort::Versions'
+    unless eval { require Sort::Versions; 1 };
+
   my $build = alienfile q{
     use alienfile;
     probe sub { 'share' };
@@ -166,6 +170,110 @@ subtest 'get the version' => sub {
   my $new  = path($filename);
   
   is($new->slurp, $orig->slurp, 'content of file is the same');
+
+};
+
+subtest 'prefer property' => sub {
+
+  subtest 'default (true)' => sub {
+
+    my $mock = Test2::Mock->new(
+      class => 'Alien::Build::Meta',
+    );
+    
+    my @calls;
+    
+    $mock->around(apply_plugin => sub {
+      my($orig, $self, @args) = @_;
+      push @calls, \@args if $args[0] eq 'Prefer::SortVersions';
+      $orig->($self, @args);
+    });
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      plugin 'Download' => (
+        url => 'corpus/dist',
+        version => qr/([0-9\.]+)/,
+        filter => qr/\.tar\.gz$/,
+      );
+    };
+    
+    is(
+      \@calls,
+      array {
+        item array {
+          item 'Prefer::SortVersions';
+          item 'filter';
+          item T();
+          item 'version';
+          item T();
+        };
+        end;
+      },
+      'loaded Prefer::SortVersions exactly once'
+    );
+
+  };
+
+  my $mock = Test2::Mock->new(
+    class => 'Alien::Build::Meta',
+  );
+
+  $mock->around(apply_plugin => sub {
+    my($orig, $self, @args) = @_;
+    die 'oopsiedoopsie' if $args[0] eq 'Prefer::SortVersions';
+    $orig->($self, @args);
+  });
+
+  subtest 'false' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      plugin 'Download' => (
+        url => 'corpus/dist',
+        version => qr/([0-9\.]+)/,
+        filter => qr/\.tar\.gz$/,
+        prefer => 0,
+      );
+    };
+    
+    ok 1, "didn't load Prefer::SortVersions";
+
+  };
+  
+  subtest 'code reference' => sub {
+  
+    undef $mock;
+  
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      plugin 'Download' => (
+        url => 'corpus/dist',
+        version => qr/([0-9\.]+)/,
+        filter => qr/\.tar\.gz$/,
+        prefer => sub {
+          my($build, $res) = @_;
+          return {
+            type => 'list',
+            list => [
+              sort { $b->{version} <=> $a->{version} } @{ $res->{list} },
+            ],
+          }
+        },
+      );
+    };
+    
+    is(
+      $build->prefer(
+        { type => 'list', list => [ { filename => 'abc', version => 1 }, { filename => 'def', version => 2 }, { filename => 'ghi', version => 3 } ] },
+      ),
+      {type => 'list', list => [ { filename => 'ghi', version => 3 }, { filename => 'def', version => 2 }, { filename => 'abc', version => 1 } ] },
+    );
+
+  };
 
 };
 
