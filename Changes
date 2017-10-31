@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.30_01   2017-10-31 14:24:15 -0400
   - Add prefer property to Download::Negotiate plugin
 
 1.29_01   2017-10-30 09:54:22 -0400
