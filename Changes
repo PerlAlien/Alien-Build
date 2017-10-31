@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix testing prereq bug introduced in 1.30_01.
 
 1.30_01   2017-10-31 14:24:15 -0400
   - Add prefer property to Download::Negotiate plugin

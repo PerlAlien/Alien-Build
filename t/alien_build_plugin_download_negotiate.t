@@ -177,6 +177,7 @@ subtest 'prefer property' => sub {
 
   subtest 'default (true)' => sub {
 
+    require Alien::Build::Meta;
     my $mock = Test2::Mock->new(
       class => 'Alien::Build::Meta',
     );
