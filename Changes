@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add ALIEN_INSTALL_NETWORK environment variable.  Set to false if you don't
+    want to allow network fetch.
 
 1.31_01   2017-10-31 16:50:52 -0400
   - Fix testing prereq bug introduced in 1.30_01.

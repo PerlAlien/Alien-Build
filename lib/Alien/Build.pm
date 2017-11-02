@@ -278,8 +278,8 @@ C<extract> install property to get the location of the extracted source.
 =item network
 
 True if a network fetch is available.  This should NOT be set by an L<alienfile>
-or plugin.  This is computed based on the C<NO_NETWORK_TESTING> and 
-C<ALIEN_INSTALL_NETWORK> environment variables.
+or plugin.  This is computed based on the C<ALIEN_INSTALL_NETWORK> environment
+variables.
 
 =item start_url
 
@@ -616,7 +616,8 @@ sub load
   unless(defined $self->meta->prop->{network})
   {
     $self->meta->prop->{network} = 1;
-    $self->meta->prop->{network} = 0 if $ENV{NO_NETWORK_TESTING};
+    ## https://github.com/Perl5-Alien/Alien-Build/issues/23#issuecomment-341114414
+    #$self->meta->prop->{network} = 0 if $ENV{NO_NETWORK_TESTING};
     $self->meta->prop->{network} = 0 if (defined $ENV{ALIEN_INSTALL_NETWORK}) && ! $ENV{ALIEN_INSTALL_NETWORK};
   }
   
@@ -1863,8 +1864,6 @@ and C<local_source> meta properties.  An L<alienfile> or plugin C<could> overrid
 this detection (possibly inappropriately), so this variable is not a substitute
 for properly auditing of Perl modules for environments that require that.
 
-This variable overrides C<NO_NETWORK_TESTING> if both are set.
-
 =item ALIEN_INSTALL_TYPE
 
 If set to C<share> or C<system>, it will override the system detection logic.
@@ -1905,17 +1904,6 @@ for some PkgConfig plugins: L<Alien::Build::Plugin::PkgConfig>.
 If these environment variables are set, it may influence the Download negotiation
 plugin L<Alien::Build::Plugin::Downaload::Negotiate>.  Other proxy variables may
 be used by some Fetch plugins, if they support it.
-
-=item NO_NETWORK_TESTING
-
-If set to true then network fetch will not be allowed.
-
-What constitutes a local vs. network fetch is determined based on the C<start_url>
-and C<local_source> meta properties.  An L<alienfile> or plugin C<could> override
-this detection (possibly inappropriately), so this variable is not a substitute
-for properly auditing of Perl modules for environments that require that.
-
-This variable is overridden by C<ALIEN_INSTALL_NETWORK> if both are set.
 
 =back
 

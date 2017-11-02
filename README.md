@@ -206,8 +206,8 @@ but if you do not follow this rule your recipe will likely be broken.
 - network
 
     True if a network fetch is available.  This should NOT be set by an [alienfile](https://metacpan.org/pod/alienfile)
-    or plugin.  This is computed based on the `NO_NETWORK_TESTING` and 
-    `ALIEN_INSTALL_NETWORK` environment variables.
+    or plugin.  This is computed based on the `ALIEN_INSTALL_NETWORK` environment
+    variables.
 
 - start\_url
 
@@ -657,8 +657,6 @@ Apply the given plugin with the given arguments.
     this detection (possibly inappropriately), so this variable is not a substitute
     for properly auditing of Perl modules for environments that require that.
 
-    This variable overrides `NO_NETWORK_TESTING` if both are set.
-
 - ALIEN\_INSTALL\_TYPE
 
     If set to `share` or `system`, it will override the system detection logic.
@@ -699,17 +697,6 @@ Apply the given plugin with the given arguments.
     If these environment variables are set, it may influence the Download negotiation
     plugin [Alien::Build::Plugin::Downaload::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::Downaload::Negotiate).  Other proxy variables may
     be used by some Fetch plugins, if they support it.
-
-- NO\_NETWORK\_TESTING
-
-    If set to true then network fetch will not be allowed.
-
-    What constitutes a local vs. network fetch is determined based on the `start_url`
-    and `local_source` meta properties.  An [alienfile](https://metacpan.org/pod/alienfile) or plugin `could` override
-    this detection (possibly inappropriately), so this variable is not a substitute
-    for properly auditing of Perl modules for environments that require that.
-
-    This variable is overridden by `ALIEN_INSTALL_NETWORK` if both are set.
 
 # SUPPORT
 
