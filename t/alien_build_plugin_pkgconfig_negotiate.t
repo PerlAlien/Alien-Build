@@ -16,7 +16,7 @@ subtest 'pick' => sub {
 
 subtest 'override' => sub {
 
-  foreach my $name (qw( CommandLine LibPkgConf PP ))
+  foreach my $name (qw( PP LibPkgConf CommandLine ))
   {
     local $ENV{ALIEN_BUILD_PKG_CONFIG} = "PkgConfig::$name";
     subtest $ENV{ALIEN_BUILD_PKG_CONFIG} => sub {

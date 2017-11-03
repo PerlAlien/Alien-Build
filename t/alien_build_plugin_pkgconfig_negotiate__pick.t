@@ -3,6 +3,7 @@ use Alien::Build::Plugin::PkgConfig::Negotiate;
 use Test2::Mock;
 use Capture::Tiny qw( capture_merged );
 use Config;
+use File::Which ();
 
 subtest 'LibPkgConf' => sub {
 
@@ -62,8 +63,6 @@ subtest 'CommandLine' => sub {
 
   my %which;
 
-  require File::Which;
-  
   my $mock = Test2::Mock->new(
     class => 'File::Which',
     override => [

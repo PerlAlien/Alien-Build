@@ -22,7 +22,7 @@ foreach my $module (@list)
   my $test = lc $module;
   $test =~ s/::/_/g;
   $test = "t/$test.t";
-  print $fh "ok(-f '$test', 'test for $module');\n";
+  print $fh "ok -f '$test', 'test for $module';\n";
 }
 
 print $fh <<'EOM';
