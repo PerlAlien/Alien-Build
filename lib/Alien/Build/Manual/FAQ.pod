@@ -326,7 +326,7 @@ dzil plugin L<Dist::Zilla::Plugin::AlienBuild>.
 If you see an error like this:
 
  Cannot find either a share directory or a ConfigData module for Alien::libfoo.
- (Alien::libfoo loaded from lib/Alien/libfoo.pm
+ (Alien::libfoo loaded from lib/Alien/libfoo.pm)
  Please see https://metacpan.org/pod/distribution/Alien-Build/lib/Alien/Build/Manual/FAQ.pod#Cannot-find-either-a-share-directory-or-a-ConfigData-module
  Can't locate Alien/libfoo/ConfigData.pm in @INC (you may need to install the Alien::libfoo::ConfigData module) (@INC contains: ...)
 
