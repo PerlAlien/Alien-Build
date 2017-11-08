@@ -502,8 +502,19 @@ sub config {
   }
 
   my $config = $class . '::ConfigData';
-  eval "require $config";
-  warn $@ if $@;
+  my $pm = "$class/ConfigData.pm";
+  $pm =~ s{::}{/}g;
+  eval { require $pm };
+  
+  if($@)
+  {
+    warn "Cannot find either a share directory or a ConfigData module for $class.\n";
+    my $pm = "$class.pm";
+    $pm =~ s{::}{/}g;
+    warn "($class loaded from $INC{$pm})\n" if $INC{$pm};
+    warn "Please see https://metacpan.org/pod/distribution/Alien-Build/lib/Alien/Build/Manual/FAQ.pod#Cannot-find-either-a-share-directory-or-a-ConfigData-module\n";
+    die $@;
+  }
 
   return $config->config(@_);
 }

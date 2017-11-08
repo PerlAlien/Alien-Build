@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improve diagnostic for partially installed Alien error
 
 1.32      2017-11-03 13:15:35 -0400
   - Add ALIEN_INSTALL_NETWORK environment variable.  Set to false if you don't
