@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add env_interpolate meta property.
 
 1.33_01   2017-11-08 11:54:19 -0500
   - Improve diagnostic for partially installed Alien error

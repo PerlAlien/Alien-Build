@@ -150,6 +150,13 @@ but if you do not follow this rule your recipe will likely be broken.
 
     Environment variables to override during the build stage.
 
+- env\_interpolate
+
+    Environment variable values will be interpolated with helpers.  Example:
+
+        meta->prop->{env_interpolate} = 1;
+        meta->prop->{env}->{PERL} = '%{perl}';
+
 - local\_source
 
     Set to true if source code package is available locally.  (that is not fetched

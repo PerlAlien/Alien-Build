@@ -204,6 +204,13 @@ Same as C<destdir_filter> except applies to C<build_ffi> instead of C<build>.
 
 Environment variables to override during the build stage.
 
+=item env_interpolate
+
+Environment variable values will be interpolated with helpers.  Example:
+
+ meta->prop->{env_interpolate} = 1;
+ meta->prop->{env}->{PERL} = '%{perl}';
+
 =item local_source
 
 Set to true if source code package is available locally.  (that is not fetched
@@ -1258,8 +1265,19 @@ sub build
       local $CWD;
       delete $ENV{DESTDIR} unless $self->meta_prop->{destdir};
 
-      %ENV = (%ENV, %{ $self->meta_prop->{env} || {} });
-      %ENV = (%ENV, %{ $self->install_prop->{env} || {} });
+      my %env_meta = %{ $self->meta_prop   ->{env} || {} };
+      my %env_inst = %{ $self->install_prop->{env} || {} };
+
+      if($self->meta_prop->{env_interpolate})
+      {
+        foreach my $key (keys %env_meta)
+        {
+          $env_meta{$key} = $self->meta->interpolator->interpolate($env_meta{$key});
+        }
+      }
+
+      %ENV = (%ENV, %env_meta);
+      %ENV = (%ENV, %env_inst);
 
       my $destdir;
 

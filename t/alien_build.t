@@ -9,6 +9,8 @@ use File::chdir;
 use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 
+=pod
+
 subtest 'simple new' => sub {
 
   subtest 'basic basic' => sub {
@@ -1579,6 +1581,36 @@ subtest 'do not allow network install' => sub {
     my $build = alienfile_ok q{ use alienfile; probe sub { 'system'}; meta->prop->{network} = 0; meta->prop->{local_source} = 0; };
     alien_install_type_is 'system';
   };
+  
+};
+
+=cut
+
+alien_subtest 'interpolate env overrides' => sub {
+  
+  local $ENV{FOO1} = 'oxo';
+  
+  my $build = alienfile_ok q{
+    use alienfile;
+
+    meta->prop->{env_interpolate} = 1;
+    meta->prop->{env}->{FOO1} = '%{foo1}';
+    meta->interpolator->add_helper( foo1 => sub { 'xox' } );
+    
+    probe sub { 'share' };
+    
+    share {
+
+      plugin 'Download::Foo';
+
+      build sub {
+        die 'wrong value' if $ENV{FOO1} ne 'xox';
+      };
+    };
+    
+  };
+  
+  alien_build_ok;
   
 };
 
