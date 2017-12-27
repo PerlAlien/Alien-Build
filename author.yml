@@ -127,6 +127,7 @@ pod_spelling_system:
     - Leto
     - LETO
     - unsetting
+    - ConfigData
 
 pod_coverage:
   skip: 0

@@ -29,7 +29,7 @@ cache:
 
 env:
   global:
-    - ALIEN_BASE_NO_ABMB=1
+    - PERL_USE_UNSAFE_INC=0
   matrix:
     - INSTALL_OPTIONAL="File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML Env::ShellWords Archive::Tar Archive::Zip Devel::Hide"
     - INSTALL_OPTIONAL=""
