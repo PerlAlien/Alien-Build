@@ -651,7 +651,7 @@ sub xs_ok
         if(my $error = $@)
         {
           $ok = 0;
-          push @diag, '  DynaLoader failed';
+          push @diag, '  XSLoader failed';
           push @diag, "    $error";
         }
       }
