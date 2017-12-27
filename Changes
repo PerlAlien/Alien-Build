@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.34_01   2017-12-27 10:30:10 -0500
   - Add env_interpolate meta property.
   - PkgConfig plugins now attempt to set PKG_CONFIG environment variable during build
 
