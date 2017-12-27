@@ -9,8 +9,6 @@ use File::chdir;
 use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 
-=pod
-
 subtest 'simple new' => sub {
 
   subtest 'basic basic' => sub {
@@ -1583,8 +1581,6 @@ subtest 'do not allow network install' => sub {
   };
   
 };
-
-=cut
 
 alien_subtest 'interpolate env overrides' => sub {
   
