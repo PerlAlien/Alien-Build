@@ -145,7 +145,6 @@ sub init
 #
 #          my($filename) = $url =~ m{/([^/]+)$};
 #          $filename = 'unknown' if (! defined $filename) || ($filename eq '');
-#          $DB::single = 1;
 #          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -o => $filename, $url) };
 #          $first_error = $@;
 #          if($first_error eq '')

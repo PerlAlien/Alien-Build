@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 use Carp ();
+use File::Which ();
 use Env qw( @PKG_CONFIG_PATH );
 
 # ABSTRACT: Probe system and determine library or tool properties using PkgConfig.pm
@@ -77,6 +78,25 @@ sub init
 {
   my($self, $meta) = @_;
   
+  unless(defined $meta->prop->{env}->{PKG_CONFIG})
+  {
+    # TODO: Better would be to to "execute" lib/PkgConfig.pm
+    # as that should always be available, and will match the
+    # exact version of PkgConfig.pm that we are using here.
+    # there are a few corner cases to deal with before we
+    # can do this.  What is here should handle most use cases.
+    my $command_line = 
+      File::Which::which('ppkg-config')
+      ? 'ppkg-config'
+      : File::Which::which('pkg-config.pl')
+        ? 'pkg-config.pl'
+        : File::Which::which('pkg-config')
+          ? 'pkg-config'
+          : undef;
+    $meta->prop->{env}->{PKG_CONFIG} = $command_line
+      if defined $command_line;
+  }
+
   if($self->register_prereqs)
   {
     $meta->add_requires('configure' => 'PkgConfig' => _min_version);

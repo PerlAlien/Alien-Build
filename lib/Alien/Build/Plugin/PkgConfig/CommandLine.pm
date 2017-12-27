@@ -102,6 +102,11 @@ sub init
   
   my $pkgconf = $self->bin_name;
 
+  unless(defined $meta->prop->{env}->{PKG_CONFIG})
+  {
+    $meta->prop->{env}->{PKG_CONFIG} = $pkgconf;
+  }
+
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
   
   my @probe = map { [$pkgconf, '--exists', $_] } ($pkg_name, @alt_names);

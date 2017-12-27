@@ -1,4 +1,5 @@
 use Test2::V0 -no_srand => 1;
+use lib 'corpus/lib';
 use Test::Alien::Build;
 use Alien::Build::Plugin::PkgConfig::LibPkgConf;
 use Path::Tiny qw( path );
@@ -221,6 +222,38 @@ subtest 'prereqs' => sub {
     );
 
   };
+};
+
+alien_subtest 'set env' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+
+    plugin 'PkgConfig::LibPkgConf' => ( pkg_name => 'totally-bogus-pkg-config-name' );
+
+    probe sub { 'share' };
+    
+    share {
+
+      plugin 'Download::Foo';
+
+      build sub {
+        my($build) = @_;
+        $build->log("PKG_CONFIG = $ENV{PKG_CONFIG}");
+        1;
+      };
+      
+      meta->around_hook(
+        gather_share => sub {
+          1;
+        },
+      );
+    };
+    
+  };
+  
+  alien_build_ok;
+  
 };
 
 done_testing;

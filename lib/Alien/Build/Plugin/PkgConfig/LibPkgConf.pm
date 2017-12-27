@@ -73,6 +73,20 @@ sub init
 {
   my($self, $meta) = @_;
 
+  unless(defined $meta->prop->{env}->{PKG_CONFIG})
+  {
+    # TODO: this doesn't yet find pkgconf in the bin dir of a share
+    # install.
+    my $command_line = 
+      File::Which::which('pkgconf')
+      ? 'pkgconf'
+      : File::Which::which('pkg-config')
+        ? 'pkg-config'
+        : undef;
+    $meta->prop->{env}->{PKG_CONFIG} = $command_line
+      if defined $command_line;
+  }
+
   if($self->register_prereqs)
   {
     # Also update in Neotiate.pm
