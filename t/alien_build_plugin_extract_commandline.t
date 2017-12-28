@@ -46,6 +46,14 @@ subtest 'archive' => sub {
         ($dir, $@);
       };
 
+      is $error, '', 'no error from extract';
+      if($error ne '')
+      {
+        diag "[output   ]$out";
+        diag "[exception]$error";
+        return;
+      }
+
       note $out if $out ne '';
       note $error if $error;
       
