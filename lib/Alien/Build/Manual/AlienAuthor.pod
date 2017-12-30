@@ -241,7 +241,7 @@ a list of some of the plugin categories.
 For now, I will just show you how to write the L<alienfile> for libfoo 
 above using L<Alien::Build::Plugin::Build::Autoconf>, 
 L<Alien::Build::Plugin::PkgConfig::Negotiate>, 
-L<Alien::Buld::Plugin::Download::Negotiate>, and
+L<Alien::Build::Plugin::Download::Negotiate>, and
 L<Alien::Build::Plugin::Extract::Negotiate>
 
  use alienfile;
