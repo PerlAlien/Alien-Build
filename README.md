@@ -809,6 +809,8 @@ José Joaquín Atria (JJATRIA)
 
 Duke Leto (LETO)
 
+Shoichi Kaji (SKAJI)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2017 by Graham Ollis.
