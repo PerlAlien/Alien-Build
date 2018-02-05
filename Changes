@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.36      2018-02-05 10:51:59 -0500
+  - Production release identical to 1.35_01
+
 1.35_01   2017-12-28 12:42:56 -0500
   - Improve diagnostic in command line extraction test
 
