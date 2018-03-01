@@ -83,7 +83,8 @@ sub init
         type    => 'html',
         charset => $charset,
         base    => "$base",
-        content => $res->decoded_content,
+        content => $res->decoded_content || $res->content,
+        _res    => $res,
       };
     }
     elsif($type eq 'text/ftp-dir-listing')
@@ -91,7 +92,7 @@ sub init
       return {
         type => 'dir_listing',
         base => "$base",
-        content => $res->decoded_content,
+        content => $res->decoded_content || $res->content,
       };
     }
     else

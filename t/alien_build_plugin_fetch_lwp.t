@@ -107,7 +107,7 @@ subtest 'fetch' => sub {
             field base    => match qr!^$type:/!;
             field content => match qr!foo-1\.00\.tar\.gz!;
           },
-         );
+         ) || diag _dump($res);
       };
   
       subtest 'file' => sub {

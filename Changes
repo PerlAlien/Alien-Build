@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Additional testing diagnostics
 
 1.37      2018-02-23 10:13:44 -0500
   - Fixed cmake test which would fail without a C++ compiler (gh#53 ppisar++)
