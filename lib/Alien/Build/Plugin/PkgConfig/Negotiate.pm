@@ -67,6 +67,8 @@ sub pick
   
   if(Alien::Build::Plugin::PkgConfig::CommandLine->available)
   {
+    # TODO: determine environment or flags necessary for using pkg-config
+    # on solaris 64 bit.
     if(! (_perl_config('osname') eq 'solaris' && _perl_config('ptrsize') == 8))
     {
       return 'PkgConfig::CommandLine';
