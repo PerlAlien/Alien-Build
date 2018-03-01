@@ -84,7 +84,6 @@ sub init
         charset => $charset,
         base    => "$base",
         content => $res->decoded_content || $res->content,
-        _res    => $res,
       };
     }
     elsif($type eq 'text/ftp-dir-listing')
