@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.39      2018-03-09 05:51:47 -0500
+  - Production release identical to 1.38_01
+
 1.38_01   2018-03-01 03:27:29 -0500
   - Additional testing diagnostics
 
