@@ -1,4 +1,5 @@
 use Test2::V0 -no_srand => 1;
+use Test2::Mock;
 use Test::Alien::Build;
 use Alien::Build;
 use Path::Tiny qw( path );
@@ -516,6 +517,185 @@ subtest 'start_url' => sub {
     },
     'build object'
   );
+
+};
+
+subtest 'before' => sub {
+
+  my $mock = Test2::Mock->new(
+    class => 'Alien::Build::Meta',
+  );
+
+  my @before_hook;
+
+  $mock->around(before_hook => sub {
+    my $orig = shift;
+    my (undef, $name, $code) = @_;
+    push @before_hook, [$name, $code];
+    $orig->(@_);
+  });
+
+  $mock->around(new => sub {
+    my $orig = shift;
+    @before_hook = ();
+    $orig->(@_);
+  });
+
+  subtest 'before build in share' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+    
+      share {
+        before 'build' => sub {
+          return 42;
+        };
+        build [];
+      };
+    };
+
+    is $before_hook[0][0], 'build';
+
+  };
+
+  subtest 'before build in share>ffi' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+    
+      share {
+        ffi {
+          before 'build' => sub {
+            return 42;
+          };
+          build [];
+        };
+      };
+    };
+
+    is $before_hook[0][0], 'build_ffi';
+
+  };
+
+  subtest 'before probe in any' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      before 'probe' => sub {};
+      probe [];
+    };
+
+    is $before_hook[0][0], 'probe';
+
+  };
+
+  subtest 'before gather any' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      before 'gather' => sub {};
+      gather [];
+    };
+
+    is $before_hook[1][0], 'gather_system';
+    is $before_hook[0][0], 'gather_share';
+
+  };
+
+  subtest 'before gather share' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      share {
+        before 'gather' => sub {};
+        gather [];
+      };
+    };
+
+    is $before_hook[0][0], 'gather_share';
+
+  };
+
+  subtest 'before gather ffi' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      share {
+        ffi {
+          before 'gather' => sub {};
+          gather [];
+        };
+      };
+    };
+
+    is $before_hook[0][0], 'gather_ffi';
+
+  };
+
+  subtest 'before gather system' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      sys {
+        before 'gather' => sub {};
+        gather [];
+      };
+    };
+
+    is $before_hook[0][0], 'gather_system';
+
+  };
+
+  subtest 'before build in sys' => sub {
+  
+    eval {
+      alienfile q{
+        use alienfile;
+    
+        sys {
+          before 'build' => sub {
+            return 42;
+          };
+          build [];
+        };
+      };
+    };
+    like $@, qr/before build is not allowed in sys block/, 'not allowed in sys block';
+  
+  };
+  
+  subtest 'before second argument must be a code ref' => sub {
+  
+  
+    eval { 
+      alienfile q{
+        use alienfile;
+    
+        share {
+          before 'build' => 1;
+          build [];
+        };
+      };
+    };
+    like $@, qr/before build argument must be a code reference/, 'must be code reference';
+  
+  };
+  
+  subtest 'arbitrary stages not allowed' => sub {
+
+    eval { 
+      alienfile q{
+        use alienfile;
+    
+        share {
+          before 'bogus' => sub {};
+          build [];
+        };
+      };
+    };
+    like $@, qr/No such stage bogus/, 'no bogus allowed';
+  };
+
 
 };
 

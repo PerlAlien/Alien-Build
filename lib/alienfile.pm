@@ -73,7 +73,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test start_url );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test start_url before );
 
 =head1 DIRECTIVES
 
@@ -657,6 +657,72 @@ sub test
   {
     die "unknown phase: $phase";
   }
+}
+
+=head2 before
+
+ before $stage => \&code;
+
+Execute the given code before the given stage.  Stage should be one of
+C<probe>, C<download>, C<fetch>, C<decode>, C<prefer>, C<extract>,
+C<patch>, C<build>, C<test>, and C<gather>.
+
+The before directive is only legal in the same blocks as the stage would
+normally be legal in.  For example, you can't do this:
+
+ use alienfile;
+ 
+ sys {
+   before 'build' => sub {
+     ...
+   };
+ };
+
+Because a C<build> wouldn't be legal inside a C<sys> block.
+
+=cut
+
+my %modifiers = (
+  probe    => { any   => 'probe'    },
+  download => { share => 'download' },
+  fetch    => { share => 'fetch'    },
+  decode   => { share => 'fetch'    },
+  prefer   => { share => 'prefer'   },
+  extract  => { share => 'extract'  },
+  patch    => { share => 'patch$'   },
+  build    => { share => 'build$'   },
+  test     => { share => 'test$'    },
+  # Note: below special case gather_ffi for the ffi block :P
+  gather   => { share => 'gather_share', system => 'gather_system', any => 'gather_share,gather_system' },
+);
+
+sub before
+{
+  my($stage, $sub) = @_;
+
+  die "No such stage $stage" unless defined $modifiers{$stage};
+  die "before $stage argument must be a code reference" unless defined $sub && ref($sub) eq 'CODE';
+
+  my $caller = caller;
+  my $meta = $caller->meta;
+  die "before $stage is not allowed in sys block" unless defined $modifiers{$stage}->{$meta->{phase}};
+
+  my $suffix = $meta->{build_suffix};
+  if($suffix eq '_ffi' && $stage eq 'gather')
+  {
+    $meta->before_hook('gather_ffi' => $sub);
+  }
+
+  foreach my $hook (
+    map { split /,/, $_ }                    # split on , for when multiple hooks must be attachewd (gather in any)
+    map { s/\$/$suffix/; $_ }                # substitute $ at the end for a suffix (_ffi) if any
+    map { "$_" }                             # copy so that we don't subregex on the original
+    $modifiers{$stage}->{$meta->{phase}})    # get the list of modifiers
+  {
+    $meta->before_hook($hook => $sub);
+  }
+
+  return;  
 }
 
 sub import
