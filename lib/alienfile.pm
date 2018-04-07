@@ -73,7 +73,7 @@ for those libraries.
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test start_url before );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test start_url before after );
 
 =head1 DIRECTIVES
 
@@ -696,21 +696,23 @@ my %modifiers = (
   gather   => { share => 'gather_share', system => 'gather_system', any => 'gather_share,gather_system' },
 );
 
-sub before
+sub _add_modifier
 {
-  my($stage, $sub) = @_;
+  my($type, $stage, $sub) = @_;
 
-  die "No such stage $stage" unless defined $modifiers{$stage};
-  die "before $stage argument must be a code reference" unless defined $sub && ref($sub) eq 'CODE';
+  my $method = "${type}_hook";
+
+  Carp::croak "No such stage $stage" unless defined $modifiers{$stage};
+  Carp::croak "$type $stage argument must be a code reference" unless defined $sub && ref($sub) eq 'CODE';
 
   my $caller = caller;
   my $meta = $caller->meta;
-  die "before $stage is not allowed in sys block" unless defined $modifiers{$stage}->{$meta->{phase}};
+  Carp::croak "$type $stage is not allowed in sys block" unless defined $modifiers{$stage}->{$meta->{phase}};
 
   my $suffix = $meta->{build_suffix};
   if($suffix eq '_ffi' && $stage eq 'gather')
   {
-    $meta->before_hook('gather_ffi' => $sub);
+    $meta->$method('gather_ffi' => $sub);
   }
 
   foreach my $hook (
@@ -719,10 +721,47 @@ sub before
     map { "$_" }                             # copy so that we don't subregex on the original
     $modifiers{$stage}->{$meta->{phase}})    # get the list of modifiers
   {
-    $meta->before_hook($hook => $sub);
+    $meta->$method($hook => $sub);
   }
 
   return;  
+}
+
+sub before
+{
+  my($stage, $sub) = @_;
+  @_ = ('before', @_);
+  goto &alienfile::_add_modifier;
+}
+
+=head2 after
+
+ after $stage => \&code;
+
+Execute the given code after the given stage.  Stage should be one of
+C<probe>, C<download>, C<fetch>, C<decode>, C<prefer>, C<extract>,
+C<patch>, C<build>, C<test>, and C<gather>.
+
+The after directive is only legal in the same blocks as the stage would
+normally be legal in.  For example, you can't do this:
+
+ use alienfile;
+ 
+ sys {
+   after 'build' => sub {
+     ...
+   };
+ };
+
+Because a C<build> wouldn't be legal inside a C<sys> block.
+
+=cut
+
+sub after
+{
+  my($stage, $sub) = @_;
+  @_ = ('after', @_);
+  goto &alienfile::_add_modifier;
 }
 
 sub import

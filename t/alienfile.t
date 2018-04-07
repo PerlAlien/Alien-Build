@@ -699,4 +699,184 @@ subtest 'before' => sub {
 
 };
 
+
+subtest 'after' => sub {
+
+  my $mock = Test2::Mock->new(
+    class => 'Alien::Build::Meta',
+  );
+
+  my @after_hook;
+
+  $mock->around(after_hook => sub {
+    my $orig = shift;
+    my (undef, $name, $code) = @_;
+    push @after_hook, [$name, $code];
+    $orig->(@_);
+  });
+
+  $mock->around(new => sub {
+    my $orig = shift;
+    @after_hook = ();
+    $orig->(@_);
+  });
+
+  subtest 'after build in share' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+    
+      share {
+        after 'build' => sub {
+          return 42;
+        };
+        build [];
+      };
+    };
+
+    is $after_hook[0][0], 'build';
+
+  };
+
+  subtest 'after build in share>ffi' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+    
+      share {
+        ffi {
+          after 'build' => sub {
+            return 42;
+          };
+          build [];
+        };
+      };
+    };
+
+    is $after_hook[0][0], 'build_ffi';
+
+  };
+
+  subtest 'after probe in any' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      after 'probe' => sub {};
+      probe [];
+    };
+
+    is $after_hook[0][0], 'probe';
+
+  };
+
+  subtest 'after gather any' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      after 'gather' => sub {};
+      gather [];
+    };
+
+    is $after_hook[1][0], 'gather_system';
+    is $after_hook[0][0], 'gather_share';
+
+  };
+
+  subtest 'after gather share' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      share {
+        after 'gather' => sub {};
+        gather [];
+      };
+    };
+
+    is $after_hook[0][0], 'gather_share';
+
+  };
+
+  subtest 'after gather ffi' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      share {
+        ffi {
+          after 'gather' => sub {};
+          gather [];
+        };
+      };
+    };
+
+    is $after_hook[0][0], 'gather_ffi';
+
+  };
+
+  subtest 'after gather system' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      sys {
+        after 'gather' => sub {};
+        gather [];
+      };
+    };
+
+    is $after_hook[0][0], 'gather_system';
+
+  };
+
+  subtest 'after build in sys' => sub {
+  
+    eval {
+      alienfile q{
+        use alienfile;
+    
+        sys {
+          after 'build' => sub {
+            return 42;
+          };
+          build [];
+        };
+      };
+    };
+    like $@, qr/after build is not allowed in sys block/, 'not allowed in sys block';
+  
+  };
+  
+  subtest 'after second argument must be a code ref' => sub {
+  
+  
+    eval { 
+      alienfile q{
+        use alienfile;
+    
+        share {
+          after 'build' => 1;
+          build [];
+        };
+      };
+    };
+    like $@, qr/after build argument must be a code reference/, 'must be code reference';
+  
+  };
+  
+  subtest 'arbitrary stages not allowed' => sub {
+
+    eval { 
+      alienfile q{
+        use alienfile;
+    
+        share {
+          after 'bogus' => sub {};
+          build [];
+        };
+      };
+    };
+    like $@, qr/No such stage bogus/, 'no bogus allowed';
+  };
+
+
+};
+
 done_testing;
