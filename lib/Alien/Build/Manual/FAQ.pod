@@ -255,6 +255,27 @@ You can also patch using Perl if that is easier:
    build [ ... ];
  };
 
+=head2 The flags that a plugin produces are wrong!
+
+Sometimes, the compiler or linker flags that the PkgConfig plugin comes up with are not quite
+right.  (Frequently this is actually because a package maintainer is providing a broken
+C<.pc> file).  (Other plugins may also have problems).  You could replace the plugin's C<gather> step
+but a better way is to provide a subroutine callback to be called after the gather stage
+is complete.  You can do this with the L<alienfile> C<after> directive:
+
+ use alienfile;
+ 
+ plugin 'PlgConfig' => 'libfoo';
+ 
+ share {
+   ...
+   after 'gather' => sub {
+     my($build) = @_;
+     $build->runtime_prop->{libs}        .= " -lbar";        # libfoo also requires libbar
+     $build->runtime_prop->{libs_static} .= " -lbar -lbaz";  # libfoo also requires libbaz under static linkage
+   };
+ };
+
 =head2 599 Internal Exception errors downloading packages from the internet
 
  Alien::Build::Plugin::Fetch::HTTPTiny> 599 Internal Exception fetching http://dist.libuv.org/dist/v1.15.0
