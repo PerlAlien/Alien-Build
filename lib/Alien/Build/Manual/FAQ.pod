@@ -276,6 +276,23 @@ is complete.  You can do this with the L<alienfile> C<after> directive:
    };
  };
 
+Sometimes you only need to do this on certain platforms.  You can adjust the logic based on C<$^O>
+appropriately.
+
+ use alienfile;
+ 
+ plugin 'PlgConfig' => 'libfoo';
+ 
+ share {
+   ...
+   after 'gather' => sub {
+     my($build) = @_;
+     if($^O eq 'MSWin32') {
+       $build->runtime_prop->{libs} .= " -lpsapi";
+     }
+   };
+ };
+
 =head2 599 Internal Exception errors downloading packages from the internet
 
  Alien::Build::Plugin::Fetch::HTTPTiny> 599 Internal Exception fetching http://dist.libuv.org/dist/v1.15.0
