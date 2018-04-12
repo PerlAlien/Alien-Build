@@ -46,6 +46,9 @@ EOM
 
 close $fh;
 
+system 'perltidy -b -i=2 -l=900 t/01_use.t';
+unlink 't/01_use.t.bak';
+
 
 {
   sub run
