@@ -555,6 +555,7 @@ subtest 'before' => sub {
     };
 
     is $before_hook[0][0], 'build';
+    ok($build->requires('configure')->{'Alien::Build'} >= '1.40', 'before directive requires 1.40');
 
   };
 
@@ -735,6 +736,7 @@ subtest 'after' => sub {
     };
 
     is $after_hook[0][0], 'build';
+    ok($build->requires('configure')->{'Alien::Build'} >= '1.40', 'after directive requires 1.40');
 
   };
 

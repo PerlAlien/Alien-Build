@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - before and after directives in alienfile triggers requirement on Alien::Build 1.40
 
 1.40_01   2018-04-12 09:21:05 -0400
   - Add before and after directives to alienfile syntax

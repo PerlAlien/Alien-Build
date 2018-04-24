@@ -709,6 +709,8 @@ sub _add_modifier
   my $meta = $caller->meta;
   Carp::croak "$type $stage is not allowed in sys block" unless defined $modifiers{$stage}->{$meta->{phase}};
 
+  $meta->add_requires('configure' => 'Alien::Build' => '1.40');
+
   my $suffix = $meta->{build_suffix};
   if($suffix eq '_ffi' && $stage eq 'gather')
   {
