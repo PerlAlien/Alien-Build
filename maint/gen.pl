@@ -22,7 +22,7 @@ foreach my $module (@list)
   my $test = lc $module;
   $test =~ s/::/_/g;
   $test = "t/$test.t";
-  print $fh "ok -f '$test', 'test for $module';\n";
+  printf $fh "ok -f %-55s %s\n", "'$test',", "'test for $module';";
 }
 
 print $fh <<'EOM';
@@ -46,8 +46,8 @@ EOM
 
 close $fh;
 
-system 'perltidy -b -i=2 -l=900 t/01_use.t';
-unlink 't/01_use.t.bak';
+#system 'perltidy -b -i=2 -l=900 t/01_use.t';
+#unlink 't/01_use.t.bak';
 
 
 {
