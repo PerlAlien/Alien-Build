@@ -347,7 +347,8 @@ reuse the previous install if it is still sufficient.
 
 =item prefix
 
-The prefix for the previous install.
+The prefix for the previous install.  Versions prior to 1.42 unfortunately
+had this in typo form of C<preifx>.
 
 =item runtime
 

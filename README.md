@@ -811,6 +811,8 @@ Duke Leto (LETO)
 
 Shoichi Kaji (SKAJI)
 
+Shawn Laffan (SLAFFAN)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2017 by Graham Ollis.

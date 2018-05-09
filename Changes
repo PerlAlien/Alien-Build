@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Corrected typo for install_prop->{old}->{prefix} (had been preifx)
 
 1.41      2018-04-24 06:19:18 -0400
   - before and after directives in alienfile triggers requirement on Alien::Build 1.40
