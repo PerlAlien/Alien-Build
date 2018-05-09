@@ -152,7 +152,7 @@ sub mm_args
         unless($@)
         {
           $self->build->install_prop->{old}->{runtime} = $old_runtime;
-          $self->build->install_prop->{old}->{preifx}  = $old_prefix;
+          $self->build->install_prop->{old}->{prefix}  = $old_prefix;
         }
       }
     }
