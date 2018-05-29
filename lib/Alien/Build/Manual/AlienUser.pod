@@ -39,8 +39,8 @@ What follows are the main use cases.
  my $build = Module::Build->new(
    ...
    configure_requires => {
-     'Alien::Build::Wrapper' => '0',
-     'Alien::Foo'            => '0',
+     'Alien::Base::Wrapper' => '0',
+     'Alien::Foo'           => '0',
      ...
    },
    Alien::Base::Wrapper->mb_args
@@ -61,8 +61,8 @@ prerequisite.
  WriteMakefile(
    ...
    CONFIGURE_REQUIRES => {
-     'Alien::Build::Wrapper' => '0',
-     'Alien::Foo'            => '0',
+     'Alien::Base::Wrapper' => '0',
+     'Alien::Foo'           => '0',
    },
    Alien::Base::Wrapper->mm_args
    ...

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Documentation fixes
 
 1.42      2018-05-09 08:19:18 -0400
   - Corrected typo for install_prop->{old}->{prefix} (had been preifx)
