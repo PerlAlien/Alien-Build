@@ -94,7 +94,7 @@ a configure prerequisite.
  );
 
 Not all L<Alien>s provide dynamic libraries, but those that do can be
-used by L<FFI::Raw> or L<FFI::Platypus>.  Unlike an XS module, these
+used by L<FFI::Platypus>.  Unlike an XS module, these
 need to be a regular run time prerequisite.
 
 =head2 Inline::C

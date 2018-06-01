@@ -48,7 +48,6 @@ After 0.15 Test-Alien was merged with Alien-Build
   - Fixed (hopefully) test failure in
     test_alien_synthetic_libarchive.t
     when FFI::Platypus was installed
-    but FFI::Raw was not
 
 0.02      2015-12-25 22:18:53 -0700
   - Fixes for Windows.
