@@ -69,6 +69,8 @@ sub pick
   {
     # TODO: determine environment or flags necessary for using pkg-config
     # on solaris 64 bit.
+    # Some advice on pkg-config and 64 bit Solaris
+    # https://docs.oracle.com/cd/E53394_01/html/E61689/gplhi.html
     if(! (_perl_config('osname') eq 'solaris' && _perl_config('ptrsize') == 8))
     {
       return 'PkgConfig::CommandLine';
