@@ -665,7 +665,7 @@ sub checkpoint
   my($self) = @_;
   my $root = $self->root;
   _path("$root/state.json")->spew(
-    JSON::PP->new->pretty->encode({
+    JSON::PP->new->pretty->canonical(1)->encode({
       install => $self->install_prop,
       runtime => $self->runtime_prop,
       args    => $self->{args},
