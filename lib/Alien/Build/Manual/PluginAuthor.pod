@@ -366,7 +366,7 @@ This is the same as C<build>, except it fires only on a FFI build.
 
 =head2 gather_share hook
 
- $meta->register_hook( register_hook => sub {
+ $meta->register_hook( gather_share => sub {
    my($build) = @_;
    ... 
  });
@@ -376,7 +376,7 @@ install.
 
 =head2 gather_ffi hook
 
- $meta->register_hook( register_ffi => sub {
+ $meta->register_hook( gather_ffi => sub {
    my($build) = @_;
    ... 
  });
