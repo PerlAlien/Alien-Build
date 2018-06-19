@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added Alien::Build::Plugin::Prefer::GoodVersion
 
 1.43      2018-06-03 06:41:28 -0400
   - Documentation fixes
