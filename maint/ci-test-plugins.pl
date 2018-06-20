@@ -18,10 +18,11 @@ sub run
 
 my @mods = qw(
   Alien::Build::MB
-  Alien::Build::Plugin::Fetch::Cache
+  Alien::Build::Plugin::Build::Premake5
+  Alien::Build::Plugin::Decode::SourceForge
+  Alien::Build::Plugin::Probe::Override
   Alien::Build::Plugin::Fetch::Prompt
   Alien::Build::Plugin::Fetch::Rewrite
-  Alien::Build::Plugin::Probe::GnuWin32
 );
 
 foreach my $mod (@mods)
