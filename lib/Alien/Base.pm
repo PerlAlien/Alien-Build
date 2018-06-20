@@ -135,6 +135,8 @@ L<Alien::Build> + L<alienfile>.
 sub import {
   my $class = shift;
 
+  return if $class eq __PACKAGE__;
+
   return if $class->runtime_prop;
 
   return if $class->install_type('system');
@@ -757,6 +759,14 @@ then this will return undef.
   sub runtime_prop
   {
     my($class) = @_;
+
+    if(ref($class))
+    {
+      # called as an instance method.
+      my $self = $class;
+      $class = ref $self;
+      return $self->{_alt}->{runtime_prop} if defined $self->{_alt};
+    }
   
     return $alien_build_config_cache{$class} if
       exists $alien_build_config_cache{$class};
@@ -775,6 +785,82 @@ then this will return undef.
       $config;
     };
   }
+}
+
+=head2 alt
+
+ my $new_alien = Alien::MyLibrary->alt($alt_name);
+ my $new_alien = $old_alien->alt($alt_name);
+
+Returns an L<Alien::Base> instance with the alternate configuration.
+
+Some packages come with multiple libraries, and multiple C<.pc> files to
+use with them.  This method can be used with C<pkg-config> plugins to
+access different configurations.  (It could also be used with non-pkg-config
+based packages too, though there are not as of this writing any build
+time plugins that take advantage of this feature).
+
+From your L<alienfile>
+
+ use alienfile;
+ 
+ plugin 'PkgConfig' => (
+   pkg_name => [ 'libfoo', 'libbar', ],
+ );
+
+Then in your base class:
+
+ package Alien::Libfoo;
+ 
+ use base qw( Alien::Base );
+ use Role::Tiny::With qw( with );
+ 
+ with 'Alien::Role::Alt';
+ 
+ 1;
+
+Then you can use it:
+
+ use Alien::Libfoo;
+ 
+ my $cflags = Alien::Libfoo->alt('foo1')->cflags;
+ my $libs   = Alien::Libfoo->alt('foo1')->libs;
+
+=cut
+
+sub alt
+{
+  my($old, $name) = @_;
+  my $new = ref $old ? (ref $old)->new : $old->new;
+
+  my $orig;
+
+  if(ref($old) && defined $old->{_alt})
+  { $orig = $old->{_alt}->{orig} }
+  else
+  { $orig = $old->runtime_prop }
+
+  require Storable;
+  my $runtime_prop = Storable::dclone($orig);
+  
+  if($runtime_prop->{alt}->{$name})
+  {
+    foreach my $key (keys %{ $runtime_prop->{alt}->{$name} })
+    {
+      $runtime_prop->{$key} = $runtime_prop->{alt}->{$name}->{$key};
+    }
+  }
+  else
+  {
+    Carp::croak("no such alt: $name");
+  }
+
+  $new->{_alt} = {
+    runtime_prop => $runtime_prop,
+    orig         => $orig,
+  };   
+
+  $new;
 }
 
 1;
