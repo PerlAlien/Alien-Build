@@ -1,4 +1,4 @@
-package Alien::libfoo2;
+package Alien::libfoo3;
 
 use strict;
 use warnings;
