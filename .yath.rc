@@ -1,5 +1,5 @@
 [test]
+-B
 -j 5
 --no-unsafe-inc
 --qvf
-

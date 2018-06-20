@@ -13,5 +13,10 @@ cd Alien-Build-*
 
 perl Makefile.PL
 make
-make test TEST_VERBOSE=1
+if perl -e '($] >= 5.010) or exit 2'; then
+  prove -bvm t/00_diag.t
+  yath test
+else
+  make test TEST_VERBOSE=1
+fi
 make install

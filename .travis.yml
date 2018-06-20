@@ -6,6 +6,7 @@ install:
   - ./maint/travis-dzil nop
   - ./maint/travis-install-deps
   - echo $INSTALL_OPTIONAL | cpanm -n
+  - (perl -e '($] >= 5.010) or exit 2' && cpanm -n Test2::Harness) || true
 
 perl:
   - "5.8"
