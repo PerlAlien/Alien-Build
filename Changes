@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add alt method to Alien::Base.  This merges the capabilities from
+    Alien::Role::Alt into core, making that role now obsolete.
 
 1.44_01   2018-06-20 06:36:57 -0600
   - Added Alien::Build::Plugin::Prefer::GoodVersion
