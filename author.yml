@@ -133,6 +133,7 @@ pod_spelling_system:
     - Shoichi
     - Laffan
     - SLAFFAN
+    - autotools
 
 
 pod_coverage:
