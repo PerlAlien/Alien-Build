@@ -810,7 +810,7 @@ From your L<alienfile>
 
 Then in your base class:
 
- package Alien::Libfoo;
+ package Alien::MyLibrary;
  
  use base qw( Alien::Base );
  use Role::Tiny::With qw( with );
@@ -821,10 +821,10 @@ Then in your base class:
 
 Then you can use it:
 
- use Alien::Libfoo;
+ use Alien::MyLibrary;
  
- my $cflags = Alien::Libfoo->alt('foo1')->cflags;
- my $libs   = Alien::Libfoo->alt('foo1')->libs;
+ my $cflags = Alien::MyLibrary->alt('foo1')->cflags;
+ my $libs   = Alien::MyLibrary->alt('foo1')->libs;
 
 =cut
 
@@ -861,6 +861,40 @@ sub alt
   };   
 
   $new;
+}
+
+=head2 alt_names
+
+ my @alt_names = Alien::MyLibrary->alt_names
+
+Returns the list of all available alternative configuration names.
+
+=cut
+
+sub alt_names
+{
+  my($class) = @_;
+  my $alts = $class->runtime_prop->{alt};
+  defined $alts
+    ? sort keys %$alts
+    : ();
+}
+
+=head2 alt_exists
+
+ my $bool = Alien::MyLibrary->alt_exists($alt_name)
+
+Returns true if the given alternative configuration exists.
+
+=cut
+
+sub alt_exists
+{
+  my($class, $alt_name) = @_;
+  my $alts = $class->runtime_prop->{alt};
+  defined $alts
+    ? exists $alts->{$alt_name} && defined $alts->{$alt_name}
+    : 0;
 }
 
 1;
