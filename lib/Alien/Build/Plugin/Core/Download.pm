@@ -95,6 +95,10 @@ sub _hook
         my $to   = Path::Tiny->new("$tmp/@{[ $from->basename ]}");
         if(-d $res->{path})
         {
+          # Please note: _mirror and Alien::Build::Util are ONLY
+          # allowed to be used by core plugins.  If you are writing
+          # a non-core plugin it may be removed.  That is why it
+          # is private.
           _mirror $from, $to;
         }
         else

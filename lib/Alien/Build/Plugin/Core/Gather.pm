@@ -75,6 +75,10 @@ sub init
             $build->log("mirror $src => $dst");
         
             $dst->mkpath;
+            # Please note: _mirror and Alien::Build::Util are ONLY
+            # allowed to be used by core plugins.  If you are writing
+            # a non-core plugin it may be removed.  That is why it
+            # is private.
             _mirror("$src", "$dst", {
               verbose => 1,
               filter => $build->meta_prop->{$type eq 'share' ? 'destdir_filter' : 'destdir_ffi_filter'},
@@ -137,6 +141,10 @@ sub init
       
       if($build->install_prop->{patch} && -d $build->install_prop->{patch})
       {
+        # Please note: _mirror and Alien::Build::Util are ONLY
+        # allowed to be used by core plugins.  If you are writing
+        # a non-core plugin it may be removed.  That is why it
+        # is private.
         _mirror($build->install_prop->{patch},
                 $stage->child('_alien/patch')->stringify);
       }
