@@ -46,6 +46,7 @@ require_ok 'Alien::Build::Plugin::PkgConfig::MakeStatic';
 require_ok 'Alien::Build::Plugin::PkgConfig::Negotiate';
 require_ok 'Alien::Build::Plugin::PkgConfig::PP';
 require_ok 'Alien::Build::Plugin::Prefer::BadVersion';
+require_ok 'Alien::Build::Plugin::Prefer::GoodVersion';
 require_ok 'Alien::Build::Plugin::Prefer::SortVersions';
 require_ok 'Alien::Build::Plugin::Probe::CBuilder';
 require_ok 'Alien::Build::Plugin::Probe::CommandLine';
@@ -103,6 +104,7 @@ ok -f 't/alien_build_plugin_pkgconfig_makestatic.t',          'test for Alien::B
 ok -f 't/alien_build_plugin_pkgconfig_negotiate.t',           'test for Alien::Build::Plugin::PkgConfig::Negotiate';
 ok -f 't/alien_build_plugin_pkgconfig_pp.t',                  'test for Alien::Build::Plugin::PkgConfig::PP';
 ok -f 't/alien_build_plugin_prefer_badversion.t',             'test for Alien::Build::Plugin::Prefer::BadVersion';
+ok -f 't/alien_build_plugin_prefer_goodversion.t',            'test for Alien::Build::Plugin::Prefer::GoodVersion';
 ok -f 't/alien_build_plugin_prefer_sortversions.t',           'test for Alien::Build::Plugin::Prefer::SortVersions';
 ok -f 't/alien_build_plugin_probe_cbuilder.t',                'test for Alien::Build::Plugin::Probe::CBuilder';
 ok -f 't/alien_build_plugin_probe_commandline.t',             'test for Alien::Build::Plugin::Probe::CommandLine';
