@@ -304,7 +304,7 @@ sub mm_postamble
   $postamble .= "alien_prop_install :\n" .
                 "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop install\n\n";
   $postamble .= "alien_prop_runtime :\n" .
-                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop install\n\n";
+                "\t\$(FULLPERL) -MAlien::Build::MM=cmd -e dumpprop runtime\n\n";
   
   $postamble;
 }

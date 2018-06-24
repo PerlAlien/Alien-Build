@@ -5,6 +5,8 @@ Revision history for {{$dist->name}}
     Alien::Role::Alt into core, making that role now obsolete.
   - Add alt_names and alt_exists methods to Alien::Base.  This was a
     capability missing from Alien::Role::Alt
+  - Fix bug in Alien::Build::MM where 'make alien_prop_runtime' printed
+    install instead of runtime properties
 
 1.44_01   2018-06-20 06:36:57 -0600
   - Added Alien::Build::Plugin::Prefer::GoodVersion
