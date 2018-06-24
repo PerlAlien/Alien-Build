@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.45_01   2018-06-24 08:13:08 -0400
   - Add alt method to Alien::Base.  This merges the capabilities from
     Alien::Role::Alt into core, making that role now obsolete.
   - Add alt_names and alt_exists methods to Alien::Base.  This was a
