@@ -25,8 +25,8 @@ if echo $INSTALL_OPTIONAL | grep PkgConfig::LibPkgConf ; then
   # build pkgconf
   git clone https://git.dereferenced.org/pkgconf/pkgconf.git $MYPREFIX/src/pkgconf
   cd $MYPREFIX/src/pkgconf
-  git remote update -p
   git checkout remotes/origin/graham/system-paths-regression -b graham/system-paths-regression
+  git fetch --tags
   # checkout the most recent tagged release of pkgconf to avoid some of the churn
   git checkout `git tag | perl -e 'my %tags = map { /^pkgconf-(.*)$/ && $_ => join(".", map { sprintf "%05d", $_ } split /\./, $1) } grep /^pkgconf-/, map { chomp; $_ } <STDIN>; my($tag) = reverse sort { $tags{$a} cmp $tags{$b} } keys %tags; print $tag'`
   ./autogen.sh
