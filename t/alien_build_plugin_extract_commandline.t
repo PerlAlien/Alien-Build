@@ -46,8 +46,6 @@ subtest 'archive' => sub {
         ($dir, $@);
       };
 
-      $error = 'foo' if $ext eq 'tar.xz';
-
       is $error, '', 'no error from extract';
       if($error ne '')
       {
