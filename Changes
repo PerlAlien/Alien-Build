@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug where Alien::Base was capturing stderr and stdout
+    from pkg-config, instead of just stdout which is what it should
+    be doing.
 
 1.46      2018-06-25 03:08:25 +0000
   - Production release identical to 1.45_01
