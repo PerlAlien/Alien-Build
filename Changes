@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
 
 1.48      2018-07-04 20:33:29 -0400
+  - Production release identical to 1.47_01
 
 1.47_01   2018-07-03 23:17:09 -0400
   - Fixed bug where Alien::Base was capturing stderr and stdout
