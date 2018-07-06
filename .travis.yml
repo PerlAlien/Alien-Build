@@ -30,6 +30,6 @@ env:
   global:
     - PERL_USE_UNSAFE_INC=0
   matrix:
-    - INSTALL_OPTIONAL="Test2::Harness File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML Env::ShellWords Archive::Tar Archive::Zip Devel::Hide"
+    - INSTALL_OPTIONAL="Test2::Harness File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML Env::ShellWords Archive::Tar Archive::Zip Devel::Hide Readonly Alien::Base::ModuleBuild"
     - INSTALL_OPTIONAL=""
 
