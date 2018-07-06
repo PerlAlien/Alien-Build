@@ -13,7 +13,7 @@ cd Alien-Build-*
 
 perl Makefile.PL
 make
-if perl -e '($] >= 5.010) or exit 2'; then
+if which yath; then
   prove -bvm t/00_diag.t
   yath test
 else

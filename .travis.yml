@@ -5,8 +5,6 @@ install:
   - perlbrew list
   - ./maint/travis-dzil nop
   - ./maint/travis-install-deps
-  - echo $INSTALL_OPTIONAL | cpanm -n
-  - (perl -e '($] >= 5.010) or exit 2' && cpanm -n Test2::Harness) || true
 
 perl:
   - "5.8"
@@ -32,6 +30,6 @@ env:
   global:
     - PERL_USE_UNSAFE_INC=0
   matrix:
-    - INSTALL_OPTIONAL="File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML Env::ShellWords Archive::Tar Archive::Zip Devel::Hide"
+    - INSTALL_OPTIONAL="Test2::Harness File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML Env::ShellWords Archive::Tar Archive::Zip Devel::Hide"
     - INSTALL_OPTIONAL=""
 

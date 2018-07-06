@@ -60,5 +60,23 @@ else
 
 fi
 
-echo $INSTALL_OPTIONAL | cpanm -n
+if echo $INSTALL_OPTIONAL | grep Test2::Harness ; then
 
+  if perl -e '($] >= 5.010) or exit 2'; then
+
+    echo "will install Test2::Harness"
+
+  else
+
+    echo "not installing Test2::Harness (removing from list)"
+    export INSTALL_OPTIONAL=`perl -e '$ENV{INSTALL_OPTIONAL} =~ s/Test2::Harness//; print $ENV{INSTALL_OPTIONAL}'`
+
+  fi
+
+else
+
+  echo "not installing Test2::Harness"
+
+fi
+
+echo $INSTALL_OPTIONAL | cpanm -n
