@@ -11,6 +11,23 @@ cd Alien-Build-*
 
 cpanm -n --installdeps .
 
+if echo $INSTALL_OPTIONAL | grep Alien::Base::ModuleBuild ; then
+
+  # ABase::PkgConfig is needed by ABase::ModuleBuild, but we don't want
+  # to install all of AB from cpan, so install just ABase::ModuleBuild.
+  mkdir -p maint/Alien-Base-PkgConfig/lib/Alien/Base
+  mkdir -p maint/Alien-Base-PkgConfig/t
+  mkdir -p maint/Alien-Base-PkgConfig/corpus/alien_base_pkgconfig
+  cp lib/Alien/Base/PkgConfig.pm maint/Alien-Base-PkgConfig/lib/Alien/Base/PkgConfig.pm
+  cp t/alien_base_pkgconfig.t maint/Alien-Base-PkgConfig/t/alien_base_pkgconfig.t
+  cp corpus/alien_base_pkgconfig/* maint/Alien-Base-PkgConfig/corpus/alien_base_pkgconfig
+
+  cd maint/Alien-Base-PkgConfig
+  cpanm -v .
+  cd ../..
+
+fi
+
 if echo $INSTALL_OPTIONAL | grep PkgConfig::LibPkgConf ; then
 
   echo "installing PkgConfig::LibPkgConf from git";
@@ -83,6 +100,13 @@ if echo $INSTALL_OPTIONAL | grep FFI::Platypus ; then
 
   echo "installing Alit::Alien::FFI::System for FFI::Platypus"
   env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::FFI::System
+
+fi
+
+if echo $INSTALL_OPTIONAL | grep Alien::cmake3 ; then
+
+  echo "installing Alt::Alien::cmake3::Systemfor Alien::cmake3"
+  env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::cmake3::System
 
 fi
 
