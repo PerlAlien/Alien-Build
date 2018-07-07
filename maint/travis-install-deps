@@ -79,4 +79,11 @@ else
 
 fi
 
+if echo $INSTALL_OPTIONAL | grep FFI::Platypus ; then
+
+  echo "installing Alit::Alien::FFI::System for FFI::Platypus"
+  env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::FFI::System
+
+fi
+
 echo $INSTALL_OPTIONAL | cpanm -n
