@@ -37,22 +37,7 @@ subtest 'available' => sub {
     override => [
       which => sub {
         my($prog) = @_;
-        if(defined $prog)
-        {
-          if($which{$prog})
-          {
-            note "which: $prog => $which{$prog}";
-            return $which{$prog};
-          }
-          else
-          {
-            note "which: $prog N/A";
-          }
-        }
-        else
-        {
-          note "which: undef";
-        }
+        defined $prog ? $which{$prog} : ();
       },
     ],
   );
