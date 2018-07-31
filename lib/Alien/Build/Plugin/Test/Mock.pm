@@ -6,6 +6,9 @@ use Alien::Build::Plugin;
 use Carp ();
 use File::chdir;
 
+# ABSTRACT: Mock plugin for testing
+# VERSION
+
 =head1 SYNOPSIS
 
  use alienfile;
@@ -84,6 +87,22 @@ C<foo-1.00.tar.gz>.
 
 has 'download';
 
+=head2 extract
+
+ plugin 'Test::Mock' => (
+   extract => %fs_spec,
+ );
+ 
+ plugin 'Test::Mock' => (
+   extract => 1, 
+ );
+
+Similar to C<download> above, but for the C<extract> phase.
+
+=cut
+
+has 'extract';
+
 sub init
 {
   my($self, $meta) = @_;
@@ -121,6 +140,21 @@ sub init
       },
     );
   }
+
+  if(my $extract = $self->extract)
+  {
+    $extract = { 
+      'foo-1.00' => {
+        'configure' => _tarball_configure(),
+        'foo.c'     => _tarball_foo_c(),
+      },
+    } unless ref $extract eq 'HASH';
+    $meta->register_hook(
+      extract => sub {
+        _fs($extract);
+      },
+    );
+  }
 }
 
 sub _fs
@@ -152,6 +186,23 @@ M(;T=6(%BQIDFQB$V(8WB^]X.W>%WQ^[?_S'5,Z']\%]YU]IN#/KT/8[ZO^6?
 M_B=-C-=<%$BG'^4G_]S_U:)ZL*X:#(!6QN/26(Q&![W<P5_/EIF?*?])E&J>
 M'BD/DO/#^6<DON__6O*<_]]@99WJQ[W&FR'NK2_-+8!U$1X;ZRZ2P"9T:HW*
 D-`&ODGZZN[^$9T`,.H[!(>W@)2^*3":3.3]>`:%LBYL`#@``
+`
+EOF
+}
+
+sub _tarball_configure
+{
+  return unpack 'u', <<'EOF';
+<(R$O8FEN+W-H"@IE8VAO(")H:2!T:&5R92(["@``
+`
+EOF
+}
+
+sub _tarball_foo_c
+{
+  return unpack 'u', <<'EOF';
+M(VEN8VQU9&4@/'-T9&EO+F@^"@II;G0*;6%I;BAI;G0@87)G8RP@8VAA<B`J
+887)G=EM=*0I["B`@<F5T=7)N(#`["GT*
 `
 EOF
 }
