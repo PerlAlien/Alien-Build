@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 use Carp ();
+use Path::Tiny ();
 use File::chdir;
 
 # ABSTRACT: Mock plugin for testing
@@ -103,6 +104,20 @@ Similar to C<download> above, but for the C<extract> phase.
 
 has 'extract';
 
+=head2 build
+
+ plugin 'Test::Mock' => (
+   build => [ %fs_spec_build, %fs_spec_install ],
+ );
+ 
+ plugin 'Test::Mock' => (
+   build => 1, 
+ );
+
+=cut
+
+has 'build';
+
 sub init
 {
   my($self, $meta) = @_;
@@ -136,7 +151,8 @@ sub init
     $download = { 'foo-1.00.tar.gz' => _tarball() } unless ref $download eq 'HASH';
     $meta->register_hook(
       download => sub {
-        _fs($download);
+        my($build) = @_;
+        _fs($build, $download);
       },
     );
   }
@@ -151,7 +167,49 @@ sub init
     } unless ref $extract eq 'HASH';
     $meta->register_hook(
       extract => sub {
-        _fs($extract);
+        my($build) = @_;
+        _fs($build, $extract);
+      },
+    );
+  }
+  
+  if(my $build = $self->build)
+  {
+    $build = [
+      {
+        'foo.o',   => _build_foo_o(),
+        'libfoo.a' => _build_libfoo_a(),
+      },
+      {
+        'lib' => {
+          'libfoo.a' => _build_libfoo_a(),
+          'pkgconfig' => {
+            'foo.pc' => sub {
+              my($build) = @_;
+              "prefix=$CWD\n" .
+              "exec_prefix=\${prefix}\n" .
+              "libdir=\${prefix}/lib\n" .
+              "includedir=\${prefix}/include\n" .
+              "\n" .
+              "Name: libfoo\n" .
+              "Description: libfoo\n" .
+              "Version: 1.0.0\n" .
+              "Cflags: -I\${includedir}\n" .
+              "Libs: -L\${libdir} -lfoo\n";
+            },
+          },
+        },
+      },
+    ] unless ref $build eq 'ARRAY';
+    
+    my($build_dir, $install_dir) = @$build;
+    
+    $meta->register_hook(
+      build => sub {
+        my($build) = @_;
+        _fs($build, $build_dir);
+        local $CWD = $build->install_prop->{prefix};
+        _fs($build, $install_dir);
       },
     );
   }
@@ -159,7 +217,7 @@ sub init
 
 sub _fs
 {
-  my($hash) = @_;
+  my($build, $hash) = @_;
   
   foreach my $key (sort keys %$hash)
   {
@@ -168,7 +226,11 @@ sub _fs
     {
       mkdir $key;
       local $CWD = $key;
-      _fs($val);
+      _fs($build,$val);
+    }
+    elsif(ref $val eq 'CODE')
+    {
+      Path::Tiny->new($key)->spew($val->($build));
     }
     elsif(defined $val)
     {
@@ -203,6 +265,52 @@ sub _tarball_foo_c
   return unpack 'u', <<'EOF';
 M(VEN8VQU9&4@/'-T9&EO+F@^"@II;G0*;6%I;BAI;G0@87)G8RP@8VAA<B`J
 887)G=EM=*0I["B`@<F5T=7)N(#`["GT*
+`
+EOF
+}
+
+sub _build_foo_o
+{
+  return unpack 'u', <<'EOF';
+MS_KM_@<```$#`````0````0```"P`0```"`````````9````.`$`````````
+M`````````````````````````&@`````````T`$```````!H``````````<`
+M```'`````P````````!?7W1E>'0`````````````7U]415A4````````````
+M````````````"`````````#0`0``!`````````````````0`@```````````
+M`````%]?8V]M<&%C=%]U;G=I;F1?7TQ$````````````````"``````````@
+M`````````-@!```#````.`(```$````````"````````````````7U]E:%]F
+M<F%M90```````%]?5$585``````````````H`````````$``````````^`$`
+M``,```````````````L``&@````````````````D````$``````-"@``````
+M`@```!@```!``@```0```%`"```(````"P```%`````````````````````!
+M`````0``````````````````````````````````````````````````````
+M``````````````````!52(GE,<!=PP``````````"`````````$`````````
+M````````````%``````````!>E(``7@0`1`,!PB0`0``)````!P```"X____
+M_____P@``````````$$.$(8"0PT&```````````````!```&`0````\!````
+/``````````!?;6%I;@``
+`
+EOF
+}
+
+sub _build_libfoo_a
+{
+  return unpack 'u', <<'EOF';
+M(3QA<F-H/@HC,2\R,"`@("`@("`@("`@,34S,S$U-38Q."`@-3`Q("`@,C`@
+M("`@,3`P-C0T("`T-"`@("`@("`@8`I?7RY364U$148@4T]25$5$``````@`
+M````````<`````@```!?;6%I;@```",Q+S$R("`@("`@("`@("`Q-3,S,34U
+M-#8X("`U,#$@("`R,"`@("`Q,#`V-#0@(#8Q,B`@("`@("!@"F9O;RYO````
+M`````,_Z[?X'```!`P````$````$````L`$````@````````&0```#@!````
+M``````````````````````````````!H`````````-`!````````:```````
+M```'````!P````,`````````7U]T97AT`````````````%]?5$585```````
+M``````````````````@`````````T`$```0````````````````$`(``````
+M``````````!?7V-O;7!A8W1?=6YW:6YD7U],1`````````````````@`````
+M````(`````````#8`0```P```#@"```!`````````@```````````````%]?
+M96A?9G)A;64```````!?7U1%6%0`````````````*`````````!`````````
+M`/@!```#```````````````+``!H````````````````)````!``````#0H`
+M``````(````8````0`(```$```!0`@``"`````L```!0````````````````
+M`````0````$`````````````````````````````````````````````````
+M````````````````````````54B)Y3'`7<,```````````@````````!````
+M`````````````````!0``````````7I2``%X$`$0#`<(D`$``"0````<````
+MN/________\(``````````!!#A"&`D,-!@```````````````0``!@$````/
+3`0``````````````7VUA:6X`````
 `
 EOF
 }
