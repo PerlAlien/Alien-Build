@@ -13,7 +13,13 @@ use File::chdir;
 =head1 SYNOPSIS
 
  use alienfile;
- plugin 'Test::Mock';
+ plugin 'Test::Mock' => (
+   probe    => 'share',
+   download => 1,
+   extract  => 1,
+   build    => 1,
+   gather   => 1,
+ );
 
 =head1 DESCRIPTION
 
@@ -58,7 +64,7 @@ has 'probe';
 =head2 download
 
  plugin 'Test::Mock' => (
-   download => %fs_spec,
+   download => \%fs_spec,
  );
  
  plugin 'Test::Mock' => (
@@ -91,7 +97,7 @@ has 'download';
 =head2 extract
 
  plugin 'Test::Mock' => (
-   extract => %fs_spec,
+   extract => \%fs_spec,
  );
  
  plugin 'Test::Mock' => (
@@ -107,7 +113,7 @@ has 'extract';
 =head2 build
 
  plugin 'Test::Mock' => (
-   build => [ %fs_spec_build, %fs_spec_install ],
+   build => [ \%fs_spec_build, \%fs_spec_install ],
  );
  
  plugin 'Test::Mock' => (
@@ -117,6 +123,23 @@ has 'extract';
 =cut
 
 has 'build';
+
+=head2 gather
+
+ plugin 'Test::Mock' => (
+   gather => \%runtime_prop,
+ );
+ 
+ plugin 'Test::Mock' => (
+   gather => 1,
+ );
+
+This adds a gather hook (for both C<share> and C<system>) that adds the given runtime properties, or
+if a true non-hash value is provided, some reasonable runtime properties for testing.
+
+=cut
+
+has 'gather';
 
 sub init
 {
@@ -212,6 +235,28 @@ sub init
         _fs($build, $install_dir);
       },
     );
+  }
+  
+  if(my $gather = $self->gather)
+  {
+    $meta->register_hook(
+      $_ => sub {
+        my($build) = @_;
+        if(ref $gather eq 'HASH')
+        {
+          foreach my $key (keys %$gather)
+          {
+            $build->runtime_prop->{$key} = $gather->{$key};
+          }
+        }
+        else
+        {
+          my $prefix = $build->runtime_prop->{prefix};
+          $build->runtime_prop->{cflags} = "-I$prefix/include";
+          $build->runtime_prop->{libs}   = "-L$prefix/lib -lfoo";
+        }
+      },
+    ) for qw( gather_share gather_system );
   }
 }
 
