@@ -693,4 +693,34 @@ subtest 'targ' => sub {
 
 };
 
+alien_subtest 'alienfile_ok takes a already formed Alien::Build instance' => sub {
+
+  my $build = alienfile q{ use alienfile };
+  
+  is(
+    intercept { alienfile_ok $build },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => 'alienfile compiled';
+      };
+      end;
+    },
+  );
+  
+  is(
+    intercept { alienfile_ok undef },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => 'alienfile compiled';
+      };
+      event Diag => sub {};
+      event Diag => sub { call message => 'error: no alienfile given' };
+      end;
+    },
+  );
+
+};
+
 done_testing;

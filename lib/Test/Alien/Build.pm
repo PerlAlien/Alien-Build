@@ -197,20 +197,52 @@ sub _alienfile_clear
  my $build = alienfile_ok;
  my $build = alienfile_ok q{ use alienfile ... };
  my $build = alienfile_ok filename => 'alienfile';
+ my $build = alienfile_ok $build;
 
 Same as C<alienfile> above, except that it runs as a test, and will not throw an exception
 on failure (it will return undef instead).
+
+[version 1.49]
+
+As of version 1.49 you can also pass in an already formed instance of L<Alien::Build>.  This
+allows you to do something like this:
+
+ subtest 'a subtest' => sub {
+   my $build = alienfile q{ use alienfile; ... };
+   ... # skip if alienfile prereqs are missing
+   alienfile_ok $build;  # delayed pass/fail for the compile of alienfile
+ };
 
 =cut
 
 sub alienfile_ok
 {
-  my $build = eval { alienfile(@_) };
-  my $error = $@;
+  my $build;
+  my $name;
+  my $error;
+  
+  if(@_ == 1 && ! defined $_[0])
+  {
+    $build = $_[0];
+    $error = 'no alienfile given';
+    $name = 'alienfile compiled';
+  }
+  elsif(@_ == 1 && eval { $_[0]->isa('Alien::Build') })
+  {
+    $build = $_[0];
+    $name = 'alienfile compiled';
+  }
+  else
+  {
+    $build = eval { alienfile(@_) };
+    $error = $@;
+    $name = 'alienfile compiles';
+  }
+
   my $ok = !! $build;
   
   my $ctx = context();
-  $ctx->ok($ok, 'alienfile compiles');
+  $ctx->ok($ok, $name);
   $ctx->diag("error: $error") if $error;
   $ctx->release;
   
