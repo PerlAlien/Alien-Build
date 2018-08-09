@@ -219,7 +219,7 @@ sub mm_args
 
 =head2 mm_postamble
 
- my %args = $abmm->mm_args(%args);
+ my $postamble $abmm->mm_postamble;
 
 Returns the postamble for the C<Makefile> needed for L<Alien::Build>.
 This adds the following C<make> targets which are normally called when
