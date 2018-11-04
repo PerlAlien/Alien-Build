@@ -22,6 +22,7 @@ subtest 'skip/import' => sub {
 
   subtest 'no platypus' => sub {
 
+    skip_all 'test does not work on Perl 5.8' unless $] >= 5.010;
     skip_all 'subtest requires Devel::Hide' unless eval { require Devel::Hide };
     Devel::Hide->import( 'FFI::Platypus' );
 
