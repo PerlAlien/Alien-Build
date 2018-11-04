@@ -841,7 +841,7 @@ sub load_requires
     my $check = sub {
       my $pm = "$mod.pm";
       $pm =~ s{::}{/}g;
-      $pm;
+      require $pm;
     };
     if($eval)
     {
