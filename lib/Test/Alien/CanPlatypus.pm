@@ -2,7 +2,7 @@ package Test::Alien::CanPlatypus;
 
 use strict;
 use warnings;
-use base 'Test2::Require';
+use Test2::API qw( context );
 
 # ABSTRACT: Skip a test file unless FFI::Platypus is available
 # VERSION
@@ -21,6 +21,16 @@ be available.  Otherwise the test will be skipped.
 sub skip
 {
   eval { require FFI::Platypus; 1 } ? undef : 'This test requires FFI::Platypus.';
+}
+
+sub import
+{
+  my $skip = __PACKAGE__->skip;
+  return unless defined $skip;
+
+  my $ctx = context();
+  $ctx->plan(0, SKIP => $skip);
+  $ctx->release;
 }
 
 1;

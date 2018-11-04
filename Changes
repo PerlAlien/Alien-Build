@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Remove run-time dependency on Test2::Suite
+    Test2::API is still a run-time dependency, but that has
+    been in-core since 5.26.
 
 1.48      2018-07-04 20:33:29 -0400
   - Production release identical to 1.47_01
