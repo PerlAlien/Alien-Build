@@ -2,6 +2,7 @@ use Test2::V0 -no_srand => 1;
 use Test2::Mock;
 use Test::Alien::Build;
 use Path::Tiny qw( path );
+use Capture::Tiny qw( capture_merged );
 
 subtest 'alienfile_ok' => sub {
 
@@ -720,6 +721,175 @@ alien_subtest 'alienfile_ok takes a already formed Alien::Build instance' => sub
       end;
     },
   );
+
+};
+
+subtest 'alienfile_skip_if_missing_prereqs' => sub {
+
+  foreach my $phase (qw(share system ))
+  {
+    alien_subtest "no missing ($phase)" => sub {
+      my($out, $build) = capture_merged { alienfile qq{ use alienfile; probe sub { '$phase' } } };
+      note $out if $out;
+    
+      is
+        intercept { alienfile_skip_if_missing_prereqs },
+        [],
+      ;
+    };
+  }
+  
+  alien_subtest 'missing configure' => sub {
+
+    alienfile q{ use alienfile; configure { requires 'Bogus' => '1.23' } };
+    
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing configure prereq: Bogus 1.23';
+        };
+        end;
+      };
+    ;  
+  
+  };
+
+  alien_subtest 'missing configure (no version)' => sub {
+
+    alienfile q{ use alienfile; configure { requires 'Bogus' } };
+    
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing configure prereq: Bogus undef';
+        };
+        end;
+      };
+    ;  
+  
+  };
+
+    
+  alien_subtest 'missing share' => sub {
+  
+    alienfile q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        requires 'Bogus2', '2.34';
+      };
+    };
+    
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing share prereq: Bogus2 2.34';
+        };
+      },
+    ;
+  
+  };
+
+    
+  alien_subtest 'missing share (no version)' => sub {
+  
+    alienfile q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        requires 'Bogus2';
+      };
+    };
+    
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing share prereq: Bogus2 undef';
+        };
+      },
+    ;
+  
+  };
+
+  alien_subtest 'missing system' => sub {
+  
+    alienfile q{
+      use alienfile;
+      probe sub { 'system' };
+      sys {
+        requires 'Bogus2', '2.34';
+      };
+    };
+    
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing system prereq: Bogus2 2.34';
+        };
+      },
+    ;
+  
+  };
+
+    
+  alien_subtest 'missing system (no version)' => sub {
+  
+    alienfile q{
+      use alienfile;
+      probe sub { 'system' };
+      sys {
+        requires 'Bogus2';
+      };
+    };
+    
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing system prereq: Bogus2 undef';
+        };
+      },
+    ;
+  
+  };
+  
+  alien_subtest 'mismatch' => sub {
+  
+    alienfile q{
+      use alienfile;
+      probe sub { 'system' };
+      share {
+        requires 'Bogus3', '9.99';
+      };
+    };
+
+    is
+      intercept { alienfile_skip_if_missing_prereqs },
+      [],
+    ;
+  
+    is
+      intercept { alienfile_skip_if_missing_prereqs 'share' },
+      array {
+        event Plan => sub {
+          call directive => 'SKIP';
+          call reason    => 'Missing share prereq: Bogus3 9.99';
+        };
+      },
+    ;
+
+  };
 
 };
 

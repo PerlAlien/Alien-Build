@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added Alien::Build::Plugin::Test::Mock
+  - Added alienfile_skip_if_missing_prereqs function to Test::Alien::Build
   - Remove run-time dependency on Test2::Suite
     Test2::API is still a run-time dependency, but that has
     been in-core since 5.26.

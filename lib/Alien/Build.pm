@@ -833,16 +833,27 @@ for a description of the phases).
 
 sub load_requires
 {
-  my($self, $phase) = @_;
+  my($self, $phase, $eval) = @_;
   my $reqs = $self->requires($phase);
   foreach my $mod (keys %$reqs)
   {
     my $ver = $reqs->{$mod};
-    require do {
+    my $check = sub {
       my $pm = "$mod.pm";
       $pm =~ s{::}{/}g;
       $pm;
     };
+    if($eval)
+    {
+      eval { $check->() };
+      die "Required $mod @{[ $ver || 'undef' ]}, missing";
+    }
+    else
+    {
+      $check->();
+    }
+    # note Test::Alien::Build#alienfile_skip_if_missing_prereqs does a regex
+    # on this diagnostic, so if you change it here, change it there too.
     die "Required $mod $ver, have @{[ $mod->VERSION || 0 ]}" if $ver && ! $mod->VERSION($ver);
     
     # allow for requires on Alien::Build or Alien::Base

@@ -14,6 +14,7 @@ use Alien::Build::Util qw( _mirror );
 our @EXPORT = qw(
   alienfile
   alienfile_ok
+  alienfile_skip_if_missing_prereqs
   alien_download_ok
   alien_extract_ok
   alien_build_ok
@@ -209,7 +210,7 @@ allows you to do something like this:
 
  subtest 'a subtest' => sub {
    my $build = alienfile q{ use alienfile; ... };
-   ... # skip if alienfile prereqs are missing
+   alienfile_skip_if_missing_prereqs; # skip if alienfile prereqs are missing
    alienfile_ok $build;  # delayed pass/fail for the compile of alienfile
  };
 
@@ -247,6 +248,53 @@ sub alienfile_ok
   $ctx->release;
   
   $build;
+}
+
+=head2 alienfile_skip_if_missing_prereqs
+
+ alienfile_skip_if_missing_prereqs;
+ alienfile_skip_if_missing_prereqs $phase;
+
+Skips the test or subtest if the prereqs for the alienfile are missing.
+If C<$phase> is not given, then either C<share> or C<system> will be
+detected.
+
+=cut
+
+sub alienfile_skip_if_missing_prereqs
+{
+  my($phase) = @_;
+  
+  if($build)
+  {
+    eval { $build->load_requires('configure', 1) };
+    if(my $error = $@)
+    {
+      my $reason = "Missing configure prereq";
+      if($error =~ /Required (.*) (.*),/)
+      {
+        $reason .= ": $1 $2";
+      }
+      my $ctx = context();
+      $ctx->plan(0, SKIP => $reason);
+      $ctx->release;
+      return;
+    }
+    $phase ||= $build->install_type;
+    eval { $build->load_requires($phase, 1) };
+    if(my $error = $@)
+    {
+      my $reason = "Missing $phase prereq";
+      if($error =~ /Required (.*) (.*),/)
+      {
+        $reason .= ": $1 $2";
+      }
+      my $ctx = context();
+      $ctx->plan(0, SKIP => $reason);
+      $ctx->release;
+      return;
+    }
+  }
 }
 
 =head2 alien_install_type_is
