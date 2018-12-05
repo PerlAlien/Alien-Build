@@ -52,13 +52,18 @@ subtest 'archive' => sub {
         diag "[output      ] $_", for split /\n/, $out;
         diag "[exception   ] $_", for split /\n/, $error;
 
-        if($ext eq 'tar.xz')
+        if($ext eq 'tar.xz' && $^O eq 'openbsd')
         {
           diag "[xz --version] $_" for split /\n/, capture_merged {
             system 'xz --version';
           };
           diag "[\$(          ] $(";
           diag "[\$)          ] $)";
+
+          if(-r "/etc/fstab")
+          {
+            diag "[/etc/fstab   ] $_" for grep m{/tmp}, path("/etc/fstab")->lines;
+          }
 
           diag "SEE https://github.com/Perl5-Alien/Alien-Build/issues/62";
           diag "if you can help with this.\n";
