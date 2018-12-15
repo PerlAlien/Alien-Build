@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if echo $CIP_TAG | grep -q -- -alpine ; then
+  echo alpine
+elif (echo $CIP_TAG | grep -q -- -centos) || (echo $CIP_TAG | grep -q -- -fedora) ; then
+  echo CentOS / Fedora
+else
+  cip sudo apt-get update
+  cip sudo apt-get install pkg-config
+fi
+
+if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
+  cip exec cpanm -n \
+    Test2::Harness \
+    File::Listing \
+    File::Listing::Ftpcopy \
+    HTML::LinkExtor \
+    HTTP::Tiny \
+    LWP \
+    PkgConfig \
+    PkgConfig::LibPkgConf \
+    Sort::Versions \
+    URI \
+    YAML \
+    Env::ShellWords \
+    Archive::Tar \
+    Archive::Zip \
+    Devel::Hide \
+    Readonly \
+    Alien::Base::ModuleBuild \
+    FFI::Platypus \
+    Alien::cmake3
+fi
+

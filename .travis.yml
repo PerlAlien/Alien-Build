@@ -1,36 +1,46 @@
-language: perl
-sudo: false
+language: minimal
+dist: xenial
+services:
+  - docker
+
+before_install:
+  - curl https://raw.githubusercontent.com/plicease/cip/master/bin/travis-bootstrap | bash
+  - cip before-install
 
 install:
-  - perlbrew list
-  - ./maint/travis-dzil nop
-  - ./maint/travis-install-deps
-
-perl:
-  - "5.8"
-  - "5.10"
-  - "5.12"
-  - "5.14"
-  - "5.16"
-  - "5.18"
-  - "5.20"
-  - "5.22"
-  - "5.24"
-  - "5.26"
-  - "5.28"
+  - cip diag
+  - cip install
 
 script:
-  - ./maint/travis-run-test
-  - perl maint/ci-test-plugins.pl
+  - cip script
+  - cip exec perl maint/ci-test-plugins.pl
+
+jobs:
+  include:
+    - env: CIP_TAG=5.28-alpine3.8 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.28-bionic    ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.28-centos7   ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.28-fedora29  ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.28-stretch   ALIEN_BUILD_INSTALL_EXTRA=0
+    - env: CIP_TAG=5.28-stretch   ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.29 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.26 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.24 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.22 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.20 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.18 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.16 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.14 ALIEN_BUILD_INSTALL_EXTRA=0
+    - env: CIP_TAG=5.14 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.12 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.10.1 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.10.0 ALIEN_BUILD_INSTALL_EXTRA=0
+    - env: CIP_TAG=5.8.8  ALIEN_BUILD_INSTALL_EXTRA=0
+    - env: CIP_TAG=5.8.1  ALIEN_BUILD_INSTALL_EXTRA=0
+  allow_failures:
+    - env: CIP_TAG=5.28-alpine3.8 ALIEN_BUILD_INSTALL_EXTRA=1
+    - env: CIP_TAG=5.16 ALIEN_BUILD_INSTALL_EXTRA=1
 
 cache:
   directories:
-    - $HOME/mylib
-
-env:
-  global:
-    - PERL_USE_UNSAFE_INC=0
-  matrix:
-    - INSTALL_OPTIONAL="Test2::Harness File::Listing File::Listing::Ftpcopy HTML::LinkExtor HTTP::Tiny LWP PkgConfig PkgConfig::LibPkgConf Sort::Versions URI YAML Env::ShellWords Archive::Tar Archive::Zip Devel::Hide Readonly Alien::Base::ModuleBuild FFI::Platypus Alien::cmake3"
-    - INSTALL_OPTIONAL=""
-
+    - "$HOME/.cip"

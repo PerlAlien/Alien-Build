@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-exit if $] < 5.010;
+exit if $] < 5.010001;
 
 my $exit = 0;
 
