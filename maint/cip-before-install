@@ -6,10 +6,13 @@ elif (echo $CIP_TAG | grep -q -- -centos) || (echo $CIP_TAG | grep -q -- -fedora
   echo CentOS / Fedora
 else
   cip sudo apt-get update
-  cip sudo apt-get -y install pkg-config
+  cip sudo apt-get -y install pkg-config cmake
 fi
 
 if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
+
+  cip exec env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::cmake3::System
+
   cip exec cpanm -n \
     Test2::Harness \
     File::Listing \
@@ -28,7 +31,7 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
     Devel::Hide \
     Readonly \
     Alien::Base::ModuleBuild \
-    FFI::Platypus \
-    Alien::cmake3
+    FFI::Platypus
+
 fi
 
