@@ -6,7 +6,7 @@ elif (echo $CIP_TAG | grep -q -- -centos) || (echo $CIP_TAG | grep -q -- -fedora
   echo CentOS / Fedora
 else
   cip sudo apt-get update
-  cip sudo apt-get install pkg-config
+  cip sudo apt-get -y install pkg-config
 fi
 
 if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then

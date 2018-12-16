@@ -310,6 +310,8 @@ subtest 'system rewrite' => sub {
 
 alien_subtest 'set env' => sub {
 
+  skip_all 'test requires Archive::Tar' unless eval { require Archive::Tar; 1 };
+
   my $build = alienfile_ok q{
     use alienfile;
 

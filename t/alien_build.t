@@ -1122,6 +1122,8 @@ subtest 'out-of-source build' => sub {
   local $Alien::Build::VERSION = '1.08';
 
   alien_subtest 'basic' => sub {
+
+    skip_all 'test requires Archive::Tar' unless eval { require Archive::Tar; 1 };
   
     alienfile_ok q{
       use alienfile;
@@ -1584,6 +1586,8 @@ subtest 'do not allow network install' => sub {
 
 alien_subtest 'interpolate env overrides' => sub {
   
+  skip_all 'test requires Archive::Tar' unless eval { require Archive::Tar; 1 };
+
   local $ENV{FOO1} = 'oxo';
   
   my $build = alienfile_ok q{

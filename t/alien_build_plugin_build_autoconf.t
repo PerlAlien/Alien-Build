@@ -44,6 +44,8 @@ subtest 'turn off --with-pic' => sub {
 
 subtest 'out-of-source' => sub {
 
+  skip_all 'test requires Archive::Tar' unless eval { require Archive::Tar; 1 };
+
   local $Alien::Build::VERSION = '1.08';
 
   my $build = alienfile_ok q{
