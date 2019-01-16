@@ -17,7 +17,6 @@ script:
 
 jobs:
   include:
-    - env: CIP_TAG=5.28-alpine3.8 ALIEN_BUILD_INSTALL_EXTRA=1
     - env: CIP_TAG=5.28-bionic    ALIEN_BUILD_INSTALL_EXTRA=1
     - env: CIP_TAG=5.28-centos7   ALIEN_BUILD_INSTALL_EXTRA=1
     - env: CIP_TAG=5.28-fedora29  ALIEN_BUILD_INSTALL_EXTRA=1
@@ -37,8 +36,6 @@ jobs:
     - env: CIP_TAG=5.10.0 ALIEN_BUILD_INSTALL_EXTRA=0
     - env: CIP_TAG=5.8.8  ALIEN_BUILD_INSTALL_EXTRA=0
     - env: CIP_TAG=5.8.1  ALIEN_BUILD_INSTALL_EXTRA=0
-  allow_failures:
-    - env: CIP_TAG=5.28-alpine3.8 ALIEN_BUILD_INSTALL_EXTRA=1
 
 cache:
   directories:
