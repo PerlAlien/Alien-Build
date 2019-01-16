@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.50      2019-01-16 12:55:08 -0500
   - Removed temp testing files unintentionally included in the previous
     release.
   - Require ExtUtils::MakeMaker 6.64, for Alien::Build::MM, which can
