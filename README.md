@@ -686,7 +686,7 @@ Apply the given plugin with the given arguments.
     semicolon separated list of plugins to automatically load before parsing
     your [alienfile](https://metacpan.org/pod/alienfile).
 
-- ALIEN\_BUILD\_PRELOAD
+- ALIEN\_BUILD\_POSTLOAD
 
     semicolon separated list of plugins to automatically load after parsing
     your [alienfile](https://metacpan.org/pod/alienfile).

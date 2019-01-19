@@ -1915,7 +1915,7 @@ chooses the best C<pkg-config> plugin.
 semicolon separated list of plugins to automatically load before parsing
 your L<alienfile>.
 
-=item ALIEN_BUILD_PRELOAD
+=item ALIEN_BUILD_POSTLOAD
 
 semicolon separated list of plugins to automatically load after parsing
 your L<alienfile>.
