@@ -40,6 +40,7 @@ but for the moment includes:
  -G %{cmake_generator}                          \
  -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true    \
  -DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix} \
+ -DCMAKE_INSTALL_LIBDIR:PATH=lib                \
  -DCMAKE_MAKE_PROGRAM:PATH=%{make}
 
 This plugin supports out-of-source builds via the meta property C<out_of_source>.
@@ -153,6 +154,7 @@ sub init
     -G => '%{cmake_generator}', 
     '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true',
     '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}',
+    '-DCMAKE_INSTALL_LIBDIR:PATH=lib',
     '-DCMAKE_MAKE_PROGRAM:PATH=%{make}',
   );
 
