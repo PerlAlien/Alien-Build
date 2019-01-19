@@ -868,7 +868,7 @@ sub load_requires
     if(($mod->can('runtime_prop') && $mod->runtime_prop)
     || ($mod->isa('Alien::Base')  && $mod->install_type('share')))
     {
-      for my $dir (qw(lib share)) {
+      for my $dir (qw(lib64 lib share)) {
           my $path = _path($mod->dist_dir)->child("$dir/pkgconfig");
           if(-d $path)
           {

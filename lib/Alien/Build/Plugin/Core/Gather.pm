@@ -44,7 +44,7 @@ sub init
       unshift @PATH, Path::Tiny->new('bin')->absolute->stringify
         if -d 'bin';
 
-      for my $dir (qw(share lib)) {
+      for my $dir (qw(share lib lib64)) {
           unshift @PKG_CONFIG_PATH, Path::Tiny->new("$dir/pkgconfig")->absolute->stringify
             if -d "$dir/pkgconfig";
       }
