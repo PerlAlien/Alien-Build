@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.51      2019-01-19 14:23:23 -0500
+  - cmake plugin sets CMAKE_INSTALL_LIBDIR:PATH to lib for share installs
+    for cmake projects using GNUInstallDirs on platforms that default to
+    something other than lib.
+
 1.50      2019-01-16 12:55:08 -0500
   - Removed temp testing files unintentionally included in the previous
     release.
