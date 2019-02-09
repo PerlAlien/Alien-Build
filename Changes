@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Use $alien->libs -L flags to help find system dynamic libs.
 
 1.51      2019-01-19 14:23:23 -0500
   - cmake plugin sets CMAKE_INSTALL_LIBDIR:PATH to lib for share installs

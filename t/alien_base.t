@@ -14,13 +14,30 @@ my $mock = Test2::Mock->new(
   override => [
     find_lib => sub {
       my %args = @_;
-      if($args{libpath})
+      my @libpath;
+      if(ref $args{libpath})
       {
-        return unless -d $args{libpath};
-        return sort do {
-          local $CWD = $args{libpath};
-          map { path($_)->absolute->stringify } bsd_glob('*.so*');
-        };
+        @libpath = @{ $args{libpath} } if ref $args{libpath};
+      }
+      elsif(defined $args{libpath})
+      {
+        @libpath = ($args{libpath});
+      }
+      if(@libpath)
+      {
+        my @libs;
+        foreach my $libpath (@libpath)
+        {
+          if($libpath eq '/roger/opt/libbumblebee/lib')
+          {
+            push @libs, '/roger/opt/libbumblebee/lib/libbumblebee.so';
+            next;
+          }
+          next unless -d $libpath;
+          local $CWD = $libpath;
+          push @libs, map { path($_)->absolute->stringify } bsd_glob('*.so*');
+        }
+        return @libs;
       }
       else
       {
@@ -104,6 +121,21 @@ subtest 'Alien::Build system' => sub {
   is( [Alien::libfoo1->bin_dir], [], 'bin_dir' );
   
   is( Alien::libfoo1->runtime_prop->{arbitrary}, 'one', 'runtime_prop' );
+};
+
+subtest 'Alien::Build quazi system dylib' => sub {
+
+  require Alien::libfoo1;
+
+  my $mock = mock 'Alien::libfoo1' => (
+    override => [
+      libs => sub { return '-L/roger/opt/libbumblebee/lib -lbumblebee' },
+    ],
+  );
+
+  is( Alien::libfoo1->libs, '-L/roger/opt/libbumblebee/lib -lbumblebee', 'libs' );
+  is( [Alien::libfoo1->dynamic_libs], ['/roger/opt/libbumblebee/lib/libbumblebee.so'], 'dynamic_libs' );
+
 };
 
 subtest 'Alien::Build share' => sub {
@@ -273,7 +305,7 @@ subtest 'ffi_name' => sub {
   );
   
   is( [Alien::libfoo1->dynamic_libs], ['foo.dll','foo2.dll'], 'call dynamic_libs' );
-  is( \@args_find_lib, [ lib => 'foo' ] );
+  is( \@args_find_lib, [ lib => 'foo', libpath => [] ] );
   
   my $mock2 = Test2::Mock->new(
     class => 'Alien::Base',
