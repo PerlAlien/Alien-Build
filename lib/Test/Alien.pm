@@ -372,7 +372,6 @@ skipped.  Example:
  xs_ok $xs, with_subtest {
    # skipped if $xs fails for some reason
    my($module) = @_;
-   plan 1;
    is $module->foo, 1;
  };
 
