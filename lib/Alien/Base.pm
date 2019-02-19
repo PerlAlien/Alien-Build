@@ -398,9 +398,9 @@ sub version_cmp {
 
 =head2 max_version
 
- my $ok = Alien::MyLibrary->atleast_version($wanted_version)
- my $ok = Alien::MyLibrary->exact_version($wanted_version)
- my $ok = Alien::MyLibrary->max_version($wanted_version)
+ my $ok = Alien::MyLibrary->atleast_version($wanted_version);
+ my $ok = Alien::MyLibrary->exact_version($wanted_version);
+ my $ok = Alien::MyLibrary->max_version($wanted_version);
 
 Returns true if the version of the alienized library or tool is at least,
 exactly, or at most the version specified, respectively.
