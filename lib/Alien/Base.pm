@@ -392,6 +392,21 @@ sub version_cmp {
   return @x <=> @y;
 }
 
+=head2 atleast_version
+
+=head2 exact_version
+
+=head2 max_version
+
+ my $ok = Alien::MyLibrary->atleast_version($wanted_version)
+ my $ok = Alien::MyLibrary->exact_version($wanted_version)
+ my $ok = Alien::MyLibrary->max_version($wanted_version)
+
+Returns true if the version of the alienized library or tool is at least,
+exactly, or at most the version specified, respectively.
+
+=cut
+
 sub atleast_version {
   my $self = shift;
   my ($wantver) = @_;
