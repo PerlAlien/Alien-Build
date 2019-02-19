@@ -396,21 +396,30 @@ sub atleast_version {
   my $self = shift;
   my ($wantver) = @_;
 
-  return $self->version_cmp($self->version, $wantver) >= 0;
+  defined(my $version = $self->version) or
+    croak "$self has no defined ->version";
+
+  return $self->version_cmp($version, $wantver) >= 0;
 }
 
 sub exact_version {
   my $self = shift;
   my ($wantver) = @_;
 
-  return $self->version_cmp($self->version, $wantver) == 0;
+  defined(my $version = $self->version) or
+    croak "$self has no defined ->version";
+
+  return $self->version_cmp($version, $wantver) == 0;
 }
 
 sub max_version {
   my $self = shift;
   my ($wantver) = @_;
 
-  return $self->version_cmp($self->version, $wantver) <= 0;
+  defined(my $version = $self->version) or
+    croak "$self has no defined ->version";
+
+  return $self->version_cmp($version, $wantver) <= 0;
 }
 
 =head2 install_type
