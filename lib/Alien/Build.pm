@@ -60,9 +60,10 @@ L<Alien::Build> + L<alienfile>.
 
 =back
 
-Note that you will usually not usually create a L<Alien::Build> instance
+Note that you will not usually create a L<Alien::Build> instance
 directly, but rather be using a thin installer layer, such as
-L<Alien::Build::MM> (for use with L<ExtUtils::MakeMaker>).  One of the
+L<Alien::Build::MM> (for use with L<ExtUtils::MakeMaker>) or
+L<Alien::Build::MB> (for use with L<Module::Build>).  One of the
 goals of this project is to remain installer agnostic.
 
 =cut

@@ -45,9 +45,10 @@ are starting out you probably want to do so from one of these documents:
     This is for the brave souls who want to write plugins that will work with
     [Alien::Build](https://metacpan.org/pod/Alien::Build) + [alienfile](https://metacpan.org/pod/alienfile).
 
-Note that you will usually not usually create a [Alien::Build](https://metacpan.org/pod/Alien::Build) instance
+Note that you will not usually create a [Alien::Build](https://metacpan.org/pod/Alien::Build) instance
 directly, but rather be using a thin installer layer, such as
-[Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) (for use with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker)).  One of the
+[Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) (for use with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker)) or
+[Alien::Build::MB](https://metacpan.org/pod/Alien::Build::MB) (for use with [Module::Build](https://metacpan.org/pod/Module::Build)).  One of the
 goals of this project is to remain installer agnostic.
 
 # CONSTRUCTOR
