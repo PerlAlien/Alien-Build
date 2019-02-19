@@ -699,7 +699,7 @@ Apply the given plugin with the given arguments.
 - PKG\_CONFIG
 
     This environment variable can be used to override the program name for `pkg-config`
-    for some PkgConfig plugins: [Alien::Build::Plugin::PkgConfig](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig).
+    when using the command line plugin: [Alien::Build::Plugin::PkgConfig::CommandLine](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig::CommandLine).
 
 - ftp\_proxy, all\_proxy
 

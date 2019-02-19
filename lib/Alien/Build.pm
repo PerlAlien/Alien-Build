@@ -1928,7 +1928,7 @@ This environment variable will be manipulated during a destdir install.
 =item PKG_CONFIG
 
 This environment variable can be used to override the program name for C<pkg-config>
-for some PkgConfig plugins: L<Alien::Build::Plugin::PkgConfig>.
+when using the command line plugin: L<Alien::Build::Plugin::PkgConfig::CommandLine>.
 
 =item ftp_proxy, all_proxy
 
