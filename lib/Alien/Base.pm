@@ -365,7 +365,8 @@ sub version {
 # Sort::Versions isn't quite the same algorithm because it differs in
 # behaviour with leading zeroes.
 #   See also  https://dev.gentoo.org/~mgorny/pkg-config-spec.html#version-comparison
-sub _versioncmp {
+sub version_cmp {
+  shift;
   my @x = (shift =~ m/([0-9]+|[a-z]+)/ig);
   my @y = (shift =~ m/([0-9]+|[a-z]+)/ig);
 
@@ -395,21 +396,21 @@ sub atleast_version {
   my $self = shift;
   my ($wantver) = @_;
 
-  return _versioncmp($self->version, $wantver) >= 0;
+  return $self->version_cmp($self->version, $wantver) >= 0;
 }
 
 sub exact_version {
   my $self = shift;
   my ($wantver) = @_;
 
-  return _versioncmp($self->version, $wantver) == 0;
+  return $self->version_cmp($self->version, $wantver) == 0;
 }
 
 sub max_version {
   my $self = shift;
   my ($wantver) = @_;
 
-  return _versioncmp($self->version, $wantver) <= 0;
+  return $self->version_cmp($self->version, $wantver) <= 0;
 }
 
 =head2 install_type
