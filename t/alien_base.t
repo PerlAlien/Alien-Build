@@ -106,10 +106,10 @@ subtest 'Alien::Build system' => sub {
   is( Alien::libfoo1->libs, '-lfoo', 'libs' );
   is( Alien::libfoo1->libs_static, '-lfoo -lbar -lbaz', 'libs_static' );
   is( Alien::libfoo1->version, '1.2.3', 'version');
-  ok( Alien::libfoo1->atleast_version( '1.2' ), 'version atleast 1.2' );
-  ok( !Alien::libfoo1->atleast_version( '1.3' ), 'version not atleast 1.3' );
-  ok( Alien::libfoo1->exact_version( '1.2.3' ), 'version exactly 1.2.3' );
-  ok( Alien::libfoo1->max_version( '1.4' ), 'version atmost 1.4' );
+  ok( Alien::libfoo1->atleast_version('1.2'), 'version atleast 1.2' );
+  ok( !Alien::libfoo1->atleast_version('1.3'), 'version not atleast 1.3' );
+  ok( Alien::libfoo1->exact_version('1.2.3'), 'version exactly 1.2.3' );
+  ok( Alien::libfoo1->max_version('1.4'), 'version atmost 1.4' );
   
   subtest 'install type' => sub {
     is( Alien::libfoo1->install_type, 'system' );
