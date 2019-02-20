@@ -41,9 +41,33 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
-=head2 minimum_version
+=head2 atleast_version
 
 The minimum required version that is acceptable version as provided by the system.
+
+=cut
+
+has atleast_version => undef;
+
+=head2 exact_version
+
+The exact required version that is acceptable version as provided by the system.
+
+=cut
+
+has exact_version => undef;
+
+=head2 max_version
+
+The max required version that is acceptable version as provided by the system.
+
+=cut
+
+has max_version => undef;
+
+=head2 minimum_version
+
+Alias for C<atleast_version> for backward compatibility.
 
 =cut
 
@@ -77,7 +101,7 @@ sub init
   {
     # TODO: this doesn't yet find pkgconf in the bin dir of a share
     # install.
-    my $command_line = 
+    my $command_line =
       File::Which::which('pkgconf')
       ? 'pkgconf'
       : File::Which::which('pkg-config')
@@ -91,55 +115,76 @@ sub init
   {
     # Also update in Neotiate.pm
     $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Client' => _min_version);
-  
-    if(defined $self->minimum_version)
+
+    if(defined $self->minimum_version || defined $self->atleast_version || defined $self->exact_version || defined $self->max_version)
     {
       $meta->add_requires('configure' => 'PkgConfig::LibPkgConf::Util' => _min_version);
     }
   }
-  
+
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
 
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
-    
+
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($pkg_name);
       die "package $pkg_name not found" unless $pkg;
-      if(defined $self->minimum_version)
+
+      my $atleast_version = $self->atleast_version;
+      $atleast_version = $self->minimum_version unless defined $self->atleast_version;
+      if($atleast_version)
       {
         require PkgConfig::LibPkgConf::Util;
-        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->minimum_version) == -1)
+        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $atleast_version) == -1)
         {
-          die "package $pkg_name is not recent enough";
+          die "package $pkg_name is version @{[ $pkg->version ]}, but at least $atleast_version is required.";
         }
       }
-      
+
+      if($self->exact_version)
+      {
+        require PkgConfig::LibPkgConf::Util;
+        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->exact_version) != 0)
+        {
+          die "package $pkg_name is version @{[ $pkg->version ]}, but exactly @{[ $self->exact_version ]} is required.";
+        }
+      }
+
+      if($self->max_version)
+      {
+        require PkgConfig::LibPkgConf::Util;
+        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->max_version) == 1)
+        {
+          die "package $pkg_name is version @{[ $pkg->version ]}, but max @{[ $self->max_version ]} is required.";
+        }
+      }
+
       foreach my $alt (@alt_names)
       {
         my $pkg = $client->find($alt);
         die "package $alt not found" unless $pkg;
       }
-      
+
       'system';
     },
   );
-  
+
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
-      
+
       foreach my $name ($pkg_name, @alt_names)
       {
         my $pkg = $client->find($name);
         die "reload of package $name failed" unless defined $pkg;
 
-        my %prop;      
+        my %prop;
         $prop{version}        = $pkg->version;
         $prop{cflags}         = $pkg->cflags;
         $prop{libs}           = $pkg->libs;
@@ -147,7 +192,7 @@ sub init
         $prop{libs_static}    = $pkg->libs_static;
         $build->runtime_prop->{alt}->{$name} = \%prop;
       }
-      
+
       foreach my $key (keys %{ $build->runtime_prop->{alt}->{$pkg_name} })
       {
         $build->runtime_prop->{$key} = $build->runtime_prop->{alt}->{$pkg_name}->{$key};
@@ -159,7 +204,7 @@ sub init
       }
     },
   ) for qw( gather_system gather_share );
-  
+
   $self;
 }
 
