@@ -176,6 +176,66 @@ subtest 'system available, wrong version' => sub {
     };
 
   };
+
+  subtest 'max_version' => sub {
+
+    subtest 'max version (less)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.0.0',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+    subtest 'max version (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+    subtest 'max version (more)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+    subtest 'max version (lots more)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '3.3.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+  };
 };
 
 subtest 'system available, okay' => sub {
