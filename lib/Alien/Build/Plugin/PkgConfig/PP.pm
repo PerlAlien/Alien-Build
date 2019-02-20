@@ -39,9 +39,25 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
-=head2 minimum_version
+=head2 atleast_version
 
 The minimum required version that is acceptable version as provided by the system.
+
+=cut
+
+has atleast_version => undef;
+
+=head2 exact_version
+
+The exact required version that is acceptable version as provided by the system.
+
+=cut
+
+has exact_version => undef;
+
+=head2 minimum_version
+
+Alias for C<atleast_version> for backward compatability.
 
 =cut
 
@@ -77,7 +93,7 @@ sub _cleanup
 sub init
 {
   my($self, $meta) = @_;
-  
+
   unless(defined $meta->prop->{env}->{PKG_CONFIG})
   {
     # TODO: Better would be to to "execute" lib/PkgConfig.pm
@@ -85,7 +101,7 @@ sub init
     # exact version of PkgConfig.pm that we are using here.
     # there are a few corner cases to deal with before we
     # can do this.  What is here should handle most use cases.
-    my $command_line = 
+    my $command_line =
       File::Which::which('ppkg-config')
       ? 'ppkg-config'
       : File::Which::which('pkg-config.pl')
@@ -101,7 +117,7 @@ sub init
   {
     $meta->add_requires('configure' => 'PkgConfig' => _min_version);
   }
-  
+
   my($pkg_name, @alt_names) = (ref $self->pkg_name) ? (@{ $self->pkg_name }) : ($self->pkg_name);
 
   $meta->register_hook(
@@ -112,22 +128,35 @@ sub init
       require PkgConfig;
       my $pkg = PkgConfig->find($pkg_name);
       die "package @{[ $pkg_name ]} not found" if $pkg->errmsg;
-      if(defined $self->minimum_version)
+
+      my $version = PkgConfig::Version->new($pkg->pkg_version);
+
+      my $atleast_version = $self->atleast_version;
+      $atleast_version = $self->minimum_version unless defined $atleast_version;
+      if(defined $atleast_version)
       {
-        my $version = PkgConfig::Version->new($pkg->pkg_version);
-        my $need    = PkgConfig::Version->new($self->minimum_version);
+        my $need    = PkgConfig::Version->new($atleast_version);
         if($version < $need)
         {
-          die "package @{[ $pkg_name ]} is not recent enough";
+          die "package @{[ $pkg_name ]} is @{[ $pkg->pkg_version ]}, but at least $atleast_version is required.";
         }
       }
-      
+
+      if(defined $self->exact_version)
+      {
+        my $need = PkgConfig::Version->new($self->exact_version);
+        if($version != $need)
+        {
+          die "package @{[ $pkg_name ]} is @{[ $pkg->pkg_version ]}, but exactly @{[ $self->exact_version ]} is required.";
+        }
+      }
+
       foreach my $alt (@alt_names)
       {
         my $pkg = PkgConfig->find($alt);
         die "package $alt not found" if $pkg->errmsg;
       }
-      
+
       'system';
     },
   );
@@ -168,7 +197,7 @@ sub init
       delete $build->runtime_prop->{alt};
     }
   };
-  
+
   $meta->register_hook(
     gather_system => $gather,
   );
@@ -176,7 +205,7 @@ sub init
   $meta->register_hook(
     gather_share => $gather,
   );
-  
+
   $self;
 }
 

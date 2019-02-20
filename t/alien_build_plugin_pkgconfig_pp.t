@@ -18,7 +18,7 @@ subtest 'available' => sub {
     local $PkgConfig::VERSION = '0.14026';
     is(Alien::Build::Plugin::PkgConfig::PP->available, T());
   };
-  
+
   subtest 'too old!' => sub {
     local $PkgConfig::VERSION = '0.14025';
     is(Alien::Build::Plugin::PkgConfig::PP->available, F());
@@ -43,23 +43,139 @@ subtest 'system not available' => sub {
 
   my($out, $type) = capture_merged { $build->probe };
   note $out;
-  
+
   is( $type, 'share' );
-  
+
 };
 
 subtest 'system available, wrong version' => sub {
 
-  my($build, $meta, $plugin) = build(
-    pkg_name => 'foo',
-    minimum_version => '1.2.4',
-  );
-  
-  my($out, $type) = capture_merged { $build->probe };
-  note $out;
-  
-  is( $type, 'share' );
+  subtest 'atleast_version or minimum_version' => sub {
 
+    subtest 'old name bad' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        minimum_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+    };
+
+    subtest 'old name good (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        minimum_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+
+    subtest 'old name good (much older)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        minimum_version => '1.1.1',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+
+    subtest 'atleast_version bad' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        atleast_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+    };
+
+    subtest 'atleast_version good (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        atleast_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+
+    subtest 'atleast_version good (older)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        atleast_version => '1.1.1',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+  };
+
+  subtest 'exact' => sub {
+
+    subtest 'exact version (less)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.2',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+    subtest 'exact version (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+    subtest 'exact version (more)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+  };
 };
 
 subtest 'system available, okay' => sub {
@@ -68,16 +184,16 @@ subtest 'system available, okay' => sub {
     pkg_name => 'foo',
     minimum_version => '1.2.3',
   );
-  
+
   my($out, $type) = capture_merged { $build->probe };
   note $out;
-  
+
   is( $type, 'system' );
-  
+
   return unless $type eq 'system';
-  
+
   note capture_merged { $build->build; () };
-  
+
   is(
     $build->runtime_prop,
     hash {
@@ -88,7 +204,7 @@ subtest 'system available, okay' => sub {
       etc;
     },
   );
-  
+
   note "cflags_static = @{[ $build->runtime_prop->{cflags_static} ]}";
 
   is(
@@ -101,20 +217,20 @@ subtest 'system available, okay' => sub {
 subtest 'system multiple' => sub {
 
   subtest 'all found in system' => sub {
-  
+
     my $build = alienfile_ok q{
-  
+
       use alienfile;
       plugin 'PkgConfig::PP' => (
         pkg_name => [ 'xor', 'xor-chillout' ],
       );
-  
+
     };
 
-    alien_install_type_is 'system';  
-    
+    alien_install_type_is 'system';
+
     my $alien = alien_build_ok;
-    
+
     use Alien::Build::Util qw( _dump );
     note _dump($alien->runtime_prop);
 
@@ -147,7 +263,6 @@ subtest 'system multiple' => sub {
         etc;
       },
     );
-    
   };
 
 };
@@ -171,7 +286,7 @@ subtest 'prereqs' => sub {
     );
 
   };
-  
+
   subtest 'are not specified when user asks for plugin IN-directly' => sub {
 
     local $ENV{ALIEN_BUILD_PKG_CONFIG} = 'PkgConfig::PP';
@@ -205,7 +320,7 @@ alien_subtest 'set env' => sub {
     plugin 'PkgConfig::PP' => ( pkg_name => 'totally-bogus-pkg-config-name' );
 
     probe sub { 'share' };
-    
+
     share {
 
       plugin 'Download::Foo';
@@ -215,18 +330,18 @@ alien_subtest 'set env' => sub {
         $build->log("PKG_CONFIG = $ENV{PKG_CONFIG}");
         1;
       };
-      
+
       meta->around_hook(
         gather_share => sub {
           1;
         },
       );
     };
-    
+
   };
-  
+
   alien_build_ok;
-  
+
 };
 
 done_testing;
