@@ -2,6 +2,8 @@
 
 if echo $CIP_TAG | grep -q -- -alpine ; then
   echo alpine
+  cip sudo apk add cmake
+  cip sudo apk add pkgconf-dev
 elif (echo $CIP_TAG | grep -q -- -centos) || (echo $CIP_TAG | grep -q -- -fedora) ; then
   echo CentOS / Fedora
 else
