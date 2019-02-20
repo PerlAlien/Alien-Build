@@ -55,9 +55,17 @@ The exact required version that is acceptable version as provided by the system.
 
 has exact_version => undef;
 
+=head2 max_version
+
+The max required version that is acceptable version as provided by the system.
+
+=cut
+
+has max_version => undef;
+
 =head2 minimum_version
 
-Alias for C<atleast_version> for backward compatability.
+Alias for C<atleast_version> for backward compatibility.
 
 =cut
 
@@ -148,6 +156,15 @@ sub init
         if($version != $need)
         {
           die "package @{[ $pkg_name ]} is @{[ $pkg->pkg_version ]}, but exactly @{[ $self->exact_version ]} is required.";
+        }
+      }
+
+      if(defined $self->max_version)
+      {
+        my $need = PkgConfig::Version->new($self->max_version);
+        if($version > $need)
+        {
+          die "package @{[ $pkg_name ]} is @{[ $pkg->pkg_version ]}, but max of @{[ $self->max_version ]} is required.";
         }
       }
 
