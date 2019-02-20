@@ -359,7 +359,14 @@ subtest 'run with kill 9' => sub {
         call message => "  using $^X";
       };
       event Diag => sub {
-        call message => "  killed with signal: 9";
+        if($^O eq 'haiku')
+        {
+          call message => match qr/^  killed with signal: (9|21)$/;
+        }
+        else
+        {
+          call message => "  killed with signal: 9";
+        }
       };
       end;
     },
@@ -369,7 +376,14 @@ subtest 'run with kill 9' => sub {
   is $run->out, '', 'output';
   is $run->err, '', 'error';
   is $run->exit, 0, 'exit';
-  is $run->signal, 9, 'signal';
+  if($^O eq 'haiku')
+  {
+    like $run->signal, qr/^(9|21)$/, 'signal';
+  }
+  else
+  {
+    is $run->signal, 9, 'signal';
+  }
 
   is(
     intercept { $run->success },
@@ -380,7 +394,14 @@ subtest 'run with kill 9' => sub {
       };
       event Diag => sub {};
       event Diag => sub {
-        call message => '  command killed with 9';
+        if($^O eq 'haiku')
+        {
+          call message => match qr/^  command killed with (9|21)$/;
+        }
+        else
+        {
+          call message => "  command killed with 9";
+        }
       };
       end;
     },
