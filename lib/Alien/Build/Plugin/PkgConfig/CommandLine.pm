@@ -56,9 +56,33 @@ sub _bin_name {
 
 has bin_name => \&_bin_name;
 
-=head2 minimum_version
+=head2 atleast_version
 
 The minimum required version that is acceptable version as provided by the system.
+
+=cut
+
+has atleast_version => undef;
+
+=head2 exact_version
+
+The exact required version that is acceptable version as provided by the system.
+
+=cut
+
+has exact_version => undef;
+
+=head2 max_version
+
+The max required version that is acceptable version as provided by the system.
+
+=cut
+
+has max_version => undef;
+
+=head2 minimum_version
+
+Alias for C<atleast_version> for backward compatibility.
 
 =cut
 
@@ -114,6 +138,20 @@ sub init
   if(defined $self->minimum_version)
   {
     push @probe, [ $pkgconf, '--atleast-version=' . $self->minimum_version, $pkg_name ];
+  }
+  elsif(defined $self->atleast_version)
+  {
+    push @probe, [ $pkgconf, '--atleast-version=' . $self->atleast_version, $pkg_name ];
+  }
+
+  if(defined $self->exact_version)
+  {
+    push @probe, [ $pkgconf, '--exact-version=' . $self->exact_version, $pkg_name ];
+  }
+
+  if(defined $self->max_version)
+  {
+    push @probe, [ $pkgconf, '--max-version=' . $self->max_version, $pkg_name ];
   }
 
   unshift @probe, sub {
