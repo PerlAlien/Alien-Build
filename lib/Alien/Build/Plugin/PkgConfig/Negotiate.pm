@@ -36,9 +36,33 @@ has '+pkg_name' => sub {
   Carp::croak "pkg_name is a required property";
 };
 
-=head2 minimum_version
+=head2 atleast_version
 
 The minimum required version that is acceptable version as provided by the system.
+
+=cut
+
+has atleast_version => undef;
+
+=head2 exact_version
+
+The exact required version that is acceptable version as provided by the system.
+
+=cut
+
+has exact_version => undef;
+
+=head2 max_version
+
+The max required version that is acceptable version as provided by the system.
+
+=cut
+
+has max_version => undef;
+
+=head2 minimum_version
+
+Alias for C<atleast_version> for backward compatibility.
 
 =cut
 
@@ -104,10 +128,19 @@ sub init
     $meta->add_requires('configure', 'Alien::Build::Plugin::PkgConfig::Negotiate' => '0.79');
   }
 
+  if($self->atleast_version || $self->exact_version || $self->max_version)
+  {
+    $meta->add_requires('configure', 'Alien::Build::Plugin::PkgConfig::Negotiate' => '1.53');
+  }
+
   my @args;
   push @args, pkg_name         => $self->pkg_name;
   push @args, register_prereqs => 0;
-  push @args, minimum_version  => $self->minimum_version if defined $self->minimum_version;
+
+  foreach my $method (map { "${_}_version" } qw( minimum atleast exact max ))
+  {
+    push @args, $method => $self->$method if defined $self->$method;
+  }
 
   $meta->apply_plugin($plugin, @args);
 
