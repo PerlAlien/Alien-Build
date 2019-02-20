@@ -59,12 +59,12 @@ sub pick
   my($class) = @_;
 
   return $ENV{ALIEN_BUILD_PKG_CONFIG} if $ENV{ALIEN_BUILD_PKG_CONFIG};
-  
+
   if(Alien::Build::Plugin::PkgConfig::LibPkgConf->available)
   {
     return 'PkgConfig::LibPkgConf';
   }
-  
+
   if(Alien::Build::Plugin::PkgConfig::CommandLine->available)
   {
     # TODO: determine environment or flags necessary for using pkg-config
@@ -76,7 +76,7 @@ sub pick
       return 'PkgConfig::CommandLine';
     }
   }
-  
+
   if(Alien::Build::Plugin::PkgConfig::PP->available)
   {
     return 'PkgConfig::PP';
@@ -98,17 +98,17 @@ sub init
 
   my $plugin = $self->pick;
   Alien::Build->log("Using PkgConfig plugin: $plugin");
-  
+
   if(ref($self->pkg_name) eq 'ARRAY')
   {
     $meta->add_requires('configure', 'Alien::Build::Plugin::PkgConfig::Negotiate' => '0.79');
   }
-  
+
   my @args;
   push @args, pkg_name         => $self->pkg_name;
   push @args, register_prereqs => 0;
   push @args, minimum_version  => $self->minimum_version if defined $self->minimum_version;
-  
+
   $meta->apply_plugin($plugin, @args);
 
   $self;
