@@ -48,7 +48,7 @@ subtest 'system not available' => sub {
 
 };
 
-subtest 'system available, wrong version' => sub {
+subtest 'version requirements' => sub {
 
   subtest 'atleast_version or minimum_version' => sub {
 

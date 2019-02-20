@@ -100,18 +100,208 @@ subtest 'system not available' => sub {
 
 };
 
-subtest 'system available, wrong version' => sub {
+subtest 'version requirements' => sub {
 
-  my($build, $meta, $plugin) = build(
-    pkg_name => 'foo',
-    minimum_version => '1.2.4',
-  );
+  subtest 'atleast_version or minimum_version' => sub {
 
-  my($out, $type) = capture_merged { $build->probe };
-  note $out;
+    subtest 'old name bad' => sub {
 
-  is( $type, 'share' );
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        minimum_version => '1.2.4',
+      );
 
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+    };
+
+    subtest 'old name good (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        minimum_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+
+    subtest 'old name good (much older)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        minimum_version => '1.1.1',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+
+    subtest 'atleast_version bad' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        atleast_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+    };
+
+    subtest 'atleast_version good (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        atleast_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+
+    subtest 'atleast_version good (older)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        atleast_version => '1.1.1',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+    };
+  };
+
+  subtest 'exact' => sub {
+
+    subtest 'exact version (less)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.2',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+    subtest 'exact version (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+    subtest 'exact version (more)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        exact_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+  };
+
+  subtest 'max_version' => sub {
+
+    subtest 'max version (lot less)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        max_version => '1.0.0',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+    subtest 'max version (less)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        max_version => '1.2.2',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'share' );
+
+    };
+
+    subtest 'max version (exact)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        max_version => '1.2.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+    subtest 'max version (more)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        max_version => '1.2.4',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+    subtest 'max version (lots more)' => sub {
+
+      my($build, $meta, $plugin) = build(
+        pkg_name => 'foo',
+        max_version => '3.3.3',
+      );
+
+      my($out, $type) = capture_merged { $build->probe };
+      note $out;
+
+      is( $type, 'system' );
+
+    };
+
+  };
 };
 
 subtest 'system available, okay' => sub {
