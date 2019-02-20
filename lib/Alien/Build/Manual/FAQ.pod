@@ -147,11 +147,18 @@ C<cflags> and C<libs> properties on either a C<system> or C<share> install.
 
 =head2 How do I specify a minimum or exact version requirement for packages that use pkg-config?
 
-The various pkg-config plugins all support a minimum_version field:
+The various pkg-config plugins all support atleast_version, exact_version and maximum_version
+fields, which have the same meaning as the C<pkg-config> command line interface:
 
  use alienfile;
  
- plugin 'PkgConfig', pkg_name => foo, minimum_version => '1.2.3';
+ plugin 'PkgConfig', pkg_name => foo, atleast_version => '1.2.3';
+
+or
+
+ use alienfile;
+ 
+ plugin 'PkgConfig', pkg_name => foo, exact_version => '1.2.3';
 
 =head2 How to create an Alien module for a packages that do not support pkg-config?
 
