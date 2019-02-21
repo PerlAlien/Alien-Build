@@ -593,6 +593,7 @@ alien_subtest 'extract' => sub {
   };
   
   skip_all 'test requires command line tar' unless $tar_cmd;
+  skip_all 'test requires command line tar actually works' unless Alien::Build::Plugin::Extract::CommandLine->handles('tar');
 
   my $build = alienfile_ok q{
     use alienfile;
