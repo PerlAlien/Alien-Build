@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add atleast_version, exact_version, max_version and version_cmp methods
+    to Alien::Base (leonerd++ gh#75, gh#77)
 
 1.53_01   2019-02-21 11:35:47 -0500
   - Prefer PkgConfig::PP on MSWin32 where it is more reliable. (gh#82, gh#85)

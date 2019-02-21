@@ -815,6 +815,8 @@ Shoichi Kaji (SKAJI)
 
 Shawn Laffan (SLAFFAN)
 
+Paul Evans (leonerd, PEVANS)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2011-2018 by Graham Ollis.
