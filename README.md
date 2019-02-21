@@ -51,7 +51,7 @@ directly, but rather be using a thin installer layer, such as
 [Alien::Build::MB](https://metacpan.org/pod/Alien::Build::MB) (for use with [Module::Build](https://metacpan.org/pod/Module::Build)).  One of the
 goals of this project is to remain installer agnostic.
 
-# CONSTRUCTOR
+# CONSTRUCTORS
 
 ## new
 
@@ -60,6 +60,20 @@ goals of this project is to remain installer agnostic.
 This creates a new empty instance of [Alien::Build](https://metacpan.org/pod/Alien::Build).  Normally you will
 want to use `load` below to create an instance of [Alien::Build](https://metacpan.org/pod/Alien::Build) from
 an [alienfile](https://metacpan.org/pod/alienfile) recipe.
+
+## load
+
+    my $build = Alien::Build->load($alienfile);
+
+This creates an [Alien::Build](https://metacpan.org/pod/Alien::Build) instance with the given [alienfile](https://metacpan.org/pod/alienfile)
+recipe.
+
+## resume
+
+    my $build = Alien::Build->resume($alienfile, $root);
+
+Load a checkpointed [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.  You will need the original
+[alienfile](https://metacpan.org/pod/alienfile) and the build root (usually `_alien`).
 
 # PROPERTIES
 
@@ -384,13 +398,6 @@ If no hook is currently running then `hook_prop` will return `undef`.
 
 # METHODS
 
-## load
-
-    my $build = Alien::Build->load($alienfile);
-
-This creates an [Alien::Build](https://metacpan.org/pod/Alien::Build) instance with the given [alienfile](https://metacpan.org/pod/alienfile)
-recipe.
-
 ## checkpoint
 
     $build->checkpoint;
@@ -398,13 +405,6 @@ recipe.
 Save any install or runtime properties so that they can be reloaded on
 a subsequent run.  This is useful if your build needs to be done in
 multiple stages from a `Makefile`, such as with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker).
-
-## resume
-
-    my $build = Alien::Build->resume($alienfile, $root);
-
-Load a checkpointed [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.  You will need the original
-[alienfile](https://metacpan.org/pod/alienfile) and the build root (usually `_alien`).
 
 ## root
 
