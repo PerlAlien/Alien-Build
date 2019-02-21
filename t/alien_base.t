@@ -125,6 +125,22 @@ subtest 'Alien::Build system' => sub {
   is( [Alien::libfoo1->bin_dir], [], 'bin_dir' );
   
   is( Alien::libfoo1->runtime_prop->{arbitrary}, 'one', 'runtime_prop' );
+
+  {
+    # no version
+    my $mock = mock 'Alien::libfoo1' => (
+      override => [
+        version => sub { return undef },
+      ],
+    );
+
+    ok( !eval{ Alien::libfoo1->atleast_version('1.2'); 1 } and
+        $@ =~ m/has no defined ->version/, 'no version atleast' );
+    ok( !eval { Alien::libfoo1->exact_version('1.2.3'); 1 } and
+        $@ =~ m/has no defined ->version/, 'no version exactly' );
+    ok( !eval { Alien::libfoo1->max_version('1.4'); 1 } and
+        $@ =~ m/has no defined ->version/, 'no version atmost' );
+  }
 };
 
 subtest 'Alien::Build quazi system dylib' => sub {
