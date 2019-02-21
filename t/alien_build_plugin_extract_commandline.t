@@ -49,8 +49,8 @@ subtest 'archive' => sub {
       is $error, '', 'no error from extract';
       if($error ne '')
       {
-        diag "[output      ] $_", split /\n/, $out;
-        diag "[exception   ] $_", split /\n/, $error;
+        diag "[output      ] $_", for split /\n/, $out;
+        diag "[exception   ] $_", for split /\n/, $error;
 
         if($ext eq 'tar.xz')
         {
