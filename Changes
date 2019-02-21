@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.54_01   2019-02-21 15:49:28 -0500
   - Add atleast_version, exact_version, max_version and version_cmp methods
     to Alien::Base (leonerd++ gh#75, gh#77)
 
