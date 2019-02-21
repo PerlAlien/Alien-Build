@@ -70,7 +70,7 @@ goals of this project is to remain installer agnostic.
 
 sub _path { goto \&Path::Tiny::path }
 
-=head1 CONSTRUCTOR
+=head1 CONSTRUCTORS
 
 =head2 new
 
@@ -110,6 +110,152 @@ sub new
     $self->meta->prop->{$_} = $args{meta_prop}->{$_} for keys %{ $args{meta_prop} };
   }
   
+  $self;
+}
+
+=head2 load
+
+ my $build = Alien::Build->load($alienfile);
+
+This creates an L<Alien::Build> instance with the given L<alienfile>
+recipe.
+
+=cut
+
+my $count = 0;
+
+sub load
+{
+  my(undef, $alienfile, @args) = @_;
+
+  my $rcfile = Path::Tiny->new($ENV{ALIEN_BUILD_RC} || '~/.alienbuild/rc.pl')->absolute;
+  if(-r $rcfile)
+  {
+    package Alien::Build::rc;
+    sub logx ($)
+    {
+      unshift @_, 'Alien::Build';
+      goto &Alien::Build::log;
+    };
+    sub preload ($)
+    {
+      push @Alien::Build::rc::PRELOAD, $_[0];
+    }
+    sub postload ($)
+    {
+      push @Alien::Build::rc::POSTLOAD, $_[0];
+    }
+    require $rcfile;
+  }
+
+  unless(-r $alienfile)
+  {
+    Carp::croak "Unable to read alienfile: $alienfile";
+  }
+
+  my $file = _path $alienfile;
+  my $name = $file->parent->basename;
+  $name =~ s/^alien-//i;
+  $name =~ s/[^a-z]//g;
+  $name = 'x' if $name eq '';
+  $name = ucfirst $name;
+
+  my $class = "Alien::Build::Auto::$name@{[ $count++ ]}";
+
+  { no strict 'refs';  
+  @{ "${class}::ISA" } = ('Alien::Build');
+  *{ "${class}::Alienfile::meta" } = sub {
+    $class =~ s{::Alienfile$}{};
+    $class->meta;
+  }};
+
+  my @preload = qw( Core::Setup Core::Download Core::FFI Core::Override );
+  push @preload, @Alien::Build::rc::PRELOAD;
+  push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
+    if defined $ENV{ALIEN_BUILD_PRELOAD};
+  
+  my @postload = qw( Core::Legacy Core::Gather Core::Tail );
+  push @postload, @Alien::Build::rc::POSTLOAD;
+  push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
+    if defined $ENV{ALIEN_BUILD_POSTLOAD};
+
+  my $self = $class->new(
+    filename => $file->absolute->stringify,
+    @args,
+  );
+  
+  require alienfile;
+
+  foreach my $preload (@preload)
+  {
+    ref $preload eq 'CODE' ? $preload->($self->meta) : $self->meta->apply_plugin($preload);
+  }
+
+  # TODO: do this without a string eval ?
+  eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
+    package ${class}::Alienfile;
+    do '@{[ $file->absolute->stringify ]}';
+    die \$\@ if \$\@;
+  };
+  die $@ if $@;
+
+  foreach my $postload (@postload)
+  {
+    ref $postload eq 'CODE' ? $postload->($self->meta) : $self->meta->apply_plugin($postload);
+  }
+
+  $self->{args} = \@args;
+  unless(defined $self->meta->prop->{arch})
+  {
+    $self->meta->prop->{arch} = 1;
+  }
+  
+  unless(defined $self->meta->prop->{network})
+  {
+    $self->meta->prop->{network} = 1;
+    ## https://github.com/Perl5-Alien/Alien-Build/issues/23#issuecomment-341114414
+    #$self->meta->prop->{network} = 0 if $ENV{NO_NETWORK_TESTING};
+    $self->meta->prop->{network} = 0 if (defined $ENV{ALIEN_INSTALL_NETWORK}) && ! $ENV{ALIEN_INSTALL_NETWORK};
+  }
+  
+  unless(defined $self->meta->prop->{local_source})
+  {
+    if(! defined $self->meta->prop->{start_url})
+    {
+      $self->meta->prop->{local_source} = 0;
+    }
+    # we assume URL schemes are at least two characters, that
+    # way Windows absolute paths can be used as local start_url
+    elsif($self->meta->prop->{start_url} =~ /^([a-z]{2,}):/i)
+    {
+      my $scheme = $1;
+      $self->meta->prop->{local_source} = $scheme eq 'file';
+    }
+    else
+    {
+      $self->meta->prop->{local_source} = 1;
+    }
+  }
+
+  return $self;
+}
+
+=head2 resume
+
+ my $build = Alien::Build->resume($alienfile, $root);
+
+Load a checkpointed L<Alien::Build> instance.  You will need the original
+L<alienfile> and the build root (usually C<_alien>).
+
+=cut
+
+sub resume
+{
+  my(undef, $alienfile, $root) = @_;
+  my $h = JSON::PP::decode_json(_path("$root/state.json")->slurp);
+  my $self = Alien::Build->load("$alienfile", @{ $h->{args} });
+  $self->{install_prop} = $h->{install};
+  $self->{runtime_prop} = $h->{runtime};
   $self;
 }
 
@@ -525,133 +671,6 @@ sub _command_prop
 
 =head1 METHODS
 
-=head2 load
-
- my $build = Alien::Build->load($alienfile);
-
-This creates an L<Alien::Build> instance with the given L<alienfile>
-recipe.
-
-=cut
-
-my $count = 0;
-
-sub load
-{
-  my(undef, $alienfile, @args) = @_;
-
-  my $rcfile = Path::Tiny->new($ENV{ALIEN_BUILD_RC} || '~/.alienbuild/rc.pl')->absolute;
-  if(-r $rcfile)
-  {
-    package Alien::Build::rc;
-    sub logx ($)
-    {
-      unshift @_, 'Alien::Build';
-      goto &Alien::Build::log;
-    };
-    sub preload ($)
-    {
-      push @Alien::Build::rc::PRELOAD, $_[0];
-    }
-    sub postload ($)
-    {
-      push @Alien::Build::rc::POSTLOAD, $_[0];
-    }
-    require $rcfile;
-  }
-
-  unless(-r $alienfile)
-  {
-    Carp::croak "Unable to read alienfile: $alienfile";
-  }
-
-  my $file = _path $alienfile;
-  my $name = $file->parent->basename;
-  $name =~ s/^alien-//i;
-  $name =~ s/[^a-z]//g;
-  $name = 'x' if $name eq '';
-  $name = ucfirst $name;
-
-  my $class = "Alien::Build::Auto::$name@{[ $count++ ]}";
-
-  { no strict 'refs';  
-  @{ "${class}::ISA" } = ('Alien::Build');
-  *{ "${class}::Alienfile::meta" } = sub {
-    $class =~ s{::Alienfile$}{};
-    $class->meta;
-  }};
-
-  my @preload = qw( Core::Setup Core::Download Core::FFI Core::Override );
-  push @preload, @Alien::Build::rc::PRELOAD;
-  push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
-    if defined $ENV{ALIEN_BUILD_PRELOAD};
-  
-  my @postload = qw( Core::Legacy Core::Gather Core::Tail );
-  push @postload, @Alien::Build::rc::POSTLOAD;
-  push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
-    if defined $ENV{ALIEN_BUILD_POSTLOAD};
-
-  my $self = $class->new(
-    filename => $file->absolute->stringify,
-    @args,
-  );
-  
-  require alienfile;
-
-  foreach my $preload (@preload)
-  {
-    ref $preload eq 'CODE' ? $preload->($self->meta) : $self->meta->apply_plugin($preload);
-  }
-
-  # TODO: do this without a string eval ?
-  eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
-    package ${class}::Alienfile;
-    do '@{[ $file->absolute->stringify ]}';
-    die \$\@ if \$\@;
-  };
-  die $@ if $@;
-
-  foreach my $postload (@postload)
-  {
-    ref $postload eq 'CODE' ? $postload->($self->meta) : $self->meta->apply_plugin($postload);
-  }
-
-  $self->{args} = \@args;
-  unless(defined $self->meta->prop->{arch})
-  {
-    $self->meta->prop->{arch} = 1;
-  }
-  
-  unless(defined $self->meta->prop->{network})
-  {
-    $self->meta->prop->{network} = 1;
-    ## https://github.com/Perl5-Alien/Alien-Build/issues/23#issuecomment-341114414
-    #$self->meta->prop->{network} = 0 if $ENV{NO_NETWORK_TESTING};
-    $self->meta->prop->{network} = 0 if (defined $ENV{ALIEN_INSTALL_NETWORK}) && ! $ENV{ALIEN_INSTALL_NETWORK};
-  }
-  
-  unless(defined $self->meta->prop->{local_source})
-  {
-    if(! defined $self->meta->prop->{start_url})
-    {
-      $self->meta->prop->{local_source} = 0;
-    }
-    # we assume URL schemes are at least two characters, that
-    # way Windows absolute paths can be used as local start_url
-    elsif($self->meta->prop->{start_url} =~ /^([a-z]{2,}):/i)
-    {
-      my $scheme = $1;
-      $self->meta->prop->{local_source} = $scheme eq 'file';
-    }
-    else
-    {
-      $self->meta->prop->{local_source} = 1;
-    }
-  }
-
-  return $self;
-}
-
 =head2 checkpoint
 
  $build->checkpoint;
@@ -673,25 +692,6 @@ sub checkpoint
       args    => $self->{args},
     })
   );
-  $self;
-}
-
-=head2 resume
-
- my $build = Alien::Build->resume($alienfile, $root);
-
-Load a checkpointed L<Alien::Build> instance.  You will need the original
-L<alienfile> and the build root (usually C<_alien>).
-
-=cut
-
-sub resume
-{
-  my(undef, $alienfile, $root) = @_;
-  my $h = JSON::PP::decode_json(_path("$root/state.json")->slurp);
-  my $self = Alien::Build->load("$alienfile", @{ $h->{args} });
-  $self->{install_prop} = $h->{install};
-  $self->{runtime_prop} = $h->{runtime};
   $self;
 }
 
