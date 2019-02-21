@@ -10,6 +10,7 @@ $ENV{PKG_CONFIG_LIBDIR} = '';
 
 my $bin_name = Alien::Build::Plugin::PkgConfig::CommandLine->new('foo')->bin_name;
 skip_all 'test requires pkgconf or pkg-config' unless $bin_name;
+skip_all 'use PkgConfig::PP on windows' if $^O eq 'MSWin32' && !$ENV{ALIEN_BUILD_PLUGIN_PKGCONFIG_COMMANDLINE_TEST};
 
 ok $bin_name, 'has bin_name';
 note "it be $bin_name";

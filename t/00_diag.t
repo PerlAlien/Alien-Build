@@ -61,6 +61,7 @@ $post_diag = sub {
     require Alien::Build::Plugin::Core::Setup;
     require Alien::Build::Plugin::Build::Autoconf;
     require Alien::Build::Plugin::Build::CMake;
+    require Alien::Build::Plugin::PkgConfig::Negotiate;
     require Alien::Build::Util;
     require File::Which;
   };
@@ -76,6 +77,7 @@ $post_diag = sub {
     $hash{'pkg-config'}->{$_} = File::Which::which($_) for qw( pkg-config pkgconf );
     $hash{'pkg-config'}->{PKG_CONFIG} = File::Which::which($ENV{PKG_CONFIG}) if defined $ENV{PKG_CONFIG};
     diag Alien::Build::Util::_dump(\%hash);
+    diag "pkg-config negotiate pick = ", Alien::Build::Plugin::PkgConfig::Negotiate->pick;
     diag '';
     diag '';
     diag "[config.site]";
