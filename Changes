@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Prefer PkgConfig::PP on MSWin32 where it is more reliable
 
 1.52      2019-02-09 05:45:12 -0500
   - Use $alien->libs -L flags to help find system dynamic libs.

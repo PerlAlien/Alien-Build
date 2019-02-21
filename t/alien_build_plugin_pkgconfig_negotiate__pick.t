@@ -92,7 +92,7 @@ subtest 'CommandLine' => sub {
     class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
   );
   
-  if($^O eq 'solaris') {
+  if($^O =~ /^(solaris|MSWin32)$/) {
     $mock2->override(
       _perl_config => sub {
         my($key) = @_;
@@ -179,7 +179,35 @@ subtest 'CommandLine' => sub {
       );
 
     };
-    
+
+
+    subtest 'Windows' => sub {
+  
+      %which = ( 'pkg-config' => '/usr/bin/pkg-config' );
+
+      # From the old AB::MB days we prefer PkgConfig.pm
+      # for 64 bit solaris over the command line pkg-config
+      
+      my $mock2 = Test2::Mock->new(
+        class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
+        override => [
+          _perl_config => sub {
+            my($key) = @_;
+            if($key eq 'osname')
+            { return 'MSWin32' }
+            else
+            { return $Config{$key} }
+          },
+        ],
+      );
+      
+      is(
+        Alien::Build::Plugin::PkgConfig::Negotiate->pick,
+        'PkgConfig::PP',
+      );
+
+    };
+
     subtest 'PP is fallback' => sub {
 
       %which = ();

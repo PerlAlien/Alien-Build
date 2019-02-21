@@ -95,7 +95,12 @@ sub pick
     # on solaris 64 bit.
     # Some advice on pkg-config and 64 bit Solaris
     # https://docs.oracle.com/cd/E53394_01/html/E61689/gplhi.html
-    if(! (_perl_config('osname') eq 'solaris' && _perl_config('ptrsize') == 8))
+    my $is_solaris64 = (_perl_config('osname') eq 'solaris' && _perl_config('ptrsize') == 8);
+
+    # PkgConfig.pm is more reliable on windows
+    my $is_windows = _perl_config('osname') eq 'MSWin32';
+
+    if(!$is_solaris64 && !$is_windows)
     {
       return 'PkgConfig::CommandLine';
     }
