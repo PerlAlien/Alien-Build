@@ -244,6 +244,10 @@ sub init
   {
     $meta->add_requires('share' => 'Alien::gzip' => '0.03');
   }
+  elsif($self->format eq 'zip' && !$self->handles('zip'))
+  {
+    $meta->add_requires('share' => 'Alien::unzip' => '0.01');
+  }
 
   $meta->register_hook(
     extract => sub {

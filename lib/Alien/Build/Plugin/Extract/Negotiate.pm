@@ -84,18 +84,11 @@ sub pick
       return 'Extract::ArchiveZip';
     }
     
-    # if we don't have Archive::Zip, check if we have the unzip command
-    elsif(Alien::Build::Plugin::Extract::CommandLine->available($format))
-    {
-      return 'Extract::CommandLine';
-    }
-    
-    # okay fine.  I will try to install Archive::Zip :(
-    # if this becomes a problem in the future we can
-    # create Alien::unzip and fallback on CommandLine instead.
+    # If it isn't available, then use the command-line unzip.  Alien::unzip will be used
+    # as necessary in environments where it isn't already installed.
     else
     {
-      return 'Extract::ArchiveZip';
+      return 'Extract::CommandLine';
     }
   }
   elsif($format eq 'tar.xz' || $format eq 'tar.Z')
