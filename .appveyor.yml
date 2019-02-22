@@ -19,7 +19,11 @@ install:
   # Make sure we are in project root
   - cmd: "cd %APPVEYOR_BUILD_FOLDER%"
   # Set path for berrybrew
-  - SET PATH=C:\berrybrew\%version%\c\bin;C:\berrybrew\%version%\perl\site\bin;C:\berrybrew\%version%\perl\bin;%PATH%
+  - SET PATH=C:\Perl5\bin;C:\berrybrew\%version%\c\bin;C:\berrybrew\%version%\perl\site\bin;C:\berrybrew\%version%\perl\bin;%PATH%
+  - SET PERL5LIB=C:/Perl5/lib/perl5
+  - SET PERL_LOCAL_LIB_ROOT=C:/Perl5
+  - SET PERL_MB_OPT=--install_base C:/Perl5
+  - SET PERL_MM_OPT=INSTALL_BASE=C:/Perl5
   - cpanm -n PerlIO::utf8_strict
   - cpanm -n Mixin::Linewise::Readers
   - cpanm -n Params::Validate
@@ -39,7 +43,10 @@ test_script:
 
 shallow_clone: true
 
-matrix:
-  allow_failures:
-    - install_perl: "%install_active_perl%"
-      version: "5.24.1.2402"
+#matrix:
+#  allow_failures:
+#    - install_perl: "%install_active_perl%"
+#      version: "5.24.1.2402"
+
+cache:
+  - C:\Perl5
