@@ -127,7 +127,7 @@ subtest 'picks' => sub {
     
       is(
         Alien::Build::Plugin::Extract::Negotiate->pick('zip'),
-        'Extract::ArchiveZip',
+        'Extract::CommandLine',
       );
     
     };
