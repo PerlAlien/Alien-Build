@@ -4,6 +4,11 @@ environment:
 
     matrix:
       - install_perl: "%install_berry_perl%"
+        version: "5.26.2_64"
+      - install_perl: "%install_berry_perl%"
+        version: "5.26.2_32"
+
+      - install_perl: "%install_berry_perl%"
         version: "5.22.3_64"
       - install_perl: "%install_berry_perl%"
         version: "5.20.3_64"
