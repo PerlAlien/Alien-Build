@@ -8,6 +8,7 @@ use Path::Tiny qw( path );
 use Data::Dumper qw( Dumper );
 
 sub run ($;$);
+sub build_step ($$);
 
 note "CWD=$CWD perl $^V @{[ bsd_glob '~' ]}";
 
@@ -73,11 +74,9 @@ is
   'Alien::unzip is installed',
 ;
 
-eval { $build->download };
+build_step sub { $build->download }, 'download';
 
-is $@, '', 'download';
-
-my $dir = $build->extract;
+my $dir = build_step sub { $build->extract }, 'extract';
 
 is
   [path($dir)->child('configure')->slurp],
@@ -89,10 +88,10 @@ sub run ($;$)
 {
   my($cmd, $test_name) = @_;
 
+  my $ctx = Test2::API::context();
+
   my @cmd = @$cmd;
   $test_name ||= "run command: @cmd";
-
-  my $ctx = Test2::API::context();
   
   my($out, $exit) = capture_merged {
     print "+@cmd\n";
@@ -104,6 +103,27 @@ sub run ($;$)
   note $out;
 
   $ctx->release;
+}
+
+sub build_step ($$)
+{
+  my($sub, $test_name) = @_;
+
+  my $ctx = Test2::API::context();
+
+  $test_name || die 'no test name given';
+
+  my($out, $exception, $ret) = capture_merged {
+    my $ret = eval { $sub->() };
+    ($@, $ret);
+  };
+
+  is($exception, '', $test_name);
+  note $out;
+
+  $ctx->release;
+
+  $ret;
 }
 
 done_testing;
