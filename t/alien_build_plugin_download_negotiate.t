@@ -11,81 +11,97 @@ delete $ENV{$_} for qw( ftp_proxy all_proxy );
 subtest 'pick fetch' => sub {
 
   local %ENV = %ENV;
+  my $has_ssl = 0;
+  my $mock = mock 'Alien::Build::Plugin::Download::Negotiate' => (
+    override => [
+      _has_ssl => sub { $has_ssl },
+    ],
+  );
 
   subtest 'http' => sub {
-  
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('http://mytest.test/');
-    
+
     is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
     is($plugin->scheme, 'http');
-  
+
   };
-  
-  subtest 'https' => sub {
-  
+
+  subtest 'https (ssl modules already installed)' => sub {
+
+    $has_ssl = 1;
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
-    
+
     is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
     is($plugin->scheme, 'https');
-  
+
   };
-  
+
+  subtest 'https (ssl modules NOT already installed)' => sub {
+
+    $has_ssl = 0;
+
+    my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
+
+    is([$plugin->pick], ['Fetch::CurlCommand','Decode::HTML']);
+    is($plugin->scheme, 'https');
+
+  };
+
   subtest 'ftp direct' => sub {
-  
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('ftp://mytest.test/');
-    
+
     is([$plugin->pick], ['Fetch::NetFTP']);
     is($plugin->scheme, 'ftp');
-    
+
   };
-  
+
   subtest 'ftp direct proxy' => sub {
-  
+
     $ENV{ftp_proxy} = 1;
-  
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('ftp://mytest.test/');
-    
+
     is([$plugin->pick], ['Fetch::LWP','Decode::DirListing','Decode::HTML']);
     is($plugin->scheme, 'ftp');
-    
+
   };
-  
+
   subtest 'local file URI' => sub {
-  
+
     $ENV{ftp_proxy} = 1;
-  
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('file:///foo/bar/baz');
-    
+
     is([$plugin->pick], ['Fetch::Local']);
     is($plugin->scheme, 'file');
-    
+
   };
-  
+
   subtest 'local file' => sub {
-  
+
     $ENV{ftp_proxy} = 1;
-  
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('/foo/bar/baz');
-    
+
     is([$plugin->pick], ['Fetch::Local']);
     is($plugin->scheme, 'file');
-    
+
   };
-  
+
   subtest 'bootstrap ssl' => sub {
-  
-    skip_all 'subtest requires Devel::Hide' unless eval { require Devel::Hide };
 
     subtest 'without Net::SSLeay' => sub {
-  
-      local @INC = @INC;
-      note scalar capture_merged { Devel::Hide->import(qw( Net::SSLeay )) };
+
+      $has_ssl = 0;
 
       my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
         url           => 'https://mytest.test/',
         bootstrap_ssl => 1,
       );
-  
+
       is(
         [$plugin->pick],
         array {
@@ -95,17 +111,16 @@ subtest 'pick fetch' => sub {
         },
       );
     };
-    
+
     subtest 'with Net::SSLeay' => sub {
 
-      local %INC = %INC;    
-      $INC{'Net/SSLeay.pm'} = __FILE__;
+      $has_ssl = 1;
 
       my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
         url           => 'https://mytest.test/',
         bootstrap_ssl => 1,
       );
-  
+
       is(
         [$plugin->pick],
         array {
@@ -114,18 +129,18 @@ subtest 'pick fetch' => sub {
           end;
         },
       );
-    
+
     };
 
   };
 
   subtest 'bootstrap ssl http' => sub {
-  
+
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
       url           => 'http://mytest.test/',
       bootstrap_ssl => 1,
     );
-  
+
     is(
       [$plugin->pick],
       array {
@@ -153,22 +168,22 @@ subtest 'get the version' => sub {
       filter => qr/\.tar\.gz$/,
     );
   };
-  
+
   note capture_merged {
     $build->download;
     ();
   };
-  
+
   is($build->runtime_prop->{version}, '1.00');
-  
+
   my $filename = $build->install_prop->{download};
-  
+
   ok(-f $filename, "tarball downloaded");
   note "filename = $filename";
-  
+
   my $orig = path('corpus/dist/foo-1.00.tar.gz');
   my $new  = path($filename);
-  
+
   is($new->slurp, $orig->slurp, 'content of file is the same');
 
 };
@@ -178,12 +193,10 @@ subtest 'prefer property' => sub {
   subtest 'default (true)' => sub {
 
     require Alien::Build;
-    my $mock = Test2::Mock->new(
-      class => 'Alien::Build::Meta',
-    );
-    
+    my $mock = Test2::Mock->new( class => 'Alien::Build::Meta' );
+
     my @calls;
-    
+
     $mock->around(apply_plugin => sub {
       my($orig, $self, @args) = @_;
       push @calls, \@args if $args[0] eq 'Prefer::SortVersions';
@@ -199,7 +212,7 @@ subtest 'prefer property' => sub {
         filter => qr/\.tar\.gz$/,
       );
     };
-    
+
     is(
       \@calls,
       array {
@@ -217,9 +230,7 @@ subtest 'prefer property' => sub {
 
   };
 
-  my $mock = Test2::Mock->new(
-    class => 'Alien::Build::Meta',
-  );
+  my $mock = Test2::Mock->new( class => 'Alien::Build::Meta' );
 
   $mock->around(apply_plugin => sub {
     my($orig, $self, @args) = @_;
@@ -239,15 +250,15 @@ subtest 'prefer property' => sub {
         prefer => 0,
       );
     };
-    
+
     ok 1, "didn't load Prefer::SortVersions";
 
   };
-  
+
   subtest 'code reference' => sub {
-  
+
     undef $mock;
-  
+
     my $build = alienfile_ok q{
       use alienfile;
       probe sub { 'share' };
@@ -266,7 +277,7 @@ subtest 'prefer property' => sub {
         },
       );
     };
-    
+
     is(
       $build->prefer(
         { type => 'list', list => [ { filename => 'abc', version => 1 }, { filename => 'def', version => 2 }, { filename => 'ghi', version => 3 } ] },
