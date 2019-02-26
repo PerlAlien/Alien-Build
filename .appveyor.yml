@@ -3,19 +3,20 @@ environment:
     install_active_perl: "cmd /C choco install activeperl -version %version%"
 
     matrix:
+      # 5.26: The first strawberry to use gmake instead of dmake by default.
+      # test both 32/64 bit versions
       - install_perl: "%install_berry_perl%"
         version: "5.26.2_64"
       - install_perl: "%install_berry_perl%"
         version: "5.26.2_32"
 
-      - install_perl: "%install_berry_perl%"
-        version: "5.22.3_64"
+      # 5.20: The first strawberry to come with PkgConfig.pm (installed as pkg-config)
       - install_perl: "%install_berry_perl%"
         version: "5.20.3_64"
+
+      # 5.18: The last strawberry to not come with a pkg-config
       - install_perl: "%install_berry_perl%"
         version: "5.18.4_64"
-      - install_perl: "%install_berry_perl%"
-        version: "5.16.3_64"
 
 
 install:
