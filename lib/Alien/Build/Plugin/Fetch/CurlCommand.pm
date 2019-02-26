@@ -24,14 +24,14 @@ use File::chdir;
 
 =head1 DESCRIPTION
 
-B<WARNING>: This plugin is somewhat experimental at this time.
-
 This plugin provides a fetch based on the C<curl> command.  It works with other fetch
 plugins (that is, the first one which succeeds will be used).  Most of the time the best plugin
 to use will be L<Alien::Build::Plugin::Download::Negotiate>, but for some SSL bootstrapping
 it may be desirable to try C<curl> first.
 
 Protocols supported: C<http>, C<https>
+
+C<https> support requires that curl was built with SSL support.
 
 =head1 PROPERTIES
 
@@ -59,7 +59,9 @@ has '+url' => '';
 # you also get the prereq
 has bootstrap_ssl => 1;
 
-=head2 METHODS
+=head1 METHODS
+
+=head2 protocol_ok
 
  my $bool = $plugin->protocol_ok($protocol);
  my $bool = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok($protocol);
