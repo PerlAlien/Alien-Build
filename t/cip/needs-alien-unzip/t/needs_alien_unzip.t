@@ -10,7 +10,7 @@ use Data::Dumper qw( Dumper );
 sub run ($;$);
 sub build_step ($$);
 
-note "CWD=$CWD perl $^V @{[ bsd_glob '~' ]}";
+note "CWD=$CWD perl $] @{[ bsd_glob '~' ]}";
 
 is
   [which 'unzip'],
