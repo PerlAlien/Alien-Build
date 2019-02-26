@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.57_01   2019-02-26 08:52:34 -0500
+  - Test unzip command before blindly using it (tests were already
+    being made for tarballs) (gh#90)
+
 1.56_01   2019-02-24 14:09:23 -0500
   - Prefer Alien::unzip over Archive::Zip.  The latter turns out to be broken
     on one platform or another for much of the time.  (gh#74, gh#89).
