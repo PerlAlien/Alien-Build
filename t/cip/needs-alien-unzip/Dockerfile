@@ -7,10 +7,10 @@ RUN apt-get update -y               \
     pkg-config                      \
   && rm -rf /var/lib/apt/lists/*
 
-RUN bash -c 'set -ex; cpanm -n Test2::V0; rm -rf ~/.cpanm'
-
 ADD Alien-Build-*.tar.gz .
 RUN bash -c 'set -ex; cd Alien-Build-*; cpanm -n --install .; rm -rf ~/.cpanm; cd ..; rm -rf Alien-Build-*'
 
-COPY t/docker/needs-Alien-unzip/ ./
-CMD prove -lvm *.t
+COPY t/cip/needs-alien-unzip/ ./
+RUN bash -c 'set -ex; cpanm --installdeps .; rm -rf ~/.cpanm'
+
+CMD prove -lvm
