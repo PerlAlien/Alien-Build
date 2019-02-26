@@ -222,7 +222,7 @@ sub init
     push @args, ssl => $self->ssl;
     # For historical reasons, we pass the URL into older fetch plugins, because
     # this used to be the interface.  Using start_url is now preferred!
-    push @args, url => $self->url if $fetch =~ /^Fetch::(HTTPTiny|LWP|Local|LocalDir|NetFTP)$/;
+    push @args, url => $self->url if $fetch =~ /^Fetch::(HTTPTiny|LWP|Local|LocalDir|NetFTP|CurlCommand)$/;
     push @args, passive => $self->passive if $fetch eq 'Fetch::NetFTP';
     push @args, bootstrap_ssl => $self->bootstrap_ssl if $self->bootstrap_ssl;
 
