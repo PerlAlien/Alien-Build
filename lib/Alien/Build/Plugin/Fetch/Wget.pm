@@ -47,11 +47,17 @@ Ignored by this plugin.  Provided for compatibility with some other fetch plugin
 has wget_command => sub { defined $ENV{WGET} ? which($ENV{WGET}) : which('wget') };
 has ssl => 0;
 
+# when bootstrapping we have to specify this plugin as a prereq
+# 1 is the default so that when this plugin is used directly
+# you also get the prereq
+has bootstrap_ssl => 1;
+
 sub init
 {
   my($self, $meta) = @_;
-  
-  $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::Wget' => '1.19');
+
+  $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::Wget' => '1.19')
+    if $self->bootstrap_ssl;
 
   $meta->register_hook(
     fetch => sub {
@@ -59,11 +65,11 @@ sub init
       $url ||= $meta->prop->{start_url};
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
-      
+
       if($scheme eq 'http' || $scheme eq 'https')
       {
         local $CWD = tempdir( CLEANUP => 1 );
-        
+
         my($stdout, $stderr) = $self->_execute(
           $build,
           $self->wget_command,

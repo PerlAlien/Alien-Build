@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 use Module::Load ();
+use Alien::Build::Util qw( _has_ssl );
 use Carp ();
 
 # ABSTRACT: Download negotiation plugin
@@ -137,18 +138,26 @@ Returns the fetch plugin and any optional decoders that should be used.
 sub pick
 {
   my($self) = @_;
-  
+
   $self->scheme(
     $self->url !~ m!(ftps?|https?|file):!i
       ? 'file'
       : $self->url =~ m!^([a-z]+):!i
   ) unless defined $self->scheme;
-  
+
   if($self->scheme eq 'https' || ($self->scheme eq 'http' && $self->ssl))
   {
-    if($self->bootstrap_ssl && ! eval { require Net::SSLeay; 1 })
+    if($self->bootstrap_ssl && ! _has_ssl)
     {
       return (['Fetch::CurlCommand','Fetch::Wget'], 'Decode::HTML');
+    }
+    elsif(_has_ssl)
+    {
+      return ('Fetch::HTTPTiny', 'Decode::HTML');
+    }
+    elsif(do { require Alien::Build::Plugin::Fetch::CurlCommand; Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https') })
+    {
+      return ('Fetch::CurlCommand', 'Decode::HTML');
     }
     else
     {
@@ -185,7 +194,7 @@ sub pick
 sub init
 {
   my($self, $meta) = @_;
-  
+
   unless(defined $self->url)
   {
     if(defined $meta->prop->{start_url})
@@ -197,14 +206,14 @@ sub init
       Carp::croak "url is a required property unless you use the start_url directive";
     }
   }
-  
+
   $meta->add_requires('share' => 'Alien::Build::Plugin::Download::Negotiate' => '0.61')
     if $self->passive;
 
   $meta->prop->{plugin_download_negotiate_default_url} = $self->url;
 
   my($fetch, @decoders) = $self->pick;
-  
+
   $fetch = [ $fetch ] unless ref $fetch;
 
   foreach my $fetch (@$fetch)
@@ -215,14 +224,15 @@ sub init
     # this used to be the interface.  Using start_url is now preferred!
     push @args, url => $self->url if $fetch =~ /^Fetch::(HTTPTiny|LWP|Local|LocalDir|NetFTP)$/;
     push @args, passive => $self->passive if $fetch eq 'Fetch::NetFTP';
-  
+    push @args, bootstrap_ssl => $self->bootstrap_ssl if $self->bootstrap_ssl;
+
     $meta->apply_plugin($fetch, @args);
   }
-  
+
   if($self->version)
   {
     $meta->apply_plugin($_) for @decoders;
-    
+
     if(defined $self->prefer && ref($self->prefer) eq 'CODE')
     {
       $meta->add_requires('share' => 'Alien::Build::Plugin::Download::Negotiate' => '1.30');
@@ -232,7 +242,7 @@ sub init
     }
     elsif($self->prefer)
     {
-      $meta->apply_plugin('Prefer::SortVersions', 
+      $meta->apply_plugin('Prefer::SortVersions',
         (defined $self->filter ? (filter => $self->filter) : ()),
         version => $self->version,
       );

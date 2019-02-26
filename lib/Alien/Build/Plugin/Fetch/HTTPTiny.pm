@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 use File::Basename ();
+use Alien::Build::Util qw( _ssl_reqs );
 use Carp ();
 
 # ABSTRACT: Plugin for fetching files using HTTP::Tiny
@@ -48,6 +49,9 @@ added as prerequisites.
 
 has ssl => 0;
 
+# ignored for compatability
+has bootstrap_ssl => 1;
+
 sub init
 {
   my($self, $meta) = @_;
@@ -61,10 +65,13 @@ sub init
 
   if($self->url =~ /^https:/ || $self->ssl)
   {
-    $meta->add_requires('share' => 'IO::Socket::SSL' => '1.56' );
-    $meta->add_requires('share' => 'Net::SSLeay'     => '1.49' );
+    my $reqs = _ssl_reqs;
+    foreach my $mod (sort keys %$reqs)
+    {
+      $meta->add_requires('share' => $mod => $reqs->{$mod});
+    }
   }
-  
+
   $meta->register_hook( fetch => sub {
     my($build, $url) = @_;
     $url ||= $self->url;
@@ -76,12 +83,12 @@ sub init
     {
       my $status = $res->{status} || '---';
       my $reason = $res->{reason} || 'unknown';
-      
+
       $build->log("$status $reason fetching $url");
       if($status == 599)
       {
         $build->log("exception: $_") for split /\n/, $res->{content};
-        
+
         my($can_ssl, $why_ssl) = HTTP::Tiny->can_ssl;
         if(! $can_ssl)
         {
@@ -97,7 +104,7 @@ sub init
           }
         }
       }
-      
+
       die "error fetching $url: $status $reason";
     }
 
@@ -116,7 +123,7 @@ sub init
         $filename = $1;
       }
     }
-    
+
     if($type eq 'text/html')
     {
       return {
@@ -133,7 +140,7 @@ sub init
         content  => $res->{content},
       };
     }
-    
+
   });
 
   $self;

@@ -45,15 +45,51 @@ Ignored by this plugin.  Provided for compatibility with some other fetch plugin
 
 =cut
 
-has curl_command => sub { defined $ENV{CURL} ? which($ENV{CURL}) : which('curl') };
+sub curl_command
+{
+  defined $ENV{CURL} ? which($ENV{CURL}) : which('curl');
+}
+
 has ssl => 0;
 has _see_headers => 0;
+
+# when bootstrapping we have to specify this plugin as a prereq
+# 1 is the default so that when this plugin is used directly
+# you also get the prereq
+has bootstrap_ssl => 1;
+
+=head2 METHODS
+
+ my $bool = $plugin->protocol_ok($protocol);
+ my $bool = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok($protocol);
+
+=cut
+
+sub protocol_ok
+{
+  my($class, $protocol) = @_;
+  my $curl = $class->curl_command;
+  return unless defined $curl;
+  my($out, $err, $exit) = capture {
+    system $curl, '--version';
+  };
+  foreach my $line (split /\n/, $out)
+  {
+    if($line =~ /^Protocols:\s*(.*)\s*$/)
+    {
+      my %proto = map { $_ => 1 } split /\s+/, $1;
+      return $proto{$protocol} if $proto{$protocol};
+    }
+  }
+  return;
+}
 
 sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::CurlCommand' => '1.19');
+  $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::CurlCommand' => '1.19')
+    if $self->bootstrap_ssl;
 
   $meta->register_hook(
     fetch => sub {
@@ -61,11 +97,11 @@ sub init
       $url ||= $meta->prop->{start_url};
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
-      
+
       if($scheme =~ /^https?$/)
       {
         local $CWD = tempdir( CLEANUP => 1 );
-      
+
         path('writeout')->spew(
           join("\\n",
             "ab-filename     :%{filename_effective}",
@@ -73,17 +109,17 @@ sub init
             "ab-url          :%{url_effective}",
           ),
         );
-      
+
         my @command = (
           $self->curl_command,
           '-L', '-f', -o => 'content',
           -w => '@writeout',
         );
-      
+
         push @command, -D => 'head' if $self->_see_headers;
-      
+
         push @command, $url;
-      
+
         my($stdout, $stderr) = $self->_execute($build, @command);
 
         my %h = map { my($k,$v) = m/^ab-(.*?)\s*:(.*)$/; $k => $v } split /\n/, $stdout;
@@ -96,7 +132,7 @@ sub init
         {
           $h{filename} = 'index.html';
         }
-        
+
         rename 'content', $h{filename};
 
         if(-e 'head')
@@ -104,7 +140,7 @@ sub init
           $build->log(" ~ $_ => $h{$_}") for sort keys %h;
           $build->log(" header: $_") for path('headers')->lines;
         }
-      
+
         my($type) = split ';', $h{content_type};
 
         if($type eq 'text/html')
@@ -156,7 +192,7 @@ sub init
 #            };
 #          }
 #        }
-#        
+#
 #        {
 #          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -l => "$url/") };
 #          if($@ eq '')
@@ -179,11 +215,11 @@ sub init
       {
         die "scheme $scheme is not supported by the Fetch::CurlCommand plugin";
       }
-      
+
     },
   ) if $self->curl_command;
-  
-  $self;  
+
+  $self;
 }
 
 sub _execute
