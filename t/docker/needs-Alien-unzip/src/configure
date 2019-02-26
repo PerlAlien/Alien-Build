@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo 'looks good'
+
+echo 'something random' > config.h
+
+true;
