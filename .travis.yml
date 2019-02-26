@@ -10,10 +10,12 @@ before_install:
 install:
   - cip diag
   - cip install
+  - cip scn build
 
 script:
   - cip script
   - cip exec perl maint/ci-test-plugins.pl
+  - cip scn run
 
 jobs:
   include:
