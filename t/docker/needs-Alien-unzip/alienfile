@@ -1,0 +1,12 @@
+use alienfile;
+
+probe sub { 'share' };
+
+share {
+
+  start_url './src/src.zip';
+  plugin 'Download';
+  plugin 'Extract' => 'zip';
+
+  build [ './configure' ];
+}

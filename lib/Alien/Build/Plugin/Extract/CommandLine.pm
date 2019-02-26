@@ -43,9 +43,10 @@ The C<gzip> command, if available.  C<undef> if not available.
 
 =cut
 
-has gzip_cmd => sub {
+sub gzip_cmd
+{
   _which('gzip') ? 'gzip' : undef;
-};
+}
 
 =head2 bzip2_cmd
 
@@ -55,9 +56,10 @@ The C<bzip2> command, if available.  C<undef> if not available.
 
 sub _which { File::Which::which(@_) }
 
-has bzip2_cmd => sub {
+sub bzip2_cmd
+{
   _which('bzip2') ? 'bzip2' : undef;
-};
+}
 
 =head2 xz_cmd
 
@@ -65,9 +67,10 @@ The C<xz> command, if available.  C<undef> if not available.
 
 =cut
 
-has xz_cmd => sub {
+sub xz_cmd
+{
   _which('xz') ? 'xz' : undef;
-};
+}
 
 =head2 tar_cmd
 
@@ -75,7 +78,8 @@ The C<tar> command, if available.  C<undef> if not available.
 
 =cut
 
-has tar_cmd => sub {
+sub tar_cmd
+{
   _which('bsdtar')
     ? 'bsdtar'
     # Slowlaris /usr/bin/tar doesn't seem to like pax global header
@@ -100,9 +104,10 @@ The C<unzip> command, if available.  C<undef> if not available.
 
 =cut
 
-has unzip_cmd => sub {
+sub unzip_cmd
+{
   _which('unzip') ? 'unzip' : undef;
-};
+}
 
 sub _run
 {
@@ -246,7 +251,7 @@ sub init
   }
   elsif($self->format eq 'zip' && !$self->handles('zip'))
   {
-    $meta->add_requires('share' => 'Alien::unzip' => '0.01');
+    $meta->add_requires('share' => 'Alien::unzip' => '0');
   }
 
   $meta->register_hook(
