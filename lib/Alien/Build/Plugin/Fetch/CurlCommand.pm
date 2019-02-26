@@ -52,6 +52,7 @@ sub curl_command
 
 has ssl => 0;
 has _see_headers => 0;
+has '+url' => '';
 
 # when bootstrapping we have to specify this plugin as a prereq
 # 1 is the default so that when this plugin is used directly
@@ -88,13 +89,17 @@ sub init
 {
   my($self, $meta) = @_;
 
+  $meta->prop->{start_url} ||= $self->url;
+  $self->url($meta->prop->{start_url});
+  $self->url || Carp::croak('url is a required property');
+
   $meta->add_requires('configure', 'Alien::Build::Plugin::Fetch::CurlCommand' => '1.19')
     if $self->bootstrap_ssl;
 
   $meta->register_hook(
     fetch => sub {
       my($build, $url) = @_;
-      $url ||= $meta->prop->{start_url};
+      $url ||= $self->url;
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
 
