@@ -2,6 +2,21 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.58_01   2019-02-27 12:50:20 -0500
+  - Prefer Fetch::CurlCommand over Fetch::HTTPTiny for https when:
+     * Net::SSLeay and IO::Socket::SSL are not installed
+     * AND curl is installed
+     * AND curl supports https
+    This makes AB more reliable on platforms like OS X when openssl
+    is broken without a third party package system like homebrew,
+    and on older Perls like 5.8.x where Net::SSLeay frequently does
+    not install or pass tests.
+    The existing behavior of prefer Fetch::HTTPTiny when:
+     * Net::SSLeay and IO::Socket::SSL are already installed
+     * OR the URL is http
+     * OR curl is not already installed
+    is still in effect. (gh#93, gh#94)
+
 1.57_01   2019-02-26 08:52:34 -0500
   - Test unzip command before blindly using it (tests were already
     being made for tarballs) (gh#90)
