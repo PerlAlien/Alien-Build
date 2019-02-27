@@ -54,7 +54,7 @@ The C<bzip2> command, if available.  C<undef> if not available.
 
 =cut
 
-sub _which { File::Which::which(@_) }
+sub _which { scalar File::Which::which(@_) }
 
 sub bzip2_cmd
 {

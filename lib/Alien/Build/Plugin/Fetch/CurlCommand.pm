@@ -47,7 +47,7 @@ Ignored by this plugin.  Provided for compatibility with some other fetch plugin
 
 sub curl_command
 {
-  defined $ENV{CURL} ? which($ENV{CURL}) : which('curl');
+  defined $ENV{CURL} ? scalar which($ENV{CURL}) : scalar which('curl');
 }
 
 has ssl => 0;
