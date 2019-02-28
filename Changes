@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.59_01   2019-02-27 21:40:24 -0500
   - Fix test fail for download negotiation plugin introduced in 1.58_01
     which was expressed on systems without curl installed.
 
