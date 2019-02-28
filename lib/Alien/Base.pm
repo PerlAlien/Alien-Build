@@ -455,9 +455,11 @@ sub version_cmp {
 =head2 install_type
 
  my $install_type = Alien::MyLibrary->install_type;
+ my $bool = Alien::MyLibrary->install_type($instal_type);
 
 Returns the install type that was used when C<Alien::MyLibrary> was
-installed.  Types include:
+installed.  If a type is provided (the second form in the synopsis)
+returns true if the actual install type matches.  Types include:
 
 =over 4
 
