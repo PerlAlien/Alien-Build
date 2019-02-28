@@ -1,6 +1,7 @@
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Download::Negotiate;
+use Alien::Build::Plugin::Fetch::CurlCommand;
 use Path::Tiny;
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _dump );
@@ -18,6 +19,16 @@ subtest 'pick fetch' => sub {
     ],
   );
 
+  my %curl;
+  my $mock2 = mock 'Alien::Build::Plugin::Fetch::CurlCommand' => (
+    override => [
+      protocol_ok => sub {
+        my(undef, $protocol) = @_;
+        $curl{$protocol};
+      }
+    ]
+  );
+
   subtest 'http' => sub {
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('http://mytest.test/');
@@ -30,6 +41,7 @@ subtest 'pick fetch' => sub {
   subtest 'https (ssl modules already installed)' => sub {
 
     $has_ssl = 1;
+    %curl = ( https => 1 );
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
 
@@ -41,10 +53,23 @@ subtest 'pick fetch' => sub {
   subtest 'https (ssl modules NOT already installed)' => sub {
 
     $has_ssl = 0;
+    %curl = ( https => 1 );
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
 
     is([$plugin->pick], ['Fetch::CurlCommand','Decode::HTML']);
+    is($plugin->scheme, 'https');
+
+  };
+
+  subtest 'https (ssl modules NOT already installed, no curl)' => sub {
+
+    $has_ssl = 0;
+    %curl = ( https => 0 );
+
+    my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
+
+    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
     is($plugin->scheme, 'https');
 
   };
@@ -96,6 +121,7 @@ subtest 'pick fetch' => sub {
     subtest 'without Net::SSLeay' => sub {
 
       $has_ssl = 0;
+      %curl = ();
 
       my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
         url           => 'https://mytest.test/',
@@ -115,6 +141,7 @@ subtest 'pick fetch' => sub {
     subtest 'with Net::SSLeay' => sub {
 
       $has_ssl = 1;
+      %curl = ();
 
       my $plugin = Alien::Build::Plugin::Download::Negotiate->new(
         url           => 'https://mytest.test/',

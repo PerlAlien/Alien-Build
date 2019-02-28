@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix test fail for download negotiation plugin introduced in 1.58_01
+    which was expressed on systems without curl installed.
 
 1.58_01   2019-02-27 12:50:20 -0500
   - Prefer Fetch::CurlCommand over Fetch::HTTPTiny for https when:
