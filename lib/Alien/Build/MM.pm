@@ -12,7 +12,7 @@ use Carp ();
 
 =head1 SYNOPSIS
 
-In your Makefile.PL:
+In your C<Makefile.PL>:
 
  use ExtUtils::MakeMaker;
  use Alien::Build::MM;
@@ -31,15 +31,38 @@ In your Makefile.PL:
    $abmm->mm_postamble;
  }
 
-In your lib/Alien/Libfoo.pm:
+In your C<lib/Alien/Libfoo.pm>:
 
  package Alien::Libfoo;
  use base qw( Alien::Base );
  1;
 
+In your alienfile (needs to be named C<alienfile> and should be in the root of your dist):
+
+ use alienfile;
+
+ plugin 'PkgConfig' => 'libfoo';
+
+ share {
+   start_url 'http://libfoo.org';
+   ...
+ };
+
 =head1 DESCRIPTION
 
 This class allows you to use Alien::Build and Alien::Base with L<ExtUtils::MakeMaker>.
+It load the L<alienfile> recipe in the root of your L<Alien> dist, updates the prereqs
+passed into C<WriteMakefile> if any are specified by your L<alienfile> or its plugins,
+and adds a postamble to the C<Makefile> that will download/build/test the alienized
+package as appropriate.
+
+The L<alienfile> must be named C<alienfile>.
+
+If you are using L<Dist::Zilla> to author your L<Alien> dist, you should consider using
+the L<Dist::Zilla::Plugin::AlienBuild> plugin.
+
+I personally don't recommend it, but if you want to use L<Module::Build> instead, you
+can use L<Alien::Build::MB>.
 
 =head1 CONSTRUCTOR
 
@@ -442,6 +465,6 @@ sub import
 
 =head1 SEE ALSO
 
-L<Alien::Build>, L<Alien::Base>, L<Alien>
+L<Alien::Build>, L<Alien::Base>, L<Alien>, L<Dist::Zilla::Plugin::AlienBuild>, L<Alien::Build::MB>
 
 =cut
