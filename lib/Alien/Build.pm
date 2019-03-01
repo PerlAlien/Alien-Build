@@ -28,8 +28,8 @@ use Config ();
 
 =head1 DESCRIPTION
 
-This module provides tools for building external (non-CPAN) dependencies 
-for CPAN.  It is mainly designed to be used at install time of a CPAN 
+This module provides tools for building external (non-CPAN) dependencies
+for CPAN.  It is mainly designed to be used at install time of a CPAN
 client, and work closely with L<Alien::Base> which is used at runtime.
 
 This is the detailed documentation for the L<Alien::Build> class.
@@ -97,19 +97,19 @@ sub new
     pkg_config_path => [],
     aclocal_path => [],
   }, $class;
-  
+
   $self->meta->filename(
     $args{filename} || do {
       my(undef, $filename) = caller;
       _path($filename)->absolute->stringify;
     }
   );
-  
+
   if($args{meta_prop})
   {
     $self->meta->prop->{$_} = $args{meta_prop}->{$_} for keys %{ $args{meta_prop} };
   }
-  
+
   $self;
 }
 
@@ -162,7 +162,7 @@ sub load
 
   my $class = "Alien::Build::Auto::$name@{[ $count++ ]}";
 
-  { no strict 'refs';  
+  { no strict 'refs';
   @{ "${class}::ISA" } = ('Alien::Build');
   *{ "${class}::Alienfile::meta" } = sub {
     $class =~ s{::Alienfile$}{};
@@ -173,7 +173,7 @@ sub load
   push @preload, @Alien::Build::rc::PRELOAD;
   push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
-  
+
   my @postload = qw( Core::Legacy Core::Gather Core::Tail );
   push @postload, @Alien::Build::rc::POSTLOAD;
   push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
@@ -183,7 +183,7 @@ sub load
     filename => $file->absolute->stringify,
     @args,
   );
-  
+
   require alienfile;
 
   foreach my $preload (@preload)
@@ -209,7 +209,7 @@ sub load
   {
     $self->meta->prop->{arch} = 1;
   }
-  
+
   unless(defined $self->meta->prop->{network})
   {
     $self->meta->prop->{network} = 1;
@@ -217,7 +217,7 @@ sub load
     #$self->meta->prop->{network} = 0 if $ENV{NO_NETWORK_TESTING};
     $self->meta->prop->{network} = 0 if (defined $ENV{ALIEN_INSTALL_NETWORK}) && ! $ENV{ALIEN_INSTALL_NETWORK};
   }
-  
+
   unless(defined $self->meta->prop->{local_source})
   {
     if(! defined $self->meta->prop->{start_url})
@@ -245,7 +245,8 @@ sub load
  my $build = Alien::Build->resume($alienfile, $root);
 
 Load a checkpointed L<Alien::Build> instance.  You will need the original
-L<alienfile> and the build root (usually C<_alien>).
+L<alienfile> and the build root (usually C<_alien>), and a build that
+had been properly checkpointed using the C<checkpoint> method below.
 
 =cut
 
@@ -267,8 +268,8 @@ properties may need to be serialized into something primitive like JSON
 that does not support: regular expressions, code references of blessed
 objects.
 
-If you are writing a plugin (L<Alien::Build::Plugin>) you should use a 
-prefix like "plugin_I<name>" (where I<name> is the name of your plugin) 
+If you are writing a plugin (L<Alien::Build::Plugin>) you should use a
+prefix like "plugin_I<name>" (where I<name> is the name of your plugin)
 so that it does not interfere with other plugin or future versions of
 L<Alien::Build>.  For example, if you were writing
 C<Alien::Build::Plugin::Fetch::NewProtocol>, please use the prefix
@@ -277,9 +278,9 @@ C<plugin_fetch_newprotocol>:
  sub init
  {
    my($self, $meta) = @_;
-   
+ 
    $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
-   
+  
    $meta->register_hook(
      some_hook => sub {
        my($build) = @_;
@@ -574,7 +575,7 @@ Linux and C<gmake> on FreeBSD.
 The name DLL or shared object "name" to use when searching for dynamic
 libraries at runtime.  This is passed into L<FFI::CheckLib>, so if
 your library is something like C<libarchive.so> or C<archive.dll> you
-would set this to C<archive>.  This may be a string or an array of 
+would set this to C<archive>.  This may be a string or an array of
 strings.
 
 =item install_type
@@ -676,8 +677,11 @@ sub _command_prop
  $build->checkpoint;
 
 Save any install or runtime properties so that they can be reloaded on
-a subsequent run.  This is useful if your build needs to be done in
-multiple stages from a C<Makefile>, such as with L<ExtUtils::MakeMaker>.
+a subsequent run in a separate process.  This is useful if your build
+needs to be done in multiple stages from a C<Makefile>, such as with
+L<ExtUtils::MakeMaker>.  Once checkpointed you can use the C<resume>
+constructor (documented above) to resume the probe/build/install]
+process.
 
 =cut
 
@@ -703,7 +707,7 @@ This is just a shortcut for:
 
  my $root = $build->install_prop->{root};
 
-Except that it will be created if it does not already exist.  
+Except that it will be created if it does not already exist.
 
 =cut
 
@@ -743,10 +747,10 @@ and similar modules.  It is not intended for use from plugins or from an L<alien
 sub set_prefix
 {
   my($self, $prefix) = @_;
-  
+
   if($self->meta_prop->{destdir})
   {
-    $self->runtime_prop->{prefix} = 
+    $self->runtime_prop->{prefix} =
     $self->install_prop->{prefix} = $prefix;
   }
   else
@@ -856,7 +860,7 @@ sub load_requires
     # note Test::Alien::Build#alienfile_skip_if_missing_prereqs does a regex
     # on this diagnostic, so if you change it here, change it there too.
     die "Required $mod $ver, have @{[ $mod->VERSION || 0 ]}" if $ver && ! $mod->VERSION($ver);
-    
+
     # allow for requires on Alien::Build or Alien::Base
     next if $mod eq 'Alien::Build';
     next if $mod eq 'Alien::Base';
@@ -888,14 +892,14 @@ sub load_requires
         push @{ $self->{aclocal_path} }, $path;
       }
     }
-    
+
     # sufficiently new Autotools have a aclocal_dir which will
     # give us the directories we need.
     if($mod eq 'Alien::Autotools' && $mod->can('aclocal_dir'))
     {
       push @{ $self->{aclocal_path} }, $mod->aclocal_dir;
     }
-    
+
     if($mod->can('alien_helper'))
     {
       my $helpers = $mod->alien_helper;
@@ -913,13 +917,13 @@ sub load_requires
 sub _call_hook
 {
   my $self = shift;
-  
+
   local $ENV{PATH} = $ENV{PATH};
   unshift @PATH, @{ $self->{bin_dir} };
-  
+
   local $ENV{PKG_CONFIG_PATH} = $ENV{PKG_CONFIG_PATH};
   unshift @PKG_CONFIG_PATH, @{ $self->{pkg_config_path} };
-  
+
   local $ENV{ACLOCAL_PATH} = $ENV{ACLOCAL_PATH};
   # autoconf uses MSYS paths, even for the ACLOCAL_PATH environment variable, so we can't use Env for this.
   {
@@ -928,14 +932,14 @@ sub _call_hook
     unshift @path, @{ $self->{aclocal_path} };
     $ENV{ACLOCAL_PATH} = join ':', @path;
   }
-  
+
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;
-  
+
   local $self->{hook_prop} = {
     name => $name,
   };
-  
+
   $self->meta->call_hook( $config, $name => $self, @args );
 }
 
@@ -961,13 +965,13 @@ sub probe
   my($self) = @_;
   local $CWD = $self->root;
   my $dir;
-  
+
   my $env = $self->_call_hook('override');
   my $type;
   my $error;
-  
+
   $env = '' if $env eq 'default';
-  
+
   if($env eq 'share')
   {
     $type = 'share';
@@ -993,7 +997,7 @@ sub probe
     $error = $@;
     $type = 'share' unless defined $type;
   }
-  
+
   if($error)
   {
     if($env eq 'system')
@@ -1005,12 +1009,12 @@ sub probe
     $self->log("Do not file a bug unless you expected a system install to succeed.");
     $type = 'share';
   }
-  
+
   if($env && $env ne $type)
   {
     die "requested $env install not available";
   }
-  
+
   if($type !~ /^(system|share)$/)
   {
     Carp::croak "probe hook returned something other than system or share: $type";
@@ -1022,7 +1026,7 @@ sub probe
     $self->log("see https://metacpan.org/pod/Alien::Build::Manual::FAQ#Network-fetch-is-turned-off");
     Carp::croak "network fetch is turned off";
   }
-  
+
   $self->runtime_prop->{install_type} = $type;
 
   $type;
@@ -1041,16 +1045,16 @@ Under a C<system> install this does not do anything.
 sub download
 {
   my($self) = @_;
-  
+
   return $self unless $self->install_type eq 'share';
   return $self if $self->install_prop->{complete}->{download};
-  
+
   if($self->meta->has_hook('download'))
   {
     my $tmp;
     local $CWD;
     my $valid = 0;
-    
+
     $self->_call_hook(
       {
         before => sub {
@@ -1059,9 +1063,9 @@ sub download
         },
         verify => sub {
           my @list = grep { $_->basename !~ /^\./, } _path('.')->children;
-    
+
           my $count = scalar @list;
-    
+
           if($count == 0)
           {
             die "no files downloaded";
@@ -1087,7 +1091,7 @@ sub download
             $self->install_prop->{complete}->{download} = 1;
             $self->install_prop->{download} = _path('.')->absolute->stringify;
             $valid = 1;
-          }   
+          }
         },
         after  => sub {
           $CWD = $self->root;
@@ -1095,7 +1099,7 @@ sub download
       },
       'download',
     );
-    
+
     return $self if $valid;
   }
   else
@@ -1103,9 +1107,9 @@ sub download
     # This will call the default download hook
     # defined in Core::Download since the recipe
     # does not provide a download hook
-    return $self->_call_hook('download');  
+    return $self->_call_hook('download');
   }
-  
+
   die "download failed";
 }
 
@@ -1169,9 +1173,9 @@ to L<Alien::Build>, and for normal usage is not needed from a plugin or L<alienf
 sub extract
 {
   my($self, $archive) = @_;
-  
+
   $archive ||= $self->install_prop->{download};
-  
+
   unless(defined $archive)
   {
     die "tried to call extract before download";
@@ -1185,32 +1189,32 @@ sub extract
     my $extract = $self->install_prop->{extract};
     return $extract if defined $extract && -d $extract;
   }
-  
+
   my $tmp;
   local $CWD;
   my $ret;
 
   $self->_call_hook({
-  
+
     before => sub {
-      # called build instead of extract, because this 
+      # called build instead of extract, because this
       # will be used for the build step, and technically
       # extract is a substage of build anyway.
       $tmp = Alien::Build::TempDir->new($self, $nick_name);
       $CWD = "$tmp";
     },
     verify => sub {
-    
+
       my $path = '.';
       if($self->meta_prop->{out_of_source} && $self->install_prop->{extract})
       {
         $path = $self->install_prop->{extract};
       }
-    
+
       my @list = grep { $_->basename !~ /^\./ && $_->basename ne 'pax_global_header' } _path($path)->children;
-      
+
       my $count = scalar @list;
-      
+
       if($count == 0)
       {
         die "no files extracted";
@@ -1223,14 +1227,14 @@ sub extract
       {
         $ret = "$tmp";
       }
-    
+
     },
     after => sub {
       $CWD = $self->root;
     },
-  
+
   }, 'extract', $archive);
-  
+
   $self->install_prop->{extract} ||= $ret;
   $ret ? $ret : ();
 }
@@ -1265,12 +1269,12 @@ sub build
   # save the evironment, in case some plugins decide
   # to alter it.  Or us!  See just a few lines below.
   local %ENV = %ENV;
-  
+
   my $stage = _path($self->install_prop->{stage});
   $stage->mkpath;
-  
+
   my $tmp;
-  
+
   if($self->install_type eq 'share')
   {
     foreach my $suffix ('', '_ffi')
@@ -1323,12 +1327,12 @@ sub build
       $self->_call_hook("gather@{[ $suffix || '_share' ]}");
     }
   }
-  
+
   elsif($self->install_type eq 'system')
   {
     local $CWD = $self->root;
     my $dir;
-  
+
     $self->_call_hook(
       {
         before => sub {
@@ -1341,11 +1345,11 @@ sub build
       },
       'gather_system',
     );
-  
+
     $self->install_prop->{finished} = 1;
-    $self->install_prop->{complete}->{gather_system} = 1;  
+    $self->install_prop->{complete}->{gather_system} = 1;
   }
-  
+
   $self;
 }
 
@@ -1399,15 +1403,15 @@ the Perl C<system> command.
 sub system
 {
   my($self, $command, @args) = @_;
-  
+
   my $prop = $self->_command_prop;
-  
-  ($command, @args) = map { 
+
+  ($command, @args) = map {
     $self->meta->interpolator->interpolate($_, $prop)
   } ($command, @args);
 
   $self->log("+ $command @args");
-  
+
   scalar @args
     ? system $command, @args
     : system $command;
@@ -1733,9 +1737,9 @@ sub call_hook
   my %args = ref $_[0] ? %{ shift() } : ();
   my($name, @args) = @_;
   my $error;
-  
+
   my @hooks = @{ $self->{hook}->{$name} || []};
-  
+
   if(@hooks == 0)
   {
     if(defined $self->{default_hook}->{$name})
@@ -1747,7 +1751,7 @@ sub call_hook
       Carp::croak "No hooks registered for $name";
     }
   }
-  
+
   my $value;
 
   foreach my $hook (@hooks)
@@ -1786,9 +1790,9 @@ sub call_hook
       return $value;
     }
   }
-  
+
   die $error if $error && ! $args{all};
-  
+
   $value;
 }
 
@@ -1808,7 +1812,7 @@ sub apply_plugin
   my $class;
   my $pm;
   my $found;
-  
+
   if($name =~ /^=(.*)$/)
   {
     $class = $1;
@@ -1816,7 +1820,7 @@ sub apply_plugin
     $pm    =~ s!::!/!g;
     $found = 1;
   }
-  
+
   if($name !~ /::/ && !$found)
   {
     foreach my $inc (@INC)
@@ -1833,14 +1837,14 @@ sub apply_plugin
       }
     }
   }
-  
+
   unless($found)
   {
     $class = "Alien::Build::Plugin::$name";
     $pm    = "Alien/Build/Plugin/$name.pm";
     $pm    =~ s{::}{/}g;
   }
-  
+
   require $pm unless $class->can('new');
   my $plugin = $class->new(@args);
   $plugin->init($self);
@@ -1940,11 +1944,11 @@ be used by some Fetch plugins, if they support it.
 
 =head1 SUPPORT
 
-The intent of the C<Alien-Build> team is to support as best as possible 
-all Perls from 5.8.1 to the latest production version.  So long as they 
+The intent of the C<Alien-Build> team is to support as best as possible
+all Perls from 5.8.1 to the latest production version.  So long as they
 are also supported by the Perl toolchain.
 
-Please feel encouraged to report issues that you encounter to the 
+Please feel encouraged to report issues that you encounter to the
 project GitHub Issue tracker:
 
 =over 4
@@ -1953,7 +1957,7 @@ project GitHub Issue tracker:
 
 =back
 
-Better if you can fix the issue yourself, please feel encouraged to open 
+Better if you can fix the issue yourself, please feel encouraged to open
 pull-request on the project GitHub:
 
 =over 4
@@ -1962,8 +1966,8 @@ pull-request on the project GitHub:
 
 =back
 
-If you are confounded and have questions, join us on the C<#native> 
-channel on irc.perl.org.  The C<Alien-Build> developers frequent this 
+If you are confounded and have questions, join us on the C<#native>
+channel on irc.perl.org.  The C<Alien-Build> developers frequent this
 channel and can probably help point you in the right direction.  If you
 don't have an IRC client handy, you can use this web interface:
 
