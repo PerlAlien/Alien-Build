@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.60      2019-03-01 03:16:23 -0500
   - Documentation improvemens.  (gh#50, gh#84).
 
 1.59_01   2019-02-27 21:40:24 -0500
