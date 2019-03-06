@@ -5,13 +5,15 @@ exit if $] < 5.010001;
 
 my $exit = 0;
 
+my @fails;
+
 sub run
 {
   print "% @_\n";
   system(@_);
   if($?)
   {
-    $exit = 2;
+    push @fails, [@_];
     warn "command failed!";
   }
 }
@@ -31,4 +33,9 @@ foreach my $mod (@mods)
   run 'cpanm', '--reinstall', '-v', $mod;
 }
 
-exit $exit;
+if(@fails)
+{
+  print "failure summary:\n";
+  print "+@{[ @$_ ]}" for @fails;
+  exit 2;
+}
