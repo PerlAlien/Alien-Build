@@ -59,7 +59,22 @@ is
   'Archive::Zip and Alien::unzip aren\'t already installed',
 ;
 
-run ['cpanm', '-n', sort keys %{ $build->requires('share') }], 'install share requires';
+my $cpanm_ok = run ['cpanm', '-n', sort keys %{ $build->requires('share') }], 'install share requires';
+
+unless($cpanm_ok)
+{
+  my $log = path("~/.cpanm/latest-build/build.log");
+  if(-f $log)
+  {
+    diag "## cpanm log $log ##";
+    diag $log->slurp;
+  }
+  else
+  {
+    diag "NO LOG! $log DNE";
+  }
+}
+
 
 eval { $build->load_requires('share') };
 is $@, '', 'load_requires(share)';
@@ -103,6 +118,8 @@ sub run ($;$)
   note $out;
 
   $ctx->release;
+
+  $exit == 0;
 }
 
 sub build_step ($$)
