@@ -936,9 +936,7 @@ sub _call_hook
   my $config = ref($_[0]) eq 'HASH' ? shift : {};
   my($name, @args) = @_;
 
-  local $self->{hook_prop} = {
-    name => $name,
-  };
+  local $self->{hook_prop} = {};
 
   $self->meta->call_hook( $config, $name => $self, @args );
 }
@@ -1756,6 +1754,13 @@ sub call_hook
 
   foreach my $hook (@hooks)
   {
+    if(eval { $args[0]->isa('Alien::Build') })
+    {
+      %{ $args[0]->{hook_prop} } = (
+        name => $name,
+      );
+    }
+
     my $wrapper = $self->{around}->{$name} || sub { my $code = shift; $code->(@_) };
     my $value;
     $args{before}->() if $args{before};
