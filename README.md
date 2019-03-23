@@ -397,6 +397,12 @@ If no hook is currently running then `hook_prop` will return `undef`.
 
     The name of the currently running hook.
 
+- version (probe)
+
+    Probe and PkgConfig plugins _may_ set this property indicating the
+    version of the alienized package.  Not all plugins and configurations
+    may be able to provide this.
+
 # METHODS
 
 ## checkpoint

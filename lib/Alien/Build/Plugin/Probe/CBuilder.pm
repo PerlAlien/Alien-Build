@@ -184,7 +184,9 @@ sub init
       
       if(defined $self->version)
       {
-        ($build->install_prop->{plugin_probe_cbuilder_gather}->{version}) = $out =~ $self->version;
+        my($version) = $out =~ $self->version;
+        $build->hook_prop->{version} = $version;
+        $build->install_prop->{plugin_probe_cbuilder_gather}->{version} = $version;
       }
       
       'system';

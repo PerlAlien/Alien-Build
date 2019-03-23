@@ -643,6 +643,12 @@ If no hook is currently running then C<hook_prop> will return C<undef>.
 
 The name of the currently running hook.
 
+=item version (probe)
+
+Probe and PkgConfig plugins I<may> set this property indicating the
+version of the alienized package.  Not all plugins and configurations
+may be able to provide this.
+
 =back
 
 =cut
