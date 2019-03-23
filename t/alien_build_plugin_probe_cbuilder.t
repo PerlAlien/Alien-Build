@@ -149,6 +149,15 @@ subtest 'program' => sub {
       program => 'int main() { printf("version = \'1.2.3\'\n"); return 0; }',
       version => qr/version = '(.*?)'/,
     );
+
+    meta->around_hook(
+      probe => sub {
+        my($orig, $build) = @_;
+        my $install_type = $build->$orig;
+        push @{ $build->install_prop->{probe_version_prop} }, $build->hook_prop->{version};
+        $install_type;
+      }
+    );
   };
 
   my $gard = system_fake
@@ -160,6 +169,7 @@ subtest 'program' => sub {
   alien_install_type_is 'system';
 
   is( $build->runtime_prop->{version}, '1.2.3', 'version matches' );
+  is( $build->install_prop->{probe_version_prop}, ['1.2.3'], 'set probe hook prop' );
 };
 
 subtest 'fail' => sub {
