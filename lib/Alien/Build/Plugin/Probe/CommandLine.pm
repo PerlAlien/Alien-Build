@@ -134,6 +134,7 @@ sub init
       {
         if($err =~ $self->version_stderr)
         {
+          $build->hook_prop->{version} = $1;
           $build->runtime_prop->{version} = $1;
         }
       }
