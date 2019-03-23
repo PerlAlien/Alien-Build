@@ -134,6 +134,7 @@ sub init
       my $pkg = $client->find($pkg_name);
       die "package $pkg_name not found" unless $pkg;
 
+      $build->hook_prop->{version} = $pkg->version;
       my $atleast_version = $self->atleast_version;
       $atleast_version = $self->minimum_version unless defined $self->atleast_version;
       if($atleast_version)

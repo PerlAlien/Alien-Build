@@ -137,6 +137,7 @@ sub init
       my $pkg = PkgConfig->find($pkg_name);
       die "package @{[ $pkg_name ]} not found" if $pkg->errmsg;
 
+      $build->hook_prop->{version} = $pkg->pkg_version;
       my $version = PkgConfig::Version->new($pkg->pkg_version);
 
       my $atleast_version = $self->atleast_version;
