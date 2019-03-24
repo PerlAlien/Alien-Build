@@ -353,6 +353,31 @@ subtest 'system available, okay' => sub {
 
 };
 
+subtest 'hook prop' => sub {
+
+  my($build, $meta, $plugin) = build(
+    pkg_name => 'foo',
+  );
+
+  my $hook_prop_version;
+
+  $meta->around_hook(
+    probe => sub {
+      my($orig, $build) = @_;
+      my $install_type = $build->$orig;
+      $hook_prop_version = $build->hook_prop->{version};
+      $install_type;
+    },
+  );
+
+  my($out, $type) = capture_merged { $build->probe };
+  note $out;
+
+  is $type, 'system';
+  is $hook_prop_version, '1.2.3';
+
+};
+
 subtest 'system multiple' => sub {
 
   subtest 'all found in system' => sub {

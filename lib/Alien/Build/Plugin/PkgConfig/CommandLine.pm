@@ -154,6 +154,14 @@ sub init
     push @probe, [ $pkgconf, '--max-version=' . $self->max_version, $pkg_name ];
   }
 
+  push @probe, [ $pkgconf, '--modversion', $pkg_name, sub {
+    my($build, $args) = @_;
+    my $version = $args->{out};
+    $version =~ s{^\s+}{};
+    $version =~ s{\s*$}{};
+    $build->hook_prop->{version} = $version;
+  }];
+
   unshift @probe, sub {
     my($build) = @_;
     $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
