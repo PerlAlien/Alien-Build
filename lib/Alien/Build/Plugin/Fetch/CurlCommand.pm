@@ -119,7 +119,7 @@ sub init
 
         my @command = (
           $self->curl_command,
-          '-L', '-f', -o => 'content',
+          '-L', '-f', '-O',
           -w => '@writeout',
         );
 
@@ -130,17 +130,6 @@ sub init
         my($stdout, $stderr) = $self->_execute($build, @command);
 
         my %h = map { my($k,$v) = m/^ab-(.*?)\s*:(.*)$/; $k => $v } split /\n/, $stdout;
-
-        if($h{url} =~ m{/([^/]+)$})
-        {
-          $h{filename} = $1;
-        }
-        else
-        {
-          $h{filename} = 'index.html';
-        }
-
-        rename 'content', $h{filename};
 
         if(-e 'head')
         {
