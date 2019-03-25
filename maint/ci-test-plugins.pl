@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use File::Glob qw( bsd_glob );
 
 exit if $] < 5.010001;
 
@@ -17,6 +18,11 @@ sub run
     warn "command failed!";
   }
 }
+
+my(@tarball) = bsd_glob 'Alien-Build-*.tar.gz';
+die "not exactly one tarball: @tarball" if @tarball != 1;
+my $tarball = shift @tarball;
+run 'cpanm', '-n', $tarball;
 
 my @mods = qw(
   Alien::Build::MB
