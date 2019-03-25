@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.61_01   2019-03-25 15:35:06 -0400
+  - Add hook property `version` for probe hook (gh#99, gh#100).
+  - Improvements for Fetch CurlCommand plugin (gh#101).
+
 1.60      2019-03-01 03:16:23 -0500
   - Documentation improvemens.  (gh#50, gh#84).
 
