@@ -430,7 +430,7 @@ Revision history for {{$dist->name}}
   - Extra diagnostics for PkgConfig::PP failure in gather stage
 
 0.67_01   2017-07-18 13:52:56 -0400
-  - Merged Alien-Base and Alien-Build.  For the old Test-Alien change log
+  - Merged Alien-Base and Alien-Build.  For the old Alien-Base change log
     see Changes.Alien-Base
 
 0.66      2017-07-17 02:46:11 -0400
