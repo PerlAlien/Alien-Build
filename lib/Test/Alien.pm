@@ -16,6 +16,7 @@ use Alien::Build::Util qw( _dump );
 use Config;
 
 our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is );
+our @EXPORT_OK = qw( run_timeout );
 
 # ABSTRACT: Testing tools for Alien modules
 # VERSION
@@ -261,6 +262,8 @@ Always returns an instance of L<Test::Alien::Run>, even if the command could not
 
 =cut
 
+my $run_timeout = 30;
+
 sub run_ok
 {
   my($command, $message) = @_;
@@ -270,11 +273,12 @@ sub run_ok
   
   require Test::Alien::Run;
   my $run = bless {
-    out    => '',
-    err    => '',
-    exit   => 0,
-    sig    => 0,
-    cmd    => [@command],
+    out     => '',
+    err     => '',
+    exit    => 0,
+    sig     => 0,
+    cmd     => [@command],
+    timeout => 0,
   }, 'Test::Alien::Run';
   
   my $ctx = context();
@@ -285,10 +289,24 @@ sub run_ok
     $run->{cmd} = [$exe, @command];
     my @diag;
     my $ok = 1;
-    my($exit, $errno);
-    ($run->{out}, $run->{err}, $exit, $errno) = capture { system $exe, @command; ($?,$!); };
-  
-    if($exit == -1)
+    my($exit, $errno,$exception);
+    ($run->{out}, $run->{err}, $exit, $errno, $exception) = capture {
+      local $@;
+      local $SIG{ALRM} = sub { $run->{timeout} = 1; die "timeout." };
+      alarm $run_timeout;
+      eval { system $exe, @command };
+      my($exit, $errno, $exception) = ($?,$!,$@);
+      alarm 0;
+      ($exit, $errno, $exception);
+    };
+
+    if($exception)
+    {
+      $ok = 0;
+      $run->{fail} = "exception: $exception";
+      push @diag, "  exception: $exception";
+    }
+    elsif($exit == -1)
     {
       $ok = 0;
       $run->{fail} = "failed to execute: $errno";
@@ -322,6 +340,24 @@ sub run_ok
   $ctx->release;
   
   $run;
+}
+
+=head2 run_timeout
+
+ use Test::Alien qw( run_timeout);
+ run_timeout $timeout;
+
+Sets the timeout for C<run_ok> above.  If the run time of the
+command exceeds the timeout then the command will terminate and
+the test will fail.
+
+This function is exportable, but not exported by default.
+
+=cut
+
+sub run_timeout
+{
+  ($run_timeout) = @_;
 }
 
 =head2 xs_ok

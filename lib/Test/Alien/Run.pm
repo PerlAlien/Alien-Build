@@ -48,12 +48,19 @@ The exit value of the run.
 
 The signal that killed the run, or zero if the process was terminated normally.
 
+=head2 timeout
+
+ my $bool = $run->timeout;
+
+Returns true if the command timed-out.
+
 =cut
 
-sub out    { shift->{out} }
-sub err    { shift->{err} }
-sub exit   { shift->{exit} }
-sub signal { shift->{sig} }
+sub out     { shift->{out}     }
+sub err     { shift->{err}     }
+sub exit    { shift->{exit}    }
+sub signal  { shift->{sig}     }
+sub timeout { shift->{timeout} }
 
 =head1 METHODS
 

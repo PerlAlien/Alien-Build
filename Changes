@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Test::Alien::run_ok will now timeout after 30s by default.  Change the
+    default with Test::Alien::run_timeout (gh#102, gh#103)
 
 1.62      2019-03-27 11:34:00 -0400
   - Production release identical to 1.61_01
