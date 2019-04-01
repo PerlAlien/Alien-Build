@@ -304,6 +304,8 @@ sub run_ok
     {
       $ok = 0;
       $run->{fail} = "exception: $exception";
+      $run->{exit} = undef;
+      $run->{sig}  = undef;
       push @diag, "  exception: $exception";
     }
     elsif($exit == -1)
