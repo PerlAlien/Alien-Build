@@ -501,7 +501,7 @@ You can also use L<Test::Alien> to test tools instead of libraries:
  use Alien::Libfoo;
  
  alien_ok 'Alien::Libfoo';
- run_ok('foo', '--version')
+ run_ok(['foo', '--version'])
    ->exit_is(0);
  
  done_testing;
