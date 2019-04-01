@@ -34,7 +34,7 @@ Test commands that come with your Alien:
    ->success
    # we only accept the version written
    # by Larry ...
-   ->out_like(qr{Larry Wall}); 
+   ->out_like(qr{Larry Wall});
  
  done_testing;
 
@@ -162,14 +162,14 @@ sub alien_ok ($;$)
   $name = 'undef' unless defined $name;
   my @methods = qw( cflags libs dynamic_libs bin_dir );
   $message ||= "$name responds to: @methods";
-  
+
   my $ok;
   my @diag;
-  
+
   if(defined $alien)
   {
     my @missing = grep { ! $alien->can($_) } @methods;
-  
+
     $ok = !@missing;
     push @diag, map { "  missing method $_" } @missing;
 
@@ -189,7 +189,7 @@ sub alien_ok ($;$)
   $ctx->ok($ok, $message);
   $ctx->diag($_) for @diag;
   $ctx->release;
-  
+
   $ok;
 }
 
@@ -242,7 +242,7 @@ sub synthetic
   $opt ||= {};
   my %alien = %$opt;
   require Test::Alien::Synthetic;
-  bless \%alien, 'Test::Alien::Synthetic', 
+  bless \%alien, 'Test::Alien::Synthetic',
 }
 
 =head2 run_ok
@@ -267,10 +267,10 @@ my $run_timeout = 30;
 sub run_ok
 {
   my($command, $message) = @_;
-  
+
   my(@command) = ref $command ? @$command : ($command);
   $message ||= "run @command";
-  
+
   require Test::Alien::Run;
   my $run = bless {
     out     => '',
@@ -280,7 +280,7 @@ sub run_ok
     cmd     => [@command],
     timeout => 0,
   }, 'Test::Alien::Run';
-  
+
   my $ctx = context();
   my $exe = which $command[0];
   if(defined $exe)
@@ -290,14 +290,66 @@ sub run_ok
     my @diag;
     my $ok = 1;
     my($exit, $errno,$exception);
+
+    my $system_call;
+
+    if($Config{d_fork})
+    {
+      $system_call = sub {
+
+        my $pid = fork;
+        my $errno_file = path( _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' ) )->child('errno');
+
+        return (0, $!, "Unable to fork") unless defined $pid;
+
+        if($pid != 0)
+        {
+          local $@;
+          my $timeout = 0;
+          local $SIG{ALRM} = sub { $timeout = 1; die "timeout." };
+
+          alarm $run_timeout;
+          my $kid = eval { waitpid $pid, 0 };
+          my $exception = $@;
+          alarm 0;
+
+          $run->{timeout} = $timeout;
+          if($exception)
+          {
+            kill -9, $pid;
+            return (0, $!, $exception) if $exception;
+          }
+
+          return (0, $!, "Unable to waitpid") unless $kid == $pid;
+
+          if(-f $errno_file)
+          {
+            $! = int $errno_file->slurp;
+            return (0, $!, '');
+          }
+          else
+          {
+            return ($?, $!, '');
+          }
+        }
+        else
+        {
+          exec $exe, @command or do {
+            $errno_file->spew(int($!));
+            exit 1;
+          };
+        }
+      };
+    }
+    else
+    {
+      $system_call = sub {
+        system $exe, @command;
+      };
+    }
+    
     ($run->{out}, $run->{err}, $exit, $errno, $exception) = capture {
-      local $@;
-      local $SIG{ALRM} = sub { $run->{timeout} = 1; die "timeout." };
-      alarm $run_timeout;
-      eval { system $exe, @command };
-      my($exit, $errno, $exception) = ($?,$!,$@);
-      alarm 0;
-      ($exit, $errno, $exception);
+      $system_call->();
     };
 
     if($exception)
@@ -326,8 +378,8 @@ sub run_ok
     }
 
     $ctx->ok($ok, $message);
-    $ok 
-      ? $ctx->note("  using $exe") 
+    $ok
+      ? $ctx->note("  using $exe")
       : $ctx->diag("  using $exe");
     $ctx->diag(@diag) for @diag;
 
@@ -338,9 +390,9 @@ sub run_ok
     $ctx->diag("  command not found");
     $run->{fail} = 'command not found';
   }
-  
+
   $ctx->release;
-  
+
   $run;
 }
 
@@ -446,7 +498,7 @@ sub xs_ok
     $ctx->release;
     return;
   }
-  
+
   $xs = { xs => $xs } unless ref $xs;
   # make sure this is a copy because we may
   # modify it.
@@ -471,7 +523,7 @@ sub xs_ok
   my $dir = _tempdir( CLEANUP => 1, TEMPLATE => 'testalienXXXXX' );
   my $xs_filename = path($dir)->child('test.xs')->stringify;
   my $c_filename  = path($dir)->child("test.@{[ $xs->{c_ext} ]}")->stringify;
-  
+
   my $ctx = context();
   my $module;
 
@@ -505,10 +557,10 @@ sub xs_ok
     open my $fh, '>', $xs_filename;
     print $fh $xs->{xs};
     close $fh;
-  
+
     require ExtUtils::ParseXS;
     my $pxs = ExtUtils::ParseXS->new;
-  
+
     my($out, $err) = capture_merged {
       eval {
         $pxs->process_file(
@@ -521,7 +573,7 @@ sub xs_ok
       };
       $@;
     };
-    
+
     $ctx->note("parse xs $xs_filename => $c_filename") if $verbose;
     $ctx->note($out) if $verbose;
     $ctx->note("error: $err") if $verbose && $err;
@@ -547,12 +599,12 @@ sub xs_ok
       source               => $c_filename,
       %{ $xs->{cbuilder_compile} },
     );
-    
+
     if(defined $compile_options{extra_compiler_flags} && ref($compile_options{extra_compiler_flags}) eq '')
     {
       $compile_options{extra_compiler_flags} = [ shellwords $compile_options{extra_compiler_flags} ];
     }
-    
+
     push @{ $compile_options{extra_compiler_flags} }, shellwords map { _flags $_, 'cflags' } @aliens;
 
     my($out, $obj, $err) = capture_merged {
@@ -561,7 +613,7 @@ sub xs_ok
       };
       ($obj, $@);
     };
-    
+
     $ctx->note("compile $c_filename") if $verbose;
     $ctx->note($out) if $verbose;
     $ctx->note($err) if $verbose && $err;
@@ -570,7 +622,7 @@ sub xs_ok
     {
       $ctx->note(_dump({ compile_options => \%compile_options }));
     }
-    
+
     unless($obj)
     {
       $ok = 0;
@@ -578,7 +630,7 @@ sub xs_ok
       push @diag, "    $err" if $err;
       push @diag, "    $_" for split /\r?\n/, $out;
     }
-    
+
     if($ok)
     {
 
@@ -592,16 +644,16 @@ sub xs_ok
       {
         $link_options{extra_linker_flags} = [ shellwords $link_options{extra_linker_flags} ];
       }
-      
+
       push @{ $link_options{extra_linker_flags} }, grep /^-l/, shellwords map { _flags $_, 'libs' } @aliens;
 
       my($out, $lib, $err) = capture_merged {
-        my $lib = eval { 
+        my $lib = eval {
           $cb->link(%link_options);
         };
         ($lib, $@);
       };
-      
+
       $ctx->note("link $obj") if $verbose;
       $ctx->note($out) if $verbose;
       $ctx->note($err) if $verbose && $err;
@@ -622,7 +674,7 @@ sub xs_ok
         push @diag, "    $err" if $err;
         push @diag, "    $_" for split /\r?\n/, $out;
       }
-      
+
       if($ok)
       {
         my @modparts = split(/::/,$module);
@@ -632,14 +684,14 @@ sub xs_ok
         my $libpath = path($dir)->child('auto', @modparts, "$modfname.$dl_dlext");
         $libpath->parent->mkpath;
         move($lib, "$libpath") || die "unable to copy $lib => $libpath $!";
-        
+
         pop @modparts;
         my $pmpath = path($dir)->child(@modparts, "$modfname.pm");
         $pmpath->parent->mkpath;
         open my $fh, '>', "$pmpath";
-        
+
         my($alien_with_xs_load, @rest) = grep { $_->can('xs_load') } @aliens;
-        
+
         if($alien_with_xs_load)
         {
           {
@@ -649,15 +701,15 @@ sub xs_ok
           }
           print $fh '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
             package $module;
-            
+
             use strict;
             use warnings;
             our \$VERSION = '0.01';
             our \@rest;
             our \$alien_with_xs_load;
-            
+
             \$alien_with_xs_load->xs_load('$module', \$VERSION, \@rest);
-            
+
             1;
           };
         }
@@ -665,13 +717,13 @@ sub xs_ok
         {
           print $fh '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
             package $module;
-          
+
             use strict;
             use warnings;
             require XSLoader;
             our \$VERSION = '0.01';
             XSLoader::load('$module',\$VERSION);
-          
+
             1;
           };
         }
@@ -684,7 +736,7 @@ sub xs_ok
             use $module;
           };
         }
-        
+
         if(my $error = $@)
         {
           $ok = 0;
@@ -698,7 +750,7 @@ sub xs_ok
   $ctx->ok($ok, $message);
   $ctx->diag($_) for @diag;
   $ctx->release;
-  
+
   if($cb)
   {
     $cb = sub {
@@ -762,14 +814,14 @@ sub ffi_ok
   my $cb;
   $cb = pop if defined $_[-1] && ref $_[-1] eq 'CODE';
   my($opt, $message) = @_;
-  
+
   $message ||= 'ffi';
-  
+
   my $ok = 1;
   my $skip;
   my $ffi;
   my @diag;
-  
+
   {
     my $min = '0.12'; # the first CPAN release
     $min = '0.15' if $opt->{ignore_not_found};
@@ -780,7 +832,7 @@ sub ffi_ok
       $skip = "Test requires FFI::Platypus $min";
     }
   }
-  
+
   if($ok && $opt->{lang})
   {
     my $class = "FFI::Platypus::Lang::@{[ $opt->{lang} ]}";
@@ -791,7 +843,7 @@ sub ffi_ok
       $skip = "Test requires FFI::Platypus::Lang::@{[ $opt->{lang} ]}";
     }
   }
-  
+
   if($ok)
   {
     $ffi = FFI::Platypus->new(
@@ -808,9 +860,9 @@ sub ffi_ok
       }
     }
   }
-  
-  my $ctx = context(); 
-  
+
+  my $ctx = context();
+
   if($skip)
   {
     $ctx->skip($message, $skip);
@@ -820,7 +872,7 @@ sub ffi_ok
     $ctx->ok($ok, $message);
   }
   $ctx->diag($_) for @diag;
-  
+
   $ctx->release;
 
   if($cb)
@@ -835,7 +887,7 @@ sub ffi_ok
 
     goto \&Test2::API::run_subtest;
   }
-  
+
   $ok;
 }
 
@@ -849,10 +901,10 @@ Tests that the given helper has been defined.
 =cut
 
 sub _interpolator
-{  
+{
   require Alien::Build::Interpolate::Default;
   my $intr = Alien::Build::Interpolate::Default->new;
-  
+
   foreach my $alien (@aliens)
   {
     if($alien->can('alien_helper'))
@@ -865,7 +917,7 @@ sub _interpolator
       }
     }
   }
-  
+
   $intr;
 }
 
@@ -875,7 +927,7 @@ sub helper_ok
 
   $message ||= "helper $name exists";
 
-  my $intr = _interpolator; 
+  my $intr = _interpolator;
 
   my $code = $intr->has_helper($name);
 
@@ -884,7 +936,7 @@ sub helper_ok
   my $ctx = context();
   $ctx->ok($ok, $message);
   $ctx->release;
-  
+
   $ok;
 }
 
@@ -903,16 +955,16 @@ either the given string or regular expression.
 sub interpolate_template_is
 {
   my($template, $pattern, $message) = @_;
-  
+
   $message ||= "template matches";
-  
+
   my $intr = _interpolator;
-  
+
   my $value = eval { $intr->interpolate($template) };
   my $error = $@;
   my @diag;
   my $ok;
-  
+
   if($error)
   {
     $ok = 0;
@@ -929,11 +981,11 @@ sub interpolate_template_is
     $ok = $value eq "$pattern";
     push @diag, "value '$value' does not equal '$pattern'" unless $ok;
   }
-  
+
   my $ctx = context();
   $ctx->ok($ok, $message, [@diag]);
   $ctx->release;
-  
+
   $ok;
 }
 
@@ -957,8 +1009,8 @@ sub _tempdir {
       $dir = tempdir( DIR => path('.')->absolute->stringify );
     }
   }
-  
-  $dir;  
+
+  $dir;
 }
 
 1;
