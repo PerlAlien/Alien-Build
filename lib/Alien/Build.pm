@@ -857,7 +857,7 @@ sub load_requires
     if($eval)
     {
       eval { $check->() };
-      die "Required $mod @{[ $ver || 'undef' ]}, missing";
+      die "Required $mod @{[ $ver || 'undef' ]}, missing" if $@;
     }
     else
     {
