@@ -50,7 +50,7 @@ What follows are the main use cases.
  $build->create_build_script;
 
 The key gotcha for using L<Alien> from a C<Build.PL> for an XS module
-is remembering to explicitly making the L<Alien> a configuration 
+is remembering to explicitly making the L<Alien> a configuration
 prerequisite.
 
 =head2 ExtUtils::MakeMaker
@@ -127,6 +127,32 @@ You need to add them to the C<PATH> environment variable though.
 (Unless the tool is already provided by the system, in which case
 it is already in the path and the C<bin_dir> method will return an
 empty list).
+
+=head1 ENVIRONMENT
+
+=over 4
+
+=item ALIEN_INSTALL_TYPE
+
+Although the recommended way for a consumer to use an L<Alien::Base> based L<Alien>
+is to declare it as a static configure and build-time dependency, some consumers
+may prefer to fallback on using an L<Alien> only when the consumer itself cannot
+detect the necessary package. In some cases the consumer may want the user to opt-in
+to using an L<Alien> before requiring it.
+
+To keep the interface consistent among Aliens, the consumer of the fallback opt-in
+L<Alien> may fallback on the L<Alien> if the environment variable C<ALIEN_INSTALL_TYPE>
+is set to any value. The rationale is that by setting this environment variable the
+user is aware that L<Alien> modules may be installed and have indicated consent.
+The actual implementation of this, by its nature would have to be in the consuming
+CPAN module.
+
+This behavior should be documented in the consumer's POD.
+
+See L<Alien::Build/ENVIRONMENT> for more details on the usage of this environment
+variable.
+
+=back
 
 =cut
 

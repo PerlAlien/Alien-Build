@@ -22,8 +22,11 @@ for CPAN.  It is mainly designed to be used at install time of a CPAN
 client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base) which is used at runtime.
 
 This is the detailed documentation for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
-If you
-are starting out you probably want to do so from one of these documents:
+If you are starting out you probably want to do so from one of these documents:
+
+- [Alien::Build::Manual::Alien](https://metacpan.org/pod/Alien::Build::Manual::Alien)
+
+    A broad overview of `Alien-Build` and its ecosystem.
 
 - [Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser)
 
@@ -681,6 +684,19 @@ Apply the given plugin with the given arguments.
     If set to `share` or `system`, it will override the system detection logic.
     If set to `default`, it will use the default setting for the [alienfile](https://metacpan.org/pod/alienfile).
     The behavior of other values is undefined.
+
+    Although the recommended way for a consumer to use an [Alien::Base](https://metacpan.org/pod/Alien::Base) based [Alien](https://metacpan.org/pod/Alien)
+    is to declare it as a static configure and build-time dependency, some consumers
+    may prefer to fallback on using an [Alien](https://metacpan.org/pod/Alien) only when the consumer itself cannot
+    detect the necessary package. In some cases the consumer may want the user to opt-in
+    to using an [Alien](https://metacpan.org/pod/Alien) before requiring it.
+
+    To keep the interface consistent among Aliens, the consumer of the fallback opt-in
+    [Alien](https://metacpan.org/pod/Alien) may fallback on the [Alien](https://metacpan.org/pod/Alien) if the environment variable `ALIEN_INSTALL_TYPE`
+    is set to any value. The rationale is that by setting this environment variable the
+    user is aware that [Alien](https://metacpan.org/pod/Alien) modules may be installed and have indicated consent.
+    The actual implementation of this, by its nature would have to be in the consuming
+    CPAN module.
 
 - ALIEN\_BUILD\_RC
 
