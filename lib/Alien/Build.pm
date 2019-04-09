@@ -33,10 +33,13 @@ for CPAN.  It is mainly designed to be used at install time of a CPAN
 client, and work closely with L<Alien::Base> which is used at runtime.
 
 This is the detailed documentation for the L<Alien::Build> class.
-If you
-are starting out you probably want to do so from one of these documents:
+If you are starting out you probably want to do so from one of these documents:
 
 =over 4
+
+=item L<Alien::Build::Manual::Alien>
+
+A broad overview of C<Alien-Build> and its ecosystem.
 
 =item L<Alien::Build::Manual::AlienUser>
 
@@ -1915,6 +1918,19 @@ for properly auditing of Perl modules for environments that require that.
 If set to C<share> or C<system>, it will override the system detection logic.
 If set to C<default>, it will use the default setting for the L<alienfile>.
 The behavior of other values is undefined.
+
+Although the recommended way for a consumer to use an L<Alien::Base> based L<Alien>
+is to declare it as a static configure and build-time dependency, some consumers
+may prefer to fallback on using an L<Alien> only when the consumer itself cannot
+detect the necessary package. In some cases the consumer may want the user to opt-in
+to using an L<Alien> before requiring it.
+
+To keep the interface consistent among Aliens, the consumer of the fallback opt-in
+L<Alien> may fallback on the L<Alien> if the environment variable C<ALIEN_INSTALL_TYPE>
+is set to any value. The rationale is that by setting this environment variable the
+user is aware that L<Alien> modules may be installed and have indicated consent.
+The actual implementation of this, by its nature would have to be in the consuming
+CPAN module.
 
 =item ALIEN_BUILD_RC
 
