@@ -834,8 +834,10 @@ sub Inline {
   my ($class, $language) = @_;
   return if $language !~ /^(C|CPP)$/;
   my $config = {
-    CCFLAGSEX    => join(' ', grep !/^-I/, shellwords($class->cflags)),
-    INC          => join(' ', grep  /^-I/, shellwords($class->cflags)),
+    # INC should arguably be for -I flags only, but
+    # this improves compat with ExtUtils::Depends.
+    # see gh#107, gh#108
+    INC          => $class->cflags,
     LIBS         => $class->libs,
   };
   
