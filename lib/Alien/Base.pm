@@ -834,7 +834,8 @@ sub Inline {
   my ($class, $language) = @_;
   return if $language !~ /^(C|CPP)$/;
   my $config = {
-    CCFLAGSEX    => $class->cflags,
+    CCFLAGSEX    => join(' ', grep !/^-I/, shellwords($class->cflags)),
+    INC          => join(' ', grep  /^-I/, shellwords($class->cflags)),
     LIBS         => $class->libs,
   };
   
