@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.64_01   2019-04-10 13:06:45 -0400
+  - Improved compatability with ExtUtils::Depends (gh#107, gh#108).
+
 1.63      2019-04-08 17:19:03 -0400
   - Documentation improvements
   - Fixed bug in Test::Alien::Build alienfile_skip_if_missing_prereqs
