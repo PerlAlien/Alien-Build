@@ -71,6 +71,29 @@ prerequisite.
 MakeMaker is similar, make sure that you explicitly make your L<Alien>
 a configure prerequisite.
 
+=head2 Inline::C / Inline::CPP
+
+ use Inline 0.56 with => 'Alien::Foo';
+
+Although not widely used, L<Inline::C> and L<Inline::CPP> can be configured
+to use an L<Alien::Base> based L<Alien> with the C<with> keyword.
+
+=head2 ExtUtils::Depends
+
+ use ExtUtils::MakeMaker;
+ use ExtUtils::Depends;
+
+ my $pkg = ExtUtils::Depends->new("Alien::Foo");
+
+ WriteMakefile(
+   ...
+   $pkg->get_makefile_vars,
+   ...
+ );
+
+L<ExtUtils::Depends> works similar to L<Alien::Base::Wrapper>, but uses
+the L<Inline> interface under the covers.
+
 =head2 Dist::Zilla
 
  [@Filter]
