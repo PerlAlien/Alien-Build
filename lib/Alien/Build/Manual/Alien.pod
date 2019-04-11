@@ -23,7 +23,7 @@ L<Alien::Build::Manual::AlienAuthor>.
 
 =item The Alien Runtime (runtime)
 
-L<ALien::Base> is the base class for aliens in the C<Alien-Build> system. Its use by Alien consumers
+L<Alien::Base> is the base class for aliens in the C<Alien-Build> system. Its use by Alien consumers
 is documented in L<Alien::Build::Manual::AlienUser>.
 
 =item The Plugin system (configure / build-time)

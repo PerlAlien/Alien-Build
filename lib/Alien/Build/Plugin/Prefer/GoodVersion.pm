@@ -15,7 +15,7 @@ use Carp ();
 
 =head1 DESCRIPTION
 
-This plugin allows you to specify one ore more good versions of a library.  This doesn't effect
+This plugin allows you to specify one or more good versions of a library.  This doesn't affect
 a system install at all.  This plugin does the opposite of the C<Prefer::BadVersion> plugin.
 You need need a Prefer plugin that filters and sorts files first.  You may specify the filter
 in one of three ways:

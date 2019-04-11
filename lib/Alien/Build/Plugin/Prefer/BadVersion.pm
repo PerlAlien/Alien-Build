@@ -16,7 +16,7 @@ use Carp ();
 =head1 DESCRIPTION
 
 This plugin allows you to easily filter out known bad versions of libraries in a share install.
-It doesn't effect a system install at all.  You need a Prefer plugin that filters and sorts files
+It doesn't affect a system install at all.  You need a Prefer plugin that filters and sorts files
 first.  You may specify the filter in one of three ways:
 
 =over
