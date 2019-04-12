@@ -63,6 +63,13 @@ has 'filter'  => undef;
 Regular expression to parse out the version from a filename.  The regular expression
 should store the result in C<$1>.
 
+Note: if you provide a C<version> property, this plugin will assume that you will
+be downloading an initial index to select package downloads from.  Depending on
+the protocol (and typically this is the case for http and HTML) that may bring in
+additional dependencies.  If start_url points to a tarball or other archive directly
+(without needing to do through an index selection process), it is recommended that
+you not specify this property.
+
 =cut
 
 has 'version' => undef;
