@@ -1094,7 +1094,7 @@ sub download
           }
           else
           {
-            $self->log("multiple files, assuming directoryn");
+            $self->log("multiple files, assuming directory");
             $self->install_prop->{complete}->{download} = 1;
             $self->install_prop->{download} = _path('.')->absolute->stringify;
             $valid = 1;
