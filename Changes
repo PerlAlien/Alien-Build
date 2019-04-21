@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.66_01   2019-04-21 13:46:14 -0400
+  - Fix to Fetch::CurlCommand plugin.  It's handling of URLs with trailing slash (/)
+    wasn't quite right.  (gh#112, gh#113)
+
 1.65      2019-04-11 09:15:37 -0400
   - Further improvements with ExtUtils::Depends compatability (gh#107, gh#109).
   - Improved documentation (gh#106).
