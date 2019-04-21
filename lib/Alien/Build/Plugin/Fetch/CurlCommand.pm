@@ -115,7 +115,7 @@ sub init
           "ab-url          :%{url_effective}",
         );
 
-        $build->log("writeout: $_") for @writeout;
+        $build->log("writeout: $_\\n") for @writeout;
         path('writeout')->spew(join("\\n", @writeout));
 
         my @command = (
