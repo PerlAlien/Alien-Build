@@ -120,7 +120,7 @@ sub init
 
         my @command = (
           $self->curl_command,
-          '-L', '-f', '-O',
+          '-L', '-f', '-O', '-J',
           -w => '@writeout',
         );
 
@@ -130,7 +130,7 @@ sub init
 
         my($stdout, $stderr) = $self->_execute($build, @command);
 
-        my %h = map { my($k,$v) = m/^ab-(.*?)\s*:(.*)$/; $k => $v } split /\n/, $stdout;
+        my %h = map { /^ab-(.*?)\s*:(.*)$/ ? ($1 => $2) : () } split /\n/, $stdout;
 
         if(-e 'head')
         {
@@ -231,6 +231,13 @@ sub _execute
   {
     chomp $stderr;
     $build->log($_) for split /\n/, $stderr;
+    if($stderr =~ /Remote filename has no length/ && !!(grep /^-O$/, @command))
+    {
+      my @new_command = map {
+        /^-O$/ ? ( -o => 'index.html' ) : /^-J$/ ? () : ($_)
+      } @command;
+      return $self->_execute($build, @new_command);
+    }
     die "error in curl fetch";
   }
   ($stdout, $stderr);
