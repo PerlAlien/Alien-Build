@@ -212,4 +212,34 @@ subtest 'fetch from http' => sub {
 #
 #};
 
+subtest 'live test' => sub {
+  skip_all 'set ALIEN_BUILD_LIVE_TEST=1 to enable test' unless $ENV{ALIEN_BUILD_LIVE_TEST};
+
+  require Alien::Build::Plugin::Download::Negotiate;
+  my $mock = mock 'Alien::Build::Plugin::Download::Negotiate' => (
+    override => [
+      pick => sub {
+        ('Fetch::CurlCommand', 'Decode::HTML');
+      },
+    ],
+  );
+
+  alienfile_ok q{
+    use alienfile;
+
+    probe sub { 'share' };
+
+    share {
+
+      plugin Download => (
+        url => 'https://alienfile.org/dontpanic/',
+        version => qr/([0-9\.]+)\.tar\.gz$/,
+      );
+
+    };
+  };
+
+  alien_download_ok;
+};
+
 done_testing
