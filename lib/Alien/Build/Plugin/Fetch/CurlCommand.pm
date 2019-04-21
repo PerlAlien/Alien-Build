@@ -109,13 +109,14 @@ sub init
       {
         local $CWD = tempdir( CLEANUP => 1 );
 
-        path('writeout')->spew(
-          join("\\n",
-            "ab-filename     :%{filename_effective}",
-            "ab-content_type :%{content_type}",
-            "ab-url          :%{url_effective}",
-          ),
+        my @writeout = (
+          "ab-filename     :%{filename_effective}",
+          "ab-content_type :%{content_type}",
+          "ab-url          :%{url_effective}",
         );
+
+        $build->log("writeout: $_") for @writeout;
+        path('writeout')->spew(join("\\n", @writeout));
 
         my @command = (
           $self->curl_command,
