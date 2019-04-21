@@ -230,8 +230,8 @@ sub _execute
   if($err)
   {
     chomp $stderr;
-    $stderr = [split /\n/, $stderr]->[-1];
-    die "error in curl fetch: $stderr";
+    $build->log($_) for split /\n/, $stderr;
+    die "error in curl fetch";
   }
   ($stdout, $stderr);
 }
