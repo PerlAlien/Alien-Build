@@ -239,7 +239,13 @@ subtest 'live test' => sub {
     };
   };
 
-  alien_download_ok;
+  my $download = alien_download_ok;
+
+  ok -f $download,  "file exists";
+
+  is
+    path($download)->basename,
+    match qr/^dontpanic-.*\.tar\.gz$/;
 };
 
 done_testing
