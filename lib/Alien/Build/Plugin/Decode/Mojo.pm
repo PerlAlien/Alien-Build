@@ -28,7 +28,6 @@ or L<Mojo::DOM58> to do its job.
 sub init
 {
   my($self, $meta) = @_;
-  ...;
 }
 
 1;
