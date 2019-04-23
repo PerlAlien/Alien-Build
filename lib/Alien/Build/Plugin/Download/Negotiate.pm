@@ -132,6 +132,14 @@ Don't set any preference at all.  A hook must be installed, or another prefer pl
 
 has 'prefer' => 1;
 
+=head2 decoder
+
+Override the detected decoder.
+
+=cut
+
+has 'decoder' => undef;
+
 =head1 METHODS
 
 =head2 pick
@@ -143,6 +151,17 @@ Returns the fetch plugin and any optional decoders that should be used.
 =cut
 
 sub pick
+{
+  my($self) = @_;
+  my($fetch, @decoders) = $self->_pick;
+  if($self->decoder)
+  {
+    @decoders = ref $self->decoder ? @{ $self->decoder } : ($self->decoder);
+  }
+  ($fetch, @decoders);
+}
+
+sub _pick
 {
   my($self) = @_;
 

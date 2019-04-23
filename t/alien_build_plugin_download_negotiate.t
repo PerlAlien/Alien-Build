@@ -38,6 +38,36 @@ subtest 'pick fetch' => sub {
 
   };
 
+  subtest 'http override decoder scalar' => sub {
+
+    { package Alien::Build::Plugin::Foo::Bar;
+      use Alien::Build::Plugin;
+
+      sub init {}
+    }
+
+    my $plugin = Alien::Build::Plugin::Download::Negotiate->new( url => 'http://mytest.test/', decoder => 'Foo::Bar' );
+
+    is([$plugin->pick], ['Fetch::HTTPTiny','Foo::Bar']);
+    is($plugin->scheme, 'http');
+
+  };
+
+  subtest 'http override decoder array' => sub {
+
+    { package Alien::Build::Plugin::Foo::Baz;
+      use Alien::Build::Plugin;
+
+      sub init {}
+    }
+
+    my $plugin = Alien::Build::Plugin::Download::Negotiate->new( url => 'http://mytest.test/', decoder => ['Foo::Bar','Foo::Baz'] );
+
+    is([$plugin->pick], ['Fetch::HTTPTiny','Foo::Bar', 'Foo::Baz']);
+    is($plugin->scheme, 'http');
+
+  };
+
   subtest 'https (ssl modules already installed)' => sub {
 
     $has_ssl = 1;
