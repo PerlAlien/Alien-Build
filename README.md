@@ -579,6 +579,14 @@ type of install:
 
 Run the test phase
 
+## clean\_install
+
+    $build->clean_install
+
+Clean files from the final install location.  The default implementation removes all
+files recursively except for the `_alien` directory.  This is helpful when you have
+an old install with files that may break the new build.
+
 ## system
 
     $build->system($command);

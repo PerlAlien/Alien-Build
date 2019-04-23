@@ -178,12 +178,12 @@ an archive (like tar, zip, etc), or as a directory of files (git clone,
 etc).  When the hook is called, the current working directory will be a
 new empty directory, so you can save the download to the current
 directory.  If you store a single file in the directory, L<Alien::Build>
-will assume that it is an archive, which will be processed by the 
+will assume that it is an archive, which will be processed by the
 extract hook below.  If you store multiple files, L<Alien::Build> will
 assume the current directory is the source root.  If no files are stored
 at all, an exception with an appropriate diagnostic will be thrown.
 
-B<Note>: If you register this hook, then the fetch, decode and prefer 
+B<Note>: If you register this hook, then the fetch, decode and prefer
 hooks will NOT be called.
 
 =head2 fetch hook
@@ -368,7 +368,7 @@ This is the same as C<build>, except it fires only on a FFI build.
 
  $meta->register_hook( gather_share => sub {
    my($build) = @_;
-   ... 
+   ...
  });
 
 This is the same as C<gather_system>, except it fires after a C<share>
@@ -378,7 +378,7 @@ install.
 
  $meta->register_hook( gather_ffi => sub {
    my($build) = @_;
-   ... 
+   ...
  });
 
 This is the same as C<gather_share>, except it fires after a C<share> FFI
@@ -395,5 +395,22 @@ C<share>, C<system>, C<default> or C<''>.  The default implementation is
 just this:
 
  return $ENV{ALIEN_INSTALL_TYPE} || '';
+
+=head2 clean_install
+
+ $meta->register_hook( clean_install => sub {
+   my($build) = @_;
+ });
+
+This hook allows you to remove files from the final install location before
+the files are installed by the installer layer (examples: L<Alien::Build::MM>,
+L<Alien::Build::MB> or L<App::af>).  This hook is never called by default,
+and must be enabled via the interface to the installer layer.
+
+This hook SHOULD NOT remove the C<_alien> directory or its content from the
+install location.
+
+The default implementation removes all the files EXCEPT the C<_alien> directory
+and its content.
 
 =cut

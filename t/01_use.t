@@ -16,6 +16,7 @@ require_ok 'Alien::Build::Plugin::Build::CMake';
 require_ok 'Alien::Build::Plugin::Build::MSYS';
 require_ok 'Alien::Build::Plugin::Build::Make';
 require_ok 'Alien::Build::Plugin::Build::SearchDep';
+require_ok 'Alien::Build::Plugin::Core::CleanInstall';
 require_ok 'Alien::Build::Plugin::Core::Download';
 require_ok 'Alien::Build::Plugin::Core::FFI';
 require_ok 'Alien::Build::Plugin::Core::Gather';
@@ -75,6 +76,7 @@ ok -f 't/alien_build_plugin_build_cmake.t',                   'test for Alien::B
 ok -f 't/alien_build_plugin_build_msys.t',                    'test for Alien::Build::Plugin::Build::MSYS';
 ok -f 't/alien_build_plugin_build_make.t',                    'test for Alien::Build::Plugin::Build::Make';
 ok -f 't/alien_build_plugin_build_searchdep.t',               'test for Alien::Build::Plugin::Build::SearchDep';
+ok -f 't/alien_build_plugin_core_cleaninstall.t',             'test for Alien::Build::Plugin::Core::CleanInstall';
 ok -f 't/alien_build_plugin_core_download.t',                 'test for Alien::Build::Plugin::Core::Download';
 ok -f 't/alien_build_plugin_core_ffi.t',                      'test for Alien::Build::Plugin::Core::FFI';
 ok -f 't/alien_build_plugin_core_gather.t',                   'test for Alien::Build::Plugin::Core::Gather';
