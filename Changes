@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add clean_install hook (gh#111, gh#114)
 
 1.70_01   2019-04-29 18:57:53 -0400
   - Add alien_clean target for Alien::Build::MM (gh#118, gh#119)
