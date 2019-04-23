@@ -1,6 +1,6 @@
 use Test2::V0 -no_srand => 1;
 use Alien::Build::Plugin::Decode::Mojo;
-use Test::Alien::Build;
+use Test::Alien::Build 1.68;
 use Path::Tiny qw( path );
 use Data::Dumper qw( Dumper );
 
