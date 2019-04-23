@@ -73,7 +73,6 @@ sub init
 
     my $base = URI->new($res->{base});
 
-    my $base_element = $dom->find('head base')->first;
     if(my $base_element = $dom->find('head base')->first)
     {
       my $href = $base_element->attr('href');
