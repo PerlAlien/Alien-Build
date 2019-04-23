@@ -13,7 +13,11 @@ $modules{$_} = $_ for qw(
   Alien::Build::Plugin
   ExtUtils::MakeMaker
   Module::Load
+  Mojo::DOM58
+  Mojolicious
+  Path::Tiny
   Test2::V0
+  Test::Alien::Build
 );
 
 

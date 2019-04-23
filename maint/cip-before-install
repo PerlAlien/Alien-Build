@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -ex
+
+if [ "$EXTRA_DEPS" = "none" ]; then
+  echo "no extra deps"
+else
+  cip exec cpanm $EXTRA_DEPS
+fi

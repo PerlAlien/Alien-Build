@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.008001;
 use Alien::Build::Plugin;
-use Module::Load qw( load );
+use Module::Load ();
 
 # ABSTRACT: Plugin to extract links from HTML using Mojo::DOM or Mojo::DOM58
 # VERSION
@@ -26,31 +26,76 @@ or L<Mojo::DOM58> to do its job.
 
 =cut
 
-has _class => undef;
+sub _load ($)
+{
+  eval { Module::Load::load($_[0]) };
+  $@ eq '' ? 1 : 0;
+}
+
+has _class => sub {
+  return 'Mojo::DOM58' if _load 'Mojo::DOM58';
+  return 'Mojo::DOM'   if _load 'Mojo::DOM' && _load 'Mojolicious' && eval { Mojolicious->VERSION('7.00') };
+  return 'Mojo::DOM58';
+};
 
 sub init
 {
   my($self, $meta) = @_;
 
-  unless(defined $self->_class)
+  $meta->add_requires('share' => 'URI' => 0);
+  $meta->add_requires('share' => 'URI::Escape' => 0);
+
+  if($self->_class eq 'Mojo::DOM58')
   {
-    if(load 'Mojo::DOM58')
-    {
-      $self->_class('Mojo::DOM58');
-      $meta->add_requires('share' => 'Mojo::DOM58' => '1.00');
-    }
-    elsif(load 'Mojolicious' && load 'Mojo::DOM' && Mojolicious->VERSION('7.00'))
-    {
-      $self->_class('Mojo::DOM');
-      $meta->add_requires('share' => 'Mojolicious' => '7.00');
-      $meta->add_requires('share' => 'Mojo::DOM'   => '0');
-    }
-    else
-    {
-      $self->_class('Mojo::DOM58');
-      $meta->add_requires('share' => 'Mojo::DOM58' => '1.00');
-    }
+    $meta->add_requires('share' => 'Mojo::DOM58' => '1.00');
   }
+  elsif($self->_class eq 'Mojo::DOM')
+  {
+    $meta->add_requires('share' => 'Mojolicious' => '7.00');
+    $meta->add_requires('share' => 'Mojo::DOM'   => '0');
+  }
+  else
+  {
+    die "bad class";
+  }
+
+  $meta->register_hook( decode => sub {
+    my(undef, $res) = @_;
+
+    die "do not know how to decode @{[ $res->{type} ]}"
+      unless $res->{type} eq 'html';
+
+    my $dom = $self->_class->new($res->{content});
+
+    my $base = URI->new($res->{base});
+
+    my $base_element = $dom->find('head base')->first;
+    if(my $base_element = $dom->find('head base')->first)
+    {
+      my $href = $base_element->attr('href');
+      $base = URI->new($href);
+    }
+
+    my @list = map {
+                 my $url = URI->new_abs($_, $base);
+                 my $path = $url->path;
+                 $path =~ s{/$}{}; # work around for Perl 5.8.7- gh#8
+                 {
+                   filename => URI::Escape::uri_unescape(File::Basename::basename($path)),
+                   url      => URI::Escape::uri_unescape($url->as_string),
+                 }
+               }
+               grep !/^\.\.?\/?$/,
+               map { $_->attr('href') || () }
+               @{ $dom->find('a')->to_array };
+
+    return {
+      type => 'list',
+      list => \@list,
+    };
+  })
+
+
 }
 
 1;

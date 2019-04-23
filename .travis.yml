@@ -12,18 +12,21 @@ script:
   - cip script
 jobs:
   include:
-    - env: CIP_TAG=5.29
-    - env: CIP_TAG=5.28
-    - env: CIP_TAG=5.26
-    - env: CIP_TAG=5.24
-    - env: CIP_TAG=5.22
-    - env: CIP_TAG=5.20
-    - env: CIP_TAG=5.18
-    - env: CIP_TAG=5.16
-    - env: CIP_TAG=5.14
-    - env: CIP_TAG=5.12
-    - env: CIP_TAG=5.10
-    - env: CIP_TAG=5.8
+    - env: CIP_TAG=5.29 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.28 EXTRA_DEPS='Mojolicious'
+    - env: CIP_TAG=5.28 EXTRA_DEPS='Mojo::DOM58'
+    - env: CIP_TAG=5.28 EXTRA_DEPS='none'
+    - env: CIP_TAG=5.28 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.26 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.24 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.22 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.20 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.18 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.16 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.14 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.12 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.10 EXTRA_DEPS='Mojolicious Mojo::DOM58'
+    - env: CIP_TAG=5.8  EXTRA_DEPS='Mojolicious Mojo::DOM58'
 cache:
   directories:
     - "$HOME/.cip"
