@@ -641,13 +641,13 @@ sub alien_clean_install
     if($error)
     {
       $ok = 0;
-      push @diag, $out if defined $out;
+      push @diag, $out if defined $out && $out ne '';
       push @diag, "build threw exception: $error";
     }
     else
     {
       $ok = 1;
-      push @note, $out if defined $out;
+      push @note, $out if defined $out && $out ne '';
     }
   }
   else

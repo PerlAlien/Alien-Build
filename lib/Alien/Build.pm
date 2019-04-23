@@ -1430,12 +1430,17 @@ Clean files from the final install location.  The default implementation removes
 files recursively except for the C<_alien> directory.  This is helpful when you have
 an old install with files that may break the new build.
 
+For a non-share install this doesn't do anything.
+
 =cut
 
 sub clean_install
 {
   my($self) = @_;
-  $self->_call_hook("clean_install");
+  if($self->install_type eq 'share')
+  {
+    $self->_call_hook("clean_install");
+  }
 }
 
 =head2 system
