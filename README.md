@@ -5,7 +5,7 @@ Plugin to extract links from HTML using Mojo::DOM or Mojo::DOM58
 # SYNOPSIS
 
     use alienfile;
-    use 'Decode::Mojo';
+    plugin 'Decode::Mojo';
 
 # DESCRIPTION
 

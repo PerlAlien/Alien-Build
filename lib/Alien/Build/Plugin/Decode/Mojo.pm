@@ -12,7 +12,7 @@ use Module::Load ();
 =head1 SYNOPSIS
 
  use alienfile;
- use 'Decode::Mojo';
+ plugin 'Decode::Mojo';
 
 =head1 DESCRIPTION
 
