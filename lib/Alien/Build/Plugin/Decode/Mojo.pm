@@ -24,6 +24,10 @@ This plugin decodes an HTML file listing into a list of candidates for your Pref
 It works just like L<Alien::Build::Plugin::Decode::HTML> except it uses either L<Mojo::DOM>
 or L<Mojo::DOM58> to do its job.
 
+This plugin is much lighter than The C<Decode::HTML> plugin, and doesn't require XS.  The
+intent is if this plugin proves its self reliable that it will be merged into C<Alien-Build>,
+and the download negotiator may eventually prefer it.
+
 =cut
 
 sub _load ($)

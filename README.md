@@ -17,6 +17,10 @@ This plugin decodes an HTML file listing into a list of candidates for your Pref
 It works just like [Alien::Build::Plugin::Decode::HTML](https://metacpan.org/pod/Alien::Build::Plugin::Decode::HTML) except it uses either [Mojo::DOM](https://metacpan.org/pod/Mojo::DOM)
 or [Mojo::DOM58](https://metacpan.org/pod/Mojo::DOM58) to do its job.
 
+This plugin is much lighter than The `Decode::HTML` plugin, and doesn't require XS.  The
+intent is if this plugin proves its self reliable that it will be merged into `Alien-Build`,
+and the download negotiator may eventually prefer it.
+
 # AUTHOR
 
 Graham Ollis <plicease@cpan.org>

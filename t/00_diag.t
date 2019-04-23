@@ -18,6 +18,7 @@ $modules{$_} = $_ for qw(
   Path::Tiny
   Test2::V0
   Test::Alien::Build
+  URI
 );
 
 
