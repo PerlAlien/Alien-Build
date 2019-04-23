@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.68      2019-04-23 04:57:49 -0400
   - Add decoder property to Download::Negotiate plugin (gh#115, gh#116)
 
 1.67      2019-04-22 07:55:59 -0400
