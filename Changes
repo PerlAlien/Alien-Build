@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.02      2019-04-23 19:23:31 -0400
   - Fix prereqs (gh#1)
 
 0.01      2019-04-23 03:59:09 -0400
