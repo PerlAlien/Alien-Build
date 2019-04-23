@@ -76,7 +76,7 @@ sub init
     if(my $base_element = $dom->find('head base')->first)
     {
       my $href = $base_element->attr('href');
-      $base = URI->new($href);
+      $base = URI->new($href) if defined $href;
     }
 
     my @list = map {
