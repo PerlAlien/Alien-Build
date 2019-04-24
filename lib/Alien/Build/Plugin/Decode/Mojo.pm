@@ -14,6 +14,19 @@ use Module::Load ();
  use alienfile;
  plugin 'Decode::Mojo';
 
+Force using C<Decode::Mojo> via the download negotiator:
+
+ use alienfile;
+ 
+ configure {
+   requires 'Alien::Build::Plugin::Decod::Mojo';
+ };
+ 
+ plugin 'Download' => (
+   ...
+   decoder => 'Decode::Mojo',
+ );
+
 =head1 DESCRIPTION
 
 Note: in most cases you will want to use L<Alien::Build::Plugin::Download::Negotiate>
