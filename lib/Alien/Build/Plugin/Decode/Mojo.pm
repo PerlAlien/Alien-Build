@@ -16,7 +16,7 @@ use Module::Load ();
 
 Force using C<Decode::Mojo> via the download negotiator:
 
- use alienfile;
+ use alienfile 1.68;
  
  configure {
    requires 'Alien::Build::Plugin::Decod::Mojo';

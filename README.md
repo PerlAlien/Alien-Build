@@ -9,7 +9,7 @@ Plugin to extract links from HTML using Mojo::DOM or Mojo::DOM58
 
 Force using `Decode::Mojo` via the download negotiator:
 
-    use alienfile;
+    use alienfile 1.68;
     
     configure {
       requires 'Alien::Build::Plugin::Decod::Mojo';
