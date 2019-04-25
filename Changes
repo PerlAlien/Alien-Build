@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.04_01   2019-04-25 17:55:57 -0400
+  - Diagnostic release.
+
 0.03_01   2019-04-24 21:17:08 -0400
   - Diagnostic release.
 
