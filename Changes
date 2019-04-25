@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.03_01   2019-04-24 21:17:08 -0400
+  - Diagnostic release.
+
 0.02      2019-04-23 19:23:31 -0400
   - Fix prereqs (gh#1)
 
