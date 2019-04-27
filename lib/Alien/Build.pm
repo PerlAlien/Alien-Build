@@ -581,6 +581,11 @@ your library is something like C<libarchive.so> or C<archive.dll> you
 would set this to C<archive>.  This may be a string or an array of
 strings.
 
+=item ffi_try_linker_script
+
+This will add the C<try_linker_script> flag to L<FFI::CheckLib> calls
+when searching for system dynamic libraries.
+
 =item install_type
 
 The install type.  Is one of:
