@@ -350,6 +350,11 @@ relevant once the install process is complete.
     would set this to `archive`.  This may be a string or an array of
     strings.
 
+- ffi\_try\_linker\_script
+
+    This will add the `try_linker_script` flag to [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) calls
+    when searching for system dynamic libraries.
+
 - install\_type
 
     The install type.  Is one of:
