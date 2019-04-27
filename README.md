@@ -350,10 +350,26 @@ relevant once the install process is complete.
     would set this to `archive`.  This may be a string or an array of
     strings.
 
-- ffi\_try\_linker\_script
+- ffi\_checklib
 
-    This will add the `try_linker_script` flag to [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) calls
-    when searching for system dynamic libraries.
+    This property contains two sub properties:
+
+    - share
+
+            $build->runtime_prop->{ffi_checklib}->{share} = [ ... ];
+
+        Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
+        for a `share` install.
+
+    - system
+
+        Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
+        for a `system` install.
+
+        Among other things, useful for specifying the `try_linker_script`
+        flag:
+
+            $build->runtime_prop->{ffi_checklib}->{system} = [ try_linker_script => 1 ];
 
 - install\_type
 
