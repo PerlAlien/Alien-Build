@@ -581,10 +581,30 @@ your library is something like C<libarchive.so> or C<archive.dll> you
 would set this to C<archive>.  This may be a string or an array of
 strings.
 
-=item ffi_try_linker_script
+=item ffi_checklib
 
-This will add the C<try_linker_script> flag to L<FFI::CheckLib> calls
-when searching for system dynamic libraries.
+This property contains two sub properties:
+
+=over 4
+
+=item share
+
+ $build->runtime_prop->{ffi_checklib}->{share} = [ ... ];
+
+Array of additional L<FFI::CheckLib> flags to pass in to C<find_lib>
+for a C<share> install.
+
+=item system
+
+Array of additional L<FFI::CheckLib> flags to pass in to C<find_lib>
+for a C<system> install.
+
+Among other things, useful for specifying the C<try_linker_script>
+flag:
+
+ $build->runtime_prop->{ffi_checklib}->{system} = [ try_linker_script => 1 ];
+
+=back
 
 =item install_type
 

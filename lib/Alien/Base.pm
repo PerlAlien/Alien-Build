@@ -655,15 +655,15 @@ sub dynamic_libs {
 
   require FFI::CheckLib;
 
-  if($class->install_type('system')) {
+  my @find_lib_flags;
 
-    my @find_lib_flags;
+  if($class->install_type('system')) {
 
     if(my $prop = $class->runtime_prop)
     {
-      if($prop->{ffi_try_linker_script})
+      if($prop->{ffi_checklib}->{system})
       {
-        push @find_lib_flags, 'try_linker_script' => 1;
+        push @find_lib_flags, @{ $prop->{ffi_checklib}->{system} };
       }
       return FFI::CheckLib::find_lib( lib => $prop->{ffi_name}, @find_lib_flags )
         if defined $prop->{ffi_name};
@@ -694,6 +694,14 @@ sub dynamic_libs {
 
     my $dir = $class->dist_dir;
     my $dynamic = Path::Tiny->new($class->dist_dir, 'dynamic');
+
+    if(my $prop = $class->runtime_prop)
+    {
+      if($prop->{ffi_checklib}->{share})
+      {
+        push @find_lib_flags, @{ $prop->{ffi_checklib}->{share_flags} };
+      }
+    }
 
     if(-d $dynamic)
     {
