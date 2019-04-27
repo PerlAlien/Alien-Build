@@ -144,7 +144,7 @@ sub import {
   require DynaLoader;
 
   # Sanity check in order to ensure that dist_dir can be found.
-  # This will throw an exception otherwise.  
+  # This will throw an exception otherwise.
   $class->dist_dir;
 
   # get a reference to %Alien::MyLibrary::AlienLoaded
@@ -229,7 +229,7 @@ sub dist_dir {
   $dist =~ s/::/-/g;
 
   my $dist_dir = 
-    $class->config('finished_installing') 
+    $class->config('finished_installing')
       ? _dist_dir $dist
       : $class->config('working_directory');
 
@@ -253,7 +253,7 @@ sub new { return bless {}, $_[0] }
 sub _flags
 {
   my($class, $key) = @_;
-  
+
   my $config = $class->runtime_prop;
   my $flags = $config->{$key};
 
@@ -261,16 +261,16 @@ sub _flags
   $prefix =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
   my $distdir = $config->{distdir};
   $distdir =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
-  
+
   if($prefix ne $distdir)
   {
-    $flags = join ' ', map { 
+    $flags = join ' ', map {
       s/^(-I|-L|-LIBPATH:)?\Q$prefix\E/$1$distdir/;
       s/(\s)/\\$1/g;
       $_;
     } $class->split_flags($flags);
   }
-  
+
   $flags;
 }
 
@@ -517,7 +517,7 @@ sub _pkgconfig_keyword {
   my @pc = $self->_pkgconfig(@_);
   my @strings =
     grep defined,
-    map { $_->keyword($keyword, 
+    map { $_->keyword($keyword,
       #{ pcfiledir => $dist_dir }
     ) }
     @pc;
@@ -550,14 +550,14 @@ sub _pkgconfig {
     $all{$pkg->{package}} = $pkg;
   };
   File::Find::find( $wanted, $self->dist_dir );
-    
+
   croak "No Alien::Base::PkgConfig objects are stored!"
     unless keys %all;
-  
+
   # Run through all pkgconfig objects and ensure that their modules are loaded:
   for my $pkg_obj (values %all) {
     my $perl_module_name = blessed $pkg_obj;
-    eval "require $perl_module_name"; 
+    eval "require $perl_module_name";
   }
 
   return @all{@_} if @_;
@@ -576,7 +576,7 @@ sub _pkgconfig {
  my $value = Alien::MyLibrary->config($key);
 
 Returns the configuration data as determined during the install
-of L<Alien::MyLibrary>.  For the appropriate config keys, see 
+of L<Alien::MyLibrary>.  For the appropriate config keys, see
 L<Alien::Base::ModuleBuild::API#CONFIG-DATA>.
 
 This is not typically used by L<Alien::Base> and L<alienfile>,
@@ -599,7 +599,7 @@ sub config {
   my $pm = "$class/ConfigData.pm";
   $pm =~ s{::}{/}g;
   eval { require $pm };
-  
+
   if($@)
   {
     warn "Cannot find either a share directory or a ConfigData module for $class.\n";
@@ -652,14 +652,21 @@ alien software.
 
 sub dynamic_libs {
   my ($class) = @_;
-  
+
   require FFI::CheckLib;
-  
+
   if($class->install_type('system')) {
+
+    my @find_lib_flags;
+
+    if($prop->{ffi_try_linker_script})
+    {
+      push @find_lib_flags, 'try_linker_script' => 1;
+    }
 
     if(my $prop = $class->runtime_prop)
     {
-      return FFI::CheckLib::find_lib( lib => $prop->{ffi_name} )
+      return FFI::CheckLib::find_lib( lib => $prop->{ffi_name}, @find_lib_flags )
         if defined $prop->{ffi_name};
     }
 
@@ -681,14 +688,14 @@ sub dynamic_libs {
         push @libpath, $1;
       }
     }
-    
-    return FFI::CheckLib::find_lib(lib => $name, libpath => \@libpath);
-  
+
+    return FFI::CheckLib::find_lib(lib => $name, libpath => \@libpath, @find_lib_flags );
+
   } else {
-  
+
     my $dir = $class->dist_dir;
     my $dynamic = Path::Tiny->new($class->dist_dir, 'dynamic');
-    
+
     if(-d $dynamic)
     {
       return FFI::CheckLib::find_lib(
@@ -755,12 +762,12 @@ to override the method to create your own helpers.
 For use with commands specified in and L<alienfile> or in your C<Build.Pl>
 when used with L<Alien::Base::ModuleBuild>.
 
-Helpers allow users of your Alien module to use platform or environment 
+Helpers allow users of your Alien module to use platform or environment
 determined logic to compute command names or arguments in your installer
 logic.  Helpers allow you to do this without making your Alien module a
 requirement when a build from source code is not necessary.
 
-As a concrete example, consider L<Alien::gmake>, which provides the 
+As a concrete example, consider L<Alien::gmake>, which provides the
 helper C<gmake>:
 
  package Alien::gmake;
@@ -779,8 +786,8 @@ helper C<gmake>:
    },
  }
 
-Now consider L<Alien::nasm>.  C<nasm> requires GNU Make to build from 
-source code, but if the system C<nasm> package is installed we don't 
+Now consider L<Alien::nasm>.  C<nasm> requires GNU Make to build from
+source code, but if the system C<nasm> package is installed we don't
 need it.  From the L<alienfile> of C<Alien::nasm>:
 
  use alienfile;
@@ -818,7 +825,7 @@ sub alien_helper {
 List of header files to automatically include in inline C and C++
 code when using L<Inline::C> or L<Inline::CPP>.  This is provided
 as a public interface primarily so that it can be overridden at run
-time.  This can also be specified in your C<Build.PL> with 
+time.  This can also be specified in your C<Build.PL> with
 L<Alien::Base::ModuleBuild> using the C<alien_inline_auto_include>
 property.
 
@@ -840,11 +847,11 @@ sub Inline {
     INC          => $class->cflags,
     LIBS         => $class->libs,
   };
-  
+
   if (@{ $class->inline_auto_include } > 0) {
     $config->{AUTO_INCLUDE} = join "\n", map { "#include \"$_\"" } @{ $class->inline_auto_include };
   }
-  
+
   $config;
 }
 
@@ -872,10 +879,10 @@ then this will return undef.
       $class = ref $self;
       return $self->{_alt}->{runtime_prop} if defined $self->{_alt};
     }
-  
+
     return $alien_build_config_cache{$class} if
       exists $alien_build_config_cache{$class};
-  
+
     $alien_build_config_cache{$class} ||= do {
       my $dist = ref $class ? ref $class : $class;
       $dist =~ s/::/-/g;
@@ -947,7 +954,7 @@ sub alt
 
   require Storable;
   my $runtime_prop = Storable::dclone($orig);
-  
+
   if($runtime_prop->{alt}->{$name})
   {
     foreach my $key (keys %{ $runtime_prop->{alt}->{$name} })
@@ -963,7 +970,7 @@ sub alt
   $new->{_alt} = {
     runtime_prop => $runtime_prop,
     orig         => $orig,
-  };   
+  };
 
   $new;
 }
@@ -1013,7 +1020,7 @@ First check the L<Alien::Build::Manual::FAQ> for questions that have already bee
 
 IRC: #native on irc.perl.org
 
-L<(click for instant chatroom login)|http://chat.mibbit.com/#native@irc.perl.org> 
+L<(click for instant chatroom login)|http://chat.mibbit.com/#native@irc.perl.org>
 
 If you find a bug, please report it on the projects issue tracker on GitHub:
 
@@ -1033,7 +1040,7 @@ in GitHub.
 
 =back
 
-If you have implemented a new feature or fixed a bug, please open a pull 
+If you have implemented a new feature or fixed a bug, please open a pull
 request.
 
 =over 4
@@ -1044,9 +1051,9 @@ request.
 
 =head1 SEE ALSO
 
-=over 
+=over
 
-=item * 
+=item *
 
 L<Alien::Build>
 
