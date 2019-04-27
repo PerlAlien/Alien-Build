@@ -659,13 +659,12 @@ sub dynamic_libs {
 
     my @find_lib_flags;
 
-    if($prop->{ffi_try_linker_script})
-    {
-      push @find_lib_flags, 'try_linker_script' => 1;
-    }
-
     if(my $prop = $class->runtime_prop)
     {
+      if($prop->{ffi_try_linker_script})
+      {
+        push @find_lib_flags, 'try_linker_script' => 1;
+      }
       return FFI::CheckLib::find_lib( lib => $prop->{ffi_name}, @find_lib_flags )
         if defined $prop->{ffi_name};
     }
