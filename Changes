@@ -1,7 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Add runtime property ffi_try_linker_script
+  - Add runtime property ffi_try_linker_script (gh#117)
+    See https://github.com/Perl5-FFI/FFI-CheckLib/issues/13
 
 1.68      2019-04-23 04:57:49 -0400
   - Add decoder property to Download::Negotiate plugin (gh#115, gh#116)
