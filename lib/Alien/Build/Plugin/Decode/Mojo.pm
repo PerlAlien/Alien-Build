@@ -19,7 +19,7 @@ Force using C<Decode::Mojo> via the download negotiator:
  use alienfile 1.68;
  
  configure {
-   requires 'Alien::Build::Plugin::Decod::Mojo';
+   requires 'Alien::Build::Plugin::Decode::Mojo';
  };
  
  plugin 'Download' => (
