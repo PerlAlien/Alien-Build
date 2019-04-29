@@ -1,6 +1,6 @@
-Revision history for {{$dist->name}}
+Revision history for Alien-Build-Decode-Mojo
 
-{{$NEXT}}
+After 0.04_01 Alien-Build-Decode-Mojo was merged with Alien-Build
 
 0.04_01   2019-04-25 17:55:57 -0400
   - Diagnostic release.
