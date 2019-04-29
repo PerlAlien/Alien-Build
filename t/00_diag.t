@@ -39,6 +39,8 @@ $modules{$_} = $_ for qw(
   LWP
   LWP::Protocol::https
   Module::Load
+  Mojo::DOM58
+  Mojolicious
   Net::FTP
   Net::SSLeay
   Path::Tiny
