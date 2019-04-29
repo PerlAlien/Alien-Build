@@ -267,9 +267,14 @@ Downloads the source from the internet.  Does nothing for a system install.
 Build from source (if a share install).  Gather configuration (for either
 system or share install).
 
-=item alien_prop
+=item alien_prop, alien_prop_meta, alien_prop_install, alien_prop_runtime
 
 Prints the meta, install and runtime properties for the Alien.
+
+=item alien_realclean, alien_clean
+
+Removes the alien specific files.  These targets are executed when you call
+the C<realclean> and C<clean> targets respectively.
 
 =back 
 
@@ -285,6 +290,12 @@ sub mm_postamble
   $postamble .= "realclean :: alien_realclean\n" .
                 "\n" .
                 "alien_realclean:\n" .
+                "\t\$(RM_RF) _alien\n\n";
+
+  # remove the _alien directory on a make clean:
+  $postamble .= "clean :: alien_clean\n" .
+                "\n" .
+                "alien_clean:\n" .
                 "\t\$(RM_RF) _alien\n\n";
 
   my $dirs = $self->build->meta_prop->{arch}
