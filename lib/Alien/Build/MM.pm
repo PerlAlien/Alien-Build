@@ -28,7 +28,11 @@ In your C<Makefile.PL>:
  ));
  
  sub MY::postamble {
-   $abmm->mm_postamble;
+   $abmm->mm_postamble(@_);
+ }
+
+ sub MY::install {
+   $abmm->mm_install(@_);
  }
 
 In your C<lib/Alien/Libfoo.pm>:
@@ -140,6 +144,31 @@ sub alienfile_meta
   shift->{alienfile_meta};
 }
 
+=head2 clean_install
+
+ my $bool = $abmm->clean_install;
+
+Set to a true value, in order to clean the share directory prior to
+installing.  If you use this you have to make sure that you install
+the install handler in your C<Makefile.PL>:
+
+ $abmm = Alien::Build::MM->new(
+   clean_install => 1,
+ );
+ 
+ ...
+ 
+ sub MY::install {
+   $abmm->mm_install(@_);
+ }
+
+=cut
+
+sub clean_install
+{
+  shift->{clean_install};
+}
+
 =head1 METHODS
 
 =head2 mm_args
@@ -243,6 +272,7 @@ sub mm_args
 =head2 mm_postamble
 
  my $postamble $abmm->mm_postamble;
+ my $postamble $abmm->mm_postamble($mm);
 
 Returns the postamble for the C<Makefile> needed for L<Alien::Build>.
 This adds the following C<make> targets which are normally called when
@@ -288,7 +318,13 @@ are likely to break your already installed Alien.
 
 sub mm_postamble
 {
-  my($self) = @_;
+  # NOTE: older versions of the Alien::Build::MM documentation
+  # didn't include $mm and @rest args, so anything that this
+  # method uses them for has to be optional.
+  # (as of this writing they are unused, but are being added
+  #  to match the way mm_install works).
+
+  my($self, $mm, @rest) = @_;
 
   my $postamble = '';
 
@@ -355,11 +391,8 @@ sub mm_postamble
 
 =head2 mm_install
 
- { package MY;
-   sub install {
-     my($self) = @_;
-     $abmm->mm_install($self->SUPER::install);
-   }
+ sub MY::install {
+   $abmm->mm_install(@_);
  }
 
 B<EXPERIMENTAL>
@@ -370,7 +403,16 @@ Adds an install rule to clean the final install dist directory prior to installi
 
 sub mm_install
 {
-  my(undef, $section) = @_;
+  # NOTE: older versions of the Alien::Build::MM documentation
+  # didn't include this method, so anything that this method
+  # does has to be optional
+
+  my($self, $mm, @rest) = @_;
+
+  my $section = do {
+    package MY;
+    $mm->SUPER::install(@rest);
+  };
 
   "install :: alien_clean_install\n\n$section";
 }
