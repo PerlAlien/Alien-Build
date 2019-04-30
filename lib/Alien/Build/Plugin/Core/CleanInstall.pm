@@ -43,7 +43,7 @@ sub init
         else
         {
           $build->log("removing $child");
-          $child->remove_tree;
+          $child->remove_tree({ safe => 0});
         }
       }
     }
