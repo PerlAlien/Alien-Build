@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.71_01   2019-04-30 05:41:40 -0400
   - Add clean_install hook (gh#111, gh#114)
   - EXPERIMENTAL Add mm_install method to Alien::Build::MM (gh#111, gh#114)
   - EXPERIMENTAL CAUTION Add alien_clean_install target to Makefile generated
