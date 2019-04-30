@@ -109,6 +109,8 @@ sub new
     $self->{alienfile_meta} = 1;
   }
 
+  $self->{clean_install} = $prop{clean_install};
+
   $self->build->load_requires('configure');
   $self->build->root;
   $self->build->checkpoint;
