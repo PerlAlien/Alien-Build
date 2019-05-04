@@ -1,0 +1,15 @@
+Revision history for Alien-Build-Decode-Mojo
+
+After 0.04_01 Alien-Build-Decode-Mojo was merged with Alien-Build
+
+0.04_01   2019-04-25 17:55:57 -0400
+  - Diagnostic release.
+
+0.03_01   2019-04-24 21:17:08 -0400
+  - Diagnostic release.
+
+0.02      2019-04-23 19:23:31 -0400
+  - Fix prereqs (gh#1)
+
+0.01      2019-04-23 03:59:09 -0400
+  - initial version
