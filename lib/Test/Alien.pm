@@ -555,7 +555,7 @@ sub xs_ok
         $link_options{extra_linker_flags} = [ shellwords $link_options{extra_linker_flags} ];
       }
       
-      push @{ $link_options{extra_linker_flags} }, grep /^-l/, shellwords map { _flags $_, 'libs' } @aliens;
+      unshift @{ $link_options{extra_linker_flags} }, grep /^-l/, shellwords map { _flags $_, 'libs' } @aliens;
 
       my($out, $lib, $err) = capture_merged {
         my $lib = eval { 
