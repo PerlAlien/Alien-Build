@@ -136,7 +136,7 @@ pod_spelling_system:
     - autotools
     - PEVANS
     - leonerd
-
+    - KIWIROY
 
 pod_coverage:
   skip: 0
