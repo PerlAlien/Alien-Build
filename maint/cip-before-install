@@ -46,7 +46,9 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
     Devel::Hide \
     Readonly \
     Alien::Base::ModuleBuild \
-    FFI::Platypus
+    FFI::Platypus \
+    Mojo::DOM58 \
+    Mojolicious
 
 fi
 
