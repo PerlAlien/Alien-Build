@@ -2,6 +2,7 @@ package Alien::Build;
 
 use strict;
 use warnings;
+use 5.008001;
 use Path::Tiny ();
 use Carp ();
 use File::chdir;
@@ -9,6 +10,7 @@ use JSON::PP ();
 use Env qw( @PATH );
 use Env qw( @PKG_CONFIG_PATH );
 use Config ();
+use Alien::Build::Log;
 
 # ABSTRACT: Build external dependencies for use in CPAN
 # VERSION
@@ -1481,9 +1483,15 @@ Send a message to the log.  By default this prints to C<STDOUT>.
 sub log
 {
   my(undef, $message) = @_;
-  my $caller = caller;
+  my $caller = [caller];
   chomp $message;
-  print "$caller> $message\n";
+  foreach my $line (split /\n/, $message)
+  {
+    Alien::Build::Log->new->log(
+      caller  => $caller,
+      message => $line,
+    );
+  }
 }
 
 =head2 meta
