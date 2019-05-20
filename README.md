@@ -729,6 +729,10 @@ Apply the given plugin with the given arguments.
     The actual implementation of this, by its nature would have to be in the consuming
     CPAN module.
 
+- ALIEN\_BUILD\_LOG
+
+    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien::Build::Log) and [Alien:Build::Log::Default](Alien:Build::Log::Default).
+
 - ALIEN\_BUILD\_RC
 
     Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien::Build),

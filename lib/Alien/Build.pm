@@ -1487,7 +1487,7 @@ sub log
   chomp $message;
   foreach my $line (split /\n/, $message)
   {
-    Alien::Build::Log->new->log(
+    Alien::Build::Log->default->log(
       caller  => $caller,
       message => $line,
     );
@@ -1985,6 +1985,10 @@ is set to any value. The rationale is that by setting this environment variable 
 user is aware that L<Alien> modules may be installed and have indicated consent.
 The actual implementation of this, by its nature would have to be in the consuming
 CPAN module.
+
+=item ALIEN_BUILD_LOG
+
+The default log class used.  See L<Alien::Build::Log> and L<Alien:Build::Log::Default>.
 
 =item ALIEN_BUILD_RC
 

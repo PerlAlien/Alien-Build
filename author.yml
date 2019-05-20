@@ -137,6 +137,7 @@ pod_spelling_system:
     - PEVANS
     - leonerd
     - KIWIROY
+    - Overridable
 
 pod_coverage:
   skip: 0
