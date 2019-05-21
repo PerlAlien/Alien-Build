@@ -80,7 +80,8 @@ sub default
  Alien::Build::Log->set_log_class($class);
 
 Set the default log class used by L<Alien::Build>.  This method will also reset the
-default instance used by L<Alien::Build>.
+default instance used by L<Alien::Build>.  If not specified, L<Alien::Build::Log::Default>
+will be used.
 
 =cut
 
