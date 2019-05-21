@@ -2,6 +2,8 @@ use Test2::V0 -no_srand => 1;
 use Alien::Build;
 use Alien::Build::Log;
 
+delete $ENV{ALIEN_BUILD_LOG};
+
 subtest constructors => sub {
 
   subtest 'basic' => sub {
