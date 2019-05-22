@@ -218,6 +218,11 @@ sub mm_args
 
   my $ab_version = '0.25';
 
+  if($self->clean_install)
+  {
+    $ab_version = '1.74';
+  }
+
   $args{CONFIGURE_REQUIRES} = Alien::Build::_merge(
     'Alien::Build::MM' => $ab_version,
     %{ $args{CONFIGURE_REQUIRES} || {} },
