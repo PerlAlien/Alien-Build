@@ -1,6 +1,6 @@
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build ();
-use Alien::Build::MM qw( cmd ); 
+use Alien::Build::MM qw( cmd );
 use File::chdir;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
@@ -28,27 +28,27 @@ subtest 'basic' => sub {
     probe sub {
       $ENV{ALIEN_INSTALL_TYPE};
     };
-    
+
     configure {
       requires 'Config::Foo' => '1.234',
       requires 'Config::Bar' => 0,
     };
-    
+
     share {
       requires 'Share::Foo' => '4.567',
     };
-    
+
     sys {
       requires 'Sys::Foo' => '9.99',
     };
   };
-  
+
   subtest 'system' => sub {
 
     local $ENV{ALIEN_INSTALL_TYPE} = 'system';
 
     my $abmm = Alien::Build::MM->new;
-  
+
     isa_ok $abmm, 'Alien::Build::MM';
     isa_ok $abmm->build, 'Alien::Build';
 
@@ -67,7 +67,7 @@ subtest 'basic' => sub {
 
     is(path($abmm->build->install_prop->{stage})->basename, 'Alien-Foo', 'stage dir');
     note "stage = @{[ $abmm->build->install_prop->{stage} ]}";
-  
+
     is(
       \%args,
       hash {
@@ -89,9 +89,9 @@ subtest 'basic' => sub {
         etc;
       },
     );
-  
+
     undef $abmm;
-  
+
     ok( -d '_alien', "left alien directory" );
     ok( -f '_alien/state.json', "left alien.json file" );
 
@@ -102,7 +102,7 @@ subtest 'basic' => sub {
     local $ENV{ALIEN_INSTALL_TYPE} = 'share';
 
     my $abmm = Alien::Build::MM->new;
-  
+
     isa_ok $abmm, 'Alien::Build::MM';
     isa_ok $abmm->build, 'Alien::Build';
 
@@ -140,9 +140,9 @@ subtest 'basic' => sub {
         etc;
       },
     );
-  
+
   };
-  
+
 };
 
 subtest 'mm_postamble' => sub {
@@ -161,29 +161,29 @@ subtest 'mm_postamble' => sub {
   );
 
   my $postamble = $abmm->mm_postamble;
-  
+
   ok $postamble, 'returned a true value';
   note $postamble;
 
 };
 
 subtest 'set_prefix' => sub {
-  
+
   foreach my $type (qw( perl site vendor ))
   {
 
     subtest "type = $type" => sub {
-  
+
       local $CWD = tempdir( CLEANUP => 1 );
 
       alienfile q{
         use alienfile;
         probe sub { 'share' };
       };
-  
+
       my @dirs = map { path($CWD)->child('foo')->child($_) } qw( perl site vendor );
       $_->mkpath for @dirs;
- 
+
       do {
         my $abmm = Alien::Build::MM->new;
         $abmm->mm_args(
@@ -195,15 +195,15 @@ subtest 'set_prefix' => sub {
         local @ARGV = ($type, @dirs);
         prefix();
       };
-  
+
       ok( -f '_alien/mm/prefix', 'touched prefix' );
-      
+
       my $build = Alien::Build->resume('alienfile', '_alien');
       my $prefix = path($build->runtime_prop->{prefix})->relative($CWD)->stringify;
       is $prefix, "foo/$type/auto/share/dist/Alien-Foo", "correct path";
     };
   }
-  
+
 };
 
 subtest 'download + build' => sub {
@@ -243,18 +243,18 @@ subtest 'download + build' => sub {
   $abmm->mm_args(
     DISTNAME => 'Alien-Foo',
   );
-  
+
   note capture_merged {
     local @ARGV = ('perl', map { ($_,$_,$_) } tempdir( CLEANUP => 1 ));
     prefix();
   };
-  
+
   note capture_merged {
     local @ARGV = ();
     download();
   };
 
-  ok( -f '_alien/mm/download', 'touched download' );  
+  ok( -f '_alien/mm/download', 'touched download' );
   is $main::call_download, 1, 'download';
 
   note capture_merged {
@@ -262,7 +262,7 @@ subtest 'download + build' => sub {
     build();
   };
 
-  ok( -f '_alien/mm/build', 'touched build' );  
+  ok( -f '_alien/mm/build', 'touched build' );
   is $main::call_build, 1, 'build';
 
 };
@@ -270,19 +270,57 @@ subtest 'download + build' => sub {
 subtest 'patch' => sub {
 
   local $CWD = tempdir( CLEANUP => 1 );
-  
+
   alienfile q{
     use alienfile;
   };
-  
+
   path('patch')->mkpath;
   path('patch/foo.txt')->touch;
-  
+
   my $abmm = Alien::Build::MM->new;
-  
+
   ok( $abmm->build->install_prop->{patch}, 'patch is defined' );
-  
-  ok( -f path($abmm->build->install_prop->{patch})->child('foo.txt'), 'got the correct directory' );  
+
+  ok( -f path($abmm->build->install_prop->{patch})->child('foo.txt'), 'got the correct directory' );
+};
+
+subtest 'clean_install' => sub {
+
+  local $CWD = tempdir( CLEANUP => 1 );
+
+  alienfile q{
+    use alienfile;
+    probe sub { 'share' };
+  };
+
+  my @dirs = map { path($CWD)->child('foo')->child($_) } qw( perl site vendor );
+  $_->mkpath for @dirs;
+
+  my $abmm = Alien::Build::MM->new( clean_install => 1 );
+  is( $abmm->clean_install, T() );
+
+  my %args = $abmm->mm_args( DISTNAME => 'AlienFoo' );
+  is(
+    \%args,
+    hash {
+      field CONFIGURE_REQUIRES => hash {
+        field 'Alien::Build::MM' => '1.74';
+        etc;
+      };
+      field BUILD_REQUIRES => hash {
+        field 'Alien::Build::MM' => '1.74';
+        etc;
+      };
+      field PREREQ_PM => hash {
+        field 'Alien::Build' => '1.74';
+        etc;
+      };
+      etc;
+    },
+  );
+
+
 };
 
 done_testing;
