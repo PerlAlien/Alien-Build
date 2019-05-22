@@ -34,16 +34,19 @@ sub init
       my $root = Path::Tiny->new(
         $build->runtime_prop->{prefix}
       );
-      foreach my $child ($root->children)
+      if(-d $root)
       {
-        if($child->basename eq '_alien')
+        foreach my $child ($root->children)
         {
-          $build->log("keeping  $child");
-        }
-        else
-        {
-          $build->log("removing $child");
-          $child->remove_tree({ safe => 0});
+          if($child->basename eq '_alien')
+          {
+            $build->log("keeping  $child");
+          }
+          else
+          {
+            $build->log("removing $child");
+            $child->remove_tree({ safe => 0});
+          }
         }
       }
     }

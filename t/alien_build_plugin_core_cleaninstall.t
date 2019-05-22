@@ -55,4 +55,17 @@ subtest 'do not remove on system install' => sub {
   ok  -f "$dir/lib/libfoo.a";
 };
 
+subtest 'do not try to remove when it isn\'t there' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    probe sub { 'share' };
+  };
+
+  path($build->runtime_prop->{prefix})->remove_tree;
+
+  alien_clean_install;
+
+};
+
 done_testing;

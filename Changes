@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Check if share directory exists before clean_install
 
 1.73      2019-05-20 14:49:10 -0400
   - Production release identical to 1.72_01
