@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use 5.008001;
 use Term::ANSIColor ();
+use Path::Tiny qw( path );
+use File::chdir;
 use base qw( Alien::Build );
 
 # ABSTRACT: Log class for Alien::Build which is less verbose
@@ -25,8 +27,11 @@ Send single log line to stdout.
 
 sub colored
 {
-  -t STDOUT ? Term::ANSIColor::colored(@_) : '';
+  my($code, @out) = @_;
+  -t STDOUT ? Term::ANSIColor::colored($code, @out) : @out;
 }
+
+my $root = path("$CWD");
 
 sub log
 {
@@ -36,8 +41,19 @@ sub log
 
   my $source = $package;
   $source =~ s/^Alien::Build::Auto::[^:]+::Alienfile/alienfile/;
-  $source =~ s/^Alien::Build::Plugin/ABP/;
-  $source =~ s/^Alien::Build/AB/;
+
+  my $expected = $package;
+  $expected .= '.pm' unless $package eq 'alienfile';
+  $expected =~ s/::/\//g;
+  if($filename !~ /\Q$expected\E$/)
+  {
+    $source = path($filename)->relative($root);
+  }
+  else
+  {
+    $source =~ s/^Alien::Build::Plugin/ABP/;
+    $source =~ s/^Alien::Build/AB/;
+  }
 
   print colored([ "bold on_black"          ], '[');
   print colored([ "bright_green on_black"  ], $source);
