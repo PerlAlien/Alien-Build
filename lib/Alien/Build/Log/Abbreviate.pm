@@ -25,10 +25,10 @@ Send single log line to stdout.
 
 =cut
 
-sub colored
+sub _colored
 {
   my($code, @out) = @_;
-  -t STDOUT ? Term::ANSIColor::colored($code, @out) : @out;
+  -t STDOUT ? Term::ANSIColor::_colored($code, @out) : @out;
 }
 
 my $root = path("$CWD");
@@ -55,12 +55,12 @@ sub log
     $source =~ s/^Alien::Build/AB/;
   }
 
-  print colored([ "bold on_black"          ], '[');
-  print colored([ "bright_green on_black"  ], $source);
-  print colored([ "on_black"               ], ' ');
-  print colored([ "bright_yellow on_black" ], $line);
-  print colored([ "bold on_black"          ], ']');
-  print colored([ "white on_black"         ], ' ', $message);
+  print _colored([ "bold on_black"          ], '[');
+  print _colored([ "bright_green on_black"  ], $source);
+  print _colored([ "on_black"               ], ' ');
+  print _colored([ "bright_yellow on_black" ], $line);
+  print _colored([ "bold on_black"          ], ']');
+  print _colored([ "white on_black"         ], ' ', $message);
   print "\n";
 }
 
