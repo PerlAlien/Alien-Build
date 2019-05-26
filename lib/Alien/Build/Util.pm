@@ -87,7 +87,7 @@ sub _mirror
         # TODO: rmtree if a directory?
         if(-e "$dst")
         { unlink "$dst" }
-        Alien::Build->log("Alien::Build> cp $src $dst") if $opt->{verbose};
+        Alien::Build->log("cp $src $dst") if $opt->{verbose};
         File::Copy::cp("$src", "$dst") || die "copy error $src => $dst: $!";
         if($] < 5.012 && -x "$src" && $^O ne 'MSWin32')
         {
