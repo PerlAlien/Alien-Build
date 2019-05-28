@@ -379,6 +379,8 @@ The module name detected during the XS parsing phase will
 be passed in to the subtest.  This is helpful when you are
 using a generated module name.
 
+If you need to test XS C++ interfaces, see L<Test::Alien::CPP>.
+
 =cut
 
 sub _flags
@@ -946,6 +948,8 @@ sub _tempdir {
 =item L<Test::Alien::CanPlatypus>
 
 =item L<Test::Alien::Synthetic>
+
+=item L<Test::Alien::CPP>
 
 =back
 
