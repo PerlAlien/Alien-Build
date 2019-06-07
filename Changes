@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.75_01   2019-06-07 15:06:30 -0400
   - Download::Negotiate defaults to Deocde::Mojo instead of Decode::HTML for
     share installs that require parsing an HTML index (gh#127, gh#115).
 
