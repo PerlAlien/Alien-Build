@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Download::Negotiate defaults to Deocde::Mojo instead of Decode::HTML for
+    share installs that require parsing an HTML index.
 
 1.74      2019-05-22 08:43:10 -0400
   - Check if share directory exists before clean_install

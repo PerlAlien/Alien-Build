@@ -33,7 +33,7 @@ subtest 'pick fetch' => sub {
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('http://mytest.test/');
 
-    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
+    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::Mojo']);
     is($plugin->scheme, 'http');
 
   };
@@ -75,7 +75,7 @@ subtest 'pick fetch' => sub {
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
 
-    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
+    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::Mojo']);
     is($plugin->scheme, 'https');
 
   };
@@ -87,7 +87,7 @@ subtest 'pick fetch' => sub {
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
 
-    is([$plugin->pick], ['Fetch::CurlCommand','Decode::HTML']);
+    is([$plugin->pick], ['Fetch::CurlCommand','Decode::Mojo']);
     is($plugin->scheme, 'https');
 
   };
@@ -99,7 +99,7 @@ subtest 'pick fetch' => sub {
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('https://mytest.test/');
 
-    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::HTML']);
+    is([$plugin->pick], ['Fetch::HTTPTiny','Decode::Mojo']);
     is($plugin->scheme, 'https');
 
   };
@@ -119,7 +119,7 @@ subtest 'pick fetch' => sub {
 
     my $plugin = Alien::Build::Plugin::Download::Negotiate->new('ftp://mytest.test/');
 
-    is([$plugin->pick], ['Fetch::LWP','Decode::DirListing','Decode::HTML']);
+    is([$plugin->pick], ['Fetch::LWP','Decode::DirListing','Decode::Mojo']);
     is($plugin->scheme, 'ftp');
 
   };
@@ -162,7 +162,7 @@ subtest 'pick fetch' => sub {
         [$plugin->pick],
         array {
           item ['Fetch::CurlCommand','Fetch::Wget'];
-          item 'Decode::HTML';
+          item 'Decode::Mojo';
           end;
         },
       );
@@ -182,7 +182,7 @@ subtest 'pick fetch' => sub {
         [$plugin->pick],
         array {
           item 'Fetch::HTTPTiny';
-          item 'Decode::HTML';
+          item 'Decode::Mojo';
           end;
         },
       );
@@ -202,7 +202,7 @@ subtest 'pick fetch' => sub {
       [$plugin->pick],
       array {
         item 'Fetch::HTTPTiny';
-        item 'Decode::HTML';
+        item 'Decode::Mojo';
         end;
       },
     );
