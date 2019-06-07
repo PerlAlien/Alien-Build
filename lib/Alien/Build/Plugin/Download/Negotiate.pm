@@ -175,32 +175,32 @@ sub _pick
   {
     if($self->bootstrap_ssl && ! _has_ssl)
     {
-      return (['Fetch::CurlCommand','Fetch::Wget'], 'Decode::HTML');
+      return (['Fetch::CurlCommand','Fetch::Wget'], 'Decode::Mojo');
     }
     elsif(_has_ssl)
     {
-      return ('Fetch::HTTPTiny', 'Decode::HTML');
+      return ('Fetch::HTTPTiny', 'Decode::Mojo');
     }
     elsif(do { require Alien::Build::Plugin::Fetch::CurlCommand; Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https') })
     {
-      return ('Fetch::CurlCommand', 'Decode::HTML');
+      return ('Fetch::CurlCommand', 'Decode::Mojo');
     }
     else
     {
-      return ('Fetch::HTTPTiny', 'Decode::HTML');
+      return ('Fetch::HTTPTiny', 'Decode::Mojo');
     }
   }
   elsif($self->scheme eq 'http')
   {
-    return ('Fetch::HTTPTiny', 'Decode::HTML');
+    return ('Fetch::HTTPTiny', 'Decode::Mojo');
   }
   elsif($self->scheme eq 'ftp')
   {
     if($ENV{ftp_proxy} || $ENV{all_proxy})
     {
       return $self->scheme =~ /^ftps?/
-        ? ('Fetch::LWP', 'Decode::DirListing', 'Decode::HTML')
-        : ('Fetch::LWP', 'Decode::HTML');
+        ? ('Fetch::LWP', 'Decode::DirListing', 'Decode::Mojo')
+        : ('Fetch::LWP', 'Decode::Mojo');
     }
     else
     {

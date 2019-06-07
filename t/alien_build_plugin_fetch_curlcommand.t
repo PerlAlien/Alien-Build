@@ -219,7 +219,7 @@ subtest 'live test' => sub {
   my $mock = mock 'Alien::Build::Plugin::Download::Negotiate' => (
     override => [
       pick => sub {
-        ('Fetch::CurlCommand', 'Decode::HTML');
+        ('Fetch::CurlCommand', 'Decode::Mojo');
       },
     ],
   );
