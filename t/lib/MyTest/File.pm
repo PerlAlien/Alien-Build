@@ -24,7 +24,7 @@ sub file_url
   else
   {
     $file_error = 'test requires URI::file';
-    return;
+    return undef;
   }
 }
 

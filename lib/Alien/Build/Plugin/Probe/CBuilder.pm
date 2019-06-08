@@ -137,10 +137,10 @@ sub init
       
       $build->log("trying: cflags=@{[ $self->cflags ]} libs=@{[ $self->libs ]}");
       
-      my $b = ExtUtils::CBuilder->new(%{ $self->options });
+      my $cb = ExtUtils::CBuilder->new(%{ $self->options });
 
       my($out1, $obj) = capture_merged { eval {
-        $b->compile(
+        $cb->compile(
           source               => 'mytest.c',
           extra_compiler_flags => $self->cflags,
           @cpp,
@@ -155,7 +155,7 @@ sub init
       }
       
       my($out2, $exe) = capture_merged { eval {
-        $b->link_executable(
+        $cb->link_executable(
           objects              => [$obj],
           extra_linker_flags   => $self->libs,
         );

@@ -295,14 +295,17 @@ subtest 'build flags' => sub {
   );
 
   subtest 'unix' => sub {
-    while ( my ($flag, $split) = each %unix_flags ) {
-      is( [ Alien::Base->split_flags_unix( $flag ) ], $split );
+    foreach my $flag (keys %unix_flags)
+    {
+      is( [ Alien::Base->split_flags_unix( $flag ) ], $unix_flags{$flag} );
     }
   };
 
-  subtest 'windows' => sub {
-    while ( my ($flag, $split) = each %win_flags ) {
-      is( [ Alien::Base->split_flags_windows( $flag ) ], $split );
+  subtest 'windows' => sub
+  {
+    foreach my $flag (keys %win_flags)
+    {
+      is( [ Alien::Base->split_flags_windows( $flag ) ], $win_flags{$flag} );
     }
   };
 

@@ -22,7 +22,7 @@ sub capture_note (&)
   $ctx->release;
   
   die $error if $error;
-  wantarray ? @ret : $ret[0];
+  wantarray ? @ret : $ret[0];  ## no critic
 }
 
 my($test_name) = $0 =~ m{[/\\](.*)\.t$};

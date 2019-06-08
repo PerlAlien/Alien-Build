@@ -16,7 +16,7 @@ sub http_error
   if($new)
   {
     $http_error = $new;
-    return;
+    return undef;
   }
   else
   {

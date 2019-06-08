@@ -163,7 +163,8 @@ sub execute
     elsif(ref($command) eq 'ARRAY')
     {
       my($command, @args) = @$command;
-      my $code = pop @args if $args[-1] && ref($args[-1]) eq 'CODE';
+      my $code;
+      $code = pop @args if $args[-1] && ref($args[-1]) eq 'CODE';
       
       if($args[-1] && ref($args[-1]) eq 'SCALAR')
       {

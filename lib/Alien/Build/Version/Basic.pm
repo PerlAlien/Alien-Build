@@ -5,9 +5,11 @@ use warnings;
 use Carp ();
 use base qw( Exporter );
 use overload
-  '<=>' => sub { shift->cmp(@_) },
-  'cmp' => sub { shift->cmp(@_) },
-  '""'  => sub { shift->as_string };
+  '<=>'    => sub { shift->cmp(@_) },
+  'cmp'    => sub { shift->cmp(@_) },
+  '""'     => sub { shift->as_string },
+  bool     => sub { 1 },
+  fallback => 1;
 
 our @EXPORT_OK = qw( version );
 
@@ -139,9 +141,9 @@ sub cmp
   
   while(@a or @b)
   {
-    my $a = (shift @a) || 0;
-    my $b = (shift @b) || 0;
-    return $a <=> $b if $a <=> $b;
+    my $a1 = (shift @a) || 0;
+    my $b1 = (shift @b) || 0;
+    return $a1 <=> $b1 if $a1 <=> $b1;
   }
   
   0;

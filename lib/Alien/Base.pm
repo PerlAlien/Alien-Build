@@ -744,8 +744,8 @@ sub bin_dir {
   if($class->install_type('system'))
   {
     my $prop = $class->runtime_prop;
-    return unless defined $prop;
-    return unless defined $prop->{system_bin_dir};
+    return () unless defined $prop;
+    return () unless defined $prop->{system_bin_dir};
     return ref $prop->{system_bin_dir} ? @{ $prop->{system_bin_dir} } : ($prop->{system_bin_dir});
   }
   else
