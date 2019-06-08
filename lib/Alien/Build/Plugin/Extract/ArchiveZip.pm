@@ -52,7 +52,7 @@ sub handles
   
   return 1 if $ext eq 'zip';
   
-  return;
+  return 0;
 }
 
 =head2 available

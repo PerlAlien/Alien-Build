@@ -55,7 +55,7 @@ sub handles
   
   return 1 if $ext =~ /^(tar|tar.gz|tar.bz2|tbz|taz)$/;
   
-  return;
+  return 0;
 }
 
 =head2 available

@@ -96,9 +96,9 @@ sub has_helper
       if($module->can('alien_helper'))
       {
         my $helpers = $module->alien_helper;
-        while(my($k,$v) = each %$helpers)
+        foreach my $k (keys %$helpers)
         {
-          $self->{helper}->{$k}->{code} = $v;
+          $self->{helper}->{$k}->{code} = $helpers->{$k};
         }
       }
       $self->{classes}->{$module} = 1;

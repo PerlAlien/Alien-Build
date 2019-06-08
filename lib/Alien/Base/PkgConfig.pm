@@ -66,10 +66,10 @@ sub read {
   open my $fh, '<', $path
     or croak "Cannot open .pc file $path: $!";
 
-  while (<$fh>) {
-    if (/^([^=:]+?)=([^\n\r]*)/) {
+  while (my $line = <$fh>) {
+    if ($line =~ /^([^=:]+?)=([^\n\r]*)/) {
       $self->{vars}{$1} = $2;
-    } elsif (/^([^=:]+?):\s*([^\n\r]*)/) {
+    } elsif ($line =~ /^([^=:]+?):\s*([^\n\r]*)/) {
       $self->{keywords}{$1} = $2;
     }
   }

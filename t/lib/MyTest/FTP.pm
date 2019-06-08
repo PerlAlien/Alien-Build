@@ -16,7 +16,7 @@ sub ftp_error
   if($new)
   {
     $ftp_error = $new;
-    return;
+    return undef;
   }
   else
   {

@@ -206,14 +206,14 @@ sub handles
   return 1 if $ext eq 'tar.bz2' && $self->_tar_can('tar.bz2');
   return 1 if $ext eq 'tar.xz'  && $self->_tar_can('tar.xz');
 
-  return if $ext =~ s/\.(gz|Z)$// && (!$self->gzip_cmd);
-  return if $ext =~ s/\.bz2$//    && (!$self->bzip2_cmd);
-  return if $ext =~ s/\.xz$//     && (!$self->xz_cmd);
+  return 0 if $ext =~ s/\.(gz|Z)$// && (!$self->gzip_cmd);
+  return 0 if $ext =~ s/\.bz2$//    && (!$self->bzip2_cmd);
+  return 0 if $ext =~ s/\.xz$//     && (!$self->xz_cmd);
 
   return 1 if $ext eq 'tar' && $self->_tar_can('tar');
   return 1 if $ext eq 'zip' && $self->_tar_can('zip');
 
-  return;
+  return 0;
 }
 
 =head2 available
@@ -312,15 +312,15 @@ sub _tar_can
   {
     my $name = '';
     local $_; # to avoid dynamically scoped read-only $_ from upper scopes
-    while(<DATA>)
+    while(my $line = <DATA>)
     {
-      if(/^\[ (.*) \]$/)
+      if($line =~ /^\[ (.*) \]$/)
       {
         $name = $1;
       }
       else
       {
-        $tars{$name} .= $_;
+        $tars{$name} .= $line;
       }
     }
 

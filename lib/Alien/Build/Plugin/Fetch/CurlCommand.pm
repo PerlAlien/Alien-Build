@@ -72,7 +72,7 @@ sub protocol_ok
 {
   my($class, $protocol) = @_;
   my $curl = $class->curl_command;
-  return unless defined $curl;
+  return 0 unless defined $curl;
   my($out, $err, $exit) = capture {
     system $curl, '--version';
   };
@@ -84,7 +84,7 @@ sub protocol_ok
       return $proto{$protocol} if $proto{$protocol};
     }
   }
-  return;
+  return 0;
 }
 
 sub init

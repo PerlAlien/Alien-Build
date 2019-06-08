@@ -27,7 +27,7 @@ subtest 'prefer' => sub {
     my $meta = $build->meta;
     $plugin->init($meta);
     eval { $build->load_requires('share') };
-    $@ ? () : wantarray ? ($build,$meta) : $build;
+    $@ ? () : wantarray ? ($build,$meta) : $build; ## no critic
   };
   
   my $make_list = sub {

@@ -1914,7 +1914,7 @@ sub apply_plugin
 package Alien::Build::TempDir;
 
 use Path::Tiny qw( path );
-use overload '""' => sub { shift->as_string };
+use overload '""' => sub { shift->as_string }, bool => sub { 1 }, fallback => 1;
 use File::Temp qw( tempdir );
 
 sub new
