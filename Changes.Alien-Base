@@ -1,4 +1,4 @@
-Revision history for Perl module Alien::Base.
+Revision history for Perl module Alien-Base.
 
 After 0.043_01 Alien-Base was merged with Alien-Build
 
@@ -27,7 +27,7 @@ After 0.043_01 Alien-Base was merged with Alien-Build
   - Production release identical to 0.035_01 release
 
 0.037_02 2017-03-05 03:20:00 -0500
-  - Additional fixex for t/yy-system_installed.t
+  - Additional fixes for t/yy-system_installed.t
 
 0.037_01 2017-03-03 05:29:54 +1100
   - cflags and cflags_static were flipped in 0.035_01 is now fixed
