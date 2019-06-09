@@ -136,14 +136,14 @@ valid version object.
 
 sub cmp
 {
-  my @a = split /\./, ${$_[0]};
-  my @b = split /\./, ${ref($_[1]) ? $_[1] : version($_[1])};
+  my @x = split /\./, ${$_[0]};
+  my @y = split /\./, ${ref($_[1]) ? $_[1] : version($_[1])};
   
-  while(@a or @b)
+  while(@x or @y)
   {
-    my $a1 = (shift @a) || 0;
-    my $b1 = (shift @b) || 0;
-    return $a1 <=> $b1 if $a1 <=> $b1;
+    my $x = (shift @x) || 0;
+    my $y = (shift @y) || 0;
+    return $x <=> $y if $x <=> $y;
   }
   
   0;
