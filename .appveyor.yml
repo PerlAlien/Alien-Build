@@ -6,9 +6,9 @@ environment:
       # 5.26: The first strawberry to use gmake instead of dmake by default.
       # test both 32/64 bit versions
       - install_perl: "%install_berry_perl%"
-        version: "5.26.2_64"
+        version: "5.26.3_64"
       - install_perl: "%install_berry_perl%"
-        version: "5.26.2_32"
+        version: "5.26.3_32"
 
       # 5.20: The first strawberry to come with PkgConfig.pm (installed as pkg-config)
       - install_perl: "%install_berry_perl%"
