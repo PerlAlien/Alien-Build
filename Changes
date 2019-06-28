@@ -1,6 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - _alien/alien.json file is generated using ->canonical(1) for reproducibility
+    (gh#132 Grinnz++ for the suggestion)
+  - _alien/alien.json file is generated using ->ascii to avoid warnings / errors
+    when unicode is included in install/runtime properties.
+    (gh#132 Grinnz++ for the suggestion)
 
 1.76      2019-06-23 11:01:08 -0400
   - Production release identical to 1.75_01
