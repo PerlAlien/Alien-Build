@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.77_01   2019-06-28 12:08:12 -0400
   - _alien/alien.json file is generated using ->canonical(1) for reproducibility
     (gh#132 Grinnz++ for the suggestion)
   - _alien/alien.json file is generated using ->ascii to avoid warnings / errors
