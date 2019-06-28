@@ -126,7 +126,7 @@ sub init
       
       # drop a alien.json file for the runtime properties
       $stage->child('_alien/alien.json')->spew(
-        JSON::PP->new->pretty->encode($build->runtime_prop)
+        JSON::PP->new->pretty->canonical(1)->ascii->encode($build->runtime_prop)
       );
       
       # copy the alienfile, if we managed to keep it around.
