@@ -19,7 +19,7 @@ subtest 'alien_ok' => sub {
   local $ENV{PATH} = $ENV{PATH};
 
   subtest 'as class' => sub {
-  
+
     local $ENV{PATH} = $ENV{PATH};
 
     is(
@@ -39,7 +39,7 @@ subtest 'alien_ok' => sub {
   };
 
   subtest 'as object' => sub {
-  
+
     local $ENV{PATH} = $ENV{PATH};
 
     my $alien = Alien::Foo->new;
@@ -103,7 +103,7 @@ subtest 'alien_ok' => sub {
     },
     'alien_ok with undef',
   );
-  
+
 };
 
 subtest 'helper_ok' => sub {
@@ -241,7 +241,7 @@ subtest 'interpolate_template_is' => sub {
 subtest 'ffi_ok' => sub {
 
   skip_all 'Test requires FFI::Platypus'
-    unless eval { require FFI::Platypus; 1 };  
+    unless eval { require FFI::Platypus; 1 };
 
   _reset();
 
@@ -259,12 +259,16 @@ subtest 'ffi_ok' => sub {
 
   ffi_ok {}, 'min version test', with_subtest {
     my($ffi) = @_;
-    cmp_ok $ffi->VERSION, '>=', 0.12;
+    my $version = $ffi->VERSION;
+    $version =~ s/_.*$//;
+    cmp_ok $version, '>=', 0.12;
   };
 
   ffi_ok { ignore_not_found => 1 }, 'ignore not found', with_subtest {
     my($ffi) = @_;
-    cmp_ok $ffi->VERSION, '>=', 0.15;
+    my $version = $ffi->VERSION;
+    $version =~ s/_.*$//;
+    cmp_ok $version, '>=', 0.15;
     eval { $ffi->attach( foo => [] => 'void') };
     is $@, '';
     is __PACKAGE__->can('foo'), F();
@@ -272,7 +276,9 @@ subtest 'ffi_ok' => sub {
 
   ffi_ok { lang => 'Fortran' }, 'lang', with_subtest {
     my($ffi) = @_;
-    cmp_ok $ffi->VERSION, '>=', 0.18;
+    my $version = $ffi->VERSION;
+    $version =~ s/_.*$//;
+    cmp_ok $version, '>=', 0.18;
     is $ffi->lang, 'Fortran';
   };
 
@@ -292,7 +298,7 @@ subtest 'ffi_ok' => sub {
           },
         ],
       );
-      
+
       is(
         intercept { ffi_ok { symbols => [qw( foo bar baz )] } },
         array {
@@ -303,7 +309,7 @@ subtest 'ffi_ok' => sub {
         },
         'test passes',
       );
-      
+
       is(
         \@symbols,
         [qw( foo bar baz )],
@@ -336,7 +342,7 @@ subtest 'ffi_ok' => sub {
   };
 
   subtest 'acme' => sub {
-  
+
     skip_all 'Test requires Acme::Alien::DontPanic 0.026'
       unless eval {
          require Acme::Alien::DontPanic;
@@ -443,7 +449,7 @@ EOF
       my($module) = @_;
       is $module->baz(), 42, "call $module->baz()";
     };
-  
+
     $xs =~ s{\bTA_MODULE\b}{Foo::Bar}g;
     xs_ok $xs, 'xs without parameterized name', with_subtest {
       my($module) = @_;
@@ -452,7 +458,7 @@ EOF
     };
 
   };
-  
+
   subtest 'with xs_load' => sub {
 
     _reset();
@@ -528,7 +534,7 @@ EOF
   };
 
   subtest 'acme' => sub {
-  
+
     skip_all 'Test requires Acme::Alien::DontPanic 0.026'
       unless eval {
          require Acme::Alien::DontPanic;
@@ -606,13 +612,13 @@ subtest 'xs_ok without no compiler' => sub {
     },
     'skip works with cb'
   );
-  
+
 };
 
 subtest 'overrides no overrides' => sub {
 
   _reset();
-  
+
   alien_ok synthetic { cflags => '-DD1=22' };
 
   my $xs = <<'EOF';
