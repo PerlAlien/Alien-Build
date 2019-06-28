@@ -150,7 +150,7 @@ sub alienfile
   if($args{source})
   {
     my $file = $get_temp_root->()->child('alienfile');
-    $file->spew($args{source});
+    $file->spew_utf8($args{source});
     $args{filename} = $file->stringify;
   }
   else
@@ -780,7 +780,7 @@ sub alien_rc
   my $code2 = "use strict; use warnings;\n" .
               '# line ' . $line . ' "' . path($filename)->absolute . "\n$code";
   my $rc = path(tempdir( CLEANUP => 1 ), 'rc.pl');
-  $rc->spew($code2);
+  $rc->spew_utf8($code2);
   $ENV{ALIEN_BUILD_RC} = "$rc";
   return 1;
 }
