@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.78      2019-06-30 21:31:23 -0400
+  - Production release identical to 1.77_01
+
 1.77_01   2019-06-28 12:08:12 -0400
   - _alien/alien.json file is generated using ->canonical(1) for reproducibility
     (gh#132 Grinnz++ for the suggestion)
