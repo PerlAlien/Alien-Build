@@ -16,7 +16,7 @@ use Carp ();
  share {
    start_url 'http://ftp.gnu.org/gnu/make';
    plugin 'Download' => (
-     filter => qr/^make-.*\.tar.\gz$/,
+     filter => qr/^make-.*\.tar\.gz$/,
      version => qr/([0-9\.]+)/,
    );
  };
