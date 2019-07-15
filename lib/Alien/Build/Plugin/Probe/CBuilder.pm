@@ -129,7 +129,7 @@ sub init
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
-      local $CWD = File::Temp::tempdir( CLEANUP => 1 );
+      local $CWD = File::Temp::tempdir( CLEANUP => 1, DIR => '.' );
       
       open my $fh, '>', 'mytest.c';
       print $fh $self->program;
