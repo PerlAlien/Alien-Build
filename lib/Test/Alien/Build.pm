@@ -10,6 +10,7 @@ use File::Temp qw( tempdir );
 use Test2::API qw( context run_subtest );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
+use File::chdir;
 
 our @EXPORT = qw(
   alienfile
@@ -132,7 +133,7 @@ sub alienfile
   my $get_temp_root = do{
     my $root; # may be undef;
     sub {
-      $root ||= Path::Tiny->new(tempdir( CLEANUP => 1 ));
+      $root ||= Path::Tiny->new(tempdir( CLEANUP => 1, DIR => $CWD ));
 
       if(@_)
       {
