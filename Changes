@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.79      2019-07-15 14:26:16 -0400
   - Fix CBuilder probe plugin on platforms where /tmp is mounted noexec (gh#133, gh#134)
 
 1.78      2019-06-30 21:31:23 -0400
