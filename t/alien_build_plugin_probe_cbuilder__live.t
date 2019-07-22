@@ -3,7 +3,7 @@ use Test::Alien::Build;
 use Alien::Build::Plugin::Probe::CBuilder;
 use Capture::Tiny qw( capture_merged );
 
-skip_all 'CI only' unless $ENV{USER} eq 'cip' && $ENV{GROUP} eq 'cip';
+skip_all 'CI only' unless $ENV{CIPSOMETHING'} eq 'true';
 
 subtest 'live test' => sub {
 
