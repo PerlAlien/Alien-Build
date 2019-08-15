@@ -38,6 +38,7 @@ install:
   - cpanm -n Dist::Zilla
   - cpanm -n PkgConfig
   - cpanm -n Dist::Zilla::Plugin::Git::Check
+  - cpanm -n Dist::Zilla::Plugin::OurPkgVersion
   - dzil authordeps | cpanm -n
   - dzil listdeps | cpanm -n
 
