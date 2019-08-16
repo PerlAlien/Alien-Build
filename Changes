@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.81_01   2019-08-16 19:16:33 -0400
   - Fix log class inheritence bug.
 
 1.80_01   2019-08-15 20:52:50 -0400
