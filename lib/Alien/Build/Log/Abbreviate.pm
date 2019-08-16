@@ -6,7 +6,7 @@ use 5.008001;
 use Term::ANSIColor ();
 use Path::Tiny qw( path );
 use File::chdir;
-use base qw( Alien::Build );
+use base qw( Alien::Build::Log );
 
 # ABSTRACT: Log class for Alien::Build which is less verbose
 # VERSION

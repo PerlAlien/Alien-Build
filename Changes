@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix log class inheritence bug.
 
 1.80_01   2019-08-15 20:52:50 -0400
   - Use Perl::Critic Freenode policies for development (gh#128)

@@ -69,7 +69,7 @@ sub default
       $pm =~ s/::/\//g;
       require $pm;
     }
-    $self = bless {}, $class;
+    $class->new;
   }
 }
 
