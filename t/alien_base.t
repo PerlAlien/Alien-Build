@@ -134,11 +134,11 @@ subtest 'Alien::Build system' => sub {
       ],
     );
 
-    ok( !eval{ Alien::libfoo1->atleast_version('1.2'); 1 } and
+    ok( !eval{ Alien::libfoo1->atleast_version('1.2'); 1 } &&
         $@ =~ m/has no defined ->version/, 'no version atleast' );
-    ok( !eval { Alien::libfoo1->exact_version('1.2.3'); 1 } and
+    ok( !eval { Alien::libfoo1->exact_version('1.2.3'); 1 } &&
         $@ =~ m/has no defined ->version/, 'no version exactly' );
-    ok( !eval { Alien::libfoo1->max_version('1.4'); 1 } and
+    ok( !eval { Alien::libfoo1->max_version('1.4'); 1 } &&
         $@ =~ m/has no defined ->version/, 'no version atmost' );
   }
 };
