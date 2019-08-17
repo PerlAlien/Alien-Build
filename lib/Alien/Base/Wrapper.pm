@@ -227,7 +227,7 @@ sub mb_args
 
 sub _join
 {
-  join ' ', map { s/(\s)/\\$1/g; $_ } @_;
+  join ' ', map { s/(\s)/\\$1/g; $_ } map { "$_" } @_;  ## no critic (ControlStructures::ProhibitMutatingListFunctions)
 }
 
 sub import

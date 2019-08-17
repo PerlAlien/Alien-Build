@@ -158,7 +158,7 @@ sub import {
 
   my @libs = $class->split_flags( $class->libs );
 
-  my @L = grep { s/^-L// } @libs;
+  my @L = grep { s/^-L// } map { "$_" } @libs;  ## no critic (ControlStructures::ProhibitMutatingListFunctions)
   my @l = grep { /^-l/ } @libs;
 
   unshift @DynaLoader::dl_library_path, @L;
@@ -265,9 +265,10 @@ sub _flags
   if($prefix ne $distdir)
   {
     $flags = join ' ', map {
-      s/^(-I|-L|-LIBPATH:)?\Q$prefix\E/$1$distdir/;
-      s/(\s)/\\$1/g;
-      $_;
+      my $flag = $_;
+      $flag =~ s/^(-I|-L|-LIBPATH:)?\Q$prefix\E/$1$distdir/;
+      $flag =~ s/(\s)/\\$1/g;
+      $flag;
     } $class->split_flags($flags);
   }
 
@@ -528,9 +529,10 @@ sub _pkgconfig_keyword {
     $dist_dir =~ s{\\}{/}g if $^O eq 'MSWin32';
     my $old = quotemeta $self->config('original_prefix');
     @strings = map {
-      s{^(-I|-L|-LIBPATH:)?($old)}{$1.$dist_dir}e;
-      s/(\s)/\\$1/g;
-      $_;
+      my $flag = $_;
+      $flag =~ s{^(-I|-L|-LIBPATH:)?($old)}{$1.$dist_dir}e;
+      $flag =~ s/(\s)/\\$1/g;
+      $flag;
     } map { $self->split_flags($_) } @strings;
   }
 
