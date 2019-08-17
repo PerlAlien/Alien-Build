@@ -438,7 +438,7 @@ sub version_cmp {
       # Numerical comparison
       return $x <=> $y if $x != $y;
     }
-    elsif(!$x_isnum and !$y_isnum) {
+    elsif(!$x_isnum && !$y_isnum) {
       # Alphabetic comparison
       return $x cmp $y if $x ne $y;
     }
