@@ -92,7 +92,7 @@ sub _mirror
         if($] < 5.012 && -x "$src" && $^O ne 'MSWin32')
         {
           # apparently Perl 5.8 and 5.10 do not preserver perms
-          my $mode = [stat "$src"]->[2] & 0777;
+          my $mode = [stat "$src"]->[2] & oct(777);
           eval { chmod $mode, "$dst" };
         }
       }
