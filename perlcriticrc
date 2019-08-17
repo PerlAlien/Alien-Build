@@ -19,7 +19,6 @@ only = 1
 [Freenode::POSIXImports]
 [Freenode::PackageMatchesFilename]
 [Freenode::PreferredAlternatives]
-[Freenode::Prototypes]
 [Freenode::StrictWarnings]
 extra_importers = Test2::V0
 [Freenode::Threads]
