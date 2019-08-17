@@ -42,7 +42,7 @@ sub _convert
   $build->log("converting $path to static");
   
   my %h = map {
-    my($key, $value) = $_ =~ /^(.*?):(.*?)$/;
+    my($key, $value) = /^(.*?):(.*?)$/;
     $value =~ s{^\s+}{};
     $value =~ s{\s+$}{};
     ($key => $value);
