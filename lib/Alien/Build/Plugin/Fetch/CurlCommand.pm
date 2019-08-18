@@ -8,6 +8,7 @@ use File::Which qw( which );
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture );
 use File::Temp qw( tempdir );
+use List::Util 1.33 qw( any );
 use File::chdir;
 
 # ABSTRACT: Plugin for fetching files using curl
@@ -231,7 +232,7 @@ sub _execute
   {
     chomp $stderr;
     $build->log($_) for split /\n/, $stderr;
-    if($stderr =~ /Remote filename has no length/ && !!(grep /^-O$/, @command))
+    if($stderr =~ /Remote filename has no length/ && !!(any { /^-O$/ } @command))
     {
       my @new_command = map {
         /^-O$/ ? ( -o => 'index.html' ) : /^-J$/ ? () : ($_)

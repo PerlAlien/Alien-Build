@@ -10,6 +10,7 @@ use File::Temp qw( tempdir );
 use Test2::API qw( context run_subtest );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
+use List::Util 1.33 qw( any );
 use File::chdir;
 
 our @EXPORT = qw(
@@ -128,7 +129,7 @@ sub alienfile
   my %args = @_ == 0 ? (filename => 'alienfile') : @_ % 2 ? ( source => do { '# line '. $line . ' "' . path($filename)->absolute . qq("\n) . $_[0] }) : @_;
 
   require alienfile;
-  push @alienfile::EXPORT, 'targ' unless grep /^targ$/, @alienfile::EXPORT;
+  push @alienfile::EXPORT, 'targ' unless any { /^targ$/ } @alienfile::EXPORT;
 
   my $get_temp_root = do{
     my $root; # may be undef;
