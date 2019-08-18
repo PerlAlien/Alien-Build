@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -ex
+
+if [ "$CIP_TAG" = "static" ]; then
+  echo skip
+else
+  cip exec perl maint/ci-test-plugins.pl
+fi
+

@@ -14,7 +14,7 @@ install:
 
 script:
   - cip script
-  - cip exec perl maint/ci-test-plugins.pl
+  - ./maint/cip-test-plugins
   - cip scn run
 
 jobs:
