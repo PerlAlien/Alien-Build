@@ -136,20 +136,8 @@ sub load
   my $rcfile = Path::Tiny->new($ENV{ALIEN_BUILD_RC} || '~/.alienbuild/rc.pl')->absolute;
   if(-r $rcfile)
   {
+    require Alien::Build::rc;
     package Alien::Build::rc;
-    sub logx ($)
-    {
-      unshift @_, 'Alien::Build';
-      goto &Alien::Build::log;
-    };
-    sub preload ($)
-    {
-      push @Alien::Build::rc::PRELOAD, $_[0];
-    }
-    sub postload ($)
-    {
-      push @Alien::Build::rc::POSTLOAD, $_[0];
-    }
     require $rcfile;
   }
 

@@ -38,6 +38,7 @@ $modules{$_} = $_ for qw(
   JSON::PP
   LWP
   LWP::Protocol::https
+  List::Util
   Module::Load
   Mojo::DOM58
   Mojolicious

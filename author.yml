@@ -138,6 +138,7 @@ pod_spelling_system:
     - leonerd
     - KIWIROY
     - Overridable
+    - logx
 
 pod_coverage:
   skip: 0
