@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.82_01   2019-08-18 19:47:10 -0400
+  - Stricter Perl::Critic policies (gh#135)
+
 1.81_01   2019-08-16 19:16:33 -0400
   - Fix log class inheritence bug.
 
