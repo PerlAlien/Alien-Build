@@ -718,10 +718,9 @@ sub _add_modifier
   }
 
   foreach my $hook (
-    map { split /,/, $_ }                    # split on , for when multiple hooks must be attachewd (gather in any)
-    map { s/\$/$suffix/; $_ }                # substitute $ at the end for a suffix (_ffi) if any
-    map { "$_" }                             # copy so that we don't subregex on the original
-    $modifiers{$stage}->{$meta->{phase}})    # get the list of modifiers
+    map { split /,/, $_ }                        # split on , for when multiple hooks must be attachewd (gather in any)
+    map { my $x = $_ ; $x =~ s/\$/$suffix/; $x } # substitute $ at the end for a suffix (_ffi) if any
+    $modifiers{$stage}->{$meta->{phase}})        # get the list of modifiers
   {
     $meta->$method($hook => $sub);
   }
