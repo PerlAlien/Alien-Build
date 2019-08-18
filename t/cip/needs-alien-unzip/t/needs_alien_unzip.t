@@ -107,7 +107,7 @@ sub run ($;$)
 
   my @cmd = @$cmd;
   $test_name ||= "run command: @cmd";
-  
+
   my($out, $exit) = capture_merged {
     print "+@cmd\n";
     system @cmd;

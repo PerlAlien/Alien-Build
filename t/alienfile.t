@@ -30,20 +30,20 @@ subtest 'non struct alienfile' => sub {
   };
   my $error = $@;
   isnt $error, '', 'throws error';
-  note "error = $error"; 
+  note "error = $error";
 
 };
 
 subtest 'warnings alienfile' => sub {
 
-  my $warning = warning { 
+  my $warning = warning {
     alienfile q{
       use alienfile;
       my $foo;
       my $bar = "$foo";
     };
   };
-  
+
   ok $warning;
   note $warning;
 
@@ -52,12 +52,12 @@ subtest 'warnings alienfile' => sub {
 subtest 'plugin' => sub {
 
   subtest 'basic' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       plugin 'RogerRamjet';
     };
-  
+
     is(
       $build->meta->prop,
       hash {
@@ -68,16 +68,16 @@ subtest 'plugin' => sub {
         etc;
       }
     );
-  
+
   };
-  
+
   subtest 'default argument' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       plugin 'RogerRamjet' => 'starscream';
     };
-  
+
     is(
       $build->meta->prop,
       hash {
@@ -88,11 +88,11 @@ subtest 'plugin' => sub {
         etc;
       }
     );
-  
+
   };
-  
+
   subtest 'other arguments' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       plugin 'RogerRamjet' => (
@@ -101,7 +101,7 @@ subtest 'plugin' => sub {
         baz => 'megatron',
       );
     };
-  
+
     is(
       $build->meta->prop,
       hash {
@@ -112,38 +112,38 @@ subtest 'plugin' => sub {
         etc;
       }
     );
-  
+
   };
 
   subtest 'sub package' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       plugin 'NesAdvantage::Controller';
     };
-    
+
     is($build->meta->prop->{nesadvantage}, 'controller');
-  
+
   };
-  
+
   subtest 'negotiate' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       plugin 'NesAdvantage';
     };
-    
+
     is($build->meta->prop->{nesadvantage}, 'negotiate');
-  
+
   };
-  
+
   subtest 'fully qualified class' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       plugin '=Alien::Build::Plugin::RogerRamjet';
     };
-  
+
     is(
       $build->meta->prop,
       hash {
@@ -154,9 +154,9 @@ subtest 'plugin' => sub {
         etc;
       }
     );
-  
+
   };
-  
+
 };
 
 subtest 'probe' => sub {
@@ -171,13 +171,13 @@ subtest 'probe' => sub {
         'share';
       };
     };
-  
+
     is($build->probe, 'share');
     is($build->install_prop->{called_probe}, 1);
   };
-  
+
   subtest 'wrong block' => sub {
-  
+
     eval {
       alienfile q{
         use alienfile;
@@ -186,9 +186,9 @@ subtest 'probe' => sub {
         };
       };
     };
-    
+
     like $@, qr/probe must not be in a system block/;
-  
+
   };
 
 };
@@ -196,7 +196,7 @@ subtest 'probe' => sub {
 subtest 'download' => sub {
 
   subtest 'basic' => sub {
-    
+
     my $build = alienfile q{
       use alienfile;
       use Path::Tiny qw( path );
@@ -205,19 +205,19 @@ subtest 'download' => sub {
         download sub { path('xor-1.00.tar.gz')->touch };
       };
     };
-    
+
     note capture_merged { $build->download; () };
-    
+
     my $download = path($build->install_prop->{download});
-    
+
     is(
       $download->basename,
       'xor-1.00.tar.gz',
     );
   };
-  
+
   subtest 'wrong block' => sub {
-  
+
     eval {
       alienfile q{
         use alienfile;
@@ -226,9 +226,9 @@ subtest 'download' => sub {
         };
       };
     };
-    
+
     like $@, qr/download must be in a share block/;
-  
+
   };
 
 };
@@ -237,7 +237,7 @@ foreach my $hook (qw( fetch decode prefer extract build build_ffi ))
 {
 
   subtest "$hook" => sub {
-  
+
     my(undef, $build) = capture_merged {
       alienfile qq{
         use alienfile;
@@ -246,9 +246,9 @@ foreach my $hook (qw( fetch decode prefer extract build build_ffi ))
         };
       };
     };
-    
+
     ok( $build->meta->has_hook($hook) );
-  
+
   };
 
 }
@@ -256,7 +256,7 @@ foreach my $hook (qw( fetch decode prefer extract build build_ffi ))
 subtest 'gather' => sub {
 
   subtest 'configure' => sub {
-  
+
     eval {
       alienfile q{
         use alienfile;
@@ -265,79 +265,79 @@ subtest 'gather' => sub {
         }
       };
     };
-    
+
     like $@, qr/gather is not allowed in configure block/;
-  
+
   };
-  
+
   subtest 'system + share' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       gather sub {};
     };
-    
+
     is( $build->meta->has_hook('gather_system'), T() );
     is( $build->meta->has_hook('gather_share'),  T() );
-  
+
   };
 
   subtest 'system' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       sys { gather sub {} };
     };
-    
+
     is( $build->meta->has_hook('gather_system'), T() );
     is( $build->meta->has_hook('gather_share'),  F() );
-  
+
   };
 
   subtest 'share' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       share { gather sub {} };
     };
-    
+
     is( $build->meta->has_hook('gather_system'), F() );
     is( $build->meta->has_hook('gather_share'),  T() );
-  
+
   };
 
   subtest 'share + gather_ffi' => sub {
-  
+
     my(undef,$build) = capture_merged {
       alienfile q{
         use alienfile;
         share { gather_ffi sub {} };
       };
     };
-  
+
     is( $build->meta->has_hook('gather_ffi'), T() );
   };
-  
+
 
   subtest 'share + ffi gather' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       share { ffi { gather sub {} } };
     };
-  
+
     is( $build->meta->has_hook('gather_ffi'), T() );
   };
-  
+
   subtest 'nada' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
     };
-    
+
     is( $build->meta->has_hook('gather_system'), F() );
     is( $build->meta->has_hook('gather_share'),  F() );
-  
+
   };
 
 };
@@ -348,7 +348,7 @@ subtest 'prop' => sub {
     use alienfile;
     meta_prop->{foo1} = 'bar1';
   };
-  
+
   is( $build->meta_prop->{foo1}, 'bar1' );
 
 };
@@ -359,7 +359,7 @@ subtest 'patch' => sub {
     use alienfile;
     share { patch sub { } };
   };
-  
+
   is( $build->meta->has_hook('patch'), T() );
 
 };
@@ -372,7 +372,7 @@ subtest 'patch_ffi' => sub {
       share { patch_ffi sub { } };
     };
   };
-  
+
   is( $build->meta->has_hook('patch_ffi'), T() );
 
 };
@@ -383,7 +383,7 @@ subtest 'ffi patch' => sub {
     use alienfile;
     share { ffi { patch sub { } } };
   };
-  
+
   is( $build->meta->has_hook('patch_ffi'), T() );
 
 };
@@ -391,31 +391,31 @@ subtest 'ffi patch' => sub {
 subtest 'arch' => sub {
 
   subtest 'on' => sub {
-  
+
     my $build = alienfile q{
       use alienfile;
       meta_prop->{arch} = 1;
     };
-    
+
     is( $build->meta_prop->{arch}, T());
-  
+
   };
-  
+
   subtest 'off' => sub {
 
     my $build = alienfile q{
       use alienfile;
       meta_prop->{arch} = 0;
     };
-  
+
     is( $build->meta_prop->{arch}, F());
   };
-  
+
   subtest 'default' => sub {
     my $build = alienfile q{
       use alienfile;
     };
-  
+
     is( $build->meta_prop->{arch}, T());
   };
 
@@ -427,9 +427,9 @@ subtest 'meta' => sub {
     use alienfile;
     meta->prop->{foo} = 1;
     probe sub { 'system' };
-  
+
   };
-  
+
   is $build->meta_prop->{foo}, 1;
 
 };
@@ -444,7 +444,7 @@ subtest 'test' => sub {
         test [];
       };
     };
-    
+
     is(
       $build->requires('configure'),
       hash {
@@ -453,29 +453,29 @@ subtest 'test' => sub {
       },
     );
   };
-  
+
   alienfile_ok q{
-  
+
     use alienfile;
-    
+
     sys {
       test [];
     };
-  
+
   };
-  
+
   alienfile_ok q{
-  
+
     use alienfile;
-    
+
     share {
       ffi {
         test [];
       };
     };
-  
+
   };
-  
+
   eval {
     alienfile q{
       use alienfile;
@@ -483,7 +483,7 @@ subtest 'test' => sub {
     };
   };
   like $@, qr/test is not allowed in any block/, 'not allowed in root block';
-  
+
   eval {
     alienfile q{
       use alienfile;
@@ -502,7 +502,7 @@ subtest 'start_url' => sub {
       start_url 'http://bogus.com';
     };
   };
-  
+
   is(
     $build,
     object {
@@ -545,7 +545,7 @@ subtest 'before' => sub {
 
     my $build = alienfile_ok q{
       use alienfile;
-    
+
       share {
         before 'build' => sub {
           return 42;
@@ -563,7 +563,7 @@ subtest 'before' => sub {
 
     my $build = alienfile_ok q{
       use alienfile;
-    
+
       share {
         ffi {
           before 'build' => sub {
@@ -648,11 +648,11 @@ subtest 'before' => sub {
   };
 
   subtest 'before build in sys' => sub {
-  
+
     eval {
       alienfile q{
         use alienfile;
-    
+
         sys {
           before 'build' => sub {
             return 42;
@@ -662,16 +662,16 @@ subtest 'before' => sub {
       };
     };
     like $@, qr/before build is not allowed in sys block/, 'not allowed in sys block';
-  
+
   };
-  
+
   subtest 'before second argument must be a code ref' => sub {
-  
-  
-    eval { 
+
+
+    eval {
       alienfile q{
         use alienfile;
-    
+
         share {
           before 'build' => 1;
           build [];
@@ -679,15 +679,15 @@ subtest 'before' => sub {
       };
     };
     like $@, qr/before build argument must be a code reference/, 'must be code reference';
-  
+
   };
-  
+
   subtest 'arbitrary stages not allowed' => sub {
 
-    eval { 
+    eval {
       alienfile q{
         use alienfile;
-    
+
         share {
           before 'bogus' => sub {};
           build [];
@@ -726,7 +726,7 @@ subtest 'after' => sub {
 
     my $build = alienfile_ok q{
       use alienfile;
-    
+
       share {
         after 'build' => sub {
           return 42;
@@ -744,7 +744,7 @@ subtest 'after' => sub {
 
     my $build = alienfile_ok q{
       use alienfile;
-    
+
       share {
         ffi {
           after 'build' => sub {
@@ -829,11 +829,11 @@ subtest 'after' => sub {
   };
 
   subtest 'after build in sys' => sub {
-  
+
     eval {
       alienfile q{
         use alienfile;
-    
+
         sys {
           after 'build' => sub {
             return 42;
@@ -843,16 +843,16 @@ subtest 'after' => sub {
       };
     };
     like $@, qr/after build is not allowed in sys block/, 'not allowed in sys block';
-  
+
   };
-  
+
   subtest 'after second argument must be a code ref' => sub {
-  
-  
-    eval { 
+
+
+    eval {
       alienfile q{
         use alienfile;
-    
+
         share {
           after 'build' => 1;
           build [];
@@ -860,15 +860,15 @@ subtest 'after' => sub {
       };
     };
     like $@, qr/after build argument must be a code reference/, 'must be code reference';
-  
+
   };
-  
+
   subtest 'arbitrary stages not allowed' => sub {
 
-    eval { 
+    eval {
       alienfile q{
         use alienfile;
-    
+
         share {
           after 'bogus' => sub {};
           build [];

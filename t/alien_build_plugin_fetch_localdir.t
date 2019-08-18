@@ -6,14 +6,14 @@ use Path::Tiny qw( path );
 
 my $build = alienfile_ok q{
   use alienfile;
-  
+
   probe sub { 'share' };
-  
+
   share {
-  
+
     meta->prop->{start_url} = 'corpus/dist/foo-1.00/';
     plugin 'Fetch::LocalDir';
-  
+
   };
 };
 

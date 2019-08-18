@@ -48,7 +48,7 @@ my $mock = Test2::Mock->new(
         else
         {
           return;
-        } 
+        }
       }
     },
   ],
@@ -81,7 +81,7 @@ subtest 'AB::MB share install' => sub {
   my $cflags  = Alien::Foo2->cflags;
   my $libs    = Alien::Foo2->libs;
   my $version = Alien::Foo2->version;
-    
+
   ok $cflags,  "cflags: $cflags";
   ok $libs,    "libs:   $libs";
   is $version, '3.2.1', "version: $version";
@@ -89,7 +89,7 @@ subtest 'AB::MB share install' => sub {
   (first { /^-I/ } shellwords($cflags)) =~ /^-I(.*)$/;
   ok defined $1 && -f "$1/foo2.h", "include path";
   note "include path: $1";
-  
+
   (first { /^-L/ } shellwords($libs)) =~ /^-L(.*)$/;
   ok defined $1 && -f "$1/libfoo2.a", "lib path";
   note "lib path: $1";
@@ -99,7 +99,7 @@ subtest 'AB::MB share install' => sub {
 subtest 'Alien::Build system' => sub {
 
   require Alien::libfoo1;
-  
+
   is( -f path(Alien::libfoo1->dist_dir)->child('_alien/for_libfoo1'), T(), 'dist_dir');
   is( Alien::libfoo1->cflags, '-DFOO=1', 'cflags' );
   is( Alien::libfoo1->cflags_static, '-DFOO=1 -DFOO_STATIC=1', 'cflags_static');
@@ -110,20 +110,20 @@ subtest 'Alien::Build system' => sub {
   ok( !Alien::libfoo1->atleast_version('1.3'), 'version not atleast 1.3' );
   ok( Alien::libfoo1->exact_version('1.2.3'), 'version exactly 1.2.3' );
   ok( Alien::libfoo1->max_version('1.4'), 'version atmost 1.4' );
-  
+
   subtest 'install type' => sub {
     is( Alien::libfoo1->install_type, 'system' );
     is( Alien::libfoo1->install_type('system'), T() );
     is( Alien::libfoo1->install_type('share'), F() );
   };
-  
+
   is( Alien::libfoo1->config('name'), 'foo', 'config.name' );
   is( Alien::libfoo1->config('finished_installing'), T(), 'config.finished_installing' );
 
   is( [Alien::libfoo1->dynamic_libs], ['/usr/lib/libfoo.so','/usr/lib/libfoo.so.1'], 'dynamic_libs' );
-  
+
   is( [Alien::libfoo1->bin_dir], [], 'bin_dir' );
-  
+
   is( Alien::libfoo1->runtime_prop->{arbitrary}, 'one', 'runtime_prop' );
 
   {
@@ -161,9 +161,9 @@ subtest 'Alien::Build quazi system dylib' => sub {
 subtest 'Alien::Build share' => sub {
 
   require Alien::libfoo2;
-  
+
   is( -f path(Alien::libfoo2->dist_dir)->child('_alien/for_libfoo2'), T(), 'dist_dir');
-  
+
   subtest 'cflags' => sub {
     is(
       [shellwords(Alien::libfoo2->cflags)],
@@ -174,15 +174,15 @@ subtest 'Alien::Build share' => sub {
       },
       'cflags',
     );
-    
+
     my($dir) = [shellwords(Alien::libfoo2->cflags)]->[0] =~ /^-I(.*)$/;
-    
+
     is(
       -f path($dir)->child('foo.h'),
       T(),
       '-I directory points to foo.h location',
     );
-  
+
     is(
       [shellwords(Alien::libfoo2->cflags_static)],
       array {
@@ -193,18 +193,18 @@ subtest 'Alien::Build share' => sub {
       },
       'cflags_static',
     );
-    
+
     ($dir) = [shellwords(Alien::libfoo2->cflags_static)]->[0] =~ /^-I(.*)$/;
-    
+
     is(
       -f path($dir)->child('foo.h'),
       T(),
       '-I directory points to foo.h location (static)',
     );
   };
-  
+
   subtest 'libs' => sub {
-  
+
     is(
       [shellwords(Alien::libfoo2->libs)],
       array {
@@ -214,16 +214,16 @@ subtest 'Alien::Build share' => sub {
       },
       'libs',
     );
-    
+
     my($dir) = [shellwords(Alien::libfoo2->libs)]->[0] =~ /^-L(.*)$/;
-    
+
     is(
       -f path($dir)->child('libfoo.a'),
       T(),
       '-L directory points to libfoo.a location',
     );
-    
-    
+
+
     is(
       [shellwords(Alien::libfoo2->libs_static)],
       array {
@@ -235,28 +235,28 @@ subtest 'Alien::Build share' => sub {
       },
       'libs_static',
     );
-    
+
     ($dir) = [shellwords(Alien::libfoo2->libs_static)]->[0] =~ /^-L(.*)$/;
-    
+
     is(
       -f path($dir)->child('libfoo.a'),
       T(),
       '-L directory points to libfoo.a location (static)',
     );
-  
+
   };
-  
+
   is( Alien::libfoo2->version, '2.3.4', 'version' );
-  
+
   subtest 'install type' => sub {
     is( Alien::libfoo2->install_type, 'share' );
     is( Alien::libfoo2->install_type('system'), F() );
     is( Alien::libfoo2->install_type('share'), T() );
   };
-  
+
   is( Alien::libfoo2->config('name'), 'foo', 'config.name' );
   is( Alien::libfoo2->config('finished_installing'), T(), 'config.finished_installing' );
-  
+
   is(
     [Alien::libfoo2->dynamic_libs],
     array {
@@ -266,7 +266,7 @@ subtest 'Alien::Build share' => sub {
     },
     'dynamic_libs',
   );
-  
+
   is(
     [Alien::libfoo2->bin_dir],
     array {
@@ -275,9 +275,9 @@ subtest 'Alien::Build share' => sub {
     },
     'bin_dir',
   );
-  
+
   is( -f path(Alien::libfoo2->bin_dir)->child('foo-config'), T(), 'has a foo-config');
-  
+
   is( Alien::libfoo2->runtime_prop->{arbitrary}, 'two', 'runtime_prop' );
 
 };
@@ -291,7 +291,7 @@ subtest 'build flags' => sub {
   my %win_flags = (
     q{ -L/a/b/c -lz -L/a/b/c } => [ "-L/a/b/c", "-lz", "-L/a/b/c" ],
     q{ -LC:/a/b/c -lz -L"C:/a/b c/d" } => [ "-LC:/a/b/c", "-lz", "-LC:/a/b c/d" ],
-    q{ -LC:\a\b\c -lz } => [ q{-LC:\a\b\c}, "-lz" ], 
+    q{ -LC:\a\b\c -lz } => [ q{-LC:\a\b\c}, "-lz" ],
   );
 
   subtest 'unix' => sub {
@@ -314,9 +314,9 @@ subtest 'build flags' => sub {
 subtest 'ffi_name' => sub {
 
   require Alien::libfoo1;
-  
+
   my @args_find_lib;
-  
+
   my $mock1 = Test2::Mock->new(
     'class' => 'FFI::CheckLib',
     override => [
@@ -326,10 +326,10 @@ subtest 'ffi_name' => sub {
       },
     ],
   );
-  
+
   is( [Alien::libfoo1->dynamic_libs], ['foo.dll','foo2.dll'], 'call dynamic_libs' );
   is( \@args_find_lib, [ lib => 'foo', libpath => [] ] );
-  
+
   my $mock2 = Test2::Mock->new(
     class => 'Alien::Base',
     around => [
@@ -340,7 +340,7 @@ subtest 'ffi_name' => sub {
       },
     ],
   );
-  
+
   is( [Alien::libfoo1->dynamic_libs], ['foo.dll','foo2.dll'], 'call dynamic_libs' );
   is( \@args_find_lib, [ lib => 'roger' ] );
 

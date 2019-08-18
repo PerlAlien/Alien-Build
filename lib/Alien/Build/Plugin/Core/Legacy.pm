@@ -26,15 +26,15 @@ L<Alien::Build>, L<Alien::Base::ModuleBuild>
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->after_hook(
     $_ => sub {
       my($build) = @_;
-      
+
       $build->log("adding legacy hash to config");
-      
+
       my $runtime = $build->runtime_prop;
-      
+
       if($runtime->{cflags} && ! defined $runtime->{cflags_static})
       {
         $runtime->{cflags_static} = $runtime->{cflags};
@@ -44,7 +44,7 @@ sub init
       {
         $runtime->{libs_static} = $runtime->{libs};
       }
-      
+
       $runtime->{legacy}->{finished_installing} = 1;
       $runtime->{legacy}->{install_type}        = $runtime->{install_type};
       $runtime->{legacy}->{version}             = $runtime->{version};

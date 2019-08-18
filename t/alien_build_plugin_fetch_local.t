@@ -14,13 +14,13 @@ subtest 'basic' => sub {
       url  => 'foo-1.00.tar',
     );
   };
-  
+
   subtest 'default' => sub {
-  
+
     my $res = $build->fetch;
-    
+
     note _dump $res;
-    
+
     is(
       $res,
       hash {
@@ -32,17 +32,17 @@ subtest 'basic' => sub {
       },
       'response hash'
     );
-    
+
     ok( -f $res->{path}, 'path exists as file' );
-  
+
   };
-  
+
   subtest 'listing' => sub {
 
     my $res = $build->fetch('.');
 
     note _dump $res;
-    
+
     is(
       $res,
       hash {
@@ -60,21 +60,21 @@ subtest 'basic' => sub {
       },
       'response hash',
     );
-    
+
     foreach my $url (map { $_->{url} } @{ $res->{list} })
     {
       ok( -e $url );
     }
-  
+
   };
 
 
   subtest 'file' => sub {
-  
+
     my $res = $build->fetch('foo-1.00.tar.gz');
-    
+
     note _dump $res;
-    
+
     is(
       $res,
       hash {
@@ -86,51 +86,51 @@ subtest 'basic' => sub {
       },
       'response hash'
     );
-    
+
     ok( -f $res->{path}, 'path exists as file' );
-  
+
   };
-  
+
 };
 
 subtest 'use start_url' => sub {
 
   subtest 'sets start_url' => sub {
-  
+
     my $build = alienfile_ok q{
-  
+
       use alienfile;
-    
+
       plugin 'Fetch::Local' => 'http://foo.bar.baz';
-  
+
     };
-  
+
     is $build->meta_prop->{start_url}, 'http://foo.bar.baz';
-    
+
   };
-  
+
   subtest 'uses start_url' => sub {
-  
+
     my $mock = Test2::Mock->new(class => 'Alien::Build::Plugin::Fetch::Local');
     my $plugin;
-    
+
     $mock->after(init => sub {
       my($self, $meta) = @_;
       $plugin = $self;
     });
-  
+
     my $build = alienfile_ok q{
-    
+
       use alienfile;
-      
+
       meta->prop->{start_url} = 'http://baz.bar.foo';
-      
+
       plugin 'Fetch::Local';
-    
+
     };
-    
+
     is $plugin->url, 'http://baz.bar.foo';
-  
+
   };
 
 };
@@ -141,7 +141,7 @@ subtest 'uri' => sub {
     unless eval { require URI::file; 1 };
 
   my $url = URI::file->new(path('corpus/dist')->absolute)->as_string;
-  
+
   my $build = alienfile qq{
     use alienfile;
     plugin 'Fetch::Local' => (
@@ -151,11 +151,11 @@ subtest 'uri' => sub {
 
 
   subtest 'listing' => sub {
-  
+
     my $res = $build->fetch($url);
-    
+
     note _dump $res;
-    
+
     is(
       $res,
       hash {
@@ -173,20 +173,20 @@ subtest 'uri' => sub {
       },
       'response hash',
     );
-    
+
     foreach my $url (map { $_->{url} } @{ $res->{list} })
     {
       ok( -e $url );
     }
-  
+
   };
 
   subtest 'file' => sub {
-  
+
     my $res = $build->fetch("$url/foo-1.00.tar.gz");
-    
+
     note _dump $res;
-    
+
     is(
       $res,
       hash {
@@ -198,9 +198,9 @@ subtest 'uri' => sub {
       },
       'response hash'
     );
-    
+
     ok( -f $res->{path}, 'path exists as file' );
-  
+
   };
 
 };

@@ -9,7 +9,7 @@ subtest 'basic' => sub {
     is($version->as_string, '1.2.3');
     is("$version", '1.2.3');
   };
-  
+
   subtest 'version' => sub {
     my $version = version("1.2.3");
     isa_ok $version, 'Alien::Build::Version::Basic';

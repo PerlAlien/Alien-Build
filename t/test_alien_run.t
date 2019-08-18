@@ -10,7 +10,7 @@ BEGIN {
   *File::Which::which = sub {
     $which->(@_);
   };
-  
+
   $system = sub {
     CORE::system(@_);
   };
@@ -39,7 +39,7 @@ subtest 'run with exit 0' => sub {
     print "this is some output";
     print STDERR "this is some error";
   };
-  
+
   is(
     intercept { $run = run_ok [ $^X, $prog ], 'run it!' },
     array {

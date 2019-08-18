@@ -21,10 +21,10 @@ done_testing;
 {
   package
     Alien::MSYS;
-    
+
   BEGIN {
     our $VERSION = '0.07';
     $INC{'Alien/MSYS.pm'} = __FILE__;
   }
-  
+
 }

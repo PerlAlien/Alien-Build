@@ -69,11 +69,11 @@ sub available
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->register_hook(
     extract => sub {
       my($build, $src) = @_;
-      
+
       die "not a directory: $src" unless -d $src;
 
       if($build->meta_prop->{out_of_source})

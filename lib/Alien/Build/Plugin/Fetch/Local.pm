@@ -57,7 +57,7 @@ has ssl => 0;
 sub init
 {
   my($self, $meta) = @_;
-    
+
   $meta->prop->{start_url} ||= $self->url;
   $self->url($meta->prop->{start_url} || 'patch');
 
@@ -80,12 +80,12 @@ sub init
     }
     $self->root($root);
   }
-  
+
   $meta->register_hook( fetch => sub {
     my(undef, $path) = @_;
-    
+
     $path ||= $self->url;
-    
+
     if($path =~ /^file:/)
     {
       my $root = URI::file->new($self->root);
@@ -93,15 +93,15 @@ sub init
       $path = URI::Escape::uri_unescape($url->path);
       $path =~ s{^/([a-z]:)}{$1}i if $^O eq 'MSWin32';
     }
-    
+
     $path = Path::Tiny->new($path)->absolute($self->root);
-    
+
     if(-d $path)
     {
       return {
         type => 'list',
         list => [
-          map { { filename => $_->basename, url => $_->stringify } } 
+          map { { filename => $_->basename, url => $_->stringify } }
           sort { $a->basename cmp $b->basename } $path->children,
         ],
       };
@@ -119,8 +119,8 @@ sub init
     {
       die "no such file or directory $path";
     }
-    
-    
+
+
   });
 }
 

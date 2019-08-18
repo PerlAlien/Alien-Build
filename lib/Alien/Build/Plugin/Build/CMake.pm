@@ -93,7 +93,7 @@ sub cmake_generator
   if($^O eq 'MSWin32')
   {
     return 'MinGW Makefiles' if is_dmake();
-  
+
     {
       my($out, $err) = capture { system $Config{make}, '/?' };
       return 'NMake Makefiles' if $out =~ /NMAKE/;
@@ -115,9 +115,9 @@ sub cmake_generator
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->prop->{destdir} = $^O eq 'MSWin32' ? 0 : 1;
-  
+
   $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::CMake' => '0.99');
   $meta->add_requires('share'     => 'Alien::cmake3' => '0.02');
 
@@ -151,7 +151,7 @@ sub init
   $meta->interpolator->add_helper('cmake_generator' => \&cmake_generator);
 
   my @args = (
-    -G => '%{cmake_generator}', 
+    -G => '%{cmake_generator}',
     '-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true',
     '-DCMAKE_INSTALL_PREFIX:PATH=%{.install.prefix}',
     '-DCMAKE_INSTALL_LIBDIR:PATH=lib',

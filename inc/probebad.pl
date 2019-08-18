@@ -46,7 +46,7 @@ use File::Spec;
       print "$error\n";
       exit;
     }
-  
+
     if($pxs->report_error_count != 0)
     {
       print "Configuration unsupported\n";
@@ -54,7 +54,7 @@ use File::Spec;
       print "a trivial XS file.\n";
       exit;
     }
-  
+
     my($cc_out, $obj, $cc_exception) = capture_merged(
       sub {
         my $obj = eval {
@@ -65,7 +65,7 @@ use File::Spec;
         ($obj, $@);
       }
     );
-  
+
     if(! $obj)
     {
       print "Configuration unsupported\n";
@@ -83,7 +83,7 @@ use File::Spec;
       }
       exit;
     }
-  
+
     # cleanup
     unlink 'inc/trivial.c';
     unlink $obj;

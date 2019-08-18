@@ -27,7 +27,7 @@ OO interface:
  {
    ...
  }
- 
+
 Function interface:
 
  use Alien::Build::Version::Basic qw( version );
@@ -39,7 +39,7 @@ Function interface:
  
  my @sorted = sort map { version($_) } qw( 2.1 1.2.3 1.2.2 );
  # will come out in the order 1.2.2, 1.2.3, 2.1
- 
+
 =head1 DESCRIPTION
 
 This module provides a very basic class for comparing versions.
@@ -138,14 +138,14 @@ sub cmp
 {
   my @x = split /\./, ${$_[0]};
   my @y = split /\./, ${ref($_[1]) ? $_[1] : version($_[1])};
-  
+
   while(@x or @y)
   {
     my $x = (shift @x) || 0;
     my $y = (shift @y) || 0;
     return $x <=> $y if $x <=> $y;
   }
-  
+
   0;
 }
 

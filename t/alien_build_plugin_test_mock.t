@@ -13,42 +13,42 @@ subtest 'basic' => sub {
 subtest 'probe' => sub {
 
   subtest 'share' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       plugin 'Test::Mock' => (
         'probe' => 'share'
       );
     };
-    
+
     alien_install_type_is 'share';
-  
+
   };
 
   subtest 'share' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       plugin 'Test::Mock' => (
         'probe' => 'system'
       );
     };
-    
+
     alien_install_type_is 'system';
-  
+
   };
 
   subtest 'share' => sub {
-  
+
     alienfile_ok q{
       use alienfile;
       plugin 'Test::Mock' => (
         'probe' => 'die'
       );
     };
-    
+
     alien_install_type_is 'share';
-  
+
   };
 
 };

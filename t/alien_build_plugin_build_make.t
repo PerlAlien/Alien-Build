@@ -14,7 +14,7 @@ subtest 'compile' => sub {
 
       if($type =~ /nmake|dmake/)
       {
-      
+
         is(
           $build->meta->interpolator->interpolate('%{make}'),
           $type,
@@ -31,9 +31,9 @@ subtest 'gmake' => sub {
     use alienfile;
     use Path::Tiny qw( path );
     plugin 'Build::Make' => 'gmake';
-    
+
     probe sub { 'share' };
-    
+
     share {
       download sub { path('file1')->touch };
       extract sub {
@@ -47,7 +47,7 @@ subtest 'gmake' => sub {
           "install:foo.exe\n",
           "\t$^X install.pl foo.exe \$(PREFIX)/bin/foo.exe\n",
         );
-        
+
         path('build.pl')->spew("#!$^X\n", q{
           use strict;
           use warnings;
@@ -55,7 +55,7 @@ subtest 'gmake' => sub {
           my($from, $to) = map { path($_) } @ARGV;
           $to->spew('[' . $from->slurp . ']');
         });
-        
+
         path('install.pl')->spew("#!$^X\n", q{
           use strict;
           use warnings;
@@ -65,7 +65,7 @@ subtest 'gmake' => sub {
           $from->copy($to);
           print "copy $from $to\n";
         });
-        
+
         path('foo.c')->spew(
           "something",
         );
@@ -77,7 +77,7 @@ subtest 'gmake' => sub {
       ];
     };
   };
-  
+
   eval {
     $Alien::Build::Plugin::Build::Make::VERSION = '0.01';
     $build->load_requires('configure');
@@ -88,7 +88,7 @@ subtest 'gmake' => sub {
   note "make = @{[ $build->meta->interpolator->interpolate('%{make}') ]}";
 
   my $alien = alien_build_ok;
-  
+
   my $foo_exe = path($alien->bin_dir)->child('foo.exe');
   note "foo_exe = $foo_exe";
   note "content = ", $foo_exe->slurp;

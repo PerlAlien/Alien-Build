@@ -12,23 +12,23 @@ subtest 'basic' => sub {
   my $mock = Test2::Mock->new(
     class => 'ExtUtils::CBuilder',
   );
-  
+
   my @args_new;
   my @args_compile;
   my @args_link_executable;
-  
+
   $mock->add('new' => sub {
     shift;
     @args_new = @_;
     bless {}, 'ExtUtils::CBuilder';
   });
-  
+
   $mock->add('compile' => sub {
     shift;
     @args_compile = @_;
     'mytest.o';
   });
-  
+
   $mock->add('link_executable' => sub {
     shift;
     @args_link_executable = @_;
@@ -48,7 +48,7 @@ subtest 'basic' => sub {
     './mytest' => sub { 0 },
     'mytest'   => sub { 0 },
   ;
-  
+
   alien_build_ok;
   alien_install_type_is 'system';
 
@@ -56,7 +56,7 @@ subtest 'basic' => sub {
   is( $build->runtime_prop->{libs}, '-L/usr/local/lib -lfoo ', 'libs' );
 
   is( { @args_new }, { foo1 => 1, bar1 => 2 }, 'options passed to new' );
-  
+
   is(
     { @args_compile },
     hash {
@@ -65,7 +65,7 @@ subtest 'basic' => sub {
       etc;
     },
   );
-  
+
   is(
     { @args_link_executable },
     hash {
@@ -85,19 +85,19 @@ subtest 'program' => sub {
   my $mock = Test2::Mock->new(
     class => 'ExtUtils::CBuilder',
   );
-  
+
   $mock->add('new' => sub {
     bless {}, 'ExtUtils::CBuilder';
   });
-  
+
   my $source;
-  
+
   $mock->add('compile' => sub {
     my(undef, %args) = @_;
     $source = path($args{source})->slurp;
     'mytest.o';
   });
-  
+
   $mock->add('link_executable' => sub {
     'mytest';
   });
@@ -117,7 +117,7 @@ subtest 'program' => sub {
   ;
 
   note capture_merged { $build->probe; () };
-  
+
   is( $build->install_type, 'system', 'is system' );
   is($source, 'int main(int foo1, char *foo2[]) { return 0; }', 'compiled with correct source');
 };
@@ -127,16 +127,16 @@ subtest 'program' => sub {
   my $mock = Test2::Mock->new(
     class => 'ExtUtils::CBuilder',
   );
-  
+
   $mock->add('new' => sub {
     bless {}, 'ExtUtils::CBuilder';
   });
-  
+
   $mock->add('compile' => sub {
     my(undef, %args) = @_;
     'mytest.o';
   });
-  
+
   $mock->add('link_executable' => sub {
     'mytest';
   });
@@ -177,46 +177,46 @@ subtest 'fail' => sub {
   my $mock = Test2::Mock->new(
     class => 'ExtUtils::CBuilder',
   );
-  
+
   $mock->add('new' => sub {
     bless {}, 'ExtUtils::CBuilder';
   });
 
   subtest 'compile' => sub {
-  
+
     $mock->add('compile' => sub {
       my(undef, %args) = @_;
       die "error building mytest.o from mytest.c";
     });
-    
+
     my $build = alienfile_ok q{
-    
+
       use alienfile;
       plugin 'Probe::CBuilder' => (
         cflags => '-DX=1',
         libs   => '-lfoo',
       );
-      
+
       probe sub {
         my($build) = @_;
         # some other plugin tries system
         # but doesn't add a gather step
         'system';
       };
-    
+
     };
-    
+
     alien_install_type_is 'system';
-    
+
     my($out, $err) = capture_merged {
       eval { $build->build };
       $@;
     };
-    
+
     like $err, qr/cbuilder unable to gather;/;
-  
+
   };
-  
+
 };
 
 done_testing;

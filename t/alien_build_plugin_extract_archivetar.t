@@ -10,25 +10,25 @@ use Test2::Mock;
 subtest 'available' => sub {
 
   subtest 'zip' => sub {
-  
+
     # should always be false...
     is(Alien::Build::Plugin::Extract::ArchiveTar->available('zip'), F());
-  
+
   };
 
   subtest 'tar' => sub {
-  
+
     # should always be true...
     is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar'), T());
-  
+
   };
-  
+
   subtest 'tar.gz' => sub {
-  
+
     my $has_it;
 
     skip_all 'test requires Archive::Tar with has_zlib_support' unless eval { require Archive::Tar; Archive::Tar->can('has_zlib_support') };
-  
+
     my $mock = Test2::Mock->new(
       class => 'Archive::Tar',
       override => [
@@ -38,31 +38,31 @@ subtest 'available' => sub {
         },
       ],
     );
-  
+
     subtest 'has it' => sub {
-    
+
       $has_it = 1;
 
       is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.gz'), T());
-    
+
     };
-    
+
     subtest 'does not' => sub {
-    
+
       $has_it = 0;
-    
+
       is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.gz'), F());
 
     };
-  
+
   };
 
   subtest 'tar.bz2' => sub {
-  
+
     my $has_it;
 
     skip_all 'test requires Archive::Tar with has_bzip2_support' unless eval { require Archive::Tar; Archive::Tar->can('has_bzip2_support') };
-  
+
     my $mock = Test2::Mock->new(
       class => 'Archive::Tar',
       override => [
@@ -72,28 +72,28 @@ subtest 'available' => sub {
         },
       ],
     );
-  
+
     todo 'detection in Archive::Tar is sometimes broken' => sub {
-    
+
       subtest 'has it' => sub {
-    
+
         $has_it = 1;
 
         is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.bz2'), T());
-    
+
       };
-    
+
       subtest 'does not' => sub {
-    
+
         $has_it = 0;
-    
+
         is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.bz2'), F());
 
       };
     };
-  
+
   };
-  
+
 };
 
 subtest 'archive' => sub {
@@ -108,9 +108,9 @@ subtest 'archive' => sub {
       my $plugin = Alien::Build::Plugin::Extract::ArchiveTar->new;
       $plugin->init($meta);
       eval { $build->load_requires('share') };
-    
+
       skip_all "configuration does not support $ext" if $@;
-    
+
       if($ext eq 'tar.bz2')
       {
         skip_all 'Test requires ZLib support in Archive::Tar'
@@ -121,21 +121,21 @@ subtest 'archive' => sub {
         skip_all 'Test requires Bzip2 support in Archive::Tar'
           unless eval { Archive::Tar->has_bzip2_support };
       }
-    
+
       my $archive = path("corpus/dist/foo-1.00.$ext")->absolute;
-      
+
       my($out, $dir, $error) = capture_merged {
         my $dir = eval { $build->extract("$archive") };
         ($dir, $@);
       };
-      
+
       my($bad1, $bad2);
-      
+
       $bad1 = !!$error;
       is $error, '';
 
       note $out if $out ne '';
-      
+
       if(defined $dir)
       {
         $dir = path($dir);
@@ -149,7 +149,7 @@ subtest 'archive' => sub {
           ok -f $file, "$name exists";
         }
       }
-      
+
       if($bad1 || $bad2)
       {
         diag "failed with extension $ext";
@@ -162,7 +162,7 @@ subtest 'archive' => sub {
       }
     }
   }
-  
+
 };
 
 subtest 'archive with pax_global_header' => sub {
@@ -171,7 +171,7 @@ subtest 'archive with pax_global_header' => sub {
     unless eval { require Archive::Tar };
 
   my $build = alienfile_ok q{
-  
+
     use alienfile;
     use Path::Tiny qw( path );
     probe sub { 'share' };
@@ -182,9 +182,9 @@ subtest 'archive with pax_global_header' => sub {
       };
       plugin 'Extract::ArchiveTar';
     };
-  
+
   };
-  
+
   my $dir = alien_extract_ok;
 
   if(defined $dir)
@@ -192,7 +192,7 @@ subtest 'archive with pax_global_header' => sub {
     my $file = path($dir)->child('foo.txt');
     my $content = eval { $file->slurp };
     is($content, "xx\n", "file content matches");
-    
+
     unless(-f $file)
     {
       diag "listing:";
@@ -201,7 +201,7 @@ subtest 'archive with pax_global_header' => sub {
         diag $child;
       }
     }
-    
+
   }
 
 };

@@ -21,7 +21,7 @@ Create your custom log class:
    my(undef, %opt)  = @_;
    my($package, $filename, $line) = @{ $opt{caller} };
    my $message = $opt{message};
-
+ 
    ...;
  }
 
