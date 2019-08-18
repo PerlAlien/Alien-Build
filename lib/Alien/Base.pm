@@ -559,7 +559,9 @@ sub _pkgconfig {
   # Run through all pkgconfig objects and ensure that their modules are loaded:
   for my $pkg_obj (values %all) {
     my $perl_module_name = blessed $pkg_obj;
-    eval "require $perl_module_name";
+    my $pm = "$perl_module_name.pm";
+    $pm =~ s/::/\//g;
+    eval { require $pm };
   }
 
   return @all{@_} if @_;

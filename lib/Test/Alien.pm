@@ -644,9 +644,11 @@ sub xs_ok
         {
           local @INC = @INC;
           unshift @INC, $dir;
+          ## no critic
           eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
             use $module;
           };
+          ## use critic
         }
 
         if(my $error = $@)
@@ -748,7 +750,11 @@ sub ffi_ok
   if($ok && $opt->{lang})
   {
     my $class = "FFI::Platypus::Lang::@{[ $opt->{lang} ]}";
-    eval qq{ use $class () };
+    {
+      my $pm = "$class.pm";
+      $pm =~ s/::/\//g;
+      eval { require $pm };
+    }
     if($@)
     {
       $ok = 0;

@@ -86,10 +86,12 @@ sub has_helper
   {
     my $version = $self->{helper}->{$name}->{require}->{$module};
 
-    # yeah we do have to eval every time in case $version is different
-    # from the last load.
-    eval qq{ use $module @{[ $version ? $version : '' ]} (); 1 };
-    die $@ if $@;
+    {
+      my $pm = "$module.pm";
+      $pm =~ s/::/\//g;
+      require $pm;
+      $module->VERSION($version) if $version;
+    }
 
     unless($self->{classes}->{$module})
     {
@@ -114,7 +116,9 @@ sub has_helper
     my $perl = $code;
     package Alien::Build::Interpolate::Helper;
     $code = sub {
+      ##  no critic
       my $value = eval $perl;
+      ## use critic
       die $@ if $@;
       $value;
     };
