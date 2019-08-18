@@ -36,16 +36,16 @@ has msys_version   => '0.07';
 sub init
 {
   my($self, $meta) = @_;
-  
+
   if($self->msys_version ne '0.07')
   {
     $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::MSYS' => '0.84');
   }
-  
+
   if(_win_and_needs_msys($meta))
   {
     $meta->add_requires('share' => 'Alien::MSYS' => $self->msys_version);
-    
+
     $meta->around_hook(
       $_ => sub {
         my $orig = shift;
@@ -70,7 +70,7 @@ L<Alien::MSYS>.  This is almost certainly what you want, as most unix style make
 projects will not build with C<nmake> or C<dmake> typically used by Perl on Windows.
 
 =cut
- 
+
   if($^O eq 'MSWin32')
   {
     # Most likely if we are trying to build something unix-y and
@@ -81,7 +81,7 @@ projects will not build with C<nmake> or C<dmake> typically used by Perl on Wind
     );
 
   }
-  
+
   $self;
 }
 

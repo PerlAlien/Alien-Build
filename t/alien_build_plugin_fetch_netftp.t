@@ -13,9 +13,9 @@ subtest 'updates requires' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
-  
+
   is( $build->requires('share')->{'Net::FTP'}, 0 );
   is( $build->requires('share')->{'URI'}, 0 );
 
@@ -26,41 +26,41 @@ subtest 'updates requires' => sub {
 subtest 'use start_url' => sub {
 
   subtest 'sets start_url' => sub {
-  
+
     my $build = alienfile_ok q{
-  
+
       use alienfile;
-    
+
       plugin 'Fetch::NetFTP' => 'http://foo.bar.baz';
-  
+
     };
-  
+
     is $build->meta_prop->{start_url}, 'http://foo.bar.baz';
-    
+
   };
-  
+
   subtest 'uses start_url' => sub {
-  
+
     my $mock = Test2::Mock->new(class => 'Alien::Build::Plugin::Fetch::NetFTP');
     my $plugin;
-    
+
     $mock->after(init => sub {
       my($self, $meta) = @_;
       $plugin = $self;
     });
-  
+
     my $build = alienfile_ok q{
-    
+
       use alienfile;
-      
+
       meta->prop->{start_url} = 'http://baz.bar.foo';
-      
+
       plugin 'Fetch::NetFTP';
-    
+
     };
-    
+
     is $plugin->url, 'http://baz.bar.foo';
-  
+
   };
 
 };
@@ -68,7 +68,7 @@ subtest 'use start_url' => sub {
 subtest 'fetch' => sub {
 
   my $url = ftp_url;
-  
+
   unless($url)
   {
     my $log = path('t/bin/ftpd.log');
@@ -85,12 +85,12 @@ subtest 'fetch' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   $plugin->init($meta);
 
   eval { $build->load_requires('share') };
   skip_all 'test requires Net::FTP and URI' if $@;
-  
+
   subtest 'listing' => sub {
     my $res = $build->fetch;
     is(
@@ -108,11 +108,11 @@ subtest 'fetch' => sub {
       }
     );
   };
-  
+
   subtest 'file' => sub {
     my $furl = URI->new_abs("foo-1.00.tar.gz", $url);
     note "url = $furl";
-    
+
     my $res = $build->fetch($furl);
     is(
       $res,
@@ -122,12 +122,12 @@ subtest 'fetch' => sub {
         field path     => match qr/foo-1\.00\.tar\.gz$/;
       },
     );
-    
+
     my $expected = path('corpus/dist/foo-1.00.tar.gz')->slurp_raw;
     my $actual = path($res->{path})->slurp_raw;
     is( $actual, $expected );
   };
-  
+
   subtest 'not found' => sub {
     my $furl = URI->new_abs("bogus.tar.gz", $url);
     note "url = $furl";

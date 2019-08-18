@@ -8,7 +8,7 @@ subtest 'compiler type' => sub {
     use alienfile;
   };
 
-  ok( $build->meta_prop->{platform}->{compiler_type}, 'has a compiler type' );  
+  ok( $build->meta_prop->{platform}->{compiler_type}, 'has a compiler type' );
   note "compiler type = @{[ $build->meta_prop->{platform}->{compiler_type} ]}";
 };
 

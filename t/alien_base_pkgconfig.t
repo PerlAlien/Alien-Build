@@ -15,8 +15,8 @@ subtest 'basic' => sub {
   ok( -d $pcfiledir, 'pcfiledir is a directory' );
   ok( -e "$pcfiledir/test.pc", 'pcfiledir contains test.pc' );
 
-  is( 
-    $pc->{vars}, 
+  is(
+    $pc->{vars},
     {
       'INTERNAL_VARIABLE' => '-lotherlib',
       'prefix' => '/home/test/path',
@@ -58,9 +58,9 @@ subtest 'basic' => sub {
   is( $pc->keyword('Cflags'), '-Dfoo=bar -I/home/test/path/deeper/include', "multiple interpolation keyword" );
 
   # interpolate with overrides
-  is( 
-    $pc->keyword( 'Cflags', {prefix => '/some/other/path'}), 
-    '-Dfoo=bar -I/some/other/path/deeper/include', 
+  is(
+    $pc->keyword( 'Cflags', {prefix => '/some/other/path'}),
+    '-Dfoo=bar -I/some/other/path/deeper/include',
     "multiple interpolation keyword with override"
   );
 
@@ -82,11 +82,11 @@ subtest 'version' => sub {
   skip_all "pkg-config returned no packages" unless @installed;
   my $lib = $installed[0];
 
-  my ($builder_ok, $builder_bad) = map { 
+  my ($builder_ok, $builder_bad) = map {
     require Alien::Base::ModuleBuild;
     my($out, $builder) = capture_merged {
-      Alien::Base::ModuleBuild->new( 
-        module_name => 'My::Test', 
+      Alien::Base::ModuleBuild->new(
+        module_name => 'My::Test',
         dist_version => 0.01,
         alien_name => $_,
         share_dir => 't',
@@ -98,25 +98,25 @@ subtest 'version' => sub {
   ($lib, 'siughspidghsp');
 
   subtest 'good' => sub {
-  
+
     my($out, $value) = capture_merged {
       $builder_ok->alien_check_installed_version,
     };
     note $out if $out ne '';
-    
+
     is( $value, T(), 'found installed library' );
     note "lib is $lib";
-  
+
   };
-  
+
   subtest 'bad' => sub {
     my($out, $value) = capture_merged {
       $builder_bad->alien_check_installed_version,
     };
     note $out if $out ne '';
-    
+
     is( $value, F(), "returns false if not found");
-    
+
   };
 };
 

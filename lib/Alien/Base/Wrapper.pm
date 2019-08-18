@@ -7,7 +7,7 @@ use Config;
 use Text::ParseWords qw( shellwords );
 
 # NOTE: Although this module is now distributed with Alien-Build,
-# it should have NO non-perl-core dependencies for all Perls 
+# it should have NO non-perl-core dependencies for all Perls
 # 5.8.1-5.26.0 (as of this writing, and any Perl more recent).
 # You should be able to extract this module from the rest of
 # Alien-Build and use it by itself.
@@ -64,7 +64,7 @@ From Makefile.PL (dynamic):
      }
    ;
  }
-
+ 
  WriteMakefile(
    'NAME'         => 'Foo::XS',
    'VERSION_FROM' => 'lib/Foo/XS.pm',
@@ -73,7 +73,7 @@ From Makefile.PL (dynamic):
    },
    @mm_args,
  );
- 
+
 =head1 DESCRIPTION
 
 This module acts as a wrapper around one or more L<Alien> modules.  It is designed to work
@@ -259,18 +259,18 @@ sub import
       $cflags = $alien->cflags;
       $libs   = $alien->libs;
     }
-    
+
     push @cflags_I,     grep  /^-I/, shellwords $cflags;
     push @cflags_other, grep !/^-I/, shellwords $cflags;
-    
+
     push @ldflags_L,     grep  /^-L/,    shellwords $libs;
     push @ldflags_l,     grep  /^-l/,    shellwords $libs;
     push @ldflags_other, grep !/^-[Ll]/, shellwords $libs;
   }
-  
+
   my @cflags_define = grep  /^-D/, @cflags_other;
   my @cflags_other2 = grep !/^-D/, @cflags_other;
-  
+
   @mm = ();
 
   push @mm, INC       => _join @cflags_I                             if @cflags_I;
@@ -284,10 +284,10 @@ sub import
   push @mm, LDFLAGS   => _join(@ldflags) . " $Config{ldflags}"       if @ldflags;
 
   @mb = ();
-  
+
   push @mb, extra_compiler_flags => _join(@cflags_I, @cflags_other);
   push @mb, extra_linker_flags   => _join(@ldflags_l);
-  
+
   if(@ldflags)
   {
     push @mb, config => {
@@ -295,14 +295,14 @@ sub import
       ldflags   => _join(@ldflags) . " $Config{ldflags}",
     },
   }
-  
+
   if($export)
   {
     my $caller = caller;
     no strict 'refs';
     *{"${caller}::cc"} = \&cc;
     *{"${caller}::ld"} = \&ld;
-  }  
+  }
 }
 
 1;

@@ -44,7 +44,7 @@ has 'args'       => [];
 
 =head2 secondary
 
-If you are using another probe plugin (such as L<Alien::Build::Plugin::Probe::CBuilder> or 
+If you are using another probe plugin (such as L<Alien::Build::Plugin::Probe::CBuilder> or
 L<Alien::Build::Plugin::PkgConfig::Negotiate>) to detect the existence of a library, but
 also need a program to exist, then you should set secondary to a true value.  For example
 when you need both:
@@ -106,7 +106,7 @@ has 'version_stderr' => undef;
 sub init
 {
   my($self, $meta) = @_;
-  
+
   my $check = sub {
     my($build) = @_;
 
@@ -143,7 +143,7 @@ sub init
     $build->runtime_prop->{command} = $self->command;
     'system';
   };
-  
+
   if($self->secondary)
   {
     $meta->around_hook(

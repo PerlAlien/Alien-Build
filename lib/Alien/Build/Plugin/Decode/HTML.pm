@@ -30,17 +30,17 @@ sub init
   $meta->add_requires('share' => 'HTML::LinkExtor' => 0);
   $meta->add_requires('share' => 'URI' => 0);
   $meta->add_requires('share' => 'URI::Escape' => 0);
-  
+
   $meta->register_hook( decode => sub {
     my(undef, $res) = @_;
-    
+
     die "do not know how to decode @{[ $res->{type} ]}"
       unless $res->{type} eq 'html';
-    
+
     my $base = URI->new($res->{base});
-    
+
     my @list;
-    
+
     my $p = HTML::LinkExtor->new(sub {
       my($tag, %links) = @_;
       if($tag eq 'base' && $links{href})
@@ -60,9 +60,9 @@ sub init
         };
       }
     });
-    
+
     $p->parse($res->{content});
-    
+
     return {
       type => 'list',
       list => \@list,

@@ -48,7 +48,7 @@ subtest 'basic' => sub {
   my $gard = system_fake
     'pkg-config' => sub {
       my(@args) = @_;
-    
+
       if($args[0] eq '--modversion' && $args[1])
       {
         print "1.2.3\n";
@@ -64,7 +64,7 @@ subtest 'basic' => sub {
         print "$libs \n";
         return 0;
       }
-    
+
       use Alien::Build::Util qw( _dump );
       diag _dump(\@args);
       ok 0, 'bad command';
@@ -89,12 +89,12 @@ subtest 'basic' => sub {
 
   my($builder) = do {
     my($out, $builder) = capture_merged {
-      Alien::Base::ModuleBuild->new( 
+      Alien::Base::ModuleBuild->new(
         module_name => 'MyTest',
         dist_version => 0.01,
         alien_name => $lib,
         share_dir => 't',
-      ); 
+      );
     };
     note $out;
     $builder;
@@ -105,17 +105,17 @@ subtest 'basic' => sub {
   {
     local $CWD;
     push @CWD, qw/blib lib/;
-  
+
     use lib '.';
     require './MyTest.pm';
     my $alien = MyTest->new;
-  
+
     isa_ok($alien, 'MyTest');
     isa_ok($alien, 'Alien::Base');
-  
+
     note "alien->cflags = ", $alien->cflags;
     note "alien->libs   = ", $alien->libs;
-  
+
     is($alien->cflags, $cflags, "get cflags from system-installed library");
     is($alien->libs  , $libs  , "get libs from system-installed library"  );
   }

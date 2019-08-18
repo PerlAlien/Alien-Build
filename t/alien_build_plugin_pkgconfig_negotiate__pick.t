@@ -14,15 +14,15 @@ subtest 'LibPkgConf' => sub {
     subtest 'new enough' => sub {
 
       local $PkgConfig::LibPkgConf::VERSION = '0.99';
-    
+
       is(
         Alien::Build::Plugin::PkgConfig::Negotiate->pick,
         'PkgConfig::LibPkgConf',
       );
     };
-  
+
     subtest 'not new enough' => sub {
-  
+
       local $PkgConfig::LibPkgConf::VERSION = '0.01';
 
       isnt(
@@ -32,21 +32,21 @@ subtest 'LibPkgConf' => sub {
 
     };
   };
-  
+
   subtest 'not installed' => sub {
 
     skip_all 'subtest requires Devel::Hide' unless eval { require Devel::Hide };
     # side-effect of this test, PkgConfig::LibPkgConf
     # cannot be loaded for the rest of this .t file
     note scalar capture_merged { Devel::Hide->import(qw( PkgConfig::LibPkgConf )) };
-  
+
     isnt(
       Alien::Build::Plugin::PkgConfig::Negotiate->pick,
       'PkgConfig::LibPkgConf',
     );
 
   };
-  
+
 };
 
 my $make_pkgconfig_libpkgconf_unavailable = Test2::Mock->new(
@@ -87,11 +87,11 @@ subtest 'CommandLine' => sub {
       },
     ],
   );
-  
+
   my $mock2 = Test2::Mock->new(
     class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
   );
-  
+
   if($^O =~ /^(solaris|MSWin32)$/) {
     $mock2->override(
       _perl_config => sub {
@@ -112,13 +112,13 @@ subtest 'CommandLine' => sub {
       Alien::Build::Plugin::PkgConfig::Negotiate->pick,
       'PkgConfig::PP',
     );
-  
+
   };
 
   subtest 'pkg-config' => sub {
-  
+
     %which = ( 'pkg-config' => '/usr/bin/pkg-config' );
-  
+
     is(
       Alien::Build::Plugin::PkgConfig::Negotiate->pick,
       'PkgConfig::CommandLine',
@@ -127,9 +127,9 @@ subtest 'CommandLine' => sub {
   };
 
   subtest 'pkgconf' => sub {
-  
+
     %which = ( 'pkgconf' => '/usr/bin/pkgconf' );
-  
+
     is(
       Alien::Build::Plugin::PkgConfig::Negotiate->pick,
       'PkgConfig::CommandLine',
@@ -138,26 +138,26 @@ subtest 'CommandLine' => sub {
   };
 
   subtest 'PKG_CONFIG' => sub {
-  
+
     local $ENV{PKG_CONFIG} = 'foo-pkg-config';
     %which = ( 'foo-pkg-config' => '/usr/bin/foo-pkg-config' );
-    
+
     is(
       Alien::Build::Plugin::PkgConfig::Negotiate->pick,
       'PkgConfig::CommandLine',
-    );    
-  
+    );
+
   };
 
   subtest 'PP' => sub {
 
     subtest '64 bit solaris' => sub {
-  
+
       %which = ( 'pkg-config' => '/usr/bin/pkg-config' );
 
       # From the old AB::MB days we prefer PkgConfig.pm
       # for 64 bit solaris over the command line pkg-config
-      
+
       my $mock2 = Test2::Mock->new(
         class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
         override => [
@@ -172,7 +172,7 @@ subtest 'CommandLine' => sub {
           },
         ],
       );
-      
+
       is(
         Alien::Build::Plugin::PkgConfig::Negotiate->pick,
         'PkgConfig::PP',
@@ -182,12 +182,12 @@ subtest 'CommandLine' => sub {
 
 
     subtest 'Windows' => sub {
-  
+
       %which = ( 'pkg-config' => '/usr/bin/pkg-config' );
 
       # From the old AB::MB days we prefer PkgConfig.pm
       # for 64 bit solaris over the command line pkg-config
-      
+
       my $mock2 = Test2::Mock->new(
         class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
         override => [
@@ -200,7 +200,7 @@ subtest 'CommandLine' => sub {
           },
         ],
       );
-      
+
       is(
         Alien::Build::Plugin::PkgConfig::Negotiate->pick,
         'PkgConfig::PP',

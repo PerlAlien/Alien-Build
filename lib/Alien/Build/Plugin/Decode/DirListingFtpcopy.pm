@@ -35,7 +35,7 @@ sub init
 
   $meta->add_requires('share' => 'File::Listing::Ftpcopy' => 0);
   $meta->add_requires('share' => 'URI' => 0);
-  
+
   $meta->register_hook( decode => sub {
     my(undef, $res) = @_;
 
@@ -43,7 +43,7 @@ sub init
       unless $res->{type} eq 'dir_listing';
 
     my $base = URI->new($res->{base});
-    
+
     return {
       type => 'list',
       list => [

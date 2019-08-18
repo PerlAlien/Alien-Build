@@ -39,7 +39,7 @@ our @EXPORT = qw(
  # returns an instance of Alien::Build.
  my $build = alienfile_ok q{
    use alienfile;
-   
+ 
    plugin 'My::Plugin' => (
      foo => 1,
      bar => 'string',

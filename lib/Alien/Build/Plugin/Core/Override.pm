@@ -25,7 +25,7 @@ L<Alien::Build>, L<Alien::Base::ModuleBuild>
 sub init
 {
   my($self, $meta) = @_;
-  
+
   $meta->default_hook(
     override => sub {
       my($build) = @_;

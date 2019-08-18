@@ -15,14 +15,14 @@ subtest 'properties' => sub {
 
   subtest 'defaults' => sub {
 
-    my $plugin = Alien::Build::Plugin::RogerRamjet->new;  
+    my $plugin = Alien::Build::Plugin::RogerRamjet->new;
     is $plugin->foo, 22;
     is $plugin->bar, 'something generated';
-  
+
   };
-  
+
   subtest 'override' => sub {
-  
+
     my $plugin = Alien::Build::Plugin::RogerRamjet->new(
       foo => 42,
       bar => 'anything else',
@@ -30,16 +30,16 @@ subtest 'properties' => sub {
 
     is $plugin->foo, 42;
     is $plugin->bar, 'anything else';
-  
+
   };
-  
+
   subtest 'set' => sub {
-  
+
     my $plugin = Alien::Build::Plugin::RogerRamjet->new;
-    
+
     $plugin->foo(92);
     $plugin->bar('string');
-  
+
     is $plugin->foo, 92;
     is $plugin->bar, 'string';
 
@@ -53,16 +53,16 @@ subtest 'subplugin' => sub {
     package
       Alien::Build::Plugin::Foo::Bar;
     use Alien::Build::Plugin;
-    
+
     has foo => undef;
     has bar => 2;
-    
+
     sub init
     {
       my($self,$meta) = @_;
     }
   }
-  
+
   my $plugin1 = Alien::Build::Plugin::RogerRamjet->new;
   my $plugin2;
   is(

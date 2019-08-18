@@ -35,12 +35,12 @@ has path => undef;
 sub _convert
 {
   my($self, $build, $path) = @_;
-  
+
   die "unable to read $path" unless -r $path;
   die "unable to write $path" unless -w $path;
-  
+
   $build->log("converting $path to static");
-  
+
   my %h = map {
     my($key, $value) = /^(.*?):(.*?)$/;
     $value =~ s{^\s+}{};
@@ -50,15 +50,15 @@ sub _convert
 
   $h{Cflags} = '' unless defined $h{Cflags};
   $h{Libs}   = '' unless defined $h{Libs};
-  
+
   $h{Cflags} .= ' ' . $h{"Cflags.private"} if defined $h{"Cflags.private"};
   $h{Libs}   .= ' ' . $h{"Libs.private"} if defined $h{"Libs.private"};
-  
+
   $h{"Cflags.private"} = '';
   $h{"Libs.private"}  = '';
-  
+
   $path->edit_lines(sub {
-  
+
     if(/^(.*?):/)
     {
       my $key = $1;
@@ -68,7 +68,7 @@ sub _convert
         delete $h{$key};
       }
     }
-  
+
   });
 
   $path->append("$_: $h{$_}\n") foreach keys %h;
@@ -77,7 +77,7 @@ sub _convert
 sub _recurse
 {
   my($self, $build, $dir) = @_;
-  
+
   foreach my $child ($dir->children)
   {
     if(-d $child)
@@ -100,7 +100,7 @@ sub init
   $meta->before_hook(
     gather_share => sub {
       my($build) = @_;
-    
+
       if($self->path)
       {
         $self->_convert($build, Path::Tiny->new($self->path)->absolute);
@@ -109,7 +109,7 @@ sub init
       {
         $self->_recurse($build, Path::Tiny->new(".")->absolute);
       }
-    
+
     },
   );
 }

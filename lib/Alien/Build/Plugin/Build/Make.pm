@@ -26,8 +26,8 @@ projects do not use.  This plugin will alter the L<alienfile> recipe to use a di
 case of C<gmake> / L<Alien::gmake>) automatically download and install an alienized version of that C<make> if it
 is not already installed.
 
-This plugin should NOT be used with other plugins that replace the C<make> helper, like 
-L<Alien::Build::Plugin::Build::CMake>, L<Alien::Build::Plugin::Build::Autoconf>, 
+This plugin should NOT be used with other plugins that replace the C<make> helper, like
+L<Alien::Build::Plugin::Build::CMake>, L<Alien::Build::Plugin::Build::Autoconf>,
 L<Alien::Build::Plugin::Build::MSYS>.  This plugin is intended instead for projects that use vanilla makefiles of
 a specific type.
 
@@ -77,23 +77,23 @@ sub init
   my($self, $meta) = @_;
 
   $meta->add_requires('configure', 'Alien::Build::Plugin::Build::Make', '0.99');
-  
+
   my $type = $self->make_type;
-  
+
   return unless defined $type;
-  
+
   $type = 'gmake' if $^O eq 'MSWin32' && $type eq 'umake';
-  
+
   if($type eq 'nmake')
   {
     $meta->interpolator->replace_helper( make => sub { 'nmake' } );
   }
-  
+
   elsif($type eq 'dmake')
   {
     $meta->interpolator->replace_helper( make => sub { 'dmake' } );
   }
-  
+
   elsif($type eq 'gmake')
   {
     my $found = 0;
@@ -112,12 +112,12 @@ sub init
       $meta->interpolator->replace_helper('make' => sub { require Alien::gmake; Alien::gmake->exe });
     }
   }
-  
+
   elsif($type eq 'umake')
   {
     # nothing
   }
-  
+
   else
   {
     Carp::croak("unknown make type = ", $self->make_type);

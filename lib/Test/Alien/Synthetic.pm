@@ -18,7 +18,7 @@ use Test2::API qw( context );
  };
  
  alien_ok $alien;
-
+ 
  done_testing;
 
 =head1 DESCRIPTION
@@ -140,7 +140,7 @@ based L<Alien> distribution.
    like $ptr, qr{^[0-9]+$};
    $free->($ptr);
  };
-
+ 
  done_testing;
  
  __DATA__

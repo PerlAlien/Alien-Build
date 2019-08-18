@@ -21,22 +21,22 @@ Do-it-yourself approach:
  probe [ 'pkg-config --exists libarchive' ];
  
  share {
-   
+ 
    start_url 'http://libarchive.org/downloads/libarchive-3.2.2.tar.gz';
-   
+ 
    # the first one which succeeds will be used
    download [ 'wget %{.meta.start_url}' ];
    download [ 'curl -o %{.meta.start_url}' ];
-   
+ 
    extract [ 'tar xf %{.install.download}' ];
-   
-   build [ 
+ 
+   build [
      # Note: will not work on Windows, better to use Build::Autoconf plugin
      # if you need windows support
      './configure --prefix=%{.install.prefix} --disable-shared',
      '%{make}',
      '%{make} install',
-   ];   
+   ];
  }
  
  gather [
@@ -160,19 +160,19 @@ Examples:
  
  # loads the plugin with the badly named class!
  plugin '=Badly::Named::Plugin::Not::In::Alien::Build::Namespace';
-
+ 
  # explicitly loads Alien::Build::Plugin::Prefer::SortVersions
  plugin 'Prefer::SortVersions => (
    filter => qr/^gcc-.*\.tar\.gz$/,
    version => qr/([0-9\.]+)/,
  );
- 
+
 =cut
 
 sub plugin
 {
   my($name, @args) = @_;
-  
+
   my $caller = caller;
   $caller->meta->apply_plugin($name, @args);
   return;
@@ -637,9 +637,9 @@ sub test
   my $phase = $meta->{phase};
   Carp::croak "test is not allowed in $phase block"
     if $phase eq 'any' || $phase eq 'configure';
-  
+
   $meta->add_requires('configure' => 'Alien::Build' => '1.14');
-  
+
   if($phase eq 'share')
   {
     my $suffix = $caller->meta->{build_suffix} || '_share';
@@ -726,7 +726,7 @@ sub _add_modifier
     $meta->$method($hook => $sub);
   }
 
-  return;  
+  return;
 }
 
 sub before

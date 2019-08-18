@@ -23,7 +23,7 @@ subtest 'basic' => sub {
   my $build = alienfile_ok q{
     use alienfile;
   };
-  
+
   is $in_foobar, 1;
   is $in_bazfrooble, 1;
 
@@ -45,7 +45,7 @@ subtest 'preload code ref' => sub {
   my $build = alienfile_ok q{
     use alienfile;
   };
-  
+
   isa_ok $meta1, 'Alien::Build::Meta';
   isa_ok $meta2, 'Alien::Build::Meta';
 

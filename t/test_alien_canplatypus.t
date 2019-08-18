@@ -7,7 +7,7 @@ subtest 'skip/import' => sub {
   subtest 'have platypus' => sub {
 
     local $INC{'FFI/Platypus.pm'} = __FILE__;
-  
+
     is
       [Test::Alien::CanPlatypus->skip],
       [F()],

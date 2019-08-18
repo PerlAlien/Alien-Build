@@ -30,7 +30,7 @@ In your C<Makefile.PL>:
  sub MY::postamble {
    $abmm->mm_postamble(@_);
  }
-
+ 
  sub MY::install {
    $abmm->mm_install(@_);
  }
@@ -44,9 +44,9 @@ In your C<lib/Alien/Libfoo.pm>:
 In your alienfile (needs to be named C<alienfile> and should be in the root of your dist):
 
  use alienfile;
-
+ 
  plugin 'PkgConfig' => 'libfoo';
-
+ 
  share {
    start_url 'http://libfoo.org';
    ...

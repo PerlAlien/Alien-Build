@@ -23,7 +23,7 @@ use Capture::Tiny qw( capture_merged );
     \@command_list;
   }
 
-  sub system_clear  
+  sub system_clear
   {
     @command_list = ();
   }
@@ -48,22 +48,22 @@ subtest 'apply requirements' => sub {
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
-  
+
   my $intr = $meta->interpolator;
-  
+
   $intr->add_helper(foo => undef, Foo => '1.00');
   $intr->add_helper(bar => undef, Bar => '2.00');
   $intr->add_helper(baz => undef, Baz => '3.00');
-  
+
   my $seq = Alien::Build::CommandSequence->new(
     '%{foo}',
     [ '%{bar}' ],
     [ '%{baz}', '--version', sub {} ],
     sub {},
   );
-  
+
   $seq->apply_requirements($meta, 'share');
-  
+
   is(
     $build->requires('share'),
     hash {
@@ -72,7 +72,7 @@ subtest 'apply requirements' => sub {
       field Baz => '3.00';
     },
   );
-  
+
 };
 
 subtest 'execute' => sub {
@@ -83,22 +83,22 @@ subtest 'execute' => sub {
   $intr->add_helper(foo => sub { 'myfoo' });
 
   system_clear;
-  
+
   note capture_merged {
     Alien::Build::CommandSequence->new(
       '%{foo}',
       [ 'stuff', '%{foo}' ],
     )->execute($build);
   };
-  
+
   is(
     system_last,
     [ ['myfoo'], ['stuff','myfoo'] ],
     'plain',
   );
-  
+
   system_clear;
-  
+
   my $error;
   note capture_merged {
     eval {
@@ -109,25 +109,25 @@ subtest 'execute' => sub {
     };
     $error = $@;
   };
-  
+
   like $error, qr/command failed/;
-  
+
   system_clear;
-  
+
   system_hook stuff => sub {
     print "stuff output";
     print STDERR "stuff error";
   };
-  
+
 
   my @cap;
-  
+
   note capture_merged {
     Alien::Build::CommandSequence->new(
       [ 'stuff', '%{foo}', sub { @cap = @_ } ],
     )->execute($build);
   };
-  
+
   is(
     \@cap,
     array {
@@ -143,14 +143,14 @@ subtest 'execute' => sub {
       };
     },
   );
-  
+
   system_hook bogus => sub {
     print "bogus output";
     print STDERR "bogus error";
   };
-  
+
   @cap = ();
-  
+
   note capture_merged {
     Alien::Build::CommandSequence->new(
       [ 'bogus', '%{foo}', sub { @cap = @_ } ],
@@ -172,13 +172,13 @@ subtest 'execute' => sub {
       };
     },
   );
-  
+
   system_hook stuff2 => sub {
     print "single line\n";
     print STDERR "stuff error\n";
     print STDERR "stuff error\n";
   };
-  
+
   system_clear;
 
   note capture_merged {
@@ -186,7 +186,7 @@ subtest 'execute' => sub {
       [ 'stuff2', '%{foo}', \'%{alien.runtime.foo}' ],
     )->execute($build);
   };
-  
+
   is($build->runtime_prop->{foo}, 'single line');
 
   system_clear;

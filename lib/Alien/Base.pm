@@ -14,12 +14,12 @@ use Text::ParseWords qw/shellwords/;
 =head1 SYNOPSIS
 
  package Alien::MyLibrary;
-
+ 
  use strict;
  use warnings;
-
+ 
  use parent 'Alien::Base';
-
+ 
  1;
 
 (for details on the C<Makefile.PL> or C<Build.PL> and L<alienfile>
@@ -202,10 +202,10 @@ C<install_type> is C<share>).
 sub _dist_dir ($)
 {
   my($dist_name) = @_;
-  
+
   my @pm = split /-/, $dist_name;
   $pm[-1] .= ".pm";
-  
+
   foreach my $inc (@INC)
   {
     my $pm = Path::Tiny->new($inc, @pm);
@@ -228,7 +228,7 @@ sub dist_dir {
   my $dist = blessed $class || $class;
   $dist =~ s/::/-/g;
 
-  my $dist_dir = 
+  my $dist_dir =
     $class->config('finished_installing')
       ? _dist_dir $dist
       : $class->config('working_directory');
@@ -278,7 +278,7 @@ sub _flags
 =head2 cflags
 
  my $cflags = Alien::MyLibrary->cflags;
-
+ 
  use Text::ParseWords qw( shellwords );
  my @cflags = shellwords( Alien::MyLibrary->cflags );
 
@@ -312,7 +312,7 @@ sub cflags_static {
 =head2 libs
 
  my $libs = Alien::MyLibrary->libs;
-
+ 
  use Text::ParseWords qw( shellwords );
  my @cflags = shellwords( Alien::MyLibrary->libs );
 
@@ -811,7 +811,7 @@ need it.  From the L<alienfile> of C<Alien::nasm>:
    ...
    plugin 'Extract' => 'tar.gz';
    plugin 'Build::MSYS';
-   
+ 
    build [
      'sh configure --prefix=%{alien.install.prefix}',
      '%{gmake}',

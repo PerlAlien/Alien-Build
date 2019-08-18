@@ -24,7 +24,7 @@ subtest 'filter is required' => sub {
       plugin 'Prefer::BadVersion';
     }
   };
-  
+
   like $@, qr/The filter property is required for the Prefer::BadVersion plugin/;
 
 };
@@ -39,10 +39,10 @@ subtest 'filters out string version' => sub {
       plugin 'Prefer::BadVersion' => '1.2.5';
     };
   };
-  
+
   my $file = alien_download_ok;
   is(path($file)->slurp, "data:foo-1.2.4.tar.gz");
-  
+
 };
 
 subtest 'filters out list version' => sub {
@@ -55,10 +55,10 @@ subtest 'filters out list version' => sub {
       plugin 'Prefer::BadVersion' => ['1.2.4', '1.2.5'];
     };
   };
-  
+
   my $file = alien_download_ok;
   is(path($file)->slurp, "data:foo-1.2.3.tar.gz");
-  
+
 };
 
 subtest 'filters out code ref' => sub {
@@ -74,10 +74,10 @@ subtest 'filters out code ref' => sub {
       };
     };
   };
-  
+
   my $file = alien_download_ok;
   is(path($file)->slurp, "data:foo-1.2.4.tar.gz");
-  
+
 
 };
 
