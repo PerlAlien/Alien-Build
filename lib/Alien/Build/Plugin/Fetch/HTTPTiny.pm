@@ -108,7 +108,7 @@ sub init
       die "error fetching $url: $status $reason";
     }
 
-    my($type) = split ';', $res->{headers}->{'content-type'};
+    my($type) = split /;/, $res->{headers}->{'content-type'};
     $type = lc $type;
     my $base            = URI->new($res->{url});
     my $filename        = File::Basename::basename do { my $name = $base->path; $name =~ s{/$}{}; $name };

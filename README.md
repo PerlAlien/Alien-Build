@@ -99,7 +99,7 @@ so that it does not interfere with other plugin or future versions of
       my($self, $meta) = @_;
     
       $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
-     
+    
       $meta->register_hook(
         some_hook => sub {
           my($build) = @_;

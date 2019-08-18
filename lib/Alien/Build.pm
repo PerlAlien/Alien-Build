@@ -176,12 +176,12 @@ sub load
 
   my @preload = qw( Core::Setup Core::Download Core::FFI Core::Override Core::CleanInstall );
   push @preload, @Alien::Build::rc::PRELOAD;
-  push @preload, split ';', $ENV{ALIEN_BUILD_PRELOAD}
+  push @preload, split /;/, $ENV{ALIEN_BUILD_PRELOAD}
     if defined $ENV{ALIEN_BUILD_PRELOAD};
 
   my @postload = qw( Core::Legacy Core::Gather Core::Tail );
   push @postload, @Alien::Build::rc::POSTLOAD;
-  push @postload, split ';', $ENV{ALIEN_BUILD_POSTLOAD}
+  push @postload, split /;/, $ENV{ALIEN_BUILD_POSTLOAD}
     if defined $ENV{ALIEN_BUILD_POSTLOAD};
 
   my $self = $class->new(
@@ -197,12 +197,14 @@ sub load
   }
 
   # TODO: do this without a string eval ?
+  ## no critic
   eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . qq{
     package ${class}::Alienfile;
     do '@{[ $file->absolute->stringify ]}';
     die \$\@ if \$\@;
   };
   die $@ if $@;
+  ## use critic
 
   foreach my $postload (@postload)
   {
@@ -964,7 +966,7 @@ sub _call_hook
   # autoconf uses MSYS paths, even for the ACLOCAL_PATH environment variable, so we can't use Env for this.
   {
     my @path;
-    @path = split ':', $ENV{ACLOCAL_PATH} if defined $ENV{ACLOCAL_PATH};
+    @path = split /:/, $ENV{ACLOCAL_PATH} if defined $ENV{ACLOCAL_PATH};
     unshift @path, @{ $self->{aclocal_path} };
     $ENV{ACLOCAL_PATH} = join ':', @path;
   }

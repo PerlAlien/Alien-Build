@@ -35,7 +35,11 @@ sub require_ok ($)
   # will compile okay.  I won't be trying to use them.
   my($mod) = @_;
   my $ctx = context();
-  eval qq{ require $mod };
+  {
+    my $pm = "$mod.pm";
+    $pm =~ s/::/\//g;
+    eval { require $pm };
+  }
   my $error = $@;
   my $ok = !$error;
   $ctx->ok($ok, "require $mod");

@@ -138,7 +138,7 @@ sub init
           $build->log(" header: $_") for path('headers')->lines;
         }
 
-        my($type) = split ';', $h{content_type};
+        my($type) = split /;/, $h{content_type};
 
         if($type eq 'text/html')
         {

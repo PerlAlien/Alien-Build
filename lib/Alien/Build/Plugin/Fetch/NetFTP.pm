@@ -83,7 +83,7 @@ sub init
 
     unless($path =~ m!/$!)
     {
-      my(@parts) = split '/', $path;
+      my(@parts) = split /\//, $path;
       my $filename = pop @parts;
       my $dir      = join '/', @parts;
 
