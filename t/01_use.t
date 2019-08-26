@@ -56,6 +56,7 @@ require_ok 'Alien::Build::Plugin::Prefer::SortVersions';
 require_ok 'Alien::Build::Plugin::Probe::CBuilder';
 require_ok 'Alien::Build::Plugin::Probe::CommandLine';
 require_ok 'Alien::Build::Plugin::Test::Mock';
+require_ok 'Alien::Build::Temp';
 require_ok 'Alien::Build::Util';
 require_ok 'Alien::Build::Version::Basic';
 require_ok 'Alien::Build::rc';
@@ -121,6 +122,7 @@ ok -f 't/alien_build_plugin_prefer_sortversions.t',           'test for Alien::B
 ok -f 't/alien_build_plugin_probe_cbuilder.t',                'test for Alien::Build::Plugin::Probe::CBuilder';
 ok -f 't/alien_build_plugin_probe_commandline.t',             'test for Alien::Build::Plugin::Probe::CommandLine';
 ok -f 't/alien_build_plugin_test_mock.t',                     'test for Alien::Build::Plugin::Test::Mock';
+ok -f 't/alien_build_temp.t',                                 'test for Alien::Build::Temp';
 ok -f 't/alien_build_util.t',                                 'test for Alien::Build::Util';
 ok -f 't/alien_build_version_basic.t',                        'test for Alien::Build::Version::Basic';
 ok -f 't/alien_build_rc.t',                                   'test for Alien::Build::rc';
