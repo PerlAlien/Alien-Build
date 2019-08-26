@@ -6,12 +6,11 @@ use 5.008001;
 use base qw( Exporter);
 use Path::Tiny qw( path );
 use Carp qw( croak );
-use File::Temp qw( tempdir );
 use Test2::API qw( context run_subtest );
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _mirror );
 use List::Util 1.33 qw( any );
-use File::chdir;
+use Alien::Build::Temp;
 
 our @EXPORT = qw(
   alienfile
@@ -131,10 +130,11 @@ sub alienfile
   require alienfile;
   push @alienfile::EXPORT, 'targ' unless any { /^targ$/ } @alienfile::EXPORT;
 
+  my $temp = Alien::Build::Temp->newdir;
   my $get_temp_root = do{
     my $root; # may be undef;
     sub {
-      $root ||= Path::Tiny->new(tempdir( CLEANUP => 1, DIR => $CWD ));
+      $root ||= Path::Tiny->new($temp);
 
       if(@_)
       {
@@ -183,7 +183,7 @@ sub alienfile
   $ctx->release;
 
   $build_alienfile = $args{filename};
-  $build_root      = $get_temp_root->();
+  $build_root      = $temp;
   $build
 }
 
@@ -600,7 +600,7 @@ sub alien_build_clean
   my $ctx = context();
   if($build_root)
   {
-    foreach my $child ($build_root->children)
+    foreach my $child (path($build_root)->children)
     {
       next if $child->basename eq 'prefix';
       $ctx->note("clean: rm: $child");
@@ -771,6 +771,8 @@ nature of how the C<~/.alienbuild/rc.pl> file works, you can only use this once!
 
 =cut
 
+my $alien_rc_root;
+
 sub alien_rc
 {
   my($code) = @_;
@@ -781,7 +783,10 @@ sub alien_rc
   my(undef, $filename, $line) = caller;
   my $code2 = "use strict; use warnings;\n" .
               '# line ' . $line . ' "' . path($filename)->absolute . "\n$code";
-  my $rc = path(tempdir( CLEANUP => 1 ), 'rc.pl');
+
+  $alien_rc_root ||= Alien::Build::Temp->newdir;
+
+  my $rc = path($alien_rc_root)->child('rc.pl');
   $rc->spew_utf8($code2);
   $ENV{ALIEN_BUILD_RC} = "$rc";
   return 1;

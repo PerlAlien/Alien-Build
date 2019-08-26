@@ -13,3 +13,4 @@
 /corpus/alien_build_plugin_fetch_curlcommand/record/new.*
 /corpus/alien_build_plugin_fetch_wget/record/new.*
 /test-logs/
+/.tmp/
