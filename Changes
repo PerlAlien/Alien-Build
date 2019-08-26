@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.84_01   2019-08-26 10:59:58 -0400
   - Delay removal of temp files for Test::Alien till `make clean` instead of
     test termination on Windows (only) to avoid warning on test termination.
     (gh#130, gh#136)
