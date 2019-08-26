@@ -28,7 +28,7 @@ my %root;
 
 sub _root
 {
-  my $root = Path::Tiny->new(".tmp")->absolute;
+  my $root = Path::Tiny->new(-d "_alien" ? "_alien/tmp" : ".tmp")->absolute;
   unless(-d $root)
   {
     mkdir $root or die "unable to create temp root $!";
