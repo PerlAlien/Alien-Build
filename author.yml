@@ -157,4 +157,5 @@ pod_coverage:
     - Test::Alien#with_subtest
     - Test::Alien#capture_merged
     - Alien::Base::PkgConfig
+    - Alien::Build::Temp
 
