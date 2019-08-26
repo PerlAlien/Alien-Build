@@ -432,7 +432,10 @@ sub xs_ok
   my $verbose = $xs->{verbose} || 0;
   my $ok = 1;
   my @diag;
-  my $dir = Alien::Build::Temp->newdir( TEMPLATE => 'test-alien-XXXXXX');
+  my $dir = Alien::Build::Temp->newdir(
+    TEMPLATE => 'test-alien-XXXXXX',
+    CLEANUP  => $^O eq 'MSWin32' ? 0 : 1,
+  );
   my $xs_filename = path($dir)->child('test.xs')->stringify;
   my $c_filename  = path($dir)->child("test.@{[ $xs->{c_ext} ]}")->stringify;
 
