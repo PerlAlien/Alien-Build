@@ -417,7 +417,8 @@ sub mm_install
   my($self, $mm, @rest) = @_;
 
   my $section = do {
-    package MY;
+    package
+      MY;
     $mm->SUPER::install(@rest);
   };
 
