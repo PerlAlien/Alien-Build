@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.86      2019-09-13 06:27:21 -0600
+  - PAUSE permission fix
+
 1.85      2019-08-30 14:19:16 -0400
   - Production release identical to 1.84_01
 
