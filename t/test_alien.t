@@ -663,6 +663,29 @@ EOF
     is($mod->answer, 42);
   };
 
+  my $cbuilder_config;
+
+  no warnings 'once';
+  local *ExtUtils::CBuilder::new = do {
+    my $orig = ExtUtils::CBuilder->can('new');
+    sub {
+      my $class = shift;
+      my %args = @_;
+      $cbuilder_config = $args{config};
+      $class->$orig(@_);
+    };
+  };
+
+  xs_ok { xs => $xs, cbuilder_config => { foo => 'bar' } };
+
+  is
+    $cbuilder_config,
+    hash {
+      field 'foo' => 'bar';
+      etc;
+    }
+  ;
+
 };
 
 subtest 'with_subtest SEGV' => sub {

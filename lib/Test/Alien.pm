@@ -350,6 +350,10 @@ The XS code.  This is the only required element.
 
 Extra L<ExtUtils::ParseXS> arguments passed in as a hash reference.
 
+=item cbuilder_config
+
+Hash to override values normally provided by C<Config>.
+
 =item cbuilder_compile
 
 Extra The L<ExtUtils::CBuilder> arguments passed in as a hash reference.
@@ -399,8 +403,17 @@ sub xs_ok
   my($xs, $message) = @_;
   $message ||= 'xs';
 
+  $xs = { xs => $xs } unless ref $xs;
+  # make sure this is a copy because we may
+  # modify it.
+  $xs->{xs} = "@{[ $xs->{xs} ]}";
+  $xs->{pxs}              ||= {};
+  $xs->{cbuilder_config}  ||= {};
+  $xs->{cbuilder_compile} ||= {};
+  $xs->{cbuilder_link}    ||= {};
+
   require ExtUtils::CBuilder;
-  my $skip = !ExtUtils::CBuilder->new->have_compiler;
+  my $skip = !ExtUtils::CBuilder->new( config => $xs->{cbuilder_config} )->have_compiler;
 
   if($skip)
   {
@@ -410,14 +423,6 @@ sub xs_ok
     $ctx->release;
     return;
   }
-
-  $xs = { xs => $xs } unless ref $xs;
-  # make sure this is a copy because we may
-  # modify it.
-  $xs->{xs} = "@{[ $xs->{xs} ]}";
-  $xs->{pxs} ||= {};
-  $xs->{cbuilder_compile} ||= {};
-  $xs->{cbuilder_link}    ||= {};
 
   if($xs->{cpp} || $xs->{'C++'})
   {
@@ -505,8 +510,11 @@ sub xs_ok
   if($ok)
   {
     my $cb = ExtUtils::CBuilder->new(
-      config => {
-        lddlflags => join(' ', grep !/^-l/, shellwords map { _flags $_, 'libs' } @aliens) . " $Config{lddlflags}",
+      config => do {
+        my %config = %{ $xs->{cbuilder_config} };
+        my $lddlflags = join(' ', grep !/^-l/, shellwords map { _flags $_, 'libs' } @aliens) . " $Config{lddlflags}";
+        $config{lddlflags} = defined $config{lddlflags} ? "$config{lddlflags} $lddlflags" : $lddlflags;
+        \%config;
       },
     );
 
