@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.87_01   2019-09-24 07:38:31 -0600
   - Test::Alien directive with_subtest will attempt to catch SEGV and bail
     on on test file with a helpful diagnostic.  The prove util frequently
     does not provide a useful diagnostic for SEGV on its own (gh#138, gh#139).
