@@ -667,7 +667,7 @@ EOF
 
 subtest 'with_subtest SEGV' => sub {
 
-  skip_all => 'Test requires platforms with SEGV signal' if any { $_ eq 'SEGV' } split /\s+/, $Config{sig_name};
+  skip_all 'Test requires platforms with SEGV signal' if ! any { $_ eq 'SEGV' } split /\s+/, $Config{sig_name};
 
   our $kill_line;
 
