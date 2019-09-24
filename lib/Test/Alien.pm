@@ -684,7 +684,17 @@ sub xs_ok
   $ok;
 }
 
-sub with_subtest (&) { $_[0]; }
+sub with_subtest (&)
+{
+  my($code) = @_;
+  sub {
+    local $SIG{SEGV} = sub {
+      my $ctx = context();
+      $ctx->bail("Segmentation fault");
+    };
+    $code->(@_);
+  }
+}
 
 =head2 ffi_ok
 
