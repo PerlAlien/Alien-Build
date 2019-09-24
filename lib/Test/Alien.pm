@@ -350,6 +350,12 @@ The XS code.  This is the only required element.
 
 Extra L<ExtUtils::ParseXS> arguments passed in as a hash reference.
 
+=item cbuilder_check
+
+The compile check that should be done prior to attempting to build.
+Should be one of C<have_compiler> or C<have_cplusplus>.  Defaults
+to C<have_compiler>.
+
 =item cbuilder_config
 
 Hash to override values normally provided by C<Config>.
@@ -408,12 +414,16 @@ sub xs_ok
   # modify it.
   $xs->{xs} = "@{[ $xs->{xs} ]}";
   $xs->{pxs}              ||= {};
+  $xs->{cbuilder_check}   ||= 'have_compiler';
   $xs->{cbuilder_config}  ||= {};
   $xs->{cbuilder_compile} ||= {};
   $xs->{cbuilder_link}    ||= {};
 
   require ExtUtils::CBuilder;
-  my $skip = !ExtUtils::CBuilder->new( config => $xs->{cbuilder_config} )->have_compiler;
+  my $skip = do {
+    my $have_compiler = $xs->{cbuilder_check};
+    !ExtUtils::CBuilder->new( config => $xs->{cbuilder_config} )->$have_compiler;
+  };
 
   if($skip)
   {

@@ -1,8 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Add option cbuilder_config to Test::Alien xs_ok function (gh#140,
-    Test-Alien-CPP#3, Test-Alien-CPP#4)
+  - Add options cbuilder_check amd cbuilder_config to Test::Alien xs_ok
+    function (gh#140, Test-Alien-CPP#3, Test-Alien-CPP#4)
 
 1.87_01   2019-09-24 07:38:31 -0600
   - Test::Alien directive with_subtest will attempt to catch SEGV and bail
