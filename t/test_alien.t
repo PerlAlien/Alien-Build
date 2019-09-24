@@ -7,6 +7,7 @@ use Alien::libfoo1;
 use Env qw( @PATH );
 use ExtUtils::CBuilder;
 use Alien::Build::Util qw( _dump );
+use List::Util 1.33 qw( any );
 use Config;
 
 sub _reset
@@ -666,7 +667,7 @@ EOF
 
 subtest 'with_subtest SEGV' => sub {
 
-  skip_all => 'Test requires platforms with SEGV signal' if grep { $_ eq 'SEGV' } split /\s+/, $Config{sig_name};  
+  skip_all => 'Test requires platforms with SEGV signal' if any { $_ eq 'SEGV' } split /\s+/, $Config{sig_name};
 
   our $kill_line;
 
