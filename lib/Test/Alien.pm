@@ -687,6 +687,15 @@ sub xs_ok
 sub with_subtest (&)
 {
   my($code) = @_;
+
+  # it may be possible to catch a segmentation fault,
+  # but not with signal handlers apparently.  See:
+  # https://feepingcreature.github.io/handling.html
+  return $code if $^O eq 'MSWin32';
+
+  # try to catch a segmentation fault and bail out
+  # with a useful diagnostic.  prove test to swallow
+  # the diagnostic on such failures.
   sub {
     local $SIG{SEGV} = sub {
       my $ctx = context();

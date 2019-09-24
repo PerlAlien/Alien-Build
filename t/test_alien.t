@@ -667,6 +667,11 @@ EOF
 
 subtest 'with_subtest SEGV' => sub {
 
+  # it may be possible to catch a segmentation fault,
+  # but not with signal handlers apparently.  See:
+  # https://feepingcreature.github.io/handling.html
+  skip_all 'Catching SEGV not currently supported on Windows' if $^O eq 'MSWin32';
+
   skip_all 'Test requires platforms with SEGV signal' if ! any { $_ eq 'SEGV' } split /\s+/, $Config{sig_name};
 
   our $kill_line;
