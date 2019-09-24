@@ -6,6 +6,8 @@ use Alien::Foo;
 use Alien::libfoo1;
 use Env qw( @PATH );
 use ExtUtils::CBuilder;
+use Alien::Build::Util qw( _dump );
+use Config;
 
 sub _reset
 {
@@ -659,6 +661,50 @@ EOF
     my($mod) = @_;
     is($mod->answer, 42);
   };
+
+};
+
+subtest 'with_subtest SEGV' => sub {
+
+  skip_all => 'Test requires platforms with SEGV signal' if grep { $_ eq 'SEGV' } split /\s+/, $Config{sig_name};  
+
+  our $kill_line;
+
+  my $st = with_subtest {
+    note 'one';
+    kill 'SEGV', $$; BEGIN { $kill_line = __LINE__ };
+    note 'two';
+  };
+
+  my $e;
+
+  is(
+    $e = intercept {
+      $st->();
+    },
+    array {
+      event Note => sub {
+        call message => 'one';
+      };
+      event Bail => sub {
+        call reason => 'Segmentation fault';
+        call facet_data => hash {
+          field trace => hash {
+            field frame => array {
+              item 'main';
+              item __FILE__;
+              item $kill_line;
+              etc;
+            };
+            etc;
+          };
+          etc;
+        };
+        etc;
+      };
+      end;
+    },
+  ) or diag _dump($e);
 
 };
 
