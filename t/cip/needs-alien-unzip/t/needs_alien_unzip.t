@@ -7,6 +7,8 @@ use File::Glob qw( bsd_glob );
 use Path::Tiny qw( path );
 use Data::Dumper qw( Dumper );
 
+skip_all 'run only under cip' unless defined $ENV{CIPSOMETHING} && $ENV{CIPSOMETHING} eq 'true';
+
 sub run ($;$);
 sub build_step ($$);
 
