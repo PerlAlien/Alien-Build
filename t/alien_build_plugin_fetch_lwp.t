@@ -8,6 +8,7 @@ use MyTest::HTTP;
 use MyTest::FTP;
 use MyTest::File;
 use Alien::Build::Util qw( _dump );
+use JSON::PP qw( decode_json );
 
 subtest 'updates requires' => sub {
 
@@ -70,7 +71,7 @@ subtest 'fetch' => sub {
 
   skip_all 'test requires HTTP::Tiny' unless eval { require HTTP::Tiny; HTTP::Tiny->VERSION(0.044); 1 };
 
-  foreach my $type (qw( http ftp file ))
+  foreach my $type (qw( ftp file http ))
   {
     subtest "with $type" => sub {
 
@@ -81,7 +82,7 @@ subtest 'fetch' => sub {
         skip_all $error->() unless $url;
       };
 
-      my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url" );
+      my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url", default_headers => { Frooble => 'Dragon' } );
 
       my $build = alienfile filename => 'corpus/blank/alienfile';
       my $meta = $build->meta;
@@ -133,6 +134,29 @@ subtest 'fetch' => sub {
         eval { $build->fetch("$furl") };
         like $@, qr/^error fetching $type:/;
       };
+
+      if($type eq 'http')
+      {
+        subtest 'headers' => sub {
+          my $furl = URI->new_abs("about.json", $url);
+
+          my $res = $build->fetch("$furl", headers => { Foo => 'bar', Baz => 1, } );
+
+          is(
+            decode_json($res->{content}),
+            hash {
+              field headers => hash {
+                field Foo     => 'bar';
+                field Baz     => 1;
+                field Frooble => 'Dragon';
+                etc;
+              };
+              etc;
+            },
+          );
+        };
+      };
+
     };
   }
 };

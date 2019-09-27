@@ -6,6 +6,7 @@ use lib 't/lib';
 use Path::Tiny qw( path );
 use MyTest::HTTP;
 use Alien::Build::Util qw( _dump );
+use JSON::PP qw( decode_json );
 
 subtest 'updates requires' => sub {
 
@@ -104,7 +105,7 @@ subtest 'fetch' => sub {
   my $url = http_url;
   skip_all http_error unless $url;
 
-  my $plugin = Alien::Build::Plugin::Fetch::HTTPTiny->new( url => "$url" );
+  my $plugin = Alien::Build::Plugin::Fetch::HTTPTiny->new( url => "$url", default_headers => { Frooble => 'Dragon' } );
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
@@ -148,6 +149,27 @@ subtest 'fetch' => sub {
     eval { $build->fetch("$furl") };
     like $@, qr/^error fetching http:/;
   };
+
+  subtest 'headers' => sub {
+    my $furl = URI->new_abs("about.json", $url);
+
+    my $res = $build->fetch("$furl", headers => { Foo => 'bar', Baz => 1, } );
+
+    is(
+      decode_json($res->{content}),
+      hash {
+        field headers => hash {
+          field Foo     => 'bar';
+          field Baz     => 1;
+          field Frooble => 'Dragon';
+          etc;
+        };
+        etc;
+      },
+    );
+
+  };
+
 };
 
 done_testing;

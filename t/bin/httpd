@@ -62,9 +62,11 @@ $config_file->spew(encode_json(\%config));
 plugin( 'Directory', root => $distdir->stringify );
 
 get '/corpus/dist/about.json' => sub {
-  shift->render(
+  my $c = shift;
+  $c->render(
     json => {
       ident   => 'AB Test HTTPd',
+      headers => $c->req->headers->to_hash,
     }
   );
 };
