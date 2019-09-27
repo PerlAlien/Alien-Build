@@ -49,6 +49,14 @@ added as prerequisites.
 
 has ssl => 0;
 
+=head2 default_headers
+
+Hash reference of default headers.
+
+=cut
+
+has default_headers => sub { { } };
+
 # ignored for compatability
 has bootstrap_ssl => 1;
 
@@ -73,11 +81,11 @@ sub init
   }
 
   $meta->register_hook( fetch => sub {
-    my($build, $url) = @_;
+    my($build, $url, %options) = @_;
     $url ||= $self->url;
 
-    my $ua = HTTP::Tiny->new;
-    my $res = $ua->get($url);
+    my $ua = HTTP::Tiny->new( default_headers => $self->default_headers );
+    my $res = $ua->get($url, { headers => $options{headers} || {} });
 
     unless($res->{success})
     {

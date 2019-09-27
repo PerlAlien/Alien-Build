@@ -1141,16 +1141,26 @@ sub download
 
  my $res = $build->fetch;
  my $res = $build->fetch($url);
+ my $res = $build->fetch($url, %options);
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
-described below in the hook documentation.
+described below in the hook documentation.  Options:
+
+=over 4
+
+=item headers
+
+Hash reference of headers to add for this request.  Note that not
+all protocols or plugins will report this option.
+
+=back
 
 =cut
 
 sub fetch
 {
-  my($self, $url) = @_;
-  $self->_call_hook( 'fetch' => $url );
+  my($self, $url, @options) = @_;
+  $self->_call_hook( 'fetch' => $url, @options );
 }
 
 =head2 decode

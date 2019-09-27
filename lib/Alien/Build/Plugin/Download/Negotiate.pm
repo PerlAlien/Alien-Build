@@ -140,6 +140,15 @@ Override the detected decoder.
 
 has 'decoder' => undef;
 
+=head2 default_headers
+
+Hash reference of default headers to use for the user agent.  Note that not all
+protocols and plugins support setting headers.
+
+=cut
+
+has default_headers => sub { { } };
+
 =head1 METHODS
 
 =head2 pick
@@ -251,6 +260,7 @@ sub init
     push @args, url => $self->url if $fetch =~ /^Fetch::(HTTPTiny|LWP|Local|LocalDir|NetFTP|CurlCommand)$/;
     push @args, passive => $self->passive if $fetch eq 'Fetch::NetFTP';
     push @args, bootstrap_ssl => $self->bootstrap_ssl if $self->bootstrap_ssl;
+    push @args, default_headers => $self->default_headers if $fetch =~ /^Fetch::(CurlCommand|HTTPTiny|LWP)$/;
 
     $meta->apply_plugin($fetch, @args);
   }

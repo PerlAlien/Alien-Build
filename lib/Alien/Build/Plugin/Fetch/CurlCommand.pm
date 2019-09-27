@@ -44,6 +44,10 @@ The full path to the C<curl> command.  The default is usually correct.
 
 Ignored by this plugin.  Provided for compatibility with some other fetch plugins.
 
+=head2 default_headers
+
+Hash reference of default headers.
+
 =cut
 
 sub curl_command
@@ -51,6 +55,7 @@ sub curl_command
   defined $ENV{CURL} ? scalar which($ENV{CURL}) : scalar which('curl');
 }
 
+has default_headers => sub { { } };
 has ssl => 0;
 has _see_headers => 0;
 has '+url' => '';
@@ -101,7 +106,7 @@ sub init
 
   $meta->register_hook(
     fetch => sub {
-      my($build, $url) = @_;
+      my($build, $url, %options) = @_;
       $url ||= $self->url;
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
@@ -124,6 +129,21 @@ sub init
           '-L', '-f', '-O', '-J',
           -w => '@writeout',
         );
+
+        push @command, do {
+          my %headers = (%{ $self->default_headers }, %{ $options{headers} || {} });
+          my @header_flags;
+          foreach my $name (sort keys %headers)
+          {
+            my $values = $headers{$name};
+            $values = [$values] unless ref $values;
+            foreach my $value (@$values)
+            {
+              push @header_flags, -H => "$name: $value";
+            }
+          }
+          @header_flags;
+        };
 
         push @command, -D => 'head' if $self->_see_headers;
 
@@ -158,57 +178,6 @@ sub init
           };
         }
       }
-#      elsif($scheme eq 'ftp')
-#      {
-#        if($url =~ m{/$})
-#        {
-#          my($stdout, $stderr) = $self->_execute($build, $self->curl_command, -l => $url);
-#          chomp $stdout;
-#          return {
-#            type => 'list',
-#            list => [
-#              map { { filename => $_, url => "$url$_" } } sort split /\n/, $stdout,
-#            ],
-#          };
-#        }
-#
-#        my $first_error;
-#
-#        {
-#          local $CWD = tempdir( CLEANUP => 1 );
-#
-#          my($filename) = $url =~ m{/([^/]+)$};
-#          $filename = 'unknown' if (! defined $filename) || ($filename eq '');
-#          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -o => $filename, $url) };
-#          $first_error = $@;
-#          if($first_error eq '')
-#          {
-#            return {
-#              type     => 'file',
-#              filename => $filename,
-#              path     => path($filename)->absolute->stringify,
-#            };
-#          }
-#        }
-#
-#        {
-#          my($stdout, $stderr) = eval { $self->_execute($build, $self->curl_command, -l => "$url/") };
-#          if($@ eq '')
-#          {
-#            chomp $stdout;
-#            return {
-#              type => 'list',
-#              list => [
-#                map { { filename => $_, url => "$url/$_" } } sort split /\n/, $stdout,
-#              ],
-#            };
-#          };
-#        }
-#
-#        $first_error ||= 'unknown error';
-#        die $first_error;
-#
-#      }
       else
       {
         die "scheme $scheme is not supported by the Fetch::CurlCommand plugin";

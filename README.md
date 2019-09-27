@@ -529,9 +529,15 @@ Under a `system` install this does not do anything.
 
     my $res = $build->fetch;
     my $res = $build->fetch($url);
+    my $res = $build->fetch($url, %options);
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
-described below in the hook documentation.
+described below in the hook documentation.  Options:
+
+- headers
+
+    Hash reference of headers to add for this request.  Note that not
+    all protocols or plugins will report this option.
 
 ## decode
 

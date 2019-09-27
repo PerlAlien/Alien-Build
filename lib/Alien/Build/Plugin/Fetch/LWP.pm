@@ -47,6 +47,14 @@ added as prerequisites.
 
 has ssl => 0;
 
+=head2 default_headers
+
+Hash reference of default headers.
+
+=cut
+
+has default_headers => sub { { } };
+
 sub init
 {
   my($self, $meta) = @_;
@@ -63,12 +71,16 @@ sub init
   }
 
   $meta->register_hook( fetch => sub {
-    my(undef, $url) = @_;
+    my(undef, $url, %options) = @_;
     $url ||= $self->url;
 
     my $ua = LWP::UserAgent->new;
     $ua->env_proxy;
-    my $res = $ua->get($url);
+    foreach my $name (keys %{ $self->default_headers })
+    {
+      $ua->default_headers->header($name => $self->default_headers->{$name});
+    }
+    my $res = $ua->get($url, %{ $options{headers} || {} });
 
     die "error fetching $url: @{[ $res->status_line ]}"
       unless $res->is_success;
