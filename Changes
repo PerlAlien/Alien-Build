@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Added Test::Alien::Diag
+  - Test::Alien ffi_ok add api option.
 
 1.89      2019-09-25 07:58:39 -0600
   - Production release identical to 1.88_01
