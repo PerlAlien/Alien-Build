@@ -141,6 +141,7 @@ pod_spelling_system:
     - logx
     - google
     - chatroom
+    - api
 
 pod_coverage:
   skip: 0
