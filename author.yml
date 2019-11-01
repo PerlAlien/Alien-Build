@@ -139,6 +139,8 @@ pod_spelling_system:
     - KIWIROY
     - Overridable
     - logx
+    - google
+    - chatroom
 
 pod_coverage:
   skip: 0
