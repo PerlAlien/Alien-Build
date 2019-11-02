@@ -677,6 +677,7 @@ sub dynamic_libs {
     unless(defined $name)
     {
       $name = $class->config('name');
+      $name = '' unless defined $name;
       # strip leading lib from things like libarchive or libffi
       $name =~ s/^lib//;
       # strip trailing version numbers

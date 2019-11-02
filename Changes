@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix bug where Test::Alien::Diag could crash for Aliens without
+    dynamic libraries.
 
 1.90      2019-11-01 16:15:32 -0700
   - Added Test::Alien::Diag (gh#142)

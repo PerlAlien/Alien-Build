@@ -70,7 +70,9 @@ sub alien_diag ($@)
       if(eval { $alien->can($name) })
       {
         $found++;
-        $ctx->diag(sprintf "%-${max}s = %s", "$alien->$name", $_) for $alien->$name;
+        my @list = eval { $alien->$name };
+        next if $@;
+        $ctx->diag(sprintf "%-${max}s = %s", "$alien->$name", $_) for @list;
       }
     }
 
