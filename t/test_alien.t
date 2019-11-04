@@ -9,6 +9,7 @@ use ExtUtils::CBuilder;
 use Alien::Build::Util qw( _dump );
 use List::Util 1.33 qw( any );
 use Config;
+use Test2::API 1.302096 ();
 
 sub _reset
 {
