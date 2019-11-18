@@ -17,7 +17,7 @@ share {
   plugin 'Build::Autoconf';
 
   build [
-    'git checkout v1.00',
+    'git checkout 1.00',
     'bash autogen.sh',
     '%{configure} --disable-shared',
     '%{make}',

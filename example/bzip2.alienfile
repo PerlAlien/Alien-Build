@@ -47,13 +47,9 @@ share {
   plugin 'Build::MSYS';
 
   # The Download negotiator picks the best method for
-  # downloading the package.  It uses the version
-  # regex to parse out the version number from the
-  # tarball so that it can pick the most recent
-  # version.
-  start_url 'http://www.bzip.org/downloads.html';
+  # downloading the package.
   plugin 'Download' => (
-    version => qr/^bzip2-([0-9\.]+)tar.gz$/,
+    url => 'https://sourceforge.net/projects/bzip2/files/latest/download',
   );
 
   # The Extract negotiator picks the best method for
