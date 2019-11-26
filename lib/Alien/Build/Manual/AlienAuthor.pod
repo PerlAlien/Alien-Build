@@ -55,6 +55,12 @@ just put the commands in your L<alienfile>.  For example, lets suppose
 that libfoo is built using autoconf and provides a C<pkg-config> C<.pc>
 file.
 
+We will also later discuss plugins.  For common build systems like
+autoconf or CMake, it is usually better to use the appropriate plugin
+because they will handle corner cases better than a simple set of
+commands.  We're going to take a look at commands first because it's
+easier to understand the different phases with commands.
+
 (Aside, autoconf is a series of tools and macros used to configure 
 (usually) a C or C++ library or tool by generating any number of 
 Makefiles.  It is the C equivalent to L<ExtUtils::MakeMaker>, if you 
@@ -537,6 +543,21 @@ is the FFI equivalent to the XS example above).
    my $something = $ffi->function( something => [] => 'int' );
    is $something->call(), 1, 'Foo::something() returns 1';
  };
+
+If you do use C<ffi_ok> you want to make sure that your alien reliably
+produces dynamic libraries.  If it isn't consistent (if for example
+some platforms tend not to provide or build dynamic libraries), you can
+check that C<dynamic_libs> doesn't return an empty list.
+
+ ...
+ alien_ok 'Alien::Libfoo';
+ SKIP: {
+   skip "This test requires a dynamic library"
+     unless Alien::Libfoo->dynamic_libs;
+   ffi_ok { symbols [ 'something' ] }, with_subtest {
+     ...
+   };
+ }
 
 More details on testing L<Alien> modules can be found in the 
 L<Test::Alien> documentation.
