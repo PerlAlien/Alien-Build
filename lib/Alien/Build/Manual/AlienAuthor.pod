@@ -402,10 +402,25 @@ Once you have a working L<alienfile> you can write your C<Makefile.PL>.
  my $abmm = Alien::Build::MM->new;
  
  WriteMakefile($abmm->mm_args(
-   ABSTRACT => 'Discover or download and install libfoo',
-   DISTNAME => 'Alien-Libfoo',
-   NAME     => 'Alien::Libfoo',
-   VERSION_FROM => 'lib/Alien/Libfoo.pm',
+   ABSTRACT           => 'Discover or download and install libfoo',
+   DISTNAME           => 'Alien-Libfoo',
+   NAME               => 'Alien::Libfoo',
+   VERSION_FROM       => 'lib/Alien/Libfoo.pm',
+   CONFIGURE_REQUIRES => {
+     'Alien::Build::MM' => 0,
+   },
+   BUILD_REQUIRES => {
+     'Alien::Build::MM' => 0,
+   },
+   PREREQ_PM => {
+     'Alien::Base' => 0,
+   },
+   # If you are going to write the recommended
+   # tests you will will want these:
+   TEST_REQUIRES => {
+     'Test::Alien' => 0,
+     'Test2::V0'   => 0,
+   },
  ));
  
  sub MY::postamble {
@@ -492,7 +507,7 @@ alien will work with any XS modules that are going to use it:
  
  MODULE = Foo PACKAGE = Foo
  
- int something(class)
+ int something()
 
 You can also use L<Test::Alien> to test tools instead of libraries:
 
@@ -505,6 +520,23 @@ You can also use L<Test::Alien> to test tools instead of libraries:
    ->exit_is(0);
  
  done_testing;
+
+You can also write tests specifically for L<FFI::Platypus>, if your
+alien is going to be used to write FFI bindings.  (the test below
+is the FFI equivalent to the XS example above).
+
+ use Test2::V0;
+ use Test::Alien;
+ use Alien::Libfoo;
+
+ alien_ok 'Alien::Libfoo';
+ ffi_ok { symbols => [ 'something' ] }, with_subtest {
+   # $ffi is an instance of FFI::Platypus with the lib
+   # set appropriately.
+   my($ffi) = @_;
+   my $something = $ffi->function( something => [] => 'int' );
+   is $something->call(), 1, 'Foo::something() returns 1';
+ };
 
 More details on testing L<Alien> modules can be found in the 
 L<Test::Alien> documentation.
