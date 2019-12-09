@@ -77,6 +77,24 @@ sub protocol_ok
   my($out, $err, $exit) = capture {
     system $curl, '--version';
   };
+
+  {
+    # make sure curl supports the -J option.
+    # CentOS 6 for example is recent enough
+    # that it does not.  gh#147, gh#148, gh#149
+    local $CWD = tempdir( CLEANUP => 1 );
+    my $file1 = path('foo/foo.txt');
+    $file1->parent->mkpath;
+    $file1->spew("hello world\n");
+    my $url = 'file1://' . $file1->absolute;
+    my($out, $err, $exit) = capture {
+      system $curl, '-O', '-J', $url;
+    };
+    unlink "$file1";
+    rmdir($file1->parent);
+    return 0 if $exit;
+  }
+
   foreach my $line (split /\n/, $out)
   {
     if($line =~ /^Protocols:\s*(.*)\s*$/)
