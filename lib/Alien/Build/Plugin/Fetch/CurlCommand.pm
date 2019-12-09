@@ -90,7 +90,9 @@ sub protocol_ok
     my($out, $err, $exit) = capture {
       system $curl, '-O', '-J', $url;
     };
+    my $file2 = $file1->parent->child($file1->basename);
     unlink "$file1";
+    unlink "$file2";
     rmdir($file1->parent);
     return 0 if $exit;
   }
