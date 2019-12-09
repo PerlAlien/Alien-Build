@@ -230,7 +230,6 @@ subtest 'live test' => sub {
     my $curl = which('curl');
     is $curl, T();
     note "curl = $curl";
-    $DB::single = 1;
     my $pok = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https');
     is $pok, T();
   }
