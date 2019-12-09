@@ -86,7 +86,7 @@ sub protocol_ok
     my $file1 = path('foo/foo.txt');
     $file1->parent->mkpath;
     $file1->spew("hello world\n");
-    my $url = 'file1://' . $file1->absolute;
+    my $url = 'file://' . $file1->absolute;
     my($out, $err, $exit) = capture {
       system $curl, '-O', '-J', $url;
     };

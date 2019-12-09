@@ -6,6 +6,7 @@ use Alien::Build::Plugin::Fetch::CurlCommand;
 use Path::Tiny qw( path );
 use Capture::Tiny ();
 use JSON::PP ();
+use File::Which qw( which );
 
 $Alien::Build::Plugin::Fetch::CurlCommand::VERSION = '1.19';
 
@@ -217,13 +218,21 @@ subtest 'live test' => sub {
 
   if(defined $ENV{CIPDIST} && $ENV{CIPDIST} eq 'centos6')
   {
-    require File::Which;
-    my $curl = File::Which::which('curl');
+    my $curl = which('curl');
     is $curl, T();
     note "curl = $curl";
     my $pok = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https');
     is $pok, F();
     return;
+  }
+  else
+  {
+    my $curl = which('curl');
+    is $curl, T();
+    note "curl = $curl";
+    $DB::single = 1;
+    my $pok = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https');
+    is $pok, T();
   }
 
   require Alien::Build::Plugin::Download::Negotiate;
