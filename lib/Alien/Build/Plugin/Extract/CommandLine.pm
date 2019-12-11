@@ -84,7 +84,7 @@ The C<tar> command, if available.  C<undef> if not available.
   sub _windows_tar_is_bsdtar
   {
     return 1 if $^O ne 'MSWin32';
-	return $bsd_tar if defined $bsd_tar;
+    return $bsd_tar if defined $bsd_tar;
     my($out) = capture_merged {
       system 'tar', '--version';
     };
