@@ -106,7 +106,7 @@ sub tar_cmd
     : $^O eq 'solaris' && _which('gtar')
       ? 'gtar'
       # See note above for Windows logic.
-      : _which('tar') && _windows_tar_is_bsdtar
+      : _which('tar') && _windows_tar_is_bsdtar()
         ? 'tar'
         : _which('ptar')
           ? 'ptar'
