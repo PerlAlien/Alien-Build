@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Prefer tar.exe on Windows if it is bsdtar (gh#150)
 
 1.93      2019-12-09 02:22:44 -0700
   - curl plugin not used unless required -J option is supported.
