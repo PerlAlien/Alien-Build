@@ -81,6 +81,11 @@ The C<tar> command, if available.  C<undef> if not available.
 {
   my $bsd_tar;
 
+  # Note: GNU tar can be iffy to very bad on windows, where absolute
+  # paths get confused with remote tars.  We used to assume that 'tar.exe'
+  # is borked on Windows, but recent versions of Windows 10 come bundled
+  # with bsdtar (libarchive) named 'tar.exe', and we should definitely
+  # prefer that to ptar.
   sub _windows_tar_is_bsdtar
   {
     return 1 if $^O ne 'MSWin32';
@@ -100,11 +105,7 @@ sub tar_cmd
     # but seems to have gtar in the path by default, which is okay with it
     : $^O eq 'solaris' && _which('gtar')
       ? 'gtar'
-      # TODO: GNU tar can be iffy on windows, where absolute
-      # paths get confused with remote tars.  *sigh* fix later
-      # if we can, for now just assume that 'tar.exe' is borked
-      # on windows to be on the safe side.  The Fetch::ArchiveTar
-      # is probably a better plugin to use on windows anyway.
+      # See note above for Windows logic.
       : _which('tar') && _windows_tar_is_bsdtar
         ? 'tar'
         : _which('ptar')
