@@ -78,6 +78,20 @@ The C<tar> command, if available.  C<undef> if not available.
 
 =cut
 
+{
+  my $bsd_tar;
+
+  sub _windows_tar_is_bsdtar
+  {
+    return 1 if $^O ne 'MSWin32';
+	return $bsd_tar if defined $bsd_tar;
+    my($out) = capture_merged {
+      system 'tar', '--version';
+    };
+    return $bsd_tar = $out =~ /bsdtar/ ? 1 : 0
+  }
+}
+
 sub tar_cmd
 {
   _which('bsdtar')
@@ -91,7 +105,7 @@ sub tar_cmd
       # if we can, for now just assume that 'tar.exe' is borked
       # on windows to be on the safe side.  The Fetch::ArchiveTar
       # is probably a better plugin to use on windows anyway.
-      : _which('tar') && $^O ne 'MSWin32'
+      : _which('tar') && _windows_tar_is_bsdtar
         ? 'tar'
         : _which('ptar')
           ? 'ptar'
