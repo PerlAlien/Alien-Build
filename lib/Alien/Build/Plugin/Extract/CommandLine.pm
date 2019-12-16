@@ -121,7 +121,14 @@ The C<unzip> command, if available.  C<undef> if not available.
 
 sub unzip_cmd
 {
-  _which('unzip') ? 'unzip' : undef;
+  if($^O eq 'MSWin32' && _which('tar') && _windows_tar_is_bsdtar())
+  {
+    (_which('tar'), 'xf');
+  }
+  else
+  {
+    _which('unzip') ? 'unzip' : undef;
+  }
 }
 
 sub _run
