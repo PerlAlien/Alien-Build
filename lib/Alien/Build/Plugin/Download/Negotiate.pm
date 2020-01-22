@@ -3,7 +3,6 @@ package Alien::Build::Plugin::Download::Negotiate;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
-use Module::Load ();
 use Alien::Build::Util qw( _has_ssl );
 use Carp ();
 

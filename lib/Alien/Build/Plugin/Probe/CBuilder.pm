@@ -109,8 +109,9 @@ sub init
     my $libs   = '';
     foreach my $alien (@{ $self->aliens })
     {
-      require Module::Load;
-      Module::Load::load($alien);
+      my $pm = "$alien.pm";
+      $pm =~ s/::/\//g;
+      require $pm;
       $cflags .= $alien->cflags . ' ';
       $libs   .= $alien->libs   . ' ';
     }
