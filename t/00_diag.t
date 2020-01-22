@@ -30,7 +30,7 @@ $modules{$_} = $_ for qw(
   File::Listing::Ftpcopy
   File::Which
   File::chdir
-  HTML::LinkExtor
+  HTML::Parser
   HTTP::Tiny
   IO::Compress::Bzip2
   IO::Socket::SSL
