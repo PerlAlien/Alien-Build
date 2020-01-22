@@ -4,16 +4,18 @@ Build external dependencies for use in CPAN
 
 # SYNOPSIS
 
-    my $build = Alien::Build->load('./alienfile');
-    $build->load_requires('configure');
-    $build->set_prefix('/usr/local');
-    $build->set_stage('/foo/mystage');  # needs to be absolute
-    $build->load_requires($build->install_type);
-    $build->download;
-    $build->build;
-    # files are now in /foo/mystage, it is your job (or
-    # ExtUtils::MakeMaker, Module::Build, etc) to copy
-    # those files into /usr/local
+```perl
+my $build = Alien::Build->load('./alienfile');
+$build->load_requires('configure');
+$build->set_prefix('/usr/local');
+$build->set_stage('/foo/mystage');  # needs to be absolute
+$build->load_requires($build->install_type);
+$build->download;
+$build->build;
+# files are now in /foo/mystage, it is your job (or
+# ExtUtils::MakeMaker, Module::Build, etc) to copy
+# those files into /usr/local
+```
 
 # DESCRIPTION
 
@@ -58,7 +60,9 @@ goals of this project is to remain installer agnostic.
 
 ## new
 
-    my $build = Alien::Build->new;
+```perl
+my $build = Alien::Build->new;
+```
 
 This creates a new empty instance of [Alien::Build](https://metacpan.org/pod/Alien::Build).  Normally you will
 want to use `load` below to create an instance of [Alien::Build](https://metacpan.org/pod/Alien::Build) from
@@ -66,14 +70,18 @@ an [alienfile](https://metacpan.org/pod/alienfile) recipe.
 
 ## load
 
-    my $build = Alien::Build->load($alienfile);
+```perl
+my $build = Alien::Build->load($alienfile);
+```
 
 This creates an [Alien::Build](https://metacpan.org/pod/Alien::Build) instance with the given [alienfile](https://metacpan.org/pod/alienfile)
 recipe.
 
 ## resume
 
-    my $build = Alien::Build->resume($alienfile, $root);
+```perl
+my $build = Alien::Build->resume($alienfile, $root);
+```
 
 Load a checkpointed [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.  You will need the original
 [alienfile](https://metacpan.org/pod/alienfile) and the build root (usually `_alien`), and a build that
@@ -94,46 +102,54 @@ so that it does not interfere with other plugin or future versions of
 `Alien::Build::Plugin::Fetch::NewProtocol`, please use the prefix
 `plugin_fetch_newprotocol`:
 
-    sub init
-    {
-      my($self, $meta) = @_;
-    
-      $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
-    
-      $meta->register_hook(
-        some_hook => sub {
-          my($build) = @_;
-          $build->install_prop->{plugin_fetch_newprotocol_bar} = 'some other value';
-          $build->runtime_prop->{plugin_fetch_newprotocol_baz} = 'and another value';
-        }
-      );
+```perl
+sub init
+{
+  my($self, $meta) = @_;
+
+  $meta->prop( plugin_fetch_newprotocol_foo => 'some value' );
+
+  $meta->register_hook(
+    some_hook => sub {
+      my($build) = @_;
+      $build->install_prop->{plugin_fetch_newprotocol_bar} = 'some other value';
+      $build->runtime_prop->{plugin_fetch_newprotocol_baz} = 'and another value';
     }
+  );
+}
+```
 
 If you are writing a [alienfile](https://metacpan.org/pod/alienfile) recipe please use the prefix `my_`:
 
-    use alienfile;
-    
-    meta_prop->{my_foo} = 'some value';
-    
-    probe sub {
-      my($build) = @_;
-      $build->install_prop->{my_bar} = 'some other value';
-      $build->install_prop->{my_baz} = 'and another value';
-    };
+```perl
+use alienfile;
+
+meta_prop->{my_foo} = 'some value';
+
+probe sub {
+  my($build) = @_;
+  $build->install_prop->{my_bar} = 'some other value';
+  $build->install_prop->{my_baz} = 'and another value';
+};
+```
 
 Any property may be used from a command:
 
-    probe [ 'some command %{.meta.plugin_fetch_newprotocol_foo}' ];
-    probe [ 'some command %{.install.plugin_fetch_newprotocol_bar}' ];
-    probe [ 'some command %{.runtime.plugin_fetch_newprotocol_baz}' ];
-    probe [ 'some command %{.meta.my_foo}' ];
-    probe [ 'some command %{.install.my_bar}' ];
-    probe [ 'some command %{.runtime.my_baz}' ];
+```perl
+probe [ 'some command %{.meta.plugin_fetch_newprotocol_foo}' ];
+probe [ 'some command %{.install.plugin_fetch_newprotocol_bar}' ];
+probe [ 'some command %{.runtime.plugin_fetch_newprotocol_baz}' ];
+probe [ 'some command %{.meta.my_foo}' ];
+probe [ 'some command %{.install.my_bar}' ];
+probe [ 'some command %{.runtime.my_baz}' ];
+```
 
 ## meta\_prop
 
-    my $href = $build->meta_prop;
-    my $href = Alien::Build->meta_prop;
+```perl
+my $href = $build->meta_prop;
+my $href = Alien::Build->meta_prop;
+```
 
 Meta properties have to do with the recipe itself, and not any particular
 instance that probes or builds that recipe.  Meta properties can be changed
@@ -173,8 +189,10 @@ but if you do not follow this rule your recipe will likely be broken.
 
     Environment variable values will be interpolated with helpers.  Example:
 
-        meta->prop->{env_interpolate} = 1;
-        meta->prop->{env}->{PERL} = '%{perl}';
+    ```
+    meta->prop->{env_interpolate} = 1;
+    meta->prop->{env}->{PERL} = '%{perl}';
+    ```
 
 - local\_source
 
@@ -241,7 +259,9 @@ but if you do not follow this rule your recipe will likely be broken.
 
 ## install\_prop
 
-    my $href = $build->install_prop;
+```perl
+my $href = $build->install_prop;
+```
 
 Install properties are used during the install phase (either
 under `share` or `system` install).  They are remembered for
@@ -310,7 +330,9 @@ based module.
 
 ## runtime\_prop
 
-    my $href = $build->runtime_prop;
+```perl
+my $href = $build->runtime_prop;
+```
 
 Runtime properties are used during the install and runtime phases
 (either under `share` or `system` install).  This should include
@@ -356,7 +378,9 @@ relevant once the install process is complete.
 
     - share
 
-            $build->runtime_prop->{ffi_checklib}->{share} = [ ... ];
+        ```
+        $build->runtime_prop->{ffi_checklib}->{share} = [ ... ];
+        ```
 
         Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
         for a `share` install.
@@ -369,7 +393,9 @@ relevant once the install process is complete.
         Among other things, useful for specifying the `try_linker_script`
         flag:
 
-            $build->runtime_prop->{ffi_checklib}->{system} = [ try_linker_script => 1 ];
+        ```perl
+        $build->runtime_prop->{ffi_checklib}->{system} = [ try_linker_script => 1 ];
+        ```
 
 - install\_type
 
@@ -411,7 +437,9 @@ relevant once the install process is complete.
 
 ## hook\_prop
 
-    my $href = $build->hook_prop;
+```perl
+my $href = $build->hook_prop;
+```
 
 Hook properties are for the currently running (if any) hook.  They are
 used only during the execution of each hook and are discarded after.
@@ -431,7 +459,9 @@ If no hook is currently running then `hook_prop` will return `undef`.
 
 ## checkpoint
 
-    $build->checkpoint;
+```
+$build->checkpoint;
+```
 
 Save any install or runtime properties so that they can be reloaded on
 a subsequent run in a separate process.  This is useful if your build
@@ -442,17 +472,23 @@ process.
 
 ## root
 
-    my $dir = $build->root;
+```perl
+my $dir = $build->root;
+```
 
 This is just a shortcut for:
 
-    my $root = $build->install_prop->{root};
+```perl
+my $root = $build->install_prop->{root};
+```
 
 Except that it will be created if it does not already exist.
 
 ## install\_type
 
-    my $type = $build->install_type;
+```perl
+my $type = $build->install_type;
+```
 
 This will return the install type.  (See the like named install property
 above for details).  This method will call `probe` if it has not already
@@ -460,21 +496,27 @@ been called.
 
 ## set\_prefix
 
-    $build->set_prefix($prefix);
+```
+$build->set_prefix($prefix);
+```
 
 Set the final (unstaged) prefix.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM)
 and similar modules.  It is not intended for use from plugins or from an [alienfile](https://metacpan.org/pod/alienfile).
 
 ## set\_stage
 
-    $build->set_stage($dir);
+```
+$build->set_stage($dir);
+```
 
 Sets the stage directory.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM)
 and similar modules.  It is not intended for use from plugins or from an [alienfile](https://metacpan.org/pod/alienfile).
 
 ## requires
 
-    my $hash = $build->requires($phase);
+```perl
+my $hash = $build->requires($phase);
+```
 
 Returns a hash reference of the modules required for the given phase.  Phases
 include:
@@ -497,14 +539,18 @@ include:
 
 ## load\_requires
 
-    $build->load_requires($phase);
+```
+$build->load_requires($phase);
+```
 
 This loads the appropriate modules for the given phase (see `requires` above
 for a description of the phases).
 
 ## probe
 
-    my $install_type = $build->probe;
+```perl
+my $install_type = $build->probe;
+```
 
 Attempts to determine if the operating system has the library or
 tool already installed.  If so, then the string `system` will
@@ -519,7 +565,9 @@ an exception.
 
 ## download
 
-    $build->download;
+```
+$build->download;
+```
 
 Download the source, usually as a tarball, usually from the internet.
 
@@ -527,22 +575,28 @@ Under a `system` install this does not do anything.
 
 ## fetch
 
-    my $res = $build->fetch;
-    my $res = $build->fetch($url);
+```perl
+my $res = $build->fetch;
+my $res = $build->fetch($url);
+```
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
 described below in the hook documentation.
 
 ## decode
 
-    my $decoded_res = $build->decode($res);
+```perl
+my $decoded_res = $build->decode($res);
+```
 
 Decode the HTML or file listing returned by `fetch`.  Returns the same
 hash structure described below in the hook documentation.
 
 ## prefer
 
-    my $sorted_res = $build->prefer($res);
+```perl
+my $sorted_res = $build->prefer($res);
+```
 
 Filter and sort candidates.  The preferred candidate will be returned first in the list.
 The worst candidate will be returned last.  Returns the same hash structure described
@@ -550,15 +604,19 @@ below in the hook documentation.
 
 ## extract
 
-    my $dir = $build->extract;
-    my $dir = $build->extract($archive);
+```perl
+my $dir = $build->extract;
+my $dir = $build->extract($archive);
+```
 
 Extracts the given archive into a fresh directory.  This is normally called internally
 to [Alien::Build](https://metacpan.org/pod/Alien::Build), and for normal usage is not needed from a plugin or [alienfile](https://metacpan.org/pod/alienfile).
 
 ## build
 
-    $build->build;
+```
+$build->build;
+```
 
 Run the build step.  It is expected that `probe` and `download`
 have already been performed.  What it actually does depends on the
@@ -575,13 +633,17 @@ type of install:
 
 ## test
 
-    $build->test;
+```
+$build->test;
+```
 
 Run the test phase
 
 ## clean\_install
 
-    $build->clean_install
+```
+$build->clean_install
+```
 
 Clean files from the final install location.  The default implementation removes all
 files recursively except for the `_alien` directory.  This is helpful when you have
@@ -591,22 +653,28 @@ For a non-share install this doesn't do anything.
 
 ## system
 
-    $build->system($command);
-    $build->system($command, @args);
+```
+$build->system($command);
+$build->system($command, @args);
+```
 
 Interpolates the command and arguments and run the results using
 the Perl `system` command.
 
 ## log
 
-    $build->log($message);
+```
+$build->log($message);
+```
 
 Send a message to the log.  By default this prints to `STDOUT`.
 
 ## meta
 
-    my $meta = Alien::Build->meta;
-    my $meta = $build->meta;
+```perl
+my $meta = Alien::Build->meta;
+my $meta = $build->meta;
+```
 
 Returns the meta object for your [Alien::Build](https://metacpan.org/pod/Alien::Build) class or instance.  The
 meta object is a way to manipulate the recipe, and so any changes to the
@@ -616,14 +684,18 @@ meta object should be made before the `probe`, `download` or `build` steps.
 
 ## prop
 
-    my $href = $build->meta->prop;
+```perl
+my $href = $build->meta->prop;
+```
 
 Meta properties.  This is the same as calling `meta_prop` on
 the class or [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.
 
 ## add\_requires
 
-    Alien::Build->meta->add_requires($phase, $module => $version, ...);
+```perl
+Alien::Build->meta->add_requires($phase, $module => $version, ...);
+```
 
 Add the requirement to the given phase.  Phase should be one of:
 
@@ -634,65 +706,79 @@ Add the requirement to the given phase.  Phase should be one of:
 
 ## interpolator
 
-    my $interpolator = $build->meta->interpolator;
-    my $interpolator = Alien::Build->interpolator;
+```perl
+my $interpolator = $build->meta->interpolator;
+my $interpolator = Alien::Build->interpolator;
+```
 
 Returns the [Alien::Build::Interpolate](https://metacpan.org/pod/Alien::Build::Interpolate) instance for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
 
 ## has\_hook
 
-    my $bool = $build->meta->has_hook($name);
-    my $bool = Alien::Build->has_hook($name);
+```perl
+my $bool = $build->meta->has_hook($name);
+my $bool = Alien::Build->has_hook($name);
+```
 
 Returns if there is a usable hook registered with the given name.
 
 ## register\_hook
 
-    $build->meta->register_hook($name, $instructions);
-    Alien::Build->meta->register_hook($name, $instructions);
+```
+$build->meta->register_hook($name, $instructions);
+Alien::Build->meta->register_hook($name, $instructions);
+```
 
 Register a hook with the given name.  `$instruction` should be either
 a code reference, or a command sequence, which is an array reference.
 
 ## default\_hook
 
-    $build->meta->default_hook($name, $instructions);
-    Alien::Build->meta->default_hook($name, $instructions);
+```
+$build->meta->default_hook($name, $instructions);
+Alien::Build->meta->default_hook($name, $instructions);
+```
 
 Register a default hook, which will be used if the [alienfile](https://metacpan.org/pod/alienfile) does not
 register its own hook with that name.
 
 ## around\_hook
 
-    $build->meta->around_hook($hook, $code);
-    Alien::Build->meta->around_hook($name, $code);
+```
+$build->meta->around_hook($hook, $code);
+Alien::Build->meta->around_hook($name, $code);
+```
 
 Wrap the given hook with a code reference.  This is similar to a [Moose](https://metacpan.org/pod/Moose)
 method modifier, except that it wraps around the given hook instead of
 a method.  For example, this will add a probe system requirement:
 
-    $build->meta->around_hook(
-      probe => sub {
-        my $orig = shift;
-        my $build = shift;
-        my $type = $orig->($build, @_);
-        return $type unless $type eq 'system';
-        # also require a configuration file
-        if(-f '/etc/foo.conf')
-        {
-          return 'system';
-        }
-        else
-        {
-          return 'share';
-        }
-      },
-    );
+```perl
+$build->meta->around_hook(
+  probe => sub {
+    my $orig = shift;
+    my $build = shift;
+    my $type = $orig->($build, @_);
+    return $type unless $type eq 'system';
+    # also require a configuration file
+    if(-f '/etc/foo.conf')
+    {
+      return 'system';
+    }
+    else
+    {
+      return 'share';
+    }
+  },
+);
+```
 
 ## apply\_plugin
 
-    Alien::Build->meta->apply_plugin($name);
-    Alien::Build->meta->apply_plugin($name, @args);
+```
+Alien::Build->meta->apply_plugin($name);
+Alien::Build->meta->apply_plugin($name, @args);
+```
 
 Apply the given plugin with the given arguments.
 
