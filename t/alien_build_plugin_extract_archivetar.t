@@ -5,7 +5,6 @@ use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
 use File::Temp qw( tempdir );
 use Alien::Build::Util qw( _dump );
-use Test2::Mock;
 
 subtest 'available' => sub {
 
@@ -29,8 +28,7 @@ subtest 'available' => sub {
 
     skip_all 'test requires Archive::Tar with has_zlib_support' unless eval { require Archive::Tar; Archive::Tar->can('has_zlib_support') };
 
-    my $mock = Test2::Mock->new(
-      class => 'Archive::Tar',
+    my $mock = mock 'Archive::Tar' => (
       override => [
         has_zlib_support => sub {
           note "has_it = $has_it";
@@ -63,8 +61,7 @@ subtest 'available' => sub {
 
     skip_all 'test requires Archive::Tar with has_bzip2_support' unless eval { require Archive::Tar; Archive::Tar->can('has_bzip2_support') };
 
-    my $mock = Test2::Mock->new(
-      class => 'Archive::Tar',
+    my $mock = mock 'Archive::Tar' => (
       override => [
         has_bzip2_support => sub {
           note "has_it = $has_it";

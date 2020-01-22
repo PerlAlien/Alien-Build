@@ -3,15 +3,12 @@ use Test::Alien::Build;
 use lib 't/lib';
 use MyTest::System;
 use Alien::Build::Plugin::Probe::CBuilder;
-use Test2::Mock;
 use Capture::Tiny qw( capture_merged );
 use Path::Tiny qw( path );
 
 subtest 'basic' => sub {
 
-  my $mock = Test2::Mock->new(
-    class => 'ExtUtils::CBuilder',
-  );
+  my $mock = mock 'ExtUtils::CBuilder';
 
   my @args_new;
   my @args_compile;
@@ -82,9 +79,7 @@ subtest 'basic' => sub {
 
 subtest 'program' => sub {
 
-  my $mock = Test2::Mock->new(
-    class => 'ExtUtils::CBuilder',
-  );
+  my $mock = mock 'ExtUtils::CBuilder';
 
   $mock->add('new' => sub {
     bless {}, 'ExtUtils::CBuilder';
@@ -124,9 +119,7 @@ subtest 'program' => sub {
 
 subtest 'program' => sub {
 
-  my $mock = Test2::Mock->new(
-    class => 'ExtUtils::CBuilder',
-  );
+  my $mock = mock 'ExtUtils::CBuilder';
 
   $mock->add('new' => sub {
     bless {}, 'ExtUtils::CBuilder';
@@ -174,9 +167,7 @@ subtest 'program' => sub {
 
 subtest 'fail' => sub {
 
-  my $mock = Test2::Mock->new(
-    class => 'ExtUtils::CBuilder',
-  );
+  my $mock = mock 'ExtUtils::CBuilder';
 
   $mock->add('new' => sub {
     bless {}, 'ExtUtils::CBuilder';

@@ -1,6 +1,5 @@
 use lib 'corpus/lib';
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use Test::Alien;
 use Alien::Foo;
 use Alien::libfoo1;
@@ -292,8 +291,7 @@ subtest 'ffi_ok' => sub {
 
       my @symbols;
 
-      my $mock = Test2::Mock->new(
-        class => 'FFI::Platypus',
+      my $mock = mock 'FFI::Platypus' => (
         override => [
           find_symbol => sub {
             my(undef, $symbol) = @_;
@@ -501,8 +499,7 @@ EOF
 
     my @xs_load_args;
 
-      my $mock = Test2::Mock->new(
-      class => 'Test::Alien::Synthetic',
+      my $mock = mock 'Test::Alien::Synthetic' => (
       add => [
         xs_load => sub {
           my($alien, $module, $version, @rest) = @_;
@@ -568,7 +565,7 @@ EOF
 
 subtest 'xs_ok without no compiler' => sub {
 
-  my $mock = Test2::Mock->new(
+  my $mock = mock 'ExtUtils::CBuilder' => (
     'class' => 'ExtUtils::CBuilder',
     override => [
       have_compiler => sub {

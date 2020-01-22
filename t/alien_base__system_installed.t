@@ -1,7 +1,6 @@
 use lib 't/lib';
 use MyTest::System;
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use File::chdir;
 use List::Util qw/shuffle/;
 use Capture::Tiny qw( capture_merged );
@@ -72,8 +71,7 @@ subtest 'basic' => sub {
     },
   ;
 
-  my $mock = Test2::Mock->new(
-    class => 'Alien::Base::PkgConfig',
+  my $mock = mock 'Alien::Base::PkgConfig' => (
     override => [
       pkg_config_command => sub {
         'pkg-config',

@@ -50,7 +50,6 @@ $modules{$_} = $_ for qw(
   Readonly
   Sort::Versions
   Test2::API
-  Test2::Mock
   Test2::Require
   Test2::Require::Module
   Test2::V0
@@ -155,3 +154,4 @@ if($post_diag)
 spacer;
 
 done_testing;
+
