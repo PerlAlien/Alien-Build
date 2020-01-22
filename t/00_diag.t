@@ -20,6 +20,7 @@ $modules{$_} = $_ for qw(
   Archive::Zip
   Capture::Tiny
   Devel::Hide
+  Env::ShellWords
   ExtUtils::CBuilder
   ExtUtils::MakeMaker
   ExtUtils::ParseXS
@@ -50,8 +51,6 @@ $modules{$_} = $_ for qw(
   Readonly
   Sort::Versions
   Test2::API
-  Test2::Require
-  Test2::Require::Module
   Test2::V0
   Text::ParseWords
   URI

@@ -1,9 +1,11 @@
 use lib 'corpus/lib';
-use Test2::Require::Module 'Sort::Versions';
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Prefer::GoodVersion;
 use Path::Tiny qw( path );
+
+eval { require Sort::Versions };
+skip_all 'test requires Sort::Versions' if $@;
 
 $Alien::Build::Plugin::Prefer::GoodVersion::VERSION ||= '1.44';
 

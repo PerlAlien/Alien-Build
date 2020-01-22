@@ -1,9 +1,11 @@
-use Test2::Require::Module 'Alien::cmake3';
 use Test2::V0 -no_srand => 1;
 use Test::Alien;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Build::CMake;
 use Path::Tiny ();
+
+eval { require Alien::cmake3 };
+skip_all 'test requires Alien::cmake3' if $@;
 
 # To see the actual commands being executed
 $ENV{VERBOSE} = 1;

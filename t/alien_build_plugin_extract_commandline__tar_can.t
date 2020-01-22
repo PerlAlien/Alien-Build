@@ -1,7 +1,9 @@
-use Test2::Require::Module 'Readonly' => '1.60';
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::CommandLine;
+
+eval { require Readonly; Readonly->VERSION('1.60') }; ## no critic (Freenode::PreferredAlternatives)
+skip_all 'test requires Readonly 1.60' if $@;
 
 subtest 'tar can' => sub {
   my $build = alienfile filename => 'corpus/blank/alienfile';
@@ -9,7 +11,7 @@ subtest 'tar can' => sub {
 
   my $plugin = Alien::Build::Plugin::Extract::CommandLine->new;
 
-  Readonly::Scalar $_ => 'a';
+  Readonly::Scalar($_ => 'a');
   $plugin->init($meta);
 
   ok lives {
