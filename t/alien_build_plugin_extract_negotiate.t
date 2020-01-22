@@ -1,9 +1,11 @@
-use Test2::Require::Module 'Archive::Tar' => 0;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::Negotiate;
 use Capture::Tiny qw( capture_merged );
 use Path::Tiny qw( path );
+
+eval { require Archive::Tar; };
+skip_all 'test requires Archive::Tar' if $@;
 
 subtest basic => sub {
 

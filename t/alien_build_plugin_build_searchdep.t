@@ -1,5 +1,3 @@
-use Test2::Require::Module 'Archive::Tar' => 0;
-use Test2::Require::Module 'Env::ShellWords' => 0;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Build::SearchDep;
@@ -8,6 +6,11 @@ use Alien::libfoo1;
 use Alien::libfoo2;
 use Capture::Tiny qw( capture_merged );
 use Path::Tiny qw( path );
+
+eval { require Archive::Tar; };
+skip_all 'test requires Archive::Tar' if $@;
+eval { require Env::ShellWords };
+skip_all 'test requires Env::ShellWords' if $@;
 
 my $corpus = path('corpus')->absolute;
 $corpus =~ s{(\s)}{\\$1}g;
