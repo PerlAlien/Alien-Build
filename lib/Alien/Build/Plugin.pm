@@ -2,7 +2,6 @@ package Alien::Build::Plugin;
 
 use strict;
 use warnings;
-use Module::Load ();
 use Carp ();
 
 our @CARP_NOT = qw( alienfile Alien::Build Alien::Build::Meta );
@@ -160,8 +159,8 @@ B<DEPRECATED>: Maybe removed, but not before 1 October 2018.
 
  my $plugin2 = $plugin1->subplugin($plugin_name, %args);
 
-Finds the given plugin and loads it using L<Module::Load> (unless already loaded)
-and creats a new instance and returns it.  Most useful from a Negotiate plugin,
+Finds the given plugin and loads it (unless already loaded) and creats a
+new instance and returns it.  Most useful from a Negotiate plugin,
 like this:
 
  sub init
@@ -182,7 +181,9 @@ sub subplugin
   my(undef, $name, %args) = @_;
   Carp::carp("subplugin method is deprecated");
   my $class = "Alien::Build::Plugin::$name";
-  Module::Load::load($class) unless eval { $class->can('new') };
+  my $pm = "$class.pm";
+  $pm =~ s/::/\//g;
+  require $pm unless eval { $class->can('new') };
   delete $args{$_} for grep { ! defined $args{$_} } keys %args;
   $class->new(%args);
 }

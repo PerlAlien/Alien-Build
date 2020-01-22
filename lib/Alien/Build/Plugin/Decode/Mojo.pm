@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use 5.008001;
 use Alien::Build::Plugin;
-use Module::Load ();
 
 # ABSTRACT: Plugin to extract links from HTML using Mojo::DOM or Mojo::DOM58
 # VERSION
@@ -43,15 +42,24 @@ detects that you need to parse an HTML index.
 
 =cut
 
-sub _load ($)
+sub _load ($;$)
 {
-  eval { Module::Load::load($_[0]) };
-  $@ eq '' ? 1 : 0;
+  my($class, $version) = @_;
+  my $pm = "$class.pm";
+  $pm =~ s/::/\//g;
+  eval { require $pm };
+  return 0 if $@;
+  if(defined $version)
+  {
+    eval { $class->VERSION($version) };
+    return 0 if $@;
+  }
+  return 1;
 }
 
 has _class => sub {
   return 'Mojo::DOM58' if _load 'Mojo::DOM58';
-  return 'Mojo::DOM'   if _load 'Mojo::DOM' && _load 'Mojolicious' && eval { Mojolicious->VERSION('7.00') };
+  return 'Mojo::DOM'   if _load 'Mojo::DOM' && _load 'Mojolicious', 7.00;
   return 'Mojo::DOM58';
 };
 
