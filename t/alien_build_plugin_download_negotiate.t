@@ -5,7 +5,6 @@ use Alien::Build::Plugin::Fetch::CurlCommand;
 use Path::Tiny;
 use Capture::Tiny qw( capture_merged );
 use Alien::Build::Util qw( _dump );
-use Test2::Mock;
 
 delete $ENV{$_} for qw( ftp_proxy all_proxy );
 
@@ -250,7 +249,7 @@ subtest 'prefer property' => sub {
   subtest 'default (true)' => sub {
 
     require Alien::Build;
-    my $mock = Test2::Mock->new( class => 'Alien::Build::Meta' );
+    my $mock = mock 'Alien::Build::Meta';
 
     my @calls;
 
@@ -287,7 +286,7 @@ subtest 'prefer property' => sub {
 
   };
 
-  my $mock = Test2::Mock->new( class => 'Alien::Build::Meta' );
+  my $mock = mock 'Alien::Build::Meta';
 
   $mock->around(apply_plugin => sub {
     my($orig, $self, @args) = @_;

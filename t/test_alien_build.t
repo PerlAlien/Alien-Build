@@ -1,5 +1,4 @@
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use Test::Alien::Build;
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
@@ -542,8 +541,7 @@ subtest 'alien_checkpoint_ok' => sub {
 
     alienfile_ok q{ use alienfile };
 
-    my $mock = Test2::Mock->new(
-      class => 'Alien::Build',
+    my $mock = mock 'Alien::Build' => (
       override => [
         checkpoint => sub {
           die 'some error in checkpoint';
@@ -633,8 +631,7 @@ subtest 'alien_resume_ok' => sub {
 
     alienfile_ok q{ use alienfile };
 
-    my $mock = Test2::Mock->new(
-      class => 'Alien::Build',
+    my $mock = mock 'Alien::Build' => (
       override => [
         resume => sub {
           die 'some error in resume';

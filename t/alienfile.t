@@ -1,5 +1,4 @@
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use Test::Alien::Build;
 use Alien::Build;
 use Path::Tiny qw( path );
@@ -522,7 +521,7 @@ subtest 'start_url' => sub {
 
 subtest 'before' => sub {
 
-  my $mock = Test2::Mock->new(
+  my $mock = mock 'Alien::Build::Meta' => (
     class => 'Alien::Build::Meta',
   );
 
@@ -703,7 +702,7 @@ subtest 'before' => sub {
 
 subtest 'after' => sub {
 
-  my $mock = Test2::Mock->new(
+  my $mock = mock 'Alien::Build::Meta' => (
     class => 'Alien::Build::Meta',
   );
 

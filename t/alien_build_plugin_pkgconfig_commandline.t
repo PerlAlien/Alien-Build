@@ -33,8 +33,7 @@ subtest 'available' => sub {
 
   require File::Which;
 
-  my $mock = Test2::Mock->new(
-    class => 'File::Which',
+  my $mock = mock 'File::Which' => (
     override => [
       which => sub {
         my($prog) = @_;

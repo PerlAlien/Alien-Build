@@ -3,7 +3,6 @@ use Config;
 use Alien::Base::Wrapper ();
 use Alien::Build::Util qw( _dump );
 use Text::ParseWords qw( shellwords );
-use Test2::Mock;
 
 $ENV{ALIEN_BASE_WRAPPER_QUIET} = 1;
 
@@ -13,8 +12,7 @@ sub exec_arrayref (&)
 
   my @answer;
 
-  my $mock = Test2::Mock->new(
-    class    => 'Alien::Base::Wrapper',
+  my $mock = mock 'Alien::Base::Wrapper' => (
     override => [
       _myexec => sub {
         @answer = @_;

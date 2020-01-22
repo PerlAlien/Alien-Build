@@ -1,6 +1,5 @@
 use Test2::V0 -no_srand => 1;
 use Alien::Build::Plugin::PkgConfig::Negotiate;
-use Test2::Mock;
 use Capture::Tiny qw( capture_merged );
 use Config;
 use File::Which ();
@@ -49,8 +48,7 @@ subtest 'LibPkgConf' => sub {
 
 };
 
-my $make_pkgconfig_libpkgconf_unavailable = Test2::Mock->new(
-  class => 'Alien::Build::Plugin::PkgConfig::LibPkgConf',
+my $make_pkgconfig_libpkgconf_unavailable = mock 'Alien::Build::Plugin::PkgConfig::LibPkgConf' => (
   override => [
     available => sub { 0 },
   ],
@@ -63,8 +61,7 @@ subtest 'CommandLine' => sub {
 
   my %which;
 
-  my $mock = Test2::Mock->new(
-    class => 'File::Which',
+  my $mock = mock 'File::Which' => (
     override => [
       which => sub {
         my($prog) = @_;
@@ -88,9 +85,7 @@ subtest 'CommandLine' => sub {
     ],
   );
 
-  my $mock2 = Test2::Mock->new(
-    class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
-  );
+  my $mock2 = mock 'Alien::Build::Plugin::PkgConfig::Negotiate';
 
   if($^O =~ /^(solaris|MSWin32)$/) {
     $mock2->override(
@@ -158,8 +153,7 @@ subtest 'CommandLine' => sub {
       # From the old AB::MB days we prefer PkgConfig.pm
       # for 64 bit solaris over the command line pkg-config
 
-      my $mock2 = Test2::Mock->new(
-        class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
+      my $mock2 = mock 'Alien::Build::Plugin::PkgConfig::Negotiate' => (
         override => [
           _perl_config => sub {
             my($key) = @_;
@@ -188,8 +182,7 @@ subtest 'CommandLine' => sub {
       # From the old AB::MB days we prefer PkgConfig.pm
       # for 64 bit solaris over the command line pkg-config
 
-      my $mock2 = Test2::Mock->new(
-        class => 'Alien::Build::Plugin::PkgConfig::Negotiate',
+      my $mock2 = mock 'Alien::Build::Plugin::PkgConfig::Negotiate' => (
         override => [
           _perl_config => sub {
             my($key) = @_;

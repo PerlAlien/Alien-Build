@@ -1,5 +1,4 @@
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use Alien::Build;
 use Test::Alien::Build;
 
@@ -10,13 +9,11 @@ subtest 'basic' => sub {
   my $in_foobar;
   my $in_bazfrooble;
 
-  my $foobar = Test2::Mock->new(
-    class => 'Alien::Build::Plugin::Foo::Bar',
+  my $foobar = mock 'Alien::Build::Plugin::Foo::Bar' => (
     override => [ init => sub { $in_foobar++ }],
   );
 
-  my $frooble = Test2::Mock->new(
-    class => 'Alien::Build::Plugin::Baz::Frooble',
+  my $frooble = mock 'Alien::Build::Plugin::Baz::Frooble' => (
     override => [ init => sub { $in_bazfrooble++ }],
   );
 

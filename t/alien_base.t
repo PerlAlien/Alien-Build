@@ -1,5 +1,4 @@
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use lib 'corpus/lib';
 use Env qw( @PKG_CONFIG_PATH );
 use File::Glob qw( bsd_glob );
@@ -9,8 +8,7 @@ use FFI::CheckLib;
 use Text::ParseWords qw( shellwords );
 use List::Util qw( first );
 
-my $mock = Test2::Mock->new(
-  class => 'FFI::CheckLib',
+my $mock = mock 'FFI::CheckLib' => (
   override => [
     find_lib => sub {
       my %args = @_;
@@ -317,8 +315,7 @@ subtest 'ffi_name' => sub {
 
   my @args_find_lib;
 
-  my $mock1 = Test2::Mock->new(
-    'class' => 'FFI::CheckLib',
+  my $mock1 = mock 'FFI::CheckLib' => (
     override => [
       find_lib => sub {
         @args_find_lib = @_;
@@ -330,8 +327,7 @@ subtest 'ffi_name' => sub {
   is( [Alien::libfoo1->dynamic_libs], ['foo.dll','foo2.dll'], 'call dynamic_libs' );
   is( \@args_find_lib, [ lib => 'foo', libpath => [] ] );
 
-  my $mock2 = Test2::Mock->new(
-    class => 'Alien::Base',
+  my $mock2 = mock 'Alien::Base' => (
     around => [
       runtime_prop => sub {
         my($orig, @args) = @_;

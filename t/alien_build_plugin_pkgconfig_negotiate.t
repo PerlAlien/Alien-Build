@@ -2,7 +2,6 @@ use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::PkgConfig::Negotiate;
 use Alien::Build;
-use Test2::Mock;
 use Capture::Tiny qw( capture_merged );
 
 subtest 'pick' => sub {
@@ -35,9 +34,7 @@ subtest 'override' => sub {
           my $subplugin;
           my %subplugin;
 
-          my $mock = Test2::Mock->new(
-            class => 'Alien::Build::Meta',
-          );
+          my $mock = mock 'Alien::Build::Meta';
 
           $mock->before(apply_plugin => sub {
             (undef, $subplugin, %subplugin) = @_;
@@ -250,10 +247,7 @@ subtest 'version stuff' => sub {
 
 subtest 'list of pkg_name' => sub {
 
-  my $mock = Test2::Mock->new(
-    class => 'Alien::Build::Meta',
-  );
-
+  my $mock = mock 'Alien::Build::Meta';
   my $subplugin;
   my @subplugin;
 

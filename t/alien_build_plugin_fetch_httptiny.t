@@ -1,5 +1,4 @@
 use Test2::V0 -no_srand => 1;
-use Test2::Mock;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::HTTPTiny;
 use lib 't/lib';
@@ -73,7 +72,7 @@ subtest 'use start_url' => sub {
 
   subtest 'uses start_url' => sub {
 
-    my $mock = Test2::Mock->new(class => 'Alien::Build::Plugin::Fetch::HTTPTiny');
+    my $mock = mock 'Alien::Build::Plugin::Fetch::HTTPTiny';
     my $plugin;
 
     $mock->after(init => sub {
