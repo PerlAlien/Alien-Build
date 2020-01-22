@@ -1911,6 +1911,12 @@ sub apply_plugin
 
 package Alien::Build::TempDir;
 
+# TODO: it's confusing that there is both a AB::TempDir and AB::Temp
+# although they do different things.  there could maybe be a better
+# name for AB::TempDir (maybe AB::TempBuildDir, though that is a little
+# redundant).  Happily both are private classes, and either are able to
+# rename, if a good name can be thought of.
+
 use Path::Tiny qw( path );
 use overload '""' => sub { shift->as_string }, bool => sub { 1 }, fallback => 1;
 use File::Temp qw( tempdir );
