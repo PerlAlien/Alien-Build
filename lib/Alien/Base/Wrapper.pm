@@ -2,7 +2,7 @@ package Alien::Base::Wrapper;
 
 use strict;
 use warnings;
-use 5.008001;
+use 5.006;
 use Config;
 use Text::ParseWords qw( shellwords );
 
