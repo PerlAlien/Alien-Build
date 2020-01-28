@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Added OO interface to Alien::Base::Wrapper (gh#157, gh#158)
   - Added mm_args2 method to Alien::Base::Wrapper (gh#157, gh#158)
+  - Added WriteMakefile function to Alien::Base::Wrapper (gh#157, gh#158)
 
 1.96      2020-01-27 09:05:36 -0700
   - Production release identical to 1.95_01

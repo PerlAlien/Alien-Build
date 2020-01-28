@@ -45,6 +45,10 @@ subtest 'export' => sub {
     package
       Foo::Bar1;
     use Alien::Base::Wrapper qw( Alien::Foo1 Alien::Bar1 );
+
+    package
+      Foo::Bar2;
+    use Alien::Base::Wrapper qw( WriteMakefile );
   }
 
   ok(
@@ -55,6 +59,11 @@ subtest 'export' => sub {
   ok(
     Foo::Bar1->can('ld'),
     'can ld',
+  );
+
+  ok(
+    Foo::Bar2->can('WriteMakefile'),
+    'can WriteMakefile',
   );
 
 };
@@ -233,6 +242,49 @@ subtest 'combine aliens' => sub {
 
     note _dump(\%mm_args);
 
+    is(
+      \%mm_args,
+      hash {
+        field DEFINE    => '-DFOO5=1 -DBAR5=1';
+        field INC       => '-I/foo/include -I/bar/include -I/baz/include';
+        field LIBS      => [ match(qr{-lfoo -lbar$}) ];
+        field LDDLFLAGS => T();
+        field LDFLAGS   => T();
+        field foo       => 'bar';
+        field CONFIGURE_REQUIRES => hash {
+          field 'ExtUtils::MakeMaker'  => '6.52';
+          field 'Alien::Base::Wrapper' => '1.97';
+          field 'Alien::Bar5'          => '1.23';
+          field 'Alien::Foo5'          => '0';
+        };
+      },
+    );
+
+  };
+
+  subtest 'WriteMakefile' => sub {
+
+    local $@ = '';
+    eval { require ExtUtils::MakeMaker; ExtUtila::MakeMaker->VERSION('6.52') };
+    skip_all 'test requires EUMM 6.52' if $@;
+
+    my %mm_args;
+
+    my $mock = mock 'ExtUtils::MakeMaker' => (
+      override => [
+        WriteMakefile => sub {
+          %mm_args = @_;
+          42;
+        },
+      ],
+    );
+
+    my $ret = Alien::Base::Wrapper::WriteMakefile(
+      foo => 'bar',
+      INC => '-I/baz/include',
+    );
+
+    is $ret, 42;
     is(
       \%mm_args,
       hash {

@@ -26,14 +26,28 @@ From the command line:
 From Makefile.PL (static):
 
  use ExtUtils::MakeMaker;
- use Alien::Base::Wrapper qw( Alien::Foo Alien::Bar !export );
+ use Alien::Base::Wrapper ();
  
  WriteMakefile(
-   Alien::Base::Wrapper->mm_args2(
+   Alien::Base::Wrapper->new( 'Alien::Foo', 'Alien::Bar')->mm_args2(
      'NAME'              => 'Foo::XS',
      'VERSION_FROM'      => 'lib/Foo/XS.pm',
    ),
  );
+
+From Makefile.PL (static with wrapper)
+
+ use Alien::Base::Wrapper qw( WriteMakefile);
+ 
+ WriteMakefile(
+   'NAME'              => 'Foo::XS',
+   'VERSION_FROM'      => 'lib/Foo/XS.pm',
+   'alien_requires'    => {
+     'Alien::Foo' => 0,
+     'Alien::Bar' => 0,
+   },
+ );
+
 
 From Makefile.PL (dynamic):
 
@@ -117,6 +131,7 @@ sub new
   my($class, @aliens) = @_;
 
   my $export = 1;
+  my $writemakefile = 0;
 
   my @cflags_I;
   my @cflags_other;
@@ -133,6 +148,11 @@ sub new
     if($alien eq '!export')
     {
       $export = 0;
+      next;
+    }
+    if($alien eq 'WriteMakefile')
+    {
+      $writemakefile = 1;
       next;
     }
     my $version = 0;
@@ -195,15 +215,16 @@ sub new
   }
 
   bless {
-    cflags_I      => \@cflags_I,
-    cflags_other  => \@cflags_other,
-    ldflags_L     => \@ldflags_L,
-    ldflags_l     => \@ldflags_l,
-    ldflags_other => \@ldflags_other,
-    mm            => \@mm,
-    mb            => \@mb,
-    _export       => $export,
-    requires      => \%requires,
+    cflags_I       => \@cflags_I,
+    cflags_other   => \@cflags_other,
+    ldflags_L      => \@ldflags_L,
+    ldflags_l      => \@ldflags_l,
+    ldflags_other  => \@ldflags_other,
+    mm             => \@mm,
+    mb             => \@mb,
+    _export        => $export,
+    _writemakefile => $writemakefile,
+    requires       => \%requires,
   }, $class;
 }
 
@@ -372,20 +393,79 @@ sub mb_args
 sub import
 {
   shift;
-  $default_abw = __PACKAGE__->new(@_);
-  if($default_abw->_export)
+  my $abw = $default_abw = __PACKAGE__->new(@_);
+  if($abw->_export)
   {
     my $caller = caller;
     no strict 'refs';
     *{"${caller}::cc"} = \&cc;
     *{"${caller}::ld"} = \&ld;
   }
+  if($abw->_writemakefile)
+  {
+    my $caller = caller;
+    no strict 'refs';
+    *{"${caller}::WriteMakefile"} = \&WriteMakefile;
+  }
 }
 
-sub _export
+=head2 WriteMakefile
+
+ use Alien::Base::Wrapper qw( WriteMakefile );
+ WriteMakefile(%args, alien_requires => %aliens);
+ WriteMakefile(%args, alien_requires => @aliens);
+
+This is a thin wrapper around C<WriteMakefile> from L<ExtUtils::MakeMaker>, which adds the
+given aliens to the configure requirements and sets the appropriate compiler and linker
+flags.
+
+If the aliens are specified as a hash reference, then the keys are the module names and the
+values are the versions.  For a list it is just the name of the aliens.
+
+=cut
+
+sub WriteMakefile
 {
-  shift->{_export};
+  my %args = @_;
+
+  require ExtUtils::MakeMaker;
+  ExtUtils::MakeMaker->VERSION('6.52');
+
+  my @aliens;
+
+  if(my $reqs = delete $args{alien_requires})
+  {
+    if(ref $reqs eq 'HASH')
+    {
+      @aliens = map {
+        my $module  = $_;
+        my $version = $reqs->{$module};
+        $version ? "$module=$version" : "$module";
+      } sort keys %$reqs;
+    }
+    elsif(ref $reqs eq 'LIST')
+    {
+      @aliens = @$reqs;
+    }
+    else
+    {
+      require Carp;
+      Carp::corak("aliens_require must be either a hash or array reference");
+    }
+  }
+  else
+  {
+    require Carp;
+    Carp::croak("You are using Alien::Base::Wrapper::WriteMakefile, but didn't specify any alien requirements");
+  }
+
+  ExtUtils::MakeMaker::WriteMakefile(
+    Alien::Base::Wrapper->new(@aliens)->mm_args2(%args),
+  );
 }
+
+sub _export        { shift->{_export} }
+sub _writemakefile { shift->{_writemakefile} }
 
 1;
 
