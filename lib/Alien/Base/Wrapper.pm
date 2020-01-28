@@ -29,14 +29,10 @@ From Makefile.PL (static):
  use Alien::Base::Wrapper qw( Alien::Foo Alien::Bar !export );
  
  WriteMakefile(
-   'NAME'              => 'Foo::XS',
-   'VERSION_FROM'      => 'lib/Foo/XS.pm',
-   'CONFIGURE_REQUIRES => {
-     'ExtUtils::MakeMaker' => 6.52,
-     'Alien::Foo'          => 0,
-     'Alien::Bar'          => 0,
-   },
-   Alien::Base::Wrapper->mm_args,
+   Alien::Base::Wrapper->mm_args2(
+     'NAME'              => 'Foo::XS',
+     'VERSION_FROM'      => 'lib/Foo/XS.pm',
+   ),
  );
 
 From Makefile.PL (dynamic):
@@ -127,6 +123,10 @@ sub new
   my @ldflags_L;
   my @ldflags_l;
   my @ldflags_other;
+  my %requires = (
+    'ExtUtils::MakeMaker'  => '6.52',
+    'Alien::Base::Wrapper' => '1.97',
+  );
 
   foreach my $alien (@aliens)
   {
@@ -135,7 +135,13 @@ sub new
       $export = 0;
       next;
     }
+    my $version = 0;
+    if($alien =~ s/=(.*)$//)
+    {
+      $version = $1;
+    }
     $alien = "Alien::$alien" unless $alien =~ /::/;
+    $requires{$alien} = $version;
     my $alien_pm = $alien . '.pm';
     $alien_pm =~ s/::/\//g;
     require $alien_pm unless eval { $alien->can('cflags') } && eval { $alien->can('libs') };
@@ -197,6 +203,7 @@ sub new
     mm            => \@mm,
     mb            => \@mb,
     _export       => $export,
+    requires      => \%requires,
   }, $class;
 }
 
@@ -286,14 +293,65 @@ sub ld
  my %args = Alien::Base::Wrapper->mm_args;
 
 Returns arguments that you can pass into C<WriteMakefile> to compile/link against
-the specified Aliens.
+the specified Aliens.  Note that this does not set  C<CONFIGURE_REQUIRES>.  You
+probably want to use C<mm_args2> below instead for that reason.
 
 =cut
 
 sub mm_args
 {
-  my $abw = ref $_[0] ? shift : $default_abw;
-  @{ $abw->{mm} };
+  my $self = ref $_[0] ? shift : $default_abw;
+  @{ $self->{mm} };
+}
+
+=head2 mm_args2
+
+ my %args = $abw->mm_args2(%args);
+ my %args = Alien::Base::Wrapper->mm_args2(%args);
+
+Returns arguments that you can pass into C<WriteMakefile> to compile/link against.  It works
+a little differently from C<mm_args> above in that you can pass in arguments.  It also adds
+the appropriate C<CONFIGURE_REQUIRES> for you so you do not have to do that explicitly.
+
+=cut
+
+sub mm_args2
+{
+  my $self = shift;
+  $self = $default_abw unless ref $self;
+  my %args = @_;
+
+  my @mm = @{ $self->{mm} };
+
+  while(@mm)
+  {
+    my $key = shift @mm;
+    my $value = shift @mm;
+    if(defined $args{$key})
+    {
+      if($args{$key} eq 'LIBS')
+      {
+        require Carp;
+        # Todo: support this maybe?
+        Carp::croak("please do not specify your own LIBS key with mm_args2");
+      }
+      else
+      {
+        $args{$key} = join ' ', $value, $args{$key};
+      }
+    }
+    else
+    {
+      $args{$key} = $value;
+    }
+  }
+
+  foreach my $module (keys %{ $self->{requires} })
+  {
+    $args{CONFIGURE_REQUIRES}->{$module} = $self->{requires}->{$module};
+  }
+
+  %args;
 }
 
 =head2 mb_args
@@ -307,8 +365,8 @@ Returns arguments that you can pass into the constructor to L<Module::Build>.
 
 sub mb_args
 {
-  my $abw = ref $_[0] ? shift : $default_abw;
-  @{ $abw->{mb} };
+  my $self = ref $_[0] ? shift : $default_abw;
+  @{ $self->{mb} };
 }
 
 sub import

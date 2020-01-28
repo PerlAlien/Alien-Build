@@ -188,7 +188,7 @@ subtest 'combine aliens' => sub {
     sub libs   { '-L/foo/lib --ld-bar -lbar' }
   }
 
-  Alien::Base::Wrapper->import('Alien::Foo5', 'Alien::Bar5');
+  Alien::Base::Wrapper->import('Alien::Foo5', 'Alien::Bar5=1.23');
 
   is(
     exec_arrayref {
@@ -222,6 +222,32 @@ subtest 'combine aliens' => sub {
         field LIBS      => [ match(qr{-lfoo -lbar$}) ];
         field LDDLFLAGS => T();
         field LDFLAGS   => T();
+      },
+    );
+
+  };
+
+  subtest 'mm_args2' => sub {
+
+    my %mm_args = Alien::Base::Wrapper->mm_args2( foo => 'bar', INC => '-I/baz/include' );
+
+    note _dump(\%mm_args);
+
+    is(
+      \%mm_args,
+      hash {
+        field DEFINE    => '-DFOO5=1 -DBAR5=1';
+        field INC       => '-I/foo/include -I/bar/include -I/baz/include';
+        field LIBS      => [ match(qr{-lfoo -lbar$}) ];
+        field LDDLFLAGS => T();
+        field LDFLAGS   => T();
+        field foo       => 'bar';
+        field CONFIGURE_REQUIRES => hash {
+          field 'ExtUtils::MakeMaker'  => '6.52';
+          field 'Alien::Base::Wrapper' => '1.97';
+          field 'Alien::Bar5'          => '1.23';
+          field 'Alien::Foo5'          => '0';
+        };
       },
     );
 
