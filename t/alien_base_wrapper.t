@@ -265,8 +265,8 @@ subtest 'combine aliens' => sub {
   subtest 'WriteMakefile' => sub {
 
     local $@ = '';
-    eval { require ExtUtils::MakeMaker; ExtUtila::MakeMaker->VERSION('6.52') };
-    skip_all 'test requires EUMM 6.52' if $@;
+    eval { require ExtUtils::MakeMaker; ExtUtils::MakeMaker->VERSION('6.52') };
+    skip_all "test requires EUMM 6.52: $@" if $@;
 
     my %mm_args;
 
@@ -279,11 +279,16 @@ subtest 'combine aliens' => sub {
       ],
     );
 
-    my $ret = Alien::Base::Wrapper::WriteMakefile(
-      foo => 'bar',
-      INC => '-I/baz/include',
-    );
+    $@ = '';
+    my $ret = eval {
+      Alien::Base::Wrapper::WriteMakefile(
+        alien_requires => [ 'Alien::Foo5', 'Alien::Bar5=1.23' ],
+        foo => 'bar',
+        INC => '-I/baz/include',
+      );
+    };
 
+    is "$@", '';
     is $ret, 42;
     is(
       \%mm_args,
@@ -291,6 +296,33 @@ subtest 'combine aliens' => sub {
         field DEFINE    => '-DFOO5=1 -DBAR5=1';
         field INC       => '-I/foo/include -I/bar/include -I/baz/include';
         field LIBS      => [ match(qr{-lfoo -lbar$}) ];
+        field LDDLFLAGS => T();
+        field LDFLAGS   => T();
+        field foo       => 'bar';
+        field CONFIGURE_REQUIRES => hash {
+          field 'ExtUtils::MakeMaker'  => '6.52';
+          field 'Alien::Base::Wrapper' => '1.97';
+          field 'Alien::Bar5'          => '1.23';
+          field 'Alien::Foo5'          => '0';
+        };
+      },
+    );
+
+    $@ = '';
+    $ret = Alien::Base::Wrapper::WriteMakefile(
+      alien_requires => { 'Alien::Foo5' => 0, 'Alien::Bar5' => '1.23' },
+      foo => 'bar',
+      INC => '-I/baz/include',
+    );
+
+    is "$@", '';
+    is $ret, 42;
+    is(
+      \%mm_args,
+      hash {
+        field DEFINE    => match qr/^-D(FOO|BAR)5=1 -D(FOO|BAR)5=1$/;
+        field INC       => match qr/^-I\/(foo|bar)\/include -I\/(foo|bar)\/include -I\/baz\/include$/;
+        field LIBS      => [ match(qr{-l(foo|bar) -l(foo|bar)$}) ];
         field LDDLFLAGS => T();
         field LDFLAGS   => T();
         field foo       => 'bar';

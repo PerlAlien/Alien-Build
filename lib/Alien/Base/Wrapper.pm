@@ -443,14 +443,14 @@ sub WriteMakefile
         $version ? "$module=$version" : "$module";
       } sort keys %$reqs;
     }
-    elsif(ref $reqs eq 'LIST')
+    elsif(ref $reqs eq 'ARRAY')
     {
       @aliens = @$reqs;
     }
     else
     {
       require Carp;
-      Carp::corak("aliens_require must be either a hash or array reference");
+      Carp::croak("aliens_require must be either a hash or array reference");
     }
   }
   else
