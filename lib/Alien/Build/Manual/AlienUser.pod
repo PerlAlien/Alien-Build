@@ -30,6 +30,27 @@ dependency.
 
 What follows are the main use cases.
 
+=head2 ExtUtils::MakeMaker
+
+ use ExtUtils::MakeMaker;
+ use Alien::Base::Wrapper ();
+ 
+ WriteMakefile(
+   Alien::Base::Wrapper->new('Alien::Foo')->mm_args2(
+     NAME => 'FOO::XS',
+     ...
+   ),
+ );
+
+L<Alien::Base::Wrapper> will take a hash of C<WriteMakefile> arguments
+and insert the appropriate compiler and linker flags for you.  This
+is recommended over doing this yourself as the exact incantation to
+get EUMM to work is tricky to get right.
+
+The C<mm_args2> method will also set your C<CONFIGURE_REQUIRES> for
+L<Alien::Base::Wrapper>, L<ExtUtils::MakeMaker> and any aliens that
+you specify.
+
 =head2 Module::Build
 
  use Module::Build;
@@ -49,33 +70,14 @@ What follows are the main use cases.
  
  $build->create_build_script;
 
-The key gotcha for using L<Alien> from a C<Build.PL> for an XS module
-is remembering to explicitly making the L<Alien> a configuration
-prerequisite.
-
-=head2 ExtUtils::MakeMaker
-
- use ExtUtils::MakeMaker;
- use Alien::Base::Wrapper qw( Alien::Foo !export );
- 
- WriteMakefile(
-   ...
-   CONFIGURE_REQUIRES => {
-     'Alien::Base::Wrapper' => '0',
-     'Alien::Foo'           => '0',
-   },
-   Alien::Base::Wrapper->mm_args,
-   ...
- );
-
-MakeMaker is similar, make sure that you explicitly make your L<Alien>
-a configure prerequisite.
+For L<Module::Build> you can also use L<Alien::Base::Wrapper>, but
+you will have to specify the C<configure_requires> yourself.
 
 =head2 Inline::C / Inline::CPP
 
  use Inline 0.56 with => 'Alien::Foo';
 
-Although not widely used, L<Inline::C> and L<Inline::CPP> can be configured
+L<Inline::C> and L<Inline::CPP> can be configured
 to use an L<Alien::Base> based L<Alien> with the C<with> keyword.
 
 =head2 ExtUtils::Depends
