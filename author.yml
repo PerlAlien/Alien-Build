@@ -142,6 +142,7 @@ pod_spelling_system:
     - google
     - chatroom
     - api
+    - WriteMakefile
 
 pod_coverage:
   skip: 0
