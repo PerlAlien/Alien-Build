@@ -250,4 +250,19 @@ subtest 'combine aliens' => sub {
 
 };
 
+subtest 'oo interface' => sub {
+
+  subtest '_export' => sub {
+
+    my $abw = Alien::Base::Wrapper->new;
+    isa_ok $abw, 'Alien::Base::Wrapper';
+    is $abw->_export, T();
+
+    $abw = Alien::Base::Wrapper->new('!export');
+    isa_ok $abw, 'Alien::Base::Wrapper';
+    is $abw->_export, F();
+
+  };
+};
+
 done_testing;
