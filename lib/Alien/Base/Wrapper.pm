@@ -100,26 +100,110 @@ somewhat unnecessary.  L<Alien> modules based on L<Alien::Base> have a few prere
 but they are well maintained and reliable, so while there is a small cost in terms of extra
 dependencies, the overall reliability thanks to reduced overall complexity.
 
+=head1 CONSTRUCTOR
+
+=head2 new
+
+ my $abw = Alien::Base::Wrapper->new(@aliens);
+
+Instead of passing the aliens you want to use into this modules import you can create
+a non-global instance of C<Alien::Base::Wrapper> using the OO interface.
+
 =cut
 
-my @cflags_I;
-my @cflags_other;
-my @ldflags_L;
-my @ldflags_l;
-my @ldflags_other;
-my @mm;
-my @mb;
-
-sub _reset
+sub _join
 {
-  @cflags_I      = ();
-  @cflags_other  = ();
-  @ldflags_L     = ();
-  @ldflags_l     = ();
-  @ldflags_other = ();
-  @mm            = ();
-  @mb            = ();
+  join ' ', map { s/(\s)/\\$1/g; $_ } map { "$_" } @_;  ## no critic (ControlStructures::ProhibitMutatingListFunctions)
 }
+
+sub new
+{
+  my($class, @aliens) = @_;
+
+  my $export = 1;
+
+  my @cflags_I;
+  my @cflags_other;
+  my @ldflags_L;
+  my @ldflags_l;
+  my @ldflags_other;
+
+  foreach my $alien (@aliens)
+  {
+    if($alien eq '!export')
+    {
+      $export = 0;
+      next;
+    }
+    $alien = "Alien::$alien" unless $alien =~ /::/;
+    my $alien_pm = $alien . '.pm';
+    $alien_pm =~ s/::/\//g;
+    require $alien_pm unless eval { $alien->can('cflags') } && eval { $alien->can('libs') };
+    my $cflags;
+    my $libs;
+    if($alien->install_type eq 'share' && $alien->can('cflags_static'))
+    {
+      $cflags = $alien->cflags_static;
+      $libs   = $alien->libs_static;
+    }
+    else
+    {
+      $cflags = $alien->cflags;
+      $libs   = $alien->libs;
+    }
+
+    push @cflags_I,     grep  /^-I/, shellwords $cflags;
+    push @cflags_other, grep !/^-I/, shellwords $cflags;
+
+    push @ldflags_L,     grep  /^-L/,    shellwords $libs;
+    push @ldflags_l,     grep  /^-l/,    shellwords $libs;
+    push @ldflags_other, grep !/^-[Ll]/, shellwords $libs;
+  }
+
+  my @cflags_define = grep  /^-D/, @cflags_other;
+  my @cflags_other2 = grep !/^-D/, @cflags_other;
+
+  my @mm;
+
+  push @mm, INC       => _join @cflags_I                             if @cflags_I;
+  push @mm, CCFLAGS   => _join(@cflags_other2) . " $Config{ccflags}" if @cflags_other2;
+  push @mm, DEFINE    => _join(@cflags_define)                       if @cflags_define;
+
+  # TODO: handle spaces in -L paths
+  push @mm, LIBS      => ["@ldflags_L @ldflags_l"];
+  my @ldflags = (@ldflags_L, @ldflags_other);
+  push @mm, LDDLFLAGS => _join(@ldflags) . " $Config{lddlflags}"     if @ldflags;
+  push @mm, LDFLAGS   => _join(@ldflags) . " $Config{ldflags}"       if @ldflags;
+
+  my @mb;
+
+  push @mb, extra_compiler_flags => _join(@cflags_I, @cflags_other);
+  push @mb, extra_linker_flags   => _join(@ldflags_l);
+
+  if(@ldflags)
+  {
+    push @mb, config => {
+      lddlflags => _join(@ldflags) . " $Config{lddlflags}",
+      ldflags   => _join(@ldflags) . " $Config{ldflags}",
+    },
+  }
+
+  bless {
+    cflags_I      => \@cflags_I,
+    cflags_other  => \@cflags_other,
+    ldflags_L     => \@ldflags_L,
+    ldflags_l     => \@ldflags_l,
+    ldflags_other => \@ldflags_other,
+    mm            => \@mm,
+    mb            => \@mb,
+    _export       => $export,
+  }, $class;
+}
+
+my $default_abw = __PACKAGE__->new;
+
+# for testing only
+sub _reset { __PACKAGE__->new }
 
 =head1 FUNCTIONS
 
@@ -166,8 +250,8 @@ sub cc
 {
   my @command = (
     shellwords($Config{cc}),
-    @cflags_I,
-    @cflags_other,
+    @{ $default_abw->{cflags_I} },
+    @{ $default_abw->{cflags_other} },
     @ARGV,
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
@@ -187,10 +271,10 @@ sub ld
 {
   my @command = (
     shellwords($Config{ld}),
-    @ldflags_L,
-    @ldflags_other,
+    @{ $default_abw->{ldflags_L} },
+    @{ $default_abw->{ldflags_other} },
     @ARGV,
-    @ldflags_l,
+    @{ $default_abw->{ldflags_l} },
   );
   print "@command\n" unless $ENV{ALIEN_BASE_WRAPPER_QUIET};
   _myexec @command;
@@ -198,6 +282,7 @@ sub ld
 
 =head2 mm_args
 
+ my %args = $abw->mm_args;
  my %args = Alien::Base::Wrapper->mm_args;
 
 Returns arguments that you can pass into C<WriteMakefile> to compile/link against
@@ -207,11 +292,13 @@ the specified Aliens.
 
 sub mm_args
 {
-  @mm;
+  my $abw = ref $_[0] ? shift : $default_abw;
+  @{ $abw->{mm} };
 }
 
 =head2 mb_args
 
+ my %args = $abw->mb_args;
  my %args = Alien::Base::Wrapper->mb_args;
 
 Returns arguments that you can pass into the constructor to L<Module::Build>.
@@ -220,87 +307,26 @@ Returns arguments that you can pass into the constructor to L<Module::Build>.
 
 sub mb_args
 {
-  @mb;
-}
-
-sub _join
-{
-  join ' ', map { s/(\s)/\\$1/g; $_ } map { "$_" } @_;  ## no critic (ControlStructures::ProhibitMutatingListFunctions)
+  my $abw = ref $_[0] ? shift : $default_abw;
+  @{ $abw->{mb} };
 }
 
 sub import
 {
-  my(undef, @aliens) = @_;
-
-  my $export = 1;
-
-  foreach my $alien (@aliens)
-  {
-    if($alien eq '!export')
-    {
-      $export = 0;
-      next;
-    }
-    $alien = "Alien::$alien" unless $alien =~ /::/;
-    my $alien_pm = $alien . '.pm';
-    $alien_pm =~ s/::/\//g;
-    require $alien_pm unless eval { $alien->can('cflags') } && eval { $alien->can('libs') };
-    my $cflags;
-    my $libs;
-    if($alien->install_type eq 'share' && $alien->can('cflags_static'))
-    {
-      $cflags = $alien->cflags_static;
-      $libs   = $alien->libs_static;
-    }
-    else
-    {
-      $cflags = $alien->cflags;
-      $libs   = $alien->libs;
-    }
-
-    push @cflags_I,     grep  /^-I/, shellwords $cflags;
-    push @cflags_other, grep !/^-I/, shellwords $cflags;
-
-    push @ldflags_L,     grep  /^-L/,    shellwords $libs;
-    push @ldflags_l,     grep  /^-l/,    shellwords $libs;
-    push @ldflags_other, grep !/^-[Ll]/, shellwords $libs;
-  }
-
-  my @cflags_define = grep  /^-D/, @cflags_other;
-  my @cflags_other2 = grep !/^-D/, @cflags_other;
-
-  @mm = ();
-
-  push @mm, INC       => _join @cflags_I                             if @cflags_I;
-  push @mm, CCFLAGS   => _join(@cflags_other2) . " $Config{ccflags}" if @cflags_other2;
-  push @mm, DEFINE    => _join(@cflags_define)                       if @cflags_define;
-
-  # TODO: handle spaces in -L paths
-  push @mm, LIBS      => ["@ldflags_L @ldflags_l"];
-  my @ldflags = (@ldflags_L, @ldflags_other);
-  push @mm, LDDLFLAGS => _join(@ldflags) . " $Config{lddlflags}"     if @ldflags;
-  push @mm, LDFLAGS   => _join(@ldflags) . " $Config{ldflags}"       if @ldflags;
-
-  @mb = ();
-
-  push @mb, extra_compiler_flags => _join(@cflags_I, @cflags_other);
-  push @mb, extra_linker_flags   => _join(@ldflags_l);
-
-  if(@ldflags)
-  {
-    push @mb, config => {
-      lddlflags => _join(@ldflags) . " $Config{lddlflags}",
-      ldflags   => _join(@ldflags) . " $Config{ldflags}",
-    },
-  }
-
-  if($export)
+  shift;
+  $default_abw = __PACKAGE__->new(@_);
+  if($default_abw->_export)
   {
     my $caller = caller;
     no strict 'refs';
     *{"${caller}::cc"} = \&cc;
     *{"${caller}::ld"} = \&ld;
   }
+}
+
+sub _export
+{
+  shift->{_export};
 }
 
 1;
