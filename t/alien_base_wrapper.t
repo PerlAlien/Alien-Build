@@ -320,9 +320,9 @@ subtest 'combine aliens' => sub {
     is(
       \%mm_args,
       hash {
-        field DEFINE    => match qr/^-D(FOO|BAR)5=1 -D(FOO|BAR)5=1$/;
-        field INC       => match qr/^-I\/(foo|bar)\/include -I\/(foo|bar)\/include -I\/baz\/include$/;
-        field LIBS      => [ match(qr{-l(foo|bar) -l(foo|bar)$}) ];
+        field DEFINE    => '-DBAR5=1 -DFOO5=1';
+        field INC       => '-I/bar/include -I/foo/include -I/baz/include';
+        field LIBS      => [ match(qr{-lbar -lfoo$}) ];
         field LDDLFLAGS => T();
         field LDFLAGS   => T();
         field foo       => 'bar';

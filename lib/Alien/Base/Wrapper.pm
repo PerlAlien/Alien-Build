@@ -422,6 +422,16 @@ flags.
 If the aliens are specified as a hash reference, then the keys are the module names and the
 values are the versions.  For a list it is just the name of the aliens.
 
+For the list form you can specify a version by appending C<=version> to the name of the
+Aliens, that is:
+
+ WriteMakefile(
+   alien_requires => [ 'Alien::libfoo=1.23', 'Alien::libbar=4.56' ],
+ );
+
+The list form is recommended if the ordering of the aliens matter.  The aliens are sorted in
+the hash form to make it consistent, but it may not be the order that you want.
+
 =cut
 
 sub WriteMakefile
