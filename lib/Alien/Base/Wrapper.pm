@@ -8,12 +8,10 @@ use Text::ParseWords qw( shellwords );
 
 # NOTE: Although this module is now distributed with Alien-Build,
 # it should have NO non-perl-core dependencies for all Perls
-# 5.8.1-5.26.0 (as of this writing, and any Perl more recent).
+# 5.6.0-5.30.1 (as of this writing, and any Perl more recent).
 # You should be able to extract this module from the rest of
-# Alien-Build and use it by itself.
-# ALSO NOTE: Although it was lost in the spin-off, this used
-# to be called Alien::Build::Wrapper, and was originally
-# distributed with Alien-Build.
+# Alien-Build and use it by itself.  (There is a dzil plugin
+# for this [AlienBase::Wrapper::Bundle]
 
 # ABSTRACT: Compiler and linker wrapper for Alien
 # VERSION
@@ -25,7 +23,7 @@ From the command line:
  % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e cc -- -o foo.o -c foo.c
  % perl -MAlien::Base::Wrapper=Alien::Foo,Alien::Bar -e ld -- -o foo foo.o
 
-From Makefile.PL (non-dynamic):
+From Makefile.PL (static):
 
  use ExtUtils::MakeMaker;
  use Alien::Base::Wrapper qw( Alien::Foo Alien::Bar !export );
