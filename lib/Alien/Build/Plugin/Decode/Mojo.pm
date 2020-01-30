@@ -70,11 +70,13 @@ sub init
   $meta->add_requires('share' => 'URI' => 0);
   $meta->add_requires('share' => 'URI::Escape' => 0);
 
-  if($self->_class eq 'Mojo::DOM58')
+  my $class = $meta->prop->{plugin_decode_mojo_class} ||= $self->_class;
+
+  if($class eq 'Mojo::DOM58')
   {
     $meta->add_requires('share' => 'Mojo::DOM58' => '1.00');
   }
-  elsif($self->_class eq 'Mojo::DOM')
+  elsif($class eq 'Mojo::DOM')
   {
     $meta->add_requires('share' => 'Mojolicious' => '7.00');
     $meta->add_requires('share' => 'Mojo::DOM'   => '0');
@@ -90,7 +92,7 @@ sub init
     die "do not know how to decode @{[ $res->{type} ]}"
       unless $res->{type} eq 'html';
 
-    my $dom = $self->_class->new($res->{content});
+    my $dom = $class->new($res->{content});
 
     my $base = URI->new($res->{base});
 

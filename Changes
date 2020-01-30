@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Decode::Mojo plugin remembers which version of Mojo::DOM it is using (gh#159)
 
 1.98      2020-01-30 07:53:10 -0700
   - Production release identical to 1.97_01
