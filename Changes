@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.01_01   2020-02-03 10:51:43 -0700
   - Prefer Decode::HTML if HTML::Parser is already installed and Mojolicious
     or Mojo::DOM58 are not (gh#160)
 
