@@ -59,7 +59,7 @@ sub _load ($;$)
 
 has _class => sub {
   return 'Mojo::DOM58' if _load 'Mojo::DOM58';
-  return 'Mojo::DOM'   if _load 'Mojo::DOM' && _load 'Mojolicious', 7.00;
+  return 'Mojo::DOM'   if _load 'Mojo::DOM' and _load 'Mojolicious', 7.00;
   return 'Mojo::DOM58';
 };
 
