@@ -8,6 +8,12 @@ use Alien::Build::Util qw( _dump );
 
 delete $ENV{$_} for qw( ftp_proxy all_proxy );
 
+my $mock_pick_decoder = mock 'Alien::Build::Plugin::Download::Negotiate' => (
+  override => [
+    _pick_decoder => sub { 'Decode::Mojo' },
+  ],
+);
+
 subtest 'pick fetch' => sub {
 
   local %ENV = %ENV;

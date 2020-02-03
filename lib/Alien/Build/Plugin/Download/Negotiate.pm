@@ -160,6 +160,20 @@ sub pick
   ($fetch, @decoders);
 }
 
+sub _pick_decoder
+{
+  my($self) = @_;
+
+  if(eval { require Mojo::DOM58; Mojo::DOM58->VERSION(1.00); 1 })
+  { return "Decode::Mojo" }
+  elsif(eval { require Mojo::DOM; require Mojolicious; Mojolicious->VERSION('7.00'); 1 })
+  { return "Decode::Mojo" }
+  elsif(eval { require HTML::LinkExtor; 1; })
+  { return "Decode::HTML" }
+  else
+  { return "Decode::Mojo" }
+}
+
 sub _pick
 {
   my($self) = @_;
@@ -174,32 +188,32 @@ sub _pick
   {
     if($self->bootstrap_ssl && ! _has_ssl)
     {
-      return (['Fetch::CurlCommand','Fetch::Wget'], 'Decode::Mojo');
+      return (['Fetch::CurlCommand','Fetch::Wget'], __PACKAGE__->_pick_decoder);
     }
     elsif(_has_ssl)
     {
-      return ('Fetch::HTTPTiny', 'Decode::Mojo');
+      return ('Fetch::HTTPTiny', __PACKAGE__->_pick_decoder);
     }
     elsif(do { require Alien::Build::Plugin::Fetch::CurlCommand; Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https') })
     {
-      return ('Fetch::CurlCommand', 'Decode::Mojo');
+      return ('Fetch::CurlCommand', __PACKAGE__->_pick_decoder);
     }
     else
     {
-      return ('Fetch::HTTPTiny', 'Decode::Mojo');
+      return ('Fetch::HTTPTiny', __PACKAGE__->_pick_decoder);
     }
   }
   elsif($self->scheme eq 'http')
   {
-    return ('Fetch::HTTPTiny', 'Decode::Mojo');
+    return ('Fetch::HTTPTiny', __PACKAGE__->_pick_decoder);
   }
   elsif($self->scheme eq 'ftp')
   {
     if($ENV{ftp_proxy} || $ENV{all_proxy})
     {
       return $self->scheme =~ /^ftps?/
-        ? ('Fetch::LWP', 'Decode::DirListing', 'Decode::Mojo')
-        : ('Fetch::LWP', 'Decode::Mojo');
+        ? ('Fetch::LWP', 'Decode::DirListing', __PACKAGE__->_pick_decoder)
+        : ('Fetch::LWP', __PACKAGE__->_pick_decoder);
     }
     else
     {

@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Prefer Decode::HTML if HTML::Parser is already installed and Mojolicious
+    or Mojo::DOM58 are not (gh#160)
 
 2.00      2020-02-02 06:25:13 -0700
   - Production release identical to 2.00
