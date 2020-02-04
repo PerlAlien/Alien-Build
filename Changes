@@ -2,12 +2,15 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.02      2020-02-04 13:12:49 -0700
+  - Production release identical to 2.01_01
+
 2.01_01   2020-02-03 10:51:43 -0700
   - Prefer Decode::HTML if HTML::Parser is already installed and Mojolicious
     or Mojo::DOM58 are not (gh#160)
 
 2.00      2020-02-02 06:25:13 -0700
-  - Production release identical to 2.00
+  - Production release identical to 1.99_01
 
 1.99_01   2020-01-30 12:57:33 -0700
   - Decode::Mojo plugin remembers which version of Mojo::DOM it is using (gh#159)
