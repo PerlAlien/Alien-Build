@@ -514,6 +514,8 @@ sub import
           $install_files_pm->parent->mkpath;
           $install_files_pm->spew(
             "package ${mod}::Install::Files;\n",
+            "use strict;\n",
+            "use warnings;\n",
             "require ${mod};\n",
             "sub Inline { shift; ${mod}->Inline(\@_) }\n",
             "1;\n",
