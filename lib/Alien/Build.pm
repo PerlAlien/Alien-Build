@@ -2087,7 +2087,7 @@ in the early development of L<Alien::Build> were the early adopters Chase Whiten
 WBRASWELL, author of L<Alien::JPCRE2> and L<Alien::PCRE2>) and Ahmad Fatoum (a3f,
 ATHREEF, author of L<Alien::libudev> and L<Alien::LibUSB>).
 
-The Alien ecosystem ows a debt to Dan Book, who goes by Grinnz on IRC, for answering
+The Alien ecosystem owes a debt to Dan Book, who goes by Grinnz on IRC, for answering
 question about how to use L<Alien::Build> and friends.
 
 =cut

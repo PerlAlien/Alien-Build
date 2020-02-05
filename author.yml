@@ -143,6 +143,7 @@ pod_spelling_system:
     - chatroom
     - api
     - WriteMakefile
+    - Grinnz
 
 pod_coverage:
   skip: 0

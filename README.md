@@ -906,7 +906,7 @@ in the early development of [Alien::Build](https://metacpan.org/pod/Alien::Build
 WBRASWELL, author of [Alien::JPCRE2](https://metacpan.org/pod/Alien::JPCRE2) and [Alien::PCRE2](https://metacpan.org/pod/Alien::PCRE2)) and Ahmad Fatoum (a3f,
 ATHREEF, author of [Alien::libudev](https://metacpan.org/pod/Alien::libudev) and [Alien::LibUSB](https://metacpan.org/pod/Alien::LibUSB)).
 
-The Alien ecosystem ows a debt to Dan Book, who goes by Grinnz on IRC, for answering
+The Alien ecosystem owes a debt to Dan Book, who goes by Grinnz on IRC, for answering
 question about how to use [Alien::Build](https://metacpan.org/pod/Alien::Build) and friends.
 
 # AUTHOR
