@@ -894,7 +894,7 @@ not have been possible without him getting the project started.  Thanks to his s
 I have been able to augment the original [Alien::Base](https://metacpan.org/pod/Alien::Base) system with a reliable set
 of tools ([Alien::Build](https://metacpan.org/pod/Alien::Build), [alienfile](https://metacpan.org/pod/alienfile), [Test::Alien](https://metacpan.org/pod/Test::Alien)), which make up this toolset.
 
-The original [Alien::Base](https://metacpan.org/pod/Alien::Base) is still copyright (c) 2012-2017 Joel Berger.  It has
+The original [Alien::Base](https://metacpan.org/pod/Alien::Base) is still copyright (c) 2012-2020 Joel Berger.  It has
 the same license as the rest of the Alien::Build and related tools distributed as
 `Alien-Build`.  Joel Berger thanked a number of people who helped in in the development
 of [Alien::Base](https://metacpan.org/pod/Alien::Base), in the documentation for that module.
@@ -905,6 +905,9 @@ in the early development of [Alien::Build](https://metacpan.org/pod/Alien::Build
 (genio, CAPOEIRAB, author of [Alien::libuv](https://metacpan.org/pod/Alien::libuv)), William N. Braswell, Jr (willthechill,
 WBRASWELL, author of [Alien::JPCRE2](https://metacpan.org/pod/Alien::JPCRE2) and [Alien::PCRE2](https://metacpan.org/pod/Alien::PCRE2)) and Ahmad Fatoum (a3f,
 ATHREEF, author of [Alien::libudev](https://metacpan.org/pod/Alien::libudev) and [Alien::LibUSB](https://metacpan.org/pod/Alien::LibUSB)).
+
+The Alien ecosystem ows a debt to Dan Book, who goes by Grinnz on IRC, for answering
+question about how to use [Alien::Build](https://metacpan.org/pod/Alien::Build) and friends.
 
 # AUTHOR
 

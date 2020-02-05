@@ -2075,7 +2075,7 @@ not have been possible without him getting the project started.  Thanks to his s
 I have been able to augment the original L<Alien::Base> system with a reliable set
 of tools (L<Alien::Build>, L<alienfile>, L<Test::Alien>), which make up this toolset.
 
-The original L<Alien::Base> is still copyright (c) 2012-2017 Joel Berger.  It has
+The original L<Alien::Base> is still copyright (c) 2012-2020 Joel Berger.  It has
 the same license as the rest of the Alien::Build and related tools distributed as
 C<Alien-Build>.  Joel Berger thanked a number of people who helped in in the development
 of L<Alien::Base>, in the documentation for that module.
@@ -2086,5 +2086,8 @@ in the early development of L<Alien::Build> were the early adopters Chase Whiten
 (genio, CAPOEIRAB, author of L<Alien::libuv>), William N. Braswell, Jr (willthechill,
 WBRASWELL, author of L<Alien::JPCRE2> and L<Alien::PCRE2>) and Ahmad Fatoum (a3f,
 ATHREEF, author of L<Alien::libudev> and L<Alien::LibUSB>).
+
+The Alien ecosystem ows a debt to Dan Book, who goes by Grinnz on IRC, for answering
+question about how to use L<Alien::Build> and friends.
 
 =cut
