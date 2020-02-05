@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.03_01   2020-02-04 21:29:35 -0700
   - Add use strict to generated ::Installl::Files modules (gh#162, gh#163)
 
 2.02      2020-02-04 13:12:49 -0700
