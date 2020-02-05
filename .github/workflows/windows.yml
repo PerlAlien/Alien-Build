@@ -51,6 +51,6 @@ jobs:
           dzil listdeps --missing   | cpanm -n
       - name: Install Dynamic Dependencies
         run: |
-          dzil run 'cpanm --installdeps .'
+          dzil run --no-build 'cpanm --installdeps .'
       - name: Run Tests
         run: dzil test -v
