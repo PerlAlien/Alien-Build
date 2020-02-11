@@ -147,7 +147,7 @@ sub init
           }
           else
           {
-            $configure = _win ? 'sh configure' : './configure';
+            $configure = _win ? 'sh ./configure' : './configure';
           }
           $configure .= ' --prefix=' . $prefix;
           $configure .= ' --with-pic' if $self->with_pic;
@@ -226,7 +226,7 @@ can also insert your own C<site.config> in addition by using this environment va
 
 =head1 SEE ALSO
 
-L<Alien::Build::Plugin::MSYS>, L<Alien::Build::Plugin>, L<Alien::Build>, L<Alien::Base>, L<Alien>
+L<Alien::Build::Plugin::Build::MSYS>, L<Alien::Build::Plugin>, L<Alien::Build>, L<Alien::Base>, L<Alien>
 
 L<https://www.gnu.org/software/autoconf/autoconf.html>
 
