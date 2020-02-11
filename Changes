@@ -1,9 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Fix bug where the MSYS / autoconf plugins could use the wrong
-    configure if there was a configure script somewhere in the PATH
-    on Windows (gh#166, gh#167)
+  - Fix bug where the autoconf plugin could use the wrong configure if
+    there is another "configure" script somewhere in the PATH on Windows
+    (gh#166, gh#167)
 
 2.04      2020-02-05 19:05:32 -0700
   - Production release identical to 2.03_01
