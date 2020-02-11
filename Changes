@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.05_01   2020-02-11 15:19:01 -0700
   - Fix bug where the autoconf plugin could use the wrong configure if
     there is another "configure" script somewhere in the PATH on Windows
     (gh#166, gh#167)
