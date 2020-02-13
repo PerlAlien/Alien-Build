@@ -37,21 +37,26 @@ sub add_helper
   my $name = shift;
   my $code = shift;
 
-  if(defined $self->{helper}->{$name}->{code})
+  if(defined $self->{helper}->{$name})
   {
     require Carp;
     Carp::croak("duplicate implementation for interpolated key $name");
   }
+
+  my %helper = (
+    require => {},
+    code    => $code,
+  );
 
   while(@_)
   {
     my $module = shift;
     my $version = shift;
     $version ||= 0;
-    $self->{helper}->{$name}->{require}->{$module} = $version;
+    $helper{require}->{$module} = $version;
   }
 
-  $self->{helper}->{$name}->{code} = $code;
+  $self->{helper}->{$name} = bless \%helper, 'Alien::Build::Interpolate'
 }
 
 =head2 replace_helper
@@ -221,5 +226,7 @@ sub clone
     classes => Storable::dclone($self->{classes}),
   }, ref $self;
 }
+
+package Alien::Build::Helper;
 
 1;
