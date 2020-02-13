@@ -56,4 +56,47 @@ subtest 'make_path' => sub {
   is($val, $expected);
 };
 
+subtest dynamic => sub {
+
+  my %which;
+
+  my $mock = mock 'Alien::Build::Interpolate::Default' => (
+    override => [
+      which => sub { my $command = shift; $which{$command} },
+    ],
+  );
+
+  subtest 'have bison' => sub {
+
+    $which{bison} = '/usr/bin/bison';
+
+    my $intr = Alien::Build::Interpolate::Default->new;
+
+    is
+      [$intr->requires('%{bison}')],
+      []
+    ;
+
+    is
+      $intr->interpolate('-%{bison}-'),
+      '-bison-',
+    ;
+
+  };
+
+  subtest 'no bison' => sub {
+
+    delete $which{bison};
+
+    my $intr = Alien::Build::Interpolate::Default->new;
+
+    is
+      [$intr->requires('%{bison}')],
+      [ 'Alien::bison' => '0.17' ]
+    ;
+
+  };
+
+};
+
 done_testing;
