@@ -43,20 +43,28 @@ sub add_helper
     Carp::croak("duplicate implementation for interpolated key $name");
   }
 
-  my @require;
+  my $require;
 
-  while(@_)
+  if(ref $_[0] eq 'CODE')
   {
-    my $module = shift;
-    my $version = shift;
-    $version ||= 0;
-    push @require, $module => $version;
+    $require = shift;
+  }
+  else
+  {
+    $require = [];
+    while(@_)
+    {
+      my $module = shift;
+      my $version = shift;
+      $version ||= 0;
+      push @$require, $module => $version;
+    }
   }
 
   $self->{helper}->{$name} = Alien::Build::Helper->new(
     $name,
     $code,
-    \@require,
+    $require,
   );
 }
 
@@ -255,6 +263,10 @@ sub code
 sub require
 {
   my($self) = @_;
+  if(ref $self->{require} eq 'CODE')
+  {
+    $self->{require} = [ $self->{require}->($self) ];
+  }
   @{ $self->{require} };
 }
 
