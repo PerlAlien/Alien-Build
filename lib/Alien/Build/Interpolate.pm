@@ -90,7 +90,7 @@ sub has_helper
 
   return unless defined $self->{helper}->{$name};
 
-  my @require = @{ $self->{helper}->{$name}->{require} };
+  my @require = $self->{helper}->{$name}->require;
 
   while(@require)
   {
@@ -111,14 +111,14 @@ sub has_helper
         my $helpers = $module->alien_helper;
         foreach my $k (keys %$helpers)
         {
-          $self->{helper}->{$k}->{code} = $helpers->{$k};
+          $self->{helper}->{$k}->code($helpers->{$k});
         }
       }
       $self->{classes}->{$module} = 1;
     }
   }
 
-  my $code = $self->{helper}->{$name}->{code};
+  my $code = $self->{helper}->{$name}->code;
 
   return unless defined $code;
 
@@ -203,7 +203,7 @@ sub requires
 {
   my($self, $string) = @_;
   map {
-    @{ $self->{helper}->{$_}->{require} }
+    $self->{helper}->{$_}->require
   } $string =~ m{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}g;
 }
 
@@ -244,7 +244,19 @@ sub new
 }
 
 sub name { shift->{name} }
-sub code { shift->{code} }
+
+sub code
+{
+  my($self, $code) = @_;
+  $self->{code} = $code if $code;
+  $self->{code};
+}
+
+sub require
+{
+  my($self) = @_;
+  @{ $self->{require} };
+}
 
 sub clone
 {
@@ -253,7 +265,7 @@ sub clone
   $class->new(
     $self->name,
     $self->code,
-    $self->{require},
+    [ $self->require ],
   );
 }
 
