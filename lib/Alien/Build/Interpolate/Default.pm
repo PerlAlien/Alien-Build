@@ -98,7 +98,8 @@ The C Compiler used to build Perl
 
 Requires: L<Alien::CMake> 0.07 if cmake is not already in C<PATH>.
 
-Note: You probably want C<%{cmake3}> instead, it uses the more reliable L<Alien::cmake3>.
+Deprecated: Use the L<Alien::Build::Plugin::Build::CMake> plugin instead (which will replace
+this helper with one that works with L<Alien::cmake3> that works better).
 
 =cut
 
@@ -111,33 +112,6 @@ Note: You probably want C<%{cmake3}> instead, it uses the more reliable L<Alien:
     {
       return 'Alien::CMake' => '0.07';
     }
-  });
-
-=head2 cmake3
-
- %{cmake3}
-
-[version 2.06]
-
-Requires: L<Alien::cmake3> if cmake version 3.0.0 or better is not already in C<PATH>.
-
-=cut
-
-  $self->add_helper( cmake3 => undef, sub {
-    if(which 'cmake')
-    {
-      my $helper = shift;
-      my($out) = capture { system 'cmake', '--version' };
-      if($out =~ /cmake version ([0-9]+)\./)
-      {
-        if($1 >= 3)
-        {
-          $helper->code(sub { 'cmake' });
-          return ();
-        }
-      }
-    }
-    return 'Alien::cmake3' => 0;
   });
 
 =head2 cp
@@ -274,13 +248,22 @@ Requires: L<Alien::nasm> 0.11 if not already in the C<PATH>.
 
 Requires: L<Alien::patch> 0.09 if not already in the C<PATH>.
 
+On Windows this will normally render C<patch --binary>, which makes patch work like it does on Unix.
+
 =cut
 
   $self->add_helper( patch => undef, sub {
     my $helper = shift;
     if(which 'patch')
     {
-      $helper->code(sub { 'patch' });
+      if($^O eq 'MSWin32')
+      {
+        $helper->code(sub { 'patch --binary' });
+      }
+      else
+      {
+        $helper->code(sub { 'patch' });
+      }
       return  ();
     }
     else

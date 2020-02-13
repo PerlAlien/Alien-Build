@@ -3,7 +3,6 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Several helpers for Alien::Build::Interpolate::Default no longer
     require Aliens if the tools are already found in the PATH (gh#168)
-  - Add cmake3 helper to Alien::Build::Interpolate::Default (gh#168)
 
 2.05_01   2020-02-11 15:19:01 -0700
   - Fix bug where the autoconf plugin could use the wrong configure if
