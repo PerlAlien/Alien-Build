@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base qw( Alien::Build::Interpolate );
 use File::chdir;
+use File::Which qw( which );
+use Capture::Tiny qw( capture );
 
 # ABSTRACT: Default interpolator for Alien::Build
 # VERSION
@@ -42,21 +44,43 @@ The ar command.
 
  %{bison}
 
-Requires: L<Alien::bison> 0.17
+Requires: L<Alien::bison> 0.17 if not already in C<PATH>.
 
 =cut
 
-  $self->add_helper( bison => undef, 'Alien::bison' => '0.17' );
+  $self->add_helper( bison => undef, sub {
+    my $helper = shift;
+    if(which 'bison')
+    {
+      $helper->code(sub { 'bison' });
+      return  ();
+    }
+    else
+    {
+      return 'Alien::bison' => '0.17';
+    }
+  });
 
 =head2 bzip2
 
  %{bzip2}
 
-Requires: L<Alien::Libbz2> 0.04
+Requires: L<Alien::Libbz2> 0.04 if not already in C<PATH>.
 
 =cut
 
-  $self->add_helper( bzip2 => undef, 'Alien::Libbz2' => '0.04' );
+  $self->add_helper( bzip2 => undef, sub {
+    my $helper = shift;
+    if(which 'bzip2')
+    {
+      $helper->code( sub { 'bzip2' });
+      return ();
+    }
+    else
+    {
+      return 'Alien::Libbz2' => '0.04';
+    }
+  });
 
 =head2 cc
 
@@ -72,11 +96,49 @@ The C Compiler used to build Perl
 
  %{cmake}
 
-Requires: L<Alien::CMake> 0.07
+Requires: L<Alien::CMake> 0.07 if cmake is not already in C<PATH>.
+
+Note: You probably want C<%{cmake3}> instead, it uses the more reliable L<Alien::cmake3>.
 
 =cut
 
-  $self->add_helper( cmake => sub { 'cmake' }, 'Alien::CMake' => '0.07' );
+  $self->add_helper( cmake => sub { 'cmake' }, sub {
+    if(which 'cmake')
+    {
+      return ();
+    }
+    else
+    {
+      return 'Alien::CMake' => '0.07';
+    }
+  });
+
+=head2 cmake3
+
+ %{cmake3}
+
+[version 2.06]
+
+Requires: L<Alien::cmake3> if cmake version 3.0.0 or better is not already in C<PATH>.
+
+=cut
+
+  $self->add_helper( cmake3 => undef, sub {
+    if(which 'cmake')
+    {
+      my $helper = shift;
+      my($out) = capture { system 'cmake', '--version' };
+      if($out =~ /cmake version ([0-9]+)\./)
+      {
+        if($1 >= 3)
+        {
+          $helper->code(sub { 'cmake' });
+          return ();
+        }
+      }
+    }
+    return 'Alien::cmake3' => 0;
+  });
 
 =head2 cp
 
@@ -102,17 +164,30 @@ The null device, if available.  On Unix style operating systems this will be C</
 
  %{flex}
 
-Requires: L<Alien::flex> 0.08
+Requires: L<Alien::flex> 0.08 if not already in C<PATH>.
 
 =cut
 
-  $self->add_helper( flex => undef, 'Alien::flex' => '0.08' );
+  $self->add_helper( flex => undef, sub {
+    my $helper = shift;
+    if(which 'flex')
+    {
+      $helper->code(sub { 'flex' });
+      return  ();
+    }
+    else
+    {
+      return 'Alien::flex' => '0.08';
+    }
+  });
 
 =head2 gmake
 
  %{gmake}
 
 Requires: L<Alien::gmake> 0.11
+
+Deprecated: use L<Alien::Build::Plugin::Build::Make> instead.
 
 =cut
 
@@ -122,11 +197,11 @@ Requires: L<Alien::gmake> 0.11
 
  %{install}
 
-The Unix C<install> command.  On C<MSWin32> this requires L<Alien::MSYS2>.
+The Unix C<install> command.  Not normally available on Windows.
 
 =cut
 
-  $self->add_helper( install => sub { 'install' }, 'Alien::MSYS' => '0.07' );
+  $self->add_helper( install => sub { 'install' });
 
 =head2 ld
 
@@ -143,6 +218,8 @@ The linker used to build Perl
  %{m4}
 
 Requires: L<Alien::m4> 0.08
+
+L<Alien::m4> should pull in a version of C<m4> that will work with Autotools.
 
 =cut
 
@@ -174,21 +251,43 @@ on Unix and simply C<md> on windows.
 
  %{nasm}
 
-Requires: L<Alien::nasm> 0.11
+Requires: L<Alien::nasm> 0.11 if not already in the C<PATH>.
 
 =cut
 
-  $self->add_helper( nasm => undef, 'Alien::nasm' => '0.11' );
+  $self->add_helper( nasm => undef, sub {
+    my $helper = shift;
+    if(which 'nasm')
+    {
+      $helper->code(sub { 'nasm' });
+      return  ();
+    }
+    else
+    {
+      return 'Alien::nasm' => '0.11';
+    }
+  });
 
 =head2 patch
 
  %{patch}
 
-Requires: L<Alien::patch> 0.09
+Requires: L<Alien::patch> 0.09 if not already in the C<PATH>.
 
 =cut
 
-  $self->add_helper( patch => undef, 'Alien::patch' => '0.09' );
+  $self->add_helper( patch => undef, sub {
+    my $helper = shift;
+    if(which 'patch')
+    {
+      $helper->code(sub { 'patch' });
+      return  ();
+    }
+    else
+    {
+      return 'Alien::patch' => '0.09';
+    }
+  });
 
 =head2 perl
 
@@ -208,7 +307,7 @@ Requires: L<Devel::FindPerl>
 
  %{pkgconf}
 
-Requires: L<Alien::pkgconf> 0.06
+Requires: L<Alien::pkgconf> 0.06.
 
 =cut
 
@@ -230,7 +329,9 @@ Requires: L<Alien::pkgconf> 0.06
 
  %{sh}
 
-Unix style command interpreter (/bin/sh).  On MSWin32 this requires L<Alien::MSYS>.
+Unix style command interpreter (/bin/sh).
+
+Deprecated: use the L<Alien::Build::Plugin::Build::MSYS> plugin instead.
 
 =cut
 
@@ -251,11 +352,22 @@ The remove command
 
  %{xz}
 
-Requires: L<Alien::xz> 0.02
+Requires: L<Alien::xz> 0.02 if not already in the C<PATH>.
 
 =cut
 
-  $self->add_helper( xz => undef, 'Alien::xz' => '0.02' );
+  $self->add_helper( xz => undef, sub {
+    my $helper = shift;
+    if(which 'xz')
+    {
+      $helper->code(sub { 'xz' });
+      return  ();
+    }
+    else
+    {
+      return 'Alien::xz' => '0.02';
+    }
+  });
 
   $self;
 }
