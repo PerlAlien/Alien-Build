@@ -122,4 +122,23 @@ subtest 'has_helper' => sub {
 
 };
 
+subtest 'requirement callback' => sub {
+
+  my $intr = Alien::Build::Interpolate->new;
+
+  $intr->add_helper( foo1 => undef, sub { return ( 'Alien::libfoo' => '1' ) } );
+
+  is( [$intr->requires("%{foo1}")], [ 'Alien::libfoo' => '1' ], 'requires' );
+
+  $intr->add_helper( foo2 => undef, sub {
+    my $helper = shift;
+    $helper->code(sub { 'foo2' });
+    return ();
+  });
+
+  is( [$intr->requires("%{foo2}")], [], 'requires' );
+  is( $intr->interpolate('-%{foo2}-'), '-foo2-' );
+
+};
+
 done_testing;
