@@ -8,6 +8,10 @@
 
 =head1 DESCRIPTION
 
+B<Note>: Please read the entire document before you get started in
+writing your own L<alienfile>.  The section on dynamic vs. static
+libraries will likely save you a lot of grief if you read it now!
+
 This document is intended to teach L<Alien> authors how to build their 
 own L<Alien> distribution using L<Alien::Build> and L<Alien::Base>.  
 Such an L<Alien> distribution consists of three essential parts:
@@ -309,6 +313,50 @@ flags to the configure step.
      '%{make} install',
    ];
  };
+
+=head2 A note about dynamic vs. static libraries
+
+If you are using your L<Alien> to build an XS module, it is important
+that you use static libraries if possible.  If you have a package that
+refuses to build a static library, then you can use L<Alien::Role::Dino>.
+
+Actually let me back up a minute.  For a C<share> install it is best
+to use static libraries to build your XS extension.  This is because
+if your L<Alien> is ever upgraded to a new version it can break your
+existing XS modules.  For a C<system> install shared libraries are
+usually best because you can often get security patches without having
+to re-build anything in perl land.
+
+If you looked closely at the "Using commands" and "Using plugins"
+sections above, you may notice that we went out of our way where
+possible to tell Autotools to build only static libraries usin the
+C<--disable-shared> command.  The Autoconf plugin also does this by
+default.
+
+Sometimes though you will have a package that builds both, or maybe
+you I<want> both static and dynamic libraries to work with XS and FFI.
+For that case, there is the L<Alien::Build::Plugin::Gather::IsolateDynamic>
+plugin.
+
+ use alienfile;
+ ...
+ plugin 'Gather::Isolate::Dynamic';
+
+What it does, is that it moves the dynamic libraries (usually .so on
+Unix and .dll on Windows) to a place where they can be found by FFI,
+and where they won't be used by the compiler for building XS.  It usually
+doesn't do any harm to include this plugin, so if you are just starting
+out you might want to add it anyway.  Arguably it should have been the
+default behavior from the beginning.
+
+If you have already published an Alien that does not isolate its
+dynamic libraries, then you might get some fails from old upgraded
+aliens because the share directory isn't cleaned up by default (this is
+perhaps a design bug in the way that share directories work, but it
+is a long standing characteristic).  One work around for this is to
+use the C<clean_install> property on L<Alien::Build::MM>, which will
+clean out the share directory on upgrade, and possibly save you a lot
+of grief.
 
 =head2 Verifying and debugging your alienfile
 
