@@ -219,18 +219,14 @@ sub clone
 
   require Storable;
 
-  my %help;
+  my %helper;
   foreach my $name (keys %{ $self->{helper} })
   {
-    $help{$name} = Alien::Build::Helper->new(
-      $name,
-      $self->{helper}->{$name}->{code},
-      $self->{helper}->{$name}->{require},
-    );
+    $helper{$name} = $self->{helper}->{$name}->clone;
   }
 
   my $new = bless {
-    helper => \%help,
+    helper => \%helper,
     classes => Storable::dclone($self->{classes}),
   }, ref $self;
 }
@@ -248,5 +244,17 @@ sub new
 }
 
 sub name { shift->{name} }
+sub code { shift->{code} }
+
+sub clone
+{
+  my($self) = @_;
+  my $class = ref $self;
+  $class->new(
+    $self->name,
+    $self->code,
+    $self->{require},
+  );
+}
 
 1;
