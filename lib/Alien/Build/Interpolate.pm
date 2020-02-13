@@ -54,6 +54,7 @@ sub add_helper
   }
 
   $self->{helper}->{$name} = Alien::Build::Helper->new(
+    $name,
     $code,
     \@require,
   );
@@ -222,6 +223,7 @@ sub clone
   foreach my $name (keys %{ $self->{helper} })
   {
     $help{$name} = Alien::Build::Helper->new(
+      $name,
       $self->{helper}->{$name}->{code},
       $self->{helper}->{$name}->{require},
     );
@@ -237,11 +239,14 @@ package Alien::Build::Helper;
 
 sub new
 {
-  my($class, $code, $require) = @_;
+  my($class, $name, $code, $require) = @_;
   bless {
+    name    => $name,
     code    => $code,
     require => $require,
   }, $class;
 }
+
+sub name { shift->{name} }
 
 1;
