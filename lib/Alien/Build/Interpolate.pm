@@ -43,20 +43,20 @@ sub add_helper
     Carp::croak("duplicate implementation for interpolated key $name");
   }
 
-  my %helper = (
-    require => {},
-    code    => $code,
-  );
+  my @require;
 
   while(@_)
   {
     my $module = shift;
     my $version = shift;
     $version ||= 0;
-    $helper{require}->{$module} = $version;
+    push @require, $module => $version;
   }
 
-  $self->{helper}->{$name} = bless \%helper, 'Alien::Build::Interpolate'
+  $self->{helper}->{$name} = Alien::Build::Helper->new(
+    $code,
+    \@require,
+  );
 }
 
 =head2 replace_helper
@@ -87,9 +87,14 @@ sub has_helper
 {
   my($self, $name) = @_;
 
-  foreach my $module (keys %{ $self->{helper}->{$name}->{require} })
+  return unless defined $self->{helper}->{$name};
+
+  my @require = @{ $self->{helper}->{$name}->{require} };
+
+  while(@require)
   {
-    my $version = $self->{helper}->{$name}->{require}->{$module};
+    my $module  = shift @require;
+    my $version = shift @require;
 
     {
       my $pm = "$module.pm";
@@ -197,8 +202,7 @@ sub requires
 {
   my($self, $string) = @_;
   map {
-    my $name = $_;
-    map { $_ => $self->{helper}->{$name}->{require}->{$_} || 0 } keys %{ $self->{helper}->{$name}->{require} }
+    @{ $self->{helper}->{$_}->{require} }
   } $string =~ m{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}g;
 }
 
@@ -215,10 +219,12 @@ sub clone
   require Storable;
 
   my %help;
-  foreach my $helper (keys %{ $self->{helper} })
+  foreach my $name (keys %{ $self->{helper} })
   {
-    $help{$helper}->{code}    = $self->{helper}->{$helper}->{code};
-    $help{$helper}->{require} = $self->{helper}->{$helper}->{require };
+    $help{$name} = Alien::Build::Helper->new(
+      $self->{helper}->{$name}->{code},
+      $self->{helper}->{$name}->{require},
+    );
   }
 
   my $new = bless {
@@ -228,5 +234,14 @@ sub clone
 }
 
 package Alien::Build::Helper;
+
+sub new
+{
+  my($class, $code, $require) = @_;
+  bless {
+    code    => $code,
+    require => $require,
+  }, $class;
+}
 
 1;
