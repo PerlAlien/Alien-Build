@@ -59,8 +59,9 @@ With plugins (better):
    );
    plugin Extract => 'tar.gz';
    plugin 'Build::Autoconf';
+   plugin 'Gather::IsolateDynamic';
    build [
-     '%{configure} --disable-shared',
+     '%{configure}',
      '%{make}',
      '%{make} install',
    ];
@@ -69,7 +70,10 @@ With plugins (better):
 =head1 DESCRIPTION
 
 An alienfile is a recipe used by L<Alien::Build> to, probe for system libraries or download from the internet, and build source
-for those libraries.
+for those libraries.  This document acts as reference for the alienfile system, but if you are starting out writing your own Alien
+you should read L<Alien::Build::Manual::AlienAuthor>, which will teach you how to write your own complete Alien using alienfile + 
+L<Alien::Build> + L<ExtUtils::MakeMaker>.  Special attention should be taken to the section "a note about dynamic vs. static
+libraries".
 
 =cut
 
