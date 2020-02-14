@@ -6,13 +6,13 @@ use Path::Tiny qw( path );
 # (usually just libs=-lbz2):
 plugin 'Probe::CBuilder' => (
   libs    => '-lbz2',
-  
+
   # The version regex here will attempt to parse out the
   # bzip2 version number from the output of the test program below.
   version => qr/version = '(.*?)[,']/,
-  
+
   # Both the test program and the version regex are optional, but
-  # if you do not provide them, then you should provide a 
+  # if you do not provide them, then you should provide a
   # sys { gather } declaration for how to obtain the version number.
   # assuming the version number matters.
   program => q{
@@ -55,7 +55,7 @@ share {
   # The Extract negotiator picks the best method for
   # extracting from the tarball.  We give it a hint
   # here that we expect the tarball to be .gz compressed
-  # in case it needs to load extra modules to 
+  # in case it needs to load extra modules to
   # decompress.
   plugin Extract => 'tar.gz';
 
@@ -69,7 +69,7 @@ share {
   build [
     [ '%{make}', 'all', "CC=%{perl.config.cc}", "CFLAGS=%{perl.config.cccdlflags} %{perl.config.optimize}", ],
     [ '%{make}', 'install', 'PREFIX=%{.install.prefix}',                                                    ],
-    
+
     # we can use a code ref here to determine the version number of
     # bzip2 from the directory that is extracted from the tarball.
     # Usually this is something like bzip2-1.0.6 and we just parse
@@ -80,6 +80,11 @@ share {
       $build->runtime_prop->{version} = $version;
     },
   ];
+
+  # This package doesn't build a dynamic library by default, but if
+  # it did this would make sure that it wasn't used with XS.
+  # (See Alien::Build::Manual::AlienAuthor for details).
+  plugin 'Gather::IsolateDynamic';
 
   # The gather stage determines the appropriate cflags and libs for
   # using the library that we just built.

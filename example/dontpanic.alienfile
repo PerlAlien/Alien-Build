@@ -16,10 +16,12 @@ share {
 
   plugin 'Build::Autoconf';
 
+  plugin 'Gather::IsolateDynamic';
+
   build [
     'git checkout 1.00',
     'bash autogen.sh',
-    '%{configure} --disable-shared',
+    '%{configure} --enable-static --enable-shared',
     '%{make}',
     '%{make} install',
   ];

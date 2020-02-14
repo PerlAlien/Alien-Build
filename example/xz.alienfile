@@ -35,7 +35,7 @@ share {
   # The Extract negotiator picks the best method for
   # extracting from the tarball.  We give it a hint
   # here that we expect the tarball to be .gz compressed
-  # in case it needs to load extra modules to 
+  # in case it needs to load extra modules to
   # decompress.
   plugin Extract => 'tar.gz';
 
@@ -47,5 +47,10 @@ share {
   # matches the prefix during runtime
   # (ie when you use it from XZ::XS).
   plugin 'Build::Autoconf';
+
+  # This package doesn't build a dynamic library by default, but if
+  # it did this would make sure that it wasn't used with XS.
+  # (See Alien::Build::Manual::AlienAuthor for details).
+  plugin 'Gather::IsolateDynamic';
 
 };

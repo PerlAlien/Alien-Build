@@ -3,7 +3,7 @@ use alienfile;
 plugin 'PkgConfig' => (
   pkg_name => 'openssl',
 );
- 
+
 share {
 
   # when building OpenSSL from source we have a few challenges.
@@ -16,7 +16,7 @@ share {
   # - try downloading with curl or wget via the 'bootstrap_ssl' option.
   # - if that doesn't work, fallback on FTP
   # - don't attempt FTP transfer if ALIEN_OPENSSL_FTP is set to 0
-  
+
   start_url 'https://www.openssl.org/source/';
   plugin Download => (
     version       => qr/^openssl-([0-9\.]+[a-z]*)\.tar\.gz$/,
@@ -43,7 +43,7 @@ share {
       die "unable to download OpenSSL via https";
     }
   }
-  
+
   plugin 'Extract' => 'tar.gz';
 
   build [
@@ -51,5 +51,10 @@ share {
     '%{make}',
     '%{make} install',
   ];
+
+  # This package doesn't build a dynamic library by default, but if
+  # it did this would make sure that it wasn't used with XS.
+  # (See Alien::Build::Manual::AlienAuthor for details).
+  plugin 'Gather::IsolateDynamic';
 
 };

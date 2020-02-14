@@ -6,7 +6,7 @@ use alienfile;
 # Use pkg-config to check if the library exists.
 # also, use which to check that the xz command is
 # in the path.
-probe [ 
+probe [
   'pkg-config --exists liblzma',
   'which xz',
 ];
@@ -21,13 +21,18 @@ share {
 
   # use tar to extract the tarball
   extract [ 'tar zxf %{.install.download}' ];
-  
+
   # use the standard build process
   build [
     './configure --prefix=%{.install.prefix} --disable-shared',
     '%{make}',
     '%{make} install',
   ];
+
+  # This package doesn't build a dynamic library by default, but if
+  # it did this would make sure that it wasn't used with XS.
+  # (See Alien::Build::Manual::AlienAuthor for details).
+  plugin 'Gather::IsolateDynamic';
 
 };
 
