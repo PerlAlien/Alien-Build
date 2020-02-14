@@ -203,11 +203,66 @@ L<Alien::m4> should pull in a version of C<m4> that will work with Autotools.
 
  %{make}
 
-The make program used by Perl.
+Make.  On Unix this will be the same make used by Perl.  On Windows this will be
+C<gmake> or C<nmake> if those are available, and only C<dmake> if the first two
+are not available.
 
 =cut
 
-  $self->add_helper( make => sub { _config 'make' }, 'Config' );
+  if($^O eq 'MSWin32')
+  {
+    # TL;DR: dmake is bad, and shouldn't be used to build anything but older
+    # versions of Windows Perl that don't support gmake.
+    my $perl_make = _config 'make';
+    my $my_make;
+    $self->add_helper( make => sub {
+      return $my_make if defined $my_make;
+
+      if( $perl_make ne 'dmake' && which $perl_make )
+      {
+        # assume if it is called nmake or gmake that it really is what it
+        # says it is.
+        if( $perl_make eq 'nmake' || $perl_make eq 'gmake' )
+        {
+          return $my_make = $perl_make;
+        }
+
+        my $out = capture { system $perl_make, '--version' };
+        if( $out =~ /GNU make/i || $out =~ /Microsoft \(R\) Program Maintenance/ )
+        {
+          return $my_make = $perl_make;
+        }
+
+      }
+
+      # if we see something that looks like it might be gmake, use that.
+      foreach my $try (qw( gmake mingw32-make ))
+      {
+        return $my_make = $try if which $try;
+      }
+
+      if( which 'make' )
+      {
+        my $out = capture { system 'make', '--version' };
+        if( $out =~ /GNU make/i || $out =~ /Microsoft \(R\) Program Maintenance/ )
+        {
+          return $my_make = 'make';
+        }
+      }
+
+      # if we see something that looks like it might be nmake, use that.
+      foreach my $try (qw( nmake ))
+      {
+        return $my_make = $try if which $try;
+      }
+
+      $my_make = $perl_make;
+    });
+  }
+  else
+  {
+    $self->add_helper( make => sub { _config 'make' }, 'Config' );
+  }
 
 =head2 make_path
 
