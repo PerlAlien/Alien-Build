@@ -340,7 +340,7 @@ plugin.
 
  use alienfile;
  ...
- plugin 'Gather::Isolate::Dynamic';
+ plugin 'Gather::IsolateDynamic';
 
 What it does, is that it moves the dynamic libraries (usually .so on
 Unix and .dll on Windows) to a place where they can be found by FFI,
