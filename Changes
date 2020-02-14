@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.06_01   2020-02-14 12:23:02 -0700
   - Several helpers for Alien::Build::Interpolate::Default no longer
     require Aliens if the tools are already found in the PATH (gh#168)
   - Better document dynamic vs. static libraries in AlienAuthor and FAQ
