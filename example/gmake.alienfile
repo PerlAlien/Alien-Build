@@ -40,9 +40,9 @@ share {
   # The Extract negotiator picks the best method for
   # extracting from the tarball.  We give it a hint
   # here that we expect the tarball to be .gz compressed
-  # in case it needs to load extra modules to 
+  # in case it needs to load extra modules to
   # decompress.
-  plugin 'Extract' => 'tar.gz';  
+  plugin 'Extract' => 'tar.gz';
 
 
   # The Autoconf plugin builds using the standard
@@ -58,7 +58,7 @@ share {
   # the commands used to build.  For this package it is
   # because we need to specify --program-prefix=g so that
   # the gmake executable will be 'gmake' and will not conflict
-  # with the system provided 'make' which may not be compatible.  
+  # with the system provided 'make' which may not be compatible.
   build [
     '%{configure} --program-prefix=g --disable-shared',
     '%{make}',
@@ -68,7 +68,12 @@ share {
       $build->runtime_prop->{command} = 'gmake';
     },
   ];
-  
+
+  # This package doesn't build a dynamic library, but if
+  # it did this would make sure that it wasn't used with XS.
+  # (See Alien::Build::Manual::AlienAuthor for details).
+  plugin 'Gather::IsolateDynamic';
+
 };
 
 # For either a 'share' or 'system' install we try to get
