@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix Alien::Build::Interpolate bug introduced in 2.06_01 (gh#171)
 
 2.06_01   2020-02-14 12:23:02 -0700
   - Several helpers for Alien::Build::Interpolate::Default no longer

@@ -211,7 +211,8 @@ sub requires
 {
   my($self, $string) = @_;
   map {
-    $self->{helper}->{$_}->require
+    my $helper = $self->{helper}->{$_};
+    $helper ? $helper->require : ();
   } $string =~ m{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}g;
 }
 
