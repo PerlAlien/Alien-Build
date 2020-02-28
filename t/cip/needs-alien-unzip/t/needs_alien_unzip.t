@@ -69,7 +69,7 @@ unless($cpanm_ok)
   if(-f $log)
   {
     diag "## cpanm log $log ##";
-    diag $log->slurp;
+    diag $log->slurp_utf8;
   }
   else
   {
@@ -96,8 +96,8 @@ build_step sub { $build->download }, 'download';
 my $dir = build_step sub { $build->extract }, 'extract';
 
 is
-  [path($dir)->child('configure')->slurp],
-  [path('src/configure')->slurp],
+  [path($dir)->child('configure')->slurp_utf8],
+  [path('src/configure')->slurp_utf8],
   'extracted zip'
 ;
 

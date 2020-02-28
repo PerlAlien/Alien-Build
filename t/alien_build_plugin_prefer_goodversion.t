@@ -43,7 +43,7 @@ subtest 'filters out string version' => sub {
   };
 
   my $file = alien_download_ok;
-  is(path($file)->slurp, "data:foo-1.2.4.tar.gz");
+  is(path($file)->slurp_raw, "data:foo-1.2.4.tar.gz");
 
 };
 
@@ -59,7 +59,7 @@ subtest 'filters out list version' => sub {
   };
 
   my $file = alien_download_ok;
-  is(path($file)->slurp, "data:foo-1.2.4.tar.gz");
+  is(path($file)->slurp_raw, "data:foo-1.2.4.tar.gz");
 
 };
 
@@ -78,7 +78,7 @@ subtest 'filters out code ref' => sub {
   };
 
   my $file = alien_download_ok;
-  is(path($file)->slurp, "data:foo-1.2.4.tar.gz");
+  is(path($file)->slurp_raw, "data:foo-1.2.4.tar.gz");
 
 
 };

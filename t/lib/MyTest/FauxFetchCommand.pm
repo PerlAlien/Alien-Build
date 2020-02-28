@@ -28,7 +28,7 @@ sub capture_note (&)
 my($test_name) = $0 =~ m{[/\\](.*)\.t$};
 my $command_name = $test_name =~ /curlcommand/ ? 'curl' : 'wget';
 
-my %record = %{ decode_json path("corpus/$test_name/record/old.json")->slurp };
+my %record = %{ decode_json path("corpus/$test_name/record/old.json")->slurp_raw };
 
 sub real_cmd
 {
@@ -56,7 +56,7 @@ sub real_cmd
     foreach my $child (path('.')->children)
     {
       next if $old{$child->basename};
-      $files{$child->basename} = $child->slurp;
+      $files{$child->basename} = $child->slurp_raw;
     }
   }
 
@@ -89,7 +89,7 @@ sub faux_cmd
 
   foreach my $filename (keys %{ $run->{files} })
   {
-    path($filename)->spew($run->{files}->{$filename});
+    path($filename)->spew_raw($run->{files}->{$filename});
   }
 
   $run->{exit};
@@ -102,7 +102,7 @@ sub test_config ($)
 
   if(-f $path)
   {
-    my $config = JSON::PP::decode_json(scalar $path->slurp);
+    my $config = JSON::PP::decode_json(scalar $path->slurp_raw);
 
     my $guard = system_fake;
 
@@ -139,7 +139,7 @@ delete $ENV{CURL};
 delete $ENV{WGET};
 
 END {
-  path("corpus/$test_name/record/new.json")->spew(encode_json( \%record ));
+  path("corpus/$test_name/record/new.json")->spew_raw(encode_json( \%record ));
   if(eval { require YAML; 1 })
   {
     YAML::DumpFile(path("corpus/$test_name/record/new.yml")->stringify, \%record );

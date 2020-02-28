@@ -41,7 +41,7 @@ subtest basic => sub {
 
     ok(-f $new, "created file $filename");
 
-    is($new->slurp, $old->slurp, 'content matches');
+    is($new->slurp_raw, $old->slurp_raw, 'content matches');
   }
 
 };

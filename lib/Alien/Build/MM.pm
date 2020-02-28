@@ -201,7 +201,7 @@ sub mm_args
       {
         my $old_runtime = eval {
           require JSON::PP;
-          JSON::PP::decode_json($file->slurp);
+          JSON::PP::decode_json($file->slurp_raw);
         };
         unless($@)
         {
@@ -500,7 +500,7 @@ sub import
           my $archdir = Path::Tiny->new("blib/arch/auto/@{[ join '/', split /-/, $distname ]}");
           $archdir->mkpath;
           my $archfile = $archdir->child($archdir->basename . '.txt');
-          $archfile->spew('Alien based distribution with architecture specific file in share');
+          $archfile->spew_utf8('Alien based distribution with architecture specific file in share');
         }
 
         my $cflags = $build->runtime_prop->{cflags};
@@ -512,7 +512,7 @@ sub import
           my $mod = join '::', split /-/, $distname;
           my $install_files_pm = Path::Tiny->new("blib/lib/@{[ join '/', split /-/, $distname ]}/Install/Files.pm");
           $install_files_pm->parent->mkpath;
-          $install_files_pm->spew(
+          $install_files_pm->spew_utf8(
             "package ${mod}::Install::Files;\n",
             "use strict;\n",
             "use warnings;\n",

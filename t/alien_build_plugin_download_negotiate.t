@@ -246,7 +246,7 @@ subtest 'get the version' => sub {
   my $orig = path('corpus/dist/foo-1.00.tar.gz');
   my $new  = path($filename);
 
-  is($new->slurp, $orig->slurp, 'content of file is the same');
+  is($new->slurp_raw, $orig->slurp_raw, 'content of file is the same');
 
 };
 

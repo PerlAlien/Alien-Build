@@ -902,7 +902,7 @@ then this will return undef.
       return if $@;
       my $alien_json = Path::Tiny->new($dist_dir, '_alien', 'alien.json');
       return unless -r $alien_json;
-      my $json = $alien_json->slurp;
+      my $json = $alien_json->slurp_raw;
       require JSON::PP;
       my $config = JSON::PP::decode_json($json);
       $config->{distdir} = $dist_dir;

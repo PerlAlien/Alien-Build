@@ -29,7 +29,7 @@ sub ftp_url
   my $file = path('t/bin/ftpd.json');
   return ftp_error('no ftpd.json') unless -r $file;
 
-  my $config = eval { decode_json($file->slurp) };
+  my $config = eval { decode_json($file->slurp_raw) };
   return ftp_error("error loading ftpd.json $@") if $@;
 
   my $url = $config->{url};

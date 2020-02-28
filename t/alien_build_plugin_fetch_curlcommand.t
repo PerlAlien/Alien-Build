@@ -65,7 +65,7 @@ subtest 'fetch from http' => sub {
     );
 
     is(
-      scalar path($file->{path})->slurp,
+      path($file->{path})->slurp_utf8,
       "content:foo-1.01\n",
       'file content',
     );
@@ -165,7 +165,7 @@ subtest 'fetch from http' => sub {
 #    );
 #
 #    is(
-#      scalar path($file->{path})->slurp,
+#      path($file->{path})->slurp_utf8,
 #      "content:foo-1.01\n",
 #      'file content',
 #    );

@@ -312,7 +312,7 @@ subtest 'alien_download_ok' => sub {
       probe sub { 'share' };
       share {
         download sub {
-          path('file1')->spew("xx\n");
+          path('file1')->spew_utf8("xx\n");
         };
       };
     };
@@ -320,7 +320,7 @@ subtest 'alien_download_ok' => sub {
     my $file = alien_download_ok;
 
     is(
-      path($file)->slurp,
+      path($file)->slurp_utf8,
       "xx\n",
       'file content matches',
     );
@@ -436,7 +436,7 @@ subtest 'alien_rc' => sub {
 
     };
 
-    note path($ENV{ALIEN_BUILD_RC})->slurp;
+    note path($ENV{ALIEN_BUILD_RC})->slurp_utf8;
 
     my $build = alienfile_ok q{ use alienfile };
 

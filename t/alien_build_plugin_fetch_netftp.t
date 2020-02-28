@@ -73,7 +73,7 @@ subtest 'fetch' => sub {
     my $log = path('t/bin/ftpd.log');
     if(-r $log)
     {
-      note($log->slurp);
+      note($log->slurp_utf8);
     }
     skip_all ftp_error;
   }

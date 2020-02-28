@@ -26,7 +26,7 @@ my $config_file = $bindir->child('ftpd.json');
 
 if(-r $config_file)
 {
-  my $config = decode_json($config_file->slurp);
+  my $config = decode_json($config_file->slurp_raw);
   my $pid = $config->{pid};
   if(defined $pid)
   {
@@ -83,7 +83,7 @@ $server->on_connect(sub {
 $server->start;
 
 $config{url} = $url->as_string;
-$config_file->spew(encode_json(\%config));
+$config_file->spew_raw(encode_json(\%config));
 
 print "$url\n";
 

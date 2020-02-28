@@ -458,12 +458,12 @@ subtest 'system rewrite' => sub {
         }
 
         $stage->child('lib/pkgconfig')->mkpath;
-        $stage->child('lib/libfoofoo.a')->spew("lib foo-foo as staged\n");
+        $stage->child('lib/libfoofoo.a')->spew_utf8("lib foo-foo as staged\n");
 
         $stage->child('include')->mkpath;
-        $stage->child('include/foofoo.h')->spew("h foo-foo as staged\n");
+        $stage->child('include/foofoo.h')->spew_utf8("h foo-foo as staged\n");
 
-        $stage->child('lib/pkgconfig/foo-foo.pc')->spew(
+        $stage->child('lib/pkgconfig/foo-foo.pc')->spew_utf8(
           "prefix=$prefix\n",
           map { s/^\s*//; "$_\n" }
           split /\n/,
@@ -496,11 +496,11 @@ subtest 'system rewrite' => sub {
 
     ok(-d $inc, "inc dir exists" );
     note "inc = $inc";
-    is($inc->child('foofoo.h')->slurp, "h foo-foo as staged\n", 'libfoofoo.a');
+    is($inc->child('foofoo.h')->slurp_utf8, "h foo-foo as staged\n", 'libfoofoo.a');
 
     ok(-d $lib, "lib dir exists" );
     note "lib = $lib";
-    is($lib->child('libfoofoo.a')->slurp, "lib foo-foo as staged\n", 'libfoofoo.a');
+    is($lib->child('libfoofoo.a')->slurp_utf8, "lib foo-foo as staged\n", 'libfoofoo.a');
 
   };
 
@@ -513,11 +513,11 @@ subtest 'system rewrite' => sub {
 
     ok(-d $inc, "inc dir exists" );
     note "inc = $inc";
-    is($inc->child('foofoo.h')->slurp, "h foo-foo as staged\n", 'libfoofoo.a');
+    is($inc->child('foofoo.h')->slurp_utf8, "h foo-foo as staged\n", 'libfoofoo.a');
 
     ok(-d $lib, "lib dir exists" );
     note "lib = $lib";
-    is($lib->child('libfoofoo.a')->slurp, "lib foo-foo as staged\n", 'libfoofoo.a');
+    is($lib->child('libfoofoo.a')->slurp_utf8, "lib foo-foo as staged\n", 'libfoofoo.a');
 
   };
 

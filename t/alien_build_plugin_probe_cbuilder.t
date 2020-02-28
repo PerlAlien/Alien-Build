@@ -89,7 +89,7 @@ subtest 'program' => sub {
 
   $mock->add('compile' => sub {
     my(undef, %args) = @_;
-    $source = path($args{source})->slurp;
+    $source = path($args{source})->slurp_utf8;
     'mytest.o';
   });
 

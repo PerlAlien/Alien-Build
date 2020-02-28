@@ -248,7 +248,7 @@ had been properly checkpointed using the C<checkpoint> method below.
 sub resume
 {
   my(undef, $alienfile, $root) = @_;
-  my $h = JSON::PP::decode_json(_path("$root/state.json")->slurp);
+  my $h = JSON::PP::decode_json(_path("$root/state.json")->slurp_raw);
   my $self = Alien::Build->load("$alienfile", @{ $h->{args} });
   $self->{install_prop} = $h->{install};
   $self->{runtime_prop} = $h->{runtime};
@@ -715,7 +715,7 @@ sub checkpoint
 {
   my($self) = @_;
   my $root = $self->root;
-  _path("$root/state.json")->spew(
+  _path("$root/state.json")->spew_raw(
     JSON::PP->new->pretty->canonical(1)->ascii->encode({
       install => $self->install_prop,
       runtime => $self->runtime_prop,

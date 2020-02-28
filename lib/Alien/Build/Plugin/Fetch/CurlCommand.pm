@@ -85,7 +85,7 @@ sub protocol_ok
     local $CWD = tempdir( CLEANUP => 1 );
     my $file1 = path('foo/foo.txt');
     $file1->parent->mkpath;
-    $file1->spew("hello world\n");
+    $file1->spew_utf8("hello world\n");
     my $url = 'file://' . $file1->absolute;
     my($out, $err, $exit) = capture {
       system $curl, '-O', '-J', $url;
@@ -137,7 +137,7 @@ sub init
         );
 
         $build->log("writeout: $_\\n") for @writeout;
-        path('writeout')->spew(join("\\n", @writeout));
+        path('writeout')->spew_utf8(join("\\n", @writeout));
 
         my @command = (
           $self->curl_command,
@@ -166,7 +166,7 @@ sub init
           return {
             type    => 'html',
             base    => $h{url},
-            content => scalar path($h{filename})->slurp,
+            content => path($h{filename})->slurp,
           };
         }
         else

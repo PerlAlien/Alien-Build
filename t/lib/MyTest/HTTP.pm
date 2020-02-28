@@ -29,7 +29,7 @@ sub http_url
   my $file = path('t/bin/httpd.json');
   return http_error('no httpd.json') unless -r $file;
 
-  my $config = eval { decode_json($file->slurp) };
+  my $config = eval { decode_json($file->slurp_raw) };
   return http_error("error loading httpd.json $@") if $@;
 
   my $url = $config->{url};

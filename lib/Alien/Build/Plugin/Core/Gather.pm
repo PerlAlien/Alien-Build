@@ -125,7 +125,7 @@ sub init
       $stage->child('_alien')->mkpath;
 
       # drop a alien.json file for the runtime properties
-      $stage->child('_alien/alien.json')->spew(
+      $stage->child('_alien/alien.json')->spew_raw(
         JSON::PP->new->pretty->canonical(1)->ascii->encode($build->runtime_prop)
       );
 

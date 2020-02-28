@@ -385,7 +385,7 @@ sub _tar_can
     return 0;
   }
 
-  my $content = eval { Path::Tiny->new('xx.txt')->slurp };
+  my $content = eval { Path::Tiny->new('xx.txt')->slurp_utf8 };
   $cleanup->();
 
   return defined $content && $content eq "xx\n";

@@ -25,7 +25,7 @@ my $config_file = $bindir->child('httpd.json');
 
 if(-r $config_file)
 {
-  my $config = decode_json($config_file->slurp);
+  my $config = decode_json($config_file->slurp_raw);
   my $pid = $config->{pid};
   if(defined $pid)
   {
@@ -57,7 +57,7 @@ my %config = (
   pid  => $$,
   url => $url->to_string,
 );
-$config_file->spew(encode_json(\%config));
+$config_file->spew_raw(encode_json(\%config));
 
 plugin( 'Directory', root => $distdir->stringify );
 

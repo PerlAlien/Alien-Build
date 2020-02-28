@@ -36,13 +36,13 @@ subtest 'mirror' => sub {
   $tmp1->child($_)->mkpath foreach qw( bin etc lib lib/pkgconfig an/empty/one/as/well );
 
   my $bin = $tmp1->child('bin/foomake');
-  $bin->spew("#!/bin/sh\necho hi\n");
+  $bin->spew_utf8("#!/bin/sh\necho hi\n");
   eval { chmod 0755, $bin };
 
-  $tmp1->child('etc/foorc')->spew("# example\nfoo = 1\n");
+  $tmp1->child('etc/foorc')->spew_utf8("# example\nfoo = 1\n");
   my $lib = $tmp1->child('lib/libfoo.so.1.2.3');
-  $lib->spew('XYZ');
-  $tmp1->child('lib/pkgconfig/foo.pc')->spew('name=foo');
+  $lib->spew_utf8('XYZ');
+  $tmp1->child('lib/pkgconfig/foo.pc')->spew_utf8('name=foo');
 
   if($Config{d_symlink})
   {

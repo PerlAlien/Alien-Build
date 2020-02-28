@@ -132,7 +132,7 @@ sub init
 
       local $ENV{CONFIG_SITE} = do {
         my $site_config = Path::Tiny->new(File::Temp::tempdir( CLEANUP => 1 ))->child('config.site');
-        $site_config->spew($self->config_site);
+        $site_config->spew_utf8($self->config_site);
         "$site_config";
       };
 

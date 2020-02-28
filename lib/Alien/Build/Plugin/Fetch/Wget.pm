@@ -86,7 +86,7 @@ sub init
           return {
             type    => 'html',
             base    => $url,
-            content => scalar $path->slurp,
+            content => $path->slurp,
           };
         }
         else

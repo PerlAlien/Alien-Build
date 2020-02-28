@@ -108,9 +108,9 @@ subtest 'pkg-config path during gather' => sub {
         my $prefix = path($build->install_prop->{prefix});
         $build->log("prefix = $prefix");
         $prefix->child('lib/pkgconfig')->mkpath;
-        $prefix->child('lib/pkgconfig/x3.pc')->spew("Name: x3\n");
+        $prefix->child('lib/pkgconfig/x3.pc')->spew_utf8("Name: x3\n");
         $prefix->child('share/pkgconfig')->mkpath;
-        $prefix->child('share/pkgconfig/x4.pc')->spew("Name: x4\n");
+        $prefix->child('share/pkgconfig/x4.pc')->spew_utf8("Name: x4\n");
       };
       gather   sub {
         my($build) = @_;
@@ -166,7 +166,7 @@ subtest '_alien/alien.json should be okay with unicode' => sub {
   ok -r $json_file;
 
   require JSON::PP;
-  my $config = JSON::PP::decode_json($json_file->slurp);
+  my $config = JSON::PP::decode_json($json_file->slurp_raw);
   is(
     $config,
     hash {

@@ -114,7 +114,7 @@ subtest 'archive with pax_global_header' => sub {
   if(defined $dir)
   {
     my $file = path($dir)->child('foo.txt');
-    my $content = eval { $file->slurp };
+    my $content = eval { $file->slurp_utf8 };
     is($content, "xx\n", "file content matches");
 
     unless(-f $file)

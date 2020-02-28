@@ -25,14 +25,14 @@ subtest 'recursive' => sub {
         my($build) = @_;
         my $dir = path($build->install_prop->{prefix}, 'lib', 'pkgconfig');
         $dir->mkpath;
-        path($dir, 'foo1.pc')->spew(
+        path($dir, 'foo1.pc')->spew_utf8(
           "libdir=/foo/bar\n" .
           "Cflags: -I/baz/include\n" .
           "Cflags.private: -DUSE_STATIC=1\n" .
           "Libs: -L\${libdir} -lxml2\n" .
           "Libs.private:  -lpthread -lz   -liconv -lm\n"
         );
-        path($dir, 'bar1.pc')->spew(
+        path($dir, 'bar1.pc')->spew_utf8(
           "libdir=/foo/bar\n" .
           "Libs: -L\${libdir} -lfoo2\n" .
           "Libs.private:  -lbar -lbaz\n"

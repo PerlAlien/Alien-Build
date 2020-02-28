@@ -122,7 +122,7 @@ sub _can_bz2
     my $tar = Archive::Tar->new;
     $tar->read('xx.tar.bz2');
     $tar->extract;
-    my $content = Path::Tiny->new('xx.txt')->slurp;
+    my $content = Path::Tiny->new('xx.txt')->slurp_utf8;
     die unless $content && $content eq "xx\n";
   };
   my $error = $@;
