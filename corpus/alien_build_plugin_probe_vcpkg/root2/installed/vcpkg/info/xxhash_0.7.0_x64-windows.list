@@ -1,0 +1,15 @@
+x64-windows/
+x64-windows/debug/
+x64-windows/debug/lib/
+x64-windows/debug/lib/xxhash.lib
+x64-windows/include/
+x64-windows/include/xxhash.h
+x64-windows/lib/
+x64-windows/lib/xxhash.lib
+x64-windows/share/
+x64-windows/share/man/
+x64-windows/share/man/man1/
+x64-windows/share/man/man1/xxhsum.1
+x64-windows/share/xxhash/
+x64-windows/share/xxhash/copyright
+x64-windows/share/xxhash/vcpkg_abi_info.txt
