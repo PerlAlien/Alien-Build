@@ -107,7 +107,6 @@ sub init
         }
         elsif($self->lib)
         {
-          $DB::single = 1;
           $package = eval { Win32::Vcpkg::Package->new( lib => $self->lib ) };
           return 'share' if $@;
         }
