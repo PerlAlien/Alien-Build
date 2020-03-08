@@ -21,7 +21,7 @@ Specifies the name of the Vcpkg.  This should not be used with the C<lib> proper
 
 Specifies the list of libraries that make up the Vcpkg.  This should not be used with the C<name> property
 above, choose only one.  Note that using this detection method, the version number of the package will
-not be automatically determined (since multuple packages could potentially make up the list of libraries),
+not be automatically determined (since multiple packages could potentially make up the list of libraries),
 so you need to determine the version number another way if you need it.
 
 This must be an array reference.
