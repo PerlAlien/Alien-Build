@@ -9,7 +9,52 @@ use Alien::Build::Plugin;
 
 =head1 SYNOPSIS
 
+ use alienfile;
+ 
+ plugin 'Probe::Vcpkg' => (name => 'libffi');
+
 =head1 DESCRIPTION
+
+This plugin probe can be used to find "system" packages using Microsoft's C<Vcpkg> package manager for
+Visual C++ builds of Perl.  C<Vcpkg> is a package manager for Visual C++ that includes a number of
+open source packages.  Although C<Vcpkg> does also support Linux and macOS, this plugin does not
+support finding C<Vcpkg> packages on those platforms.  For more details on C<Vcpkg>, see the project
+github page here:
+
+L<https://github.com/microsoft/vcpkg>
+
+Here is the quick start guide for getting L<Alien::Build> to work with C<Vpkg>:
+
+ # install Vcpkg
+ C:\> git clone https://github.com/Microsoft/vcpkg.git
+ C:\> cd vcpkg
+ C:\vcpkg> .\bootstrap-vcpkg.bat
+ C:\vcpkg> .\vcpkg integrate install
+ 
+ # update PATH to include the bin directory
+ # so that .DLL files can be found by Perl
+ C:\vcpkg> path c:\vcpkg\installed\x64-windows\bin;%PATH%
+ 
+ # install the packages that you want
+ C:\vcpkg> .\vcpkg install libffi
+ 
+ # install the alien that uses it
+ C:\vcpkg> cpanm Alien::FFI
+
+If you are using 32 bit build of Perl, then substitute C<x86-windows> for C<x64-windows>.  If you do
+not want to add the C<bin> directory to the C<PATH>, then you can use C<x64-windows-static> instead,
+which will provide static libraries.  (As of this writing static libraries for 32 bit Windows are not
+available).  The main downside to using C<x64-windows-static> is that Aliens that require dynamic
+libraries for FFI will not be installable.
+
+If you do not want to install C<Vcpkg> user wide (the C<integrate install> command above), then you
+can use the C<PERL_WIN32_VCPKG_ROOT> environment variable instead:
+
+ # install Vcpkg
+ C:\> git clone https://github.com/Microsoft/vcpkg.git
+ C:\> cd vcpkg
+ C:\vcpkg> .\bootstrap-vcpkg.bat
+ C:\vcpkg> set PERL_WIN32_VCPKG_ROOT=c:\vcpkg
 
 =head1 PROPERTIES
 
