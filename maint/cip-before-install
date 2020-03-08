@@ -48,7 +48,8 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
     Alien::Base::ModuleBuild \
     FFI::Platypus \
     Mojo::DOM58 \
-    Mojolicious
+    Mojolicious \
+    Win32::Vcpkg
 
 fi
 
