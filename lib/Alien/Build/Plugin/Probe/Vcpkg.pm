@@ -11,7 +11,7 @@ use Alien::Build::Plugin;
 
  use alienfile;
  
- plugin 'Probe::Vcpkg' => (name => 'libffi');
+ plugin 'Probe::Vcpkg' => 'libffi';
 
 =head1 DESCRIPTION
 
@@ -62,6 +62,14 @@ can use the C<PERL_WIN32_VCPKG_ROOT> environment variable instead:
 
 Specifies the name of the Vcpkg.  This should not be used with the C<lib> property below, choose only one.
 
+This is the default property, so these two are equivalent:
+
+ plugin 'Probe::Vcpkg' => (name => 'foo');
+
+and
+
+ plugin 'Probe::Vcpkg' => 'foo';
+
 =head2 lib
 
 Specifies the list of libraries that make up the Vcpkg.  This should not be used with the C<name> property
@@ -69,11 +77,13 @@ above, choose only one.  Note that using this detection method, the version numb
 not be automatically determined (since multiple packages could potentially make up the list of libraries),
 so you need to determine the version number another way if you need it.
 
-This must be an array reference.
+This must be an array reference.  Do not include the C<.lib> extension.
+
+ plugin 'Probe::Vcpkg' => (lib => ['foo','bar']);
 
 =cut
 
-has 'name';
+has '+name';
 has 'lib';
 
 sub init

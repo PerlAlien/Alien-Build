@@ -118,6 +118,33 @@ subtest 'vc' => sub {
     note "libs    = ", $build->runtime_prop->{libs};
   };
 
+  alien_subtest 'libffi' => sub {
+
+    local $ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','alien_build_plugin_probe_vcpkg', 'root2')->absolute->stringify;
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      plugin 'Probe::Vcpkg' => 'libffi';
+    };
+
+    alien_install_type_is 'system';
+    alien_build_ok;
+
+    is(
+      $build->runtime_prop,
+      hash {
+        field version => '3.3';
+        field cflags  => T();
+        field libs    => T();
+        etc;
+      },
+    );
+
+    note "version = ", $build->runtime_prop->{version};
+    note "cflags  = ", $build->runtime_prop->{cflags};
+    note "libs    = ", $build->runtime_prop->{libs};
+  };
+
 };
 
 done_testing;
