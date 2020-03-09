@@ -134,6 +134,7 @@ sub init
           cflags  => $package->cflags,
           libs    => $package->libs,
         };
+        $build->hook_prop->{version} = $version;
         return 'system';
       },
     );
