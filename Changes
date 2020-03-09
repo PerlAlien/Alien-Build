@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.11      2020-03-09 03:04:49 -0600
+  - Production release identical to 2.10
+
 2.10_01   2020-03-08 17:13:05 -0600
   - Probe::Vcpkg plugin defaults to name property (gh#177)
 
