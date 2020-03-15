@@ -19,7 +19,7 @@ use Env qw( @PKG_CONFIG_PATH );
 
 =head1 DESCRIPTION
 
-Note: in most case you will want to use L<Alien::Build::Plugin::Download::Negotiate>
+Note: in most case you will want to use L<Alien::Build::Plugin::PkgConfig::Negotiate>
 instead.  It picks the appropriate fetch plugin based on your platform and environment.
 In some cases you may need to use this plugin directly instead.
 
