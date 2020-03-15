@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.14      2020-03-15 12:49:17 -0600
   - Added ffi_name property to Probe::Vcpkg plugin (gh#179)
+  - Documentation fixes (gh#180)
 
 2.12      2020-03-09 10:02:37 -0600
   - Fixed bug where Probe::Vcpkg plugin doesn't set version probe hook
