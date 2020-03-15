@@ -81,16 +81,28 @@ This must be an array reference.  Do not include the C<.lib> extension.
 
  plugin 'Probe::Vcpkg' => (lib => ['foo','bar']);
 
+=head2 ffi_name
+
+Specifies an alternate ffi_name for finding dynamic libraries.
+
 =cut
 
 has '+name';
 has 'lib';
+has 'ffi_name';
 
 sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires('configure' => 'Alien::Build::Plugin::Probe::Vcpkg' => 0 );
+  if(defined $self->ffi_name)
+  {
+    $meta->add_requires('configure' => 'Alien::Build::Plugin::Probe::Vcpkg' => '2.14' );
+  }
+  else
+  {
+    $meta->add_requires('configure' => 'Alien::Build::Plugin::Probe::Vcpkg' => '0' );
+  }
 
   if($meta->prop->{platform}->{compiler_type} eq 'microsoft')
   {
@@ -130,11 +142,13 @@ sub init
         $version = 'unknown' unless defined $version;
 
         $build->install_prop->{plugin_probe_vcpkg} = {
-          version => $version,
-          cflags  => $package->cflags,
-          libs    => $package->libs,
+          version  => $version,
+          cflags   => $package->cflags,
+          libs     => $package->libs,
         };
         $build->hook_prop->{version} = $version;
+        $build->install_prop->{plugin_probe_vcpkg}->{ffi_name} = $self->ffi_name
+          if defined $self->ffi_name;
         return 'system';
       },
     );
@@ -145,7 +159,7 @@ sub init
         if(my $c = $build->install_prop->{plugin_probe_vcpkg})
         {
           $build->runtime_prop->{version} = $c->{version} unless defined $build->runtime_prop->{version};
-          $build->runtime_prop->{$_} = $c->{$_} for qw( cflags libs );
+          $build->runtime_prop->{$_} = $c->{$_} for grep { defined $c->{$_} } qw( cflags libs ffi_name );
         }
       },
     );

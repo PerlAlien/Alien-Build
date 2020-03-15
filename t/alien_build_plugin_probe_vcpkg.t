@@ -62,9 +62,10 @@ subtest 'vc' => sub {
     is(
       $build->runtime_prop,
       hash {
-        field version => 'unknown';
-        field cflags  => T();
-        field libs    => T();
+        field version  => 'unknown';
+        field cflags   => T();
+        field libs     => T();
+        field ffi_name => DNE();
         etc;
       },
     );
@@ -75,16 +76,43 @@ subtest 'vc' => sub {
   };
 
   alien_subtest 'lib = bar' => sub {
+    my $build = alienfile_ok q{
+      use alienfile;
+
+      plugin 'Probe::Vcpkg' => (
+        lib      => ['bar'],
+      );
+    };
+
+    alien_install_type_is 'share';
+  };
+
+  alien_subtest 'ffi_name' => sub {
+
+    local $Alien::Build::Plugin::Probe::Vcpkg::VERSION = '2.14';
 
     my $build = alienfile_ok q{
       use alienfile;
 
       plugin 'Probe::Vcpkg' => (
-        lib => ['bar'],
+        lib      => ['foo'],
+        ffi_name => 'baz',
       );
     };
 
-    alien_install_type_is 'share';
+    alien_install_type_is 'system';
+    alien_build_ok;
+
+    is(
+      $build->runtime_prop,
+      hash {
+        field version  => 'unknown';
+        field cflags   => T();
+        field libs     => T();
+        field ffi_name => 'baz';
+        etc;
+      },
+    );
 
   };
 
@@ -109,6 +137,7 @@ subtest 'vc' => sub {
         field version => '3.3';
         field cflags  => T();
         field libs    => T();
+        field ffi_name => DNE();
         etc;
       },
     );
@@ -136,6 +165,7 @@ subtest 'vc' => sub {
         field version => '3.3';
         field cflags  => T();
         field libs    => T();
+        field ffi_name => DNE();
         etc;
       },
     );
@@ -144,7 +174,6 @@ subtest 'vc' => sub {
     note "cflags  = ", $build->runtime_prop->{cflags};
     note "libs    = ", $build->runtime_prop->{libs};
   };
-
 };
 
 done_testing;
