@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Probe::Vcpkg adds include property (gh#184)
   - Build::Autoconf will now copy .dll files from bin to dynamic
     directory on MSWin32 (gh#183)
 
