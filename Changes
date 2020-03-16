@@ -1,6 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Tests on Windows will use the system temp directory rather than
+    a temp directory under the install directory. A temp directory
+    under the install directory was used to work around typically
+    Linux systems that have noexec set on /tmp.  Since this is less
+    normal on Windows, and can cause mkpath errors if the install
+    directory is too deep we will use the windows system temp directory.
+    (gh#181, gh#182)
 
 2.14      2020-03-15 12:49:17 -0600
   - Added ffi_name property to Probe::Vcpkg plugin (gh#179)
