@@ -118,6 +118,30 @@ sub init
         '%{make} install',
       ]
     );
+
+    if($^O eq 'MSWin32')
+    {
+      # for whatever reason autohell puts the .dll files in bin, even if you
+      # point --bindir somewhere else.
+      $meta->after_hook(
+        build_ffi => sub {
+          my($build) = @_;
+          my $prefix = $build->install_prop->{autoconf_prefix};
+          my $bin = Path::Tiny->new($ENV{DESTDIR})->child($prefix)->child('bin');
+          my $lib = Path::Tiny->new($ENV{DESTDIR})->child($prefix)->child('dynamic');
+          if(-d $bin)
+          {
+            foreach my $from (grep { $_->basename =~ /.dll$/i } $bin->children)
+            {
+              $lib->mkpath;
+              my $to = $lib->child($from->basename);
+              $build->log("copy $from => $to");
+              $from->copy($to);
+            }
+          }
+        }
+      );
+    }
   }
 
   $meta->around_hook(
