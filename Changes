@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Build::Autoconf will now copy .dll files from bin to dynamic
+    directory on MSWin32 (gh#183)
 
 2.15      2020-03-16 06:53:31 -0600
   - Tests on Windows will use the system temp directory rather than
