@@ -794,7 +794,7 @@ sub alien_rc
 
 =head2 alien_subtest
 
- alienfile_subtest $test_name => sub {
+ alien_subtest $test_name => sub {
    ...
  };
 
