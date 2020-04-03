@@ -3,6 +3,7 @@ package Alien::Build::Plugin::Build::Copy;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
+use Path::Tiny ();
 
 # ABSTRACT: Autoconf plugin for Alien::Build
 # VERSION
@@ -69,13 +70,13 @@ sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires( configure => __PACKAGE__() => 0);
+  $meta->add_requires( 'configure', __PACKAGE__, 0);
 
   if($^O eq 'MSWin32')
   {
     $meta->register_hook(build => sub {
       my($build) = @_;
-      my $stage = path($build->install_prop->{stage})->canonpath;
+      my $stage = Path::Tiny->new($build->install_prop->{stage})->canonpath;
       $build->system("xcopy . $stage /E");
     });
   }
