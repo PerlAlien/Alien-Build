@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.18_01   2020-04-03 10:06:45 -0600
   - Add Build::Copy plugin (gh#186)
 
 2.17      2020-03-19 21:03:39 -0600
