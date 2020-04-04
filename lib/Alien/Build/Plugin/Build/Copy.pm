@@ -5,7 +5,7 @@ use warnings;
 use Alien::Build::Plugin;
 use Path::Tiny ();
 
-# ABSTRACT: Autoconf plugin for Alien::Build
+# ABSTRACT: Copy plugin for Alien::Build
 # VERSION
 
 =head1 SYNOPSIS
