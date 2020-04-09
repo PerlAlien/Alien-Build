@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.19      2020-04-09 02:56:14 -0600
+  - Production release identical to 2.18_01
+
 2.18_01   2020-04-03 10:06:45 -0600
   - Add Build::Copy plugin (gh#186)
 
