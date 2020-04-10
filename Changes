@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.20      2020-04-10 06:21:54 -0600
   - xs_ok does a better workaround for faux fork on cygwin (gh#153, gh#187, gh#188)
 
 2.19      2020-04-09 02:56:14 -0600
