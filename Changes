@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - xs_ok does a better workaround for faux fork on cygwin (gh#153, gh#187, gh#188)
 
 2.19      2020-04-09 02:56:14 -0600
   - Production release identical to 2.18_01
