@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.21      2020-04-11 08:27:21 -0600
+  - Fix the handling of version regular expression for the Prefer::SortVersions
+    plugin to handle regular expressions with multiple capture groups (gh#189)
+
 2.20      2020-04-10 06:21:54 -0600
   - xs_ok does a better workaround for faux fork on cygwin (gh#153, gh#187, gh#188)
 
