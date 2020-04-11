@@ -64,7 +64,7 @@ sub init
     my(undef, $res) = @_;
 
     my $cmp = sub {
-      my($A,$B) = map { $_ =~ $self->version } @_;
+      my($A,$B) = map { ($_ =~ $self->version)[0] } @_;
       Sort::Versions::versioncmp($B,$A);
     };
 
