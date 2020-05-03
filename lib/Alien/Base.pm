@@ -740,7 +740,7 @@ Example usage:
 
  use Env qw( @PATH );
  
- unshft @PATH, Alien::MyLibrary->bin_dir;
+ unshift @PATH, Alien::MyLibrary->bin_dir;
 
 =cut
 
@@ -756,6 +756,39 @@ sub bin_dir {
   else
   {
     my $dir = Path::Tiny->new($class->dist_dir, 'bin');
+    return -d $dir ? ("$dir") : ();
+  }
+}
+
+
+=head2 dynamic_bin_dir
+
+ my(@dir) = Alien::MyLibrary->dynamic_bin_dir
+
+Same as bin_dir, except that it returns the bin dir for a dynamic build
+(if the main build is static).  For a C<share> install this will be a
+directory under C<dist_dir> named C<dynamic> if it exists.  
+
+Example usage:
+
+ use Env qw( @PATH );
+ 
+ unshift @PATH, Alien::MyLibrary->dynamic_bin_dir;
+
+=cut
+
+sub dynamic_bin_dir {
+  my ($class) = @_;
+  if($class->install_type('system'))
+  {
+    my $prop = $class->runtime_prop;
+    return () unless defined $prop;
+    return () unless defined $prop->{system_bin_dir};
+    return ref $prop->{system_bin_dir} ? @{ $prop->{system_bin_dir} } : ($prop->{system_bin_dir});
+  }
+  else
+  {
+    my $dir = Path::Tiny->new($class->dist_dir, 'dynamic');
     return -d $dir ? ("$dir") : ();
   }
 }
