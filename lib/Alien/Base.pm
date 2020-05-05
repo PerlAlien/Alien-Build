@@ -761,30 +761,28 @@ sub bin_dir {
 }
 
 
-=head2 dynamic_bin_dir
+=head2 dynamic_dir
 
- my(@dir) = Alien::MyLibrary->dynamic_bin_dir
+ my(@dir) = Alien::MyLibrary->dynamic_dir
 
-Same as bin_dir, except that it returns the bin dir for a dynamic build
-(if the main build is static).  For a C<share> install this will be a
-directory under C<dist_dir> named C<dynamic> if it exists.  
+Returns the dynamic dir for a dynamic build (if the main
+build is static).  For a C<share> install this will be a
+directory under C<dist_dir> named C<dynamic> if it exists.
+System builds return an empty list.
 
 Example usage:
 
  use Env qw( @PATH );
  
- unshift @PATH, Alien::MyLibrary->dynamic_bin_dir;
+ unshift @PATH, Alien::MyLibrary->dynamic_dir;
 
 =cut
 
-sub dynamic_bin_dir {
+sub dynamic_dir {
   my ($class) = @_;
   if($class->install_type('system'))
   {
-    my $prop = $class->runtime_prop;
-    return () unless defined $prop;
-    return () unless defined $prop->{system_bin_dir};
-    return ref $prop->{system_bin_dir} ? @{ $prop->{system_bin_dir} } : ($prop->{system_bin_dir});
+    return ();
   }
   else
   {
