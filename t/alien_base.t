@@ -120,6 +120,8 @@ subtest 'Alien::Build system' => sub {
 
   is( [Alien::libfoo1->dynamic_libs], ['/usr/lib/libfoo.so','/usr/lib/libfoo.so.1'], 'dynamic_libs' );
 
+  is( [Alien::libfoo1->dynamic_dir], [], 'dynamic_dir' );
+
   is( [Alien::libfoo1->bin_dir], [], 'bin_dir' );
 
   is( Alien::libfoo1->runtime_prop->{arbitrary}, 'one', 'runtime_prop' );
@@ -272,6 +274,15 @@ subtest 'Alien::Build share' => sub {
       end;
     },
     'bin_dir',
+  );
+
+  is(
+    [Alien::libfoo2->dynamic_dir],
+    array {
+      item match qr /\bdynamic$/;
+      end;
+    },
+    'dynamic_dir',
   );
 
   is( -f path(Alien::libfoo2->bin_dir)->child('foo-config'), T(), 'has a foo-config');
