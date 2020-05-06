@@ -7,6 +7,29 @@ use constant _win => $^O eq 'MSWin32';
 use Path::Tiny ();
 use File::Temp ();
 
+#  could generalise to any path var supported by Env
+sub _pkg_config_path_to_msys
+{
+    return $ENV{PKG_CONFIG_PATH}
+      if !_win or !$ENV{PKG_CONFIG_PATH};
+
+    use Env qw ( @PKG_CONFIG_PATH );
+    my @path = @PKG_CONFIG_PATH;
+    #  msys-ify pkgconfig paths
+    foreach my $path (@path)
+    {
+      $path =~ s!^([a-z]):!/$1!i;
+      $path =~ s!\\!/!g;  #  could use Path::Tiny
+    }
+    warn 'one or more PKG_CONFIG_PATH items contains colon characters, expect problems'
+      if grep {/:/} @path;
+    #  and unixify the separator
+    my $msys_path =  join ':', @path;
+
+    return $msys_path; 
+}
+
+
 # ABSTRACT: Autoconf plugin for Alien::Build
 # VERSION
 
@@ -178,6 +201,8 @@ sub init
           $configure;
         }
       );
+
+      local $ENV{PKG_CONFIG_PATH} = _pkg_config_path_to_msys();
 
       my $ret = $orig->($build, @_);
 
