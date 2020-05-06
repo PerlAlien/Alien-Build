@@ -6,12 +6,13 @@ use Alien::Build::Plugin;
 use constant _win => $^O eq 'MSWin32';
 use Path::Tiny ();
 use File::Temp ();
+use List::Util qw ( any );
 
 #  could generalise to any path var supported by Env
 sub _pkg_config_path_to_msys
 {
     return $ENV{PKG_CONFIG_PATH}
-      if !_win or !$ENV{PKG_CONFIG_PATH};
+      if not _win or not $ENV{PKG_CONFIG_PATH};
 
     use Env qw ( @PKG_CONFIG_PATH );
     my @path = @PKG_CONFIG_PATH;
@@ -22,11 +23,11 @@ sub _pkg_config_path_to_msys
       $path =~ s!\\!/!g;  #  could use Path::Tiny
     }
     warn 'one or more PKG_CONFIG_PATH items contains colon characters, expect problems'
-      if grep {/:/} @path;
+      if any {/:/} @path;
     #  and unixify the separator
     my $msys_path =  join ':', @path;
 
-    return $msys_path; 
+    return $msys_path;
 }
 
 
