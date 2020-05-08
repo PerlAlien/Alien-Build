@@ -76,8 +76,6 @@ subtest 'mirror' => sub {
       _mirror "$tmp1", "$tmp2", { filter => qr/^(bin|etc)\/.*$/, verbose => 1 };
     };
 
-    note `ls -lR $tmp2`;
-
     ok( -f $tmp2->child('bin/foomake'), 'bin/foomake' );
     ok( -f $tmp2->child('etc/foorc'), 'bin/foomake' );
     ok( ! -f $tmp2->child('lib/libfoo.so.1.2.3'), 'lib/libfoo.so.1.2.3' );
