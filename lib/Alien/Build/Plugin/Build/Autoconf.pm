@@ -287,7 +287,7 @@ EOWRAPPER
   ;
     $build->log ("Pure perl pkg-config detected on windows.\n");
     $build->log ("Wrapping $pk in shell script to cope with MSYS perl and paths.\n");
-    $fname = Path::Tiny->new($build->root, 'pkg-config');
+    $fname = Path::Tiny->new(File::Temp::tempdir( CLEANUP => 1 ))->child('pkg-config');
     open my $fh, '>', $fname
       or die "Unable to open pkg-config wrapper $fname, $!";
     print {$fh} $wrapper;
