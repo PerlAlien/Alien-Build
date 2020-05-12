@@ -112,11 +112,9 @@ sub init
     my $command_line =
       File::Which::which('ppkg-config')
       ? 'ppkg-config'
-      : File::Which::which('pkg-config.pl')
-        ? 'pkg-config.pl'
-        : File::Which::which('pkg-config')
-          ? 'pkg-config'
-          : undef;
+      : File::Which::which('pkg-config')
+        ? 'pkg-config'
+        : undef;
     $meta->prop->{env}->{PKG_CONFIG} = $command_line
       if defined $command_line;
   }
