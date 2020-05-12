@@ -243,17 +243,17 @@ sub _pkgconf_wrapper {
 
   return if !_win;
 
-  my @found = File::Which::which $ENV{PKG_CONFIG}
-           || File::Which::which 'ppkg-config'
-           || File::Which::which 'pkg-config.pl'
-           || File::Which::which 'pkg-config';
+  my $found = (File::Which::which $ENV{PKG_CONFIG}
+            || File::Which::which 'ppkg-config'
+            || File::Which::which 'pkg-config.pl'
+            || File::Which::which 'pkg-config');
 
-  if (!@found) {
-    warn "Could not locate ppkg-config or pkg-config in your path:\n";
+  my $pk = $found;
+  if (!defined $pk) {
+    #warn "Could not locate ppkg-config or pkg-config in your path:\n";
     return;
   }
   
-  my $pk = $found[0];
   
   if ($pk =~ /\.bat$/i) {
     $pk =~ s/\.bat$//i;
