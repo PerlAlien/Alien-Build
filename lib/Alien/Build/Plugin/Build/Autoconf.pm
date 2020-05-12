@@ -6,7 +6,7 @@ use Alien::Build::Plugin;
 use constant _win => $^O eq 'MSWin32';
 use Path::Tiny ();
 use File::Temp ();
-
+use File::Which ();
 # ABSTRACT: Autoconf plugin for Alien::Build
 # VERSION
 
@@ -178,6 +178,10 @@ sub init
           $configure;
         }
       );
+      
+      my $pkg_conf_wrapper = $self->_pkgconf_wrapper($build);
+      local $ENV{PKG_CONFIG} = $pkg_conf_wrapper
+        if $pkg_conf_wrapper;
 
       my $ret = $orig->($build, @_);
 
@@ -233,6 +237,68 @@ Some reasonable default flags will be provided.
 
   $self;
 }
+
+sub _pkgconf_wrapper {
+  my ($self, $build) = @_;
+
+  return if !_win;
+
+  my @found = File::Which::which $ENV{PKG_CONFIG}
+           || File::Which::which 'ppkg-config'
+           || File::Which::which 'pkg-config.pl'
+           || File::Which::which 'pkg-config';
+
+  if (!@found) {
+    warn "Could not locate ppkg-config or pkg-config in your path:\n";
+    return;
+  }
+  
+  my $pk = $found[0];
+  
+  if ($pk =~ /\.bat$/i) {
+    $pk =~ s/\.bat$//i;
+    #  should not die?
+    die "bat file does not have adjacent pkg-config"
+      if !-e $pk;
+  }
+  
+  #  flaky means of determining we are using a perl pkg-config
+  my $data = Path::Tiny->new($pk)->slurp;
+  my $str = <<"EOSTRING"
+# lightweight no-dependency version of pkg-config. This will work on any machine
+# with Perl installed.
+EOSTRING
+  ;
+
+  my $fname;  
+  if ($data =~ /$str/msi) {
+    my $perl = $^X;
+    $perl =~ s/\.exe$//i;
+    foreach my $path ($perl, $pk) {
+      $path =~ s{\\}{/}g;
+      $path =~ s{^([a-z]):/}{/$1/}i;
+    }
+    my $args = '$' . join ' $', (1..9);
+    
+    my $wrapper = <<"EOWRAPPER"
+#/bin/sh
+
+$perl $pk $args
+EOWRAPPER
+  ;
+    $build->log ("Pure perl pkg-config detected on windows.\n");
+    $build->log ("Wrapping $pk in shell script to cope with MSYS perl and paths.\n");
+    $fname = Path::Tiny->new($build->root, 'pkg-config');
+    open my $fh, '>', $fname
+      or die "Unable to open pkg-config wrapper $fname, $!";
+    print {$fh} $wrapper;
+    close ($fh);
+    $build->log ("Setting \$ENV{PKG_CONFIG} to point to $fname\n");
+  }
+  
+  return $fname;
+}
+
 
 1;
 
