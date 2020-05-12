@@ -243,14 +243,13 @@ sub _pkgconf_wrapper {
 
   return if !_win;
 
-  my $found = (File::Which::which $ENV{PKG_CONFIG}
-            || File::Which::which 'ppkg-config'
-            || File::Which::which 'pkg-config.pl'
-            || File::Which::which 'pkg-config');
+  my $pk = File::Which::which ($ENV{PKG_CONFIG})
+        || File::Which::which ('ppkg-config')
+        || File::Which::which ('pkg-config.pl')
+        || File::Which::which ('pkg-config');
 
-  my $pk = $found;
   if (!defined $pk) {
-    #warn "Could not locate ppkg-config or pkg-config in your path:\n";
+    $build->log ("Could not locate ppkg-config or pkg-config in your path:\n");
     return;
   }
   
