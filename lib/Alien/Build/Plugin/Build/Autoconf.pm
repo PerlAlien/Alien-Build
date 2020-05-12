@@ -245,7 +245,6 @@ sub _pkgconf_wrapper {
 
   my $pk = File::Which::which ($ENV{PKG_CONFIG})
         || File::Which::which ('ppkg-config')
-        || File::Which::which ('pkg-config.pl')
         || File::Which::which ('pkg-config');
 
   if (!defined $pk) {
