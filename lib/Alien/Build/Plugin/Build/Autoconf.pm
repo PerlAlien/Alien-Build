@@ -275,6 +275,7 @@ EOSTRING
     foreach my $path ($perl, $pk) {
       $path =~ s{\\}{/}g;
       $path =~ s{^([a-z]):/}{/$1/}i;
+      $path =~ s{\s}{\\ }g;
     }
     my $args = '$' . join ' $', (1..9);
     
