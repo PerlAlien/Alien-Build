@@ -251,49 +251,36 @@ sub _pkgconf_wrapper {
     $build->log ("Could not locate ppkg-config or pkg-config in your path:\n");
     return;
   }
-  
-  
-  if ($pk =~ /\.bat$/i) {
-    $pk =~ s/\.bat$//i;
-    #  should not die?
-    die "bat file does not have adjacent pkg-config"
-      if !-e $pk;
-  }
-  
-  #  flaky means of determining we are using a perl pkg-config
-  my $data = Path::Tiny->new($pk)->slurp;
-  my $str = <<"EOSTRING"
-# lightweight no-dependency version of pkg-config. This will work on any machine
-# with Perl installed.
-EOSTRING
-  ;
 
-  my $fname;  
-  if ($data =~ /$str/msi) {
-    my $perl = $^X;
-    $perl =~ s/\.exe$//i;
-    foreach my $path ($perl, $pk) {
-      $path =~ s{\\}{/}g;
-      $path =~ s{^([a-z]):/}{/$1/}i;
-      $path =~ s{\s}{\\ }g;
-    }
-    my $args = '$' . join ' $', (1..9);
+  $pk =~ s/\.bat$//i;
+  if (!(-e $pk && -e "$pk.bat")) {
+    $build->log ("$pk unlikely to be pure perl");
+    return;
+  }
+
+  my $perl = $^X;
+  $perl =~ s/\.exe$//i;
+  foreach my $path ($perl, $pk) {
+    $path =~ s{\\}{/}g;
+    $path =~ s{^([a-z]):/}{/$1/}i;
+    $path =~ s{\s}{\\ }g;
+  }
+  my $args = '$' . join ' $', (1..9);
     
-    my $wrapper = <<"EOWRAPPER"
+  my $wrapper = <<"EOWRAPPER"
 #/bin/sh
 
 $perl $pk $args
 EOWRAPPER
   ;
-    $build->log ("Pure perl pkg-config detected on windows.\n");
-    $build->log ("Wrapping $pk in shell script to cope with MSYS perl and paths.\n");
-    $fname = Path::Tiny->new(File::Temp::tempdir( CLEANUP => 1 ))->child('pkg-config');
-    open my $fh, '>', $fname
-      or die "Unable to open pkg-config wrapper $fname, $!";
-    print {$fh} $wrapper;
-    close ($fh);
-    $build->log ("Setting \$ENV{PKG_CONFIG} to point to $fname\n");
-  }
+  $build->log ("Pure perl pkg-config detected on windows.\n");
+  $build->log ("Wrapping $pk in shell script to cope with MSYS perl and paths.\n");
+  my $fname = Path::Tiny->new(File::Temp::tempdir( CLEANUP => 1 ))->child('pkg-config');
+  open my $fh, '>', $fname
+    or die "Unable to open pkg-config wrapper $fname, $!";
+  print {$fh} $wrapper;
+  close ($fh);
+  $build->log ("Setting \$ENV{PKG_CONFIG} to point to $fname\n");
   
   return $fname;
 }
