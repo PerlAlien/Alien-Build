@@ -178,7 +178,7 @@ sub init
           $configure;
         }
       );
-      
+
       my $pkg_conf_wrapper = $self->_pkgconf_wrapper($build);
       local $ENV{PKG_CONFIG} = $pkg_conf_wrapper
         if $pkg_conf_wrapper;
@@ -241,7 +241,7 @@ Some reasonable default flags will be provided.
 sub _pkgconf_wrapper {
   my ($self, $build) = @_;
 
-  return if !_win;
+  return() if !_win;
 
   my $pk = File::Which::which ($ENV{PKG_CONFIG})
         || File::Which::which ('ppkg-config')
@@ -249,13 +249,13 @@ sub _pkgconf_wrapper {
 
   if (!defined $pk) {
     $build->log ("Could not locate ppkg-config or pkg-config in your path:\n");
-    return;
+    return();
   }
 
   $pk =~ s/\.bat$//i;
   if (!(-e $pk && -e "$pk.bat")) {
     $build->log ("$pk unlikely to be pure perl");
-    return;
+    return();
   }
 
   my $perl = $^X;
@@ -266,7 +266,7 @@ sub _pkgconf_wrapper {
     $path =~ s{\s}{\\ }g;
   }
   my $args = '$' . join ' $', (1..9);
-    
+
   my $wrapper = <<"EOWRAPPER"
 #/bin/sh
 
@@ -281,7 +281,7 @@ EOWRAPPER
   print {$fh} $wrapper;
   close ($fh);
   $build->log ("Setting \$ENV{PKG_CONFIG} to point to $fname\n");
-  
+
   return $fname;
 }
 
