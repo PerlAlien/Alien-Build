@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Workaround apparent bug in pkgconf + arm64 (gh#196)
 
 2.22      2020-05-05 07:02:49 -0600
   - Added dynamic_dir method to Alien::Base (gh#191, shawnlaffan++)
