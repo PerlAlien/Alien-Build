@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.23      2020-05-15 18:36:59 -0400
   - Workaround apparent bug in pkgconf + arm64 (gh#196)
 
 2.22      2020-05-05 07:02:49 -0600

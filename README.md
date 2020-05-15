@@ -1,4 +1,4 @@
-# Alien::Build [![Build Status](https://api.cirrus-ci.com/github/Perl5-Alien/Alien-Build.svg)](https://cirrus-ci.com/github/Perl5-Alien/Alien-Build) [![Build Status](https://secure.travis-ci.org/Perl5-Alien/Alien-Build.png)](http://travis-ci.org/Perl5-Alien/Alien-Build) [![Build status](https://ci.appveyor.com/api/projects/status/22odutjphx45248s/branch/master?svg=true)](https://ci.appveyor.com/project/plicease/Alien-Build/branch/master) ![windows](https://github.com/Perl5-Alien/Alien-Build/workflows/windows/badge.svg) ![macos](https://github.com/Perl5-Alien/Alien-Build/workflows/macos/badge.svg)
+# Alien::Build [![Build Status](https://api.cirrus-ci.com/github/Perl5-Alien/Alien-Build.svg)](https://cirrus-ci.com/github/Perl5-Alien/Alien-Build) [![Build Status](https://travis-ci.org/Perl5-Alien/Alien-Build.svg)](http://travis-ci.org/Perl5-Alien/Alien-Build) [![Build status](https://ci.appveyor.com/api/projects/status/22odutjphx45248s/branch/master?svg=true)](https://ci.appveyor.com/project/plicease/Alien-Build/branch/master) ![windows](https://github.com/Perl5-Alien/Alien-Build/workflows/windows/badge.svg) ![macos](https://github.com/Perl5-Alien/Alien-Build/workflows/macos/badge.svg)
 
 Build external dependencies for use in CPAN
 
@@ -21,39 +21,39 @@ $build->build;
 
 This module provides tools for building external (non-CPAN) dependencies
 for CPAN.  It is mainly designed to be used at install time of a CPAN
-client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase) which is used at runtime.
+client, and work closely with [Alien::Base](https://metacpan.org/pod/Alien::Base) which is used at runtime.
 
-This is the detailed documentation for the [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) class.
+This is the detailed documentation for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
 If you are starting out you probably want to do so from one of these documents:
 
-- [Alien::Build::Manual::Alien](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AAlien)
+- [Alien::Build::Manual::Alien](https://metacpan.org/pod/Alien::Build::Manual::Alien)
 
     A broad overview of `Alien-Build` and its ecosystem.
 
-- [Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AAlienUser)
+- [Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser)
 
-    For users of an `Alien::libfoo` that is implemented using [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase).
+    For users of an `Alien::libfoo` that is implemented using [Alien::Base](https://metacpan.org/pod/Alien::Base).
     (The developer of `Alien::libfoo` _should_ provide the documentation
     necessary, but if not, this is the place to start).
 
-- [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AAlienAuthor)
+- [Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor)
 
-    If you are writing your own [Alien](https://metacpan.org/pod/Alien) based on [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) and [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase).
+    If you are writing your own [Alien](https://metacpan.org/pod/Alien) based on [Alien::Build](https://metacpan.org/pod/Alien::Build) and [Alien::Base](https://metacpan.org/pod/Alien::Base).
 
-- [Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AFAQ)
+- [Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien::Build::Manual::FAQ)
 
     If you have a common question that has already been answered, like
     "How do I use [alienfile](https://metacpan.org/pod/alienfile) with some build system".
 
-- [Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3APluginAuthor)
+- [Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor)
 
     This is for the brave souls who want to write plugins that will work with
-    [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) + [alienfile](https://metacpan.org/pod/alienfile).
+    [Alien::Build](https://metacpan.org/pod/Alien::Build) + [alienfile](https://metacpan.org/pod/alienfile).
 
-Note that you will not usually create a [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) instance
+Note that you will not usually create a [Alien::Build](https://metacpan.org/pod/Alien::Build) instance
 directly, but rather be using a thin installer layer, such as
-[Alien::Build::MM](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMM) (for use with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils%3A%3AMakeMaker)) or
-[Alien::Build::MB](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMB) (for use with [Module::Build](https://metacpan.org/pod/Module%3A%3ABuild)).  One of the
+[Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) (for use with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker)) or
+[Alien::Build::MB](https://metacpan.org/pod/Alien::Build::MB) (for use with [Module::Build](https://metacpan.org/pod/Module::Build)).  One of the
 goals of this project is to remain installer agnostic.
 
 # CONSTRUCTORS
@@ -64,8 +64,8 @@ goals of this project is to remain installer agnostic.
 my $build = Alien::Build->new;
 ```
 
-This creates a new empty instance of [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild).  Normally you will
-want to use `load` below to create an instance of [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) from
+This creates a new empty instance of [Alien::Build](https://metacpan.org/pod/Alien::Build).  Normally you will
+want to use `load` below to create an instance of [Alien::Build](https://metacpan.org/pod/Alien::Build) from
 an [alienfile](https://metacpan.org/pod/alienfile) recipe.
 
 ## load
@@ -74,7 +74,7 @@ an [alienfile](https://metacpan.org/pod/alienfile) recipe.
 my $build = Alien::Build->load($alienfile);
 ```
 
-This creates an [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) instance with the given [alienfile](https://metacpan.org/pod/alienfile)
+This creates an [Alien::Build](https://metacpan.org/pod/Alien::Build) instance with the given [alienfile](https://metacpan.org/pod/alienfile)
 recipe.
 
 ## resume
@@ -83,22 +83,22 @@ recipe.
 my $build = Alien::Build->resume($alienfile, $root);
 ```
 
-Load a checkpointed [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) instance.  You will need the original
+Load a checkpointed [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.  You will need the original
 [alienfile](https://metacpan.org/pod/alienfile) and the build root (usually `_alien`), and a build that
 had been properly checkpointed using the `checkpoint` method below.
 
 # PROPERTIES
 
-There are three main properties for [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild).  There are a number
+There are three main properties for [Alien::Build](https://metacpan.org/pod/Alien::Build).  There are a number
 of properties documented here with a specific usage.  Note that these
 properties may need to be serialized into something primitive like JSON
 that does not support: regular expressions, code references of blessed
 objects.
 
-If you are writing a plugin ([Alien::Build::Plugin](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3APlugin)) you should use a
+If you are writing a plugin ([Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin)) you should use a
 prefix like "plugin\__name_" (where _name_ is the name of your plugin)
 so that it does not interfere with other plugin or future versions of
-[Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild).  For example, if you were writing
+[Alien::Build](https://metacpan.org/pod/Alien::Build).  For example, if you were writing
 `Alien::Build::Plugin::Fetch::NewProtocol`, please use the prefix
 `plugin_fetch_newprotocol`:
 
@@ -160,7 +160,7 @@ but if you do not follow this rule your recipe will likely be broken.
 
 - arch
 
-    This is a hint to an installer like [Alien::Build::MM](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMM) or [Alien::Build::MB](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMB),
+    This is a hint to an installer like [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) or [Alien::Build::MB](https://metacpan.org/pod/Alien::Build::MB),
     that the library or tool contains architecture dependent files and so should
     be stored in an architecture dependent location.  If not specified by your
     [alienfile](https://metacpan.org/pod/alienfile) then it will be set to true.
@@ -266,7 +266,7 @@ my $href = $build->install_prop;
 Install properties are used during the install phase (either
 under `share` or `system` install).  They are remembered for
 the entire install phase, but not kept around during the runtime
-phase.  Thus they cannot be accessed from your [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase)
+phase.  Thus they cannot be accessed from your [Alien::Base](https://metacpan.org/pod/Alien::Base)
 based module.
 
 - autoconf\_prefix
@@ -274,7 +274,7 @@ based module.
     The prefix as understood by autoconf.  This is only different on Windows
     Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
     which are understood by the MSYS tools, but not by Perl.  You should
-    only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3APlugin%3A%3AAutoconf) in
+    only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
     your [alienfile](https://metacpan.org/pod/alienfile).
 
 - download
@@ -342,7 +342,7 @@ relevant once the install process is complete.
 
 - alien\_build\_version
 
-    The version of [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) used to install the library or tool.
+    The version of [Alien::Build](https://metacpan.org/pod/Alien::Build) used to install the library or tool.
 
 - alt
 
@@ -367,7 +367,7 @@ relevant once the install process is complete.
 - ffi\_name
 
     The name DLL or shared object "name" to use when searching for dynamic
-    libraries at runtime.  This is passed into [FFI::CheckLib](https://metacpan.org/pod/FFI%3A%3ACheckLib), so if
+    libraries at runtime.  This is passed into [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), so if
     your library is something like `libarchive.so` or `archive.dll` you
     would set this to `archive`.  This may be a string or an array of
     strings.
@@ -382,12 +382,12 @@ relevant once the install process is complete.
         $build->runtime_prop->{ffi_checklib}->{share} = [ ... ];
         ```
 
-        Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI%3A%3ACheckLib) flags to pass in to `find_lib`
+        Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
         for a `share` install.
 
     - system
 
-        Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI%3A%3ACheckLib) flags to pass in to `find_lib`
+        Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
         for a `system` install.
 
         Among other things, useful for specifying the `try_linker_script`
@@ -404,7 +404,7 @@ relevant once the install process is complete.
     - system
 
         For when the library or tool is provided by the operating system, can be
-        detected by [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild), and is considered satisfactory by the
+        detected by [Alien::Build](https://metacpan.org/pod/Alien::Build), and is considered satisfactory by the
         `alienfile` recipe.
 
     - share
@@ -424,8 +424,8 @@ relevant once the install process is complete.
 - perl\_module\_version
 
     The version of the Perl module used to install the alien (if available).
-    For example if [Alien::curl](https://metacpan.org/pod/Alien%3A%3Acurl) is installing `libcurl` this would be the
-    version of [Alien::curl](https://metacpan.org/pod/Alien%3A%3Acurl) used during the install step.
+    For example if [Alien::curl](https://metacpan.org/pod/Alien::curl) is installing `libcurl` this would be the
+    version of [Alien::curl](https://metacpan.org/pod/Alien::curl) used during the install step.
 
 - prefix
 
@@ -466,7 +466,7 @@ $build->checkpoint;
 Save any install or runtime properties so that they can be reloaded on
 a subsequent run in a separate process.  This is useful if your build
 needs to be done in multiple stages from a `Makefile`, such as with
-[ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils%3A%3AMakeMaker).  Once checkpointed you can use the `resume`
+[ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker).  Once checkpointed you can use the `resume`
 constructor (documented above) to resume the probe/build/install\]
 process.
 
@@ -500,7 +500,7 @@ been called.
 $build->set_prefix($prefix);
 ```
 
-Set the final (unstaged) prefix.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMM)
+Set the final (unstaged) prefix.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM)
 and similar modules.  It is not intended for use from plugins or from an [alienfile](https://metacpan.org/pod/alienfile).
 
 ## set\_stage
@@ -509,7 +509,7 @@ and similar modules.  It is not intended for use from plugins or from an [alienf
 $build->set_stage($dir);
 ```
 
-Sets the stage directory.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMM)
+Sets the stage directory.  This is normally only called by [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM)
 and similar modules.  It is not intended for use from plugins or from an [alienfile](https://metacpan.org/pod/alienfile).
 
 ## requires
@@ -610,7 +610,7 @@ my $dir = $build->extract($archive);
 ```
 
 Extracts the given archive into a fresh directory.  This is normally called internally
-to [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild), and for normal usage is not needed from a plugin or [alienfile](https://metacpan.org/pod/alienfile).
+to [Alien::Build](https://metacpan.org/pod/Alien::Build), and for normal usage is not needed from a plugin or [alienfile](https://metacpan.org/pod/alienfile).
 
 ## build
 
@@ -676,7 +676,7 @@ my $meta = Alien::Build->meta;
 my $meta = $build->meta;
 ```
 
-Returns the meta object for your [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) class or instance.  The
+Returns the meta object for your [Alien::Build](https://metacpan.org/pod/Alien::Build) class or instance.  The
 meta object is a way to manipulate the recipe, and so any changes to the
 meta object should be made before the `probe`, `download` or `build` steps.
 
@@ -689,7 +689,7 @@ my $href = $build->meta->prop;
 ```
 
 Meta properties.  This is the same as calling `meta_prop` on
-the class or [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) instance.
+the class or [Alien::Build](https://metacpan.org/pod/Alien::Build) instance.
 
 ## add\_requires
 
@@ -711,7 +711,7 @@ my $interpolator = $build->meta->interpolator;
 my $interpolator = Alien::Build->interpolator;
 ```
 
-Returns the [Alien::Build::Interpolate](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AInterpolate) instance for the [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) class.
+Returns the [Alien::Build::Interpolate](https://metacpan.org/pod/Alien::Build::Interpolate) instance for the [Alien::Build](https://metacpan.org/pod/Alien::Build) class.
 
 ## has\_hook
 
@@ -784,7 +784,7 @@ Apply the given plugin with the given arguments.
 
 # ENVIRONMENT
 
-[Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) responds to these environment variables:
+[Alien::Build](https://metacpan.org/pod/Alien::Build) responds to these environment variables:
 
 - ALIEN\_INSTALL\_NETWORK
 
@@ -802,7 +802,7 @@ Apply the given plugin with the given arguments.
     If set to `default`, it will use the default setting for the [alienfile](https://metacpan.org/pod/alienfile).
     The behavior of other values is undefined.
 
-    Although the recommended way for a consumer to use an [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase) based [Alien](https://metacpan.org/pod/Alien)
+    Although the recommended way for a consumer to use an [Alien::Base](https://metacpan.org/pod/Alien::Base) based [Alien](https://metacpan.org/pod/Alien)
     is to declare it as a static configure and build-time dependency, some consumers
     may prefer to fallback on using an [Alien](https://metacpan.org/pod/Alien) only when the consumer itself cannot
     detect the necessary package. In some cases the consumer may want the user to opt-in
@@ -817,16 +817,16 @@ Apply the given plugin with the given arguments.
 
 - ALIEN\_BUILD\_LOG
 
-    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3ALog) and [Alien:Build::Log::Default](Alien:Build::Log::Default).
+    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien::Build::Log) and [Alien:Build::Log::Default](Alien:Build::Log::Default).
 
 - ALIEN\_BUILD\_RC
 
-    Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild),
+    Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien::Build),
     by, for example, setting preload and postload plugins.
 
 - ALIEN\_BUILD\_PKG\_CONFIG
 
-    Override the logic in [Alien::Build::Plugin::PkgConfig::Negotiate](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3APlugin%3A%3APkgConfig%3A%3ANegotiate) which
+    Override the logic in [Alien::Build::Plugin::PkgConfig::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig::Negotiate) which
     chooses the best `pkg-config` plugin.
 
 - ALIEN\_BUILD\_PRELOAD
@@ -846,12 +846,12 @@ Apply the given plugin with the given arguments.
 - PKG\_CONFIG
 
     This environment variable can be used to override the program name for `pkg-config`
-    when using the command line plugin: [Alien::Build::Plugin::PkgConfig::CommandLine](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3APlugin%3A%3APkgConfig%3A%3ACommandLine).
+    when using the command line plugin: [Alien::Build::Plugin::PkgConfig::CommandLine](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig::CommandLine).
 
 - ftp\_proxy, all\_proxy
 
     If these environment variables are set, it may influence the Download negotiation
-    plugin [Alien::Build::Plugin::Downaload::Negotiate](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3APlugin%3A%3ADownaload%3A%3ANegotiate).  Other proxy variables may
+    plugin [Alien::Build::Plugin::Downaload::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::Downaload::Negotiate).  Other proxy variables may
     be used by some Fetch plugins, if they support it.
 
 # SUPPORT
@@ -879,35 +879,35 @@ don't have an IRC client handy, you can use this web interface:
 
 # SEE ALSO
 
-[Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AAlienAuthor),
-[Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AAlienUser),
-[Alien::Build::Manual::Contributing](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AContributing),
-[Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3AFAQ),
-[Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AManual%3A%3APluginAuthor)
+[Alien::Build::Manual::AlienAuthor](https://metacpan.org/pod/Alien::Build::Manual::AlienAuthor),
+[Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser),
+[Alien::Build::Manual::Contributing](https://metacpan.org/pod/Alien::Build::Manual::Contributing),
+[Alien::Build::Manual::FAQ](https://metacpan.org/pod/Alien::Build::Manual::FAQ),
+[Alien::Build::Manual::PluginAuthor](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor)
 
-[alienfile](https://metacpan.org/pod/alienfile), [Alien::Build::MM](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3AMM), [Alien::Build::Plugin](https://metacpan.org/pod/Alien%3A%3ABuild%3A%3APlugin), [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase), [Alien](https://metacpan.org/pod/Alien)
+[alienfile](https://metacpan.org/pod/alienfile), [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM), [Alien::Build::Plugin](https://metacpan.org/pod/Alien::Build::Plugin), [Alien::Base](https://metacpan.org/pod/Alien::Base), [Alien](https://metacpan.org/pod/Alien)
 
 # THANKS
 
-[Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase) was originally written by Joel Berger, the rest of this project would
+[Alien::Base](https://metacpan.org/pod/Alien::Base) was originally written by Joel Berger, the rest of this project would
 not have been possible without him getting the project started.  Thanks to his support
-I have been able to augment the original [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase) system with a reliable set
-of tools ([Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild), [alienfile](https://metacpan.org/pod/alienfile), [Test::Alien](https://metacpan.org/pod/Test%3A%3AAlien)), which make up this toolset.
+I have been able to augment the original [Alien::Base](https://metacpan.org/pod/Alien::Base) system with a reliable set
+of tools ([Alien::Build](https://metacpan.org/pod/Alien::Build), [alienfile](https://metacpan.org/pod/alienfile), [Test::Alien](https://metacpan.org/pod/Test::Alien)), which make up this toolset.
 
-The original [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase) is still copyright (c) 2012-2020 Joel Berger.  It has
+The original [Alien::Base](https://metacpan.org/pod/Alien::Base) is still copyright (c) 2012-2020 Joel Berger.  It has
 the same license as the rest of the Alien::Build and related tools distributed as
 `Alien-Build`.  Joel Berger thanked a number of people who helped in in the development
-of [Alien::Base](https://metacpan.org/pod/Alien%3A%3ABase), in the documentation for that module.
+of [Alien::Base](https://metacpan.org/pod/Alien::Base), in the documentation for that module.
 
 I would also like to acknowledge the other members of the Perl5-Alien github
 organization, Zakariyya Mughal (sivoais, ZMUGHAL) and mohawk (ETJ).  Also important
-in the early development of [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) were the early adopters Chase Whitener
-(genio, CAPOEIRAB, author of [Alien::libuv](https://metacpan.org/pod/Alien%3A%3Alibuv)), William N. Braswell, Jr (willthechill,
-WBRASWELL, author of [Alien::JPCRE2](https://metacpan.org/pod/Alien%3A%3AJPCRE2) and [Alien::PCRE2](https://metacpan.org/pod/Alien%3A%3APCRE2)) and Ahmad Fatoum (a3f,
-ATHREEF, author of [Alien::libudev](https://metacpan.org/pod/Alien%3A%3Alibudev) and [Alien::LibUSB](https://metacpan.org/pod/Alien%3A%3ALibUSB)).
+in the early development of [Alien::Build](https://metacpan.org/pod/Alien::Build) were the early adopters Chase Whitener
+(genio, CAPOEIRAB, author of [Alien::libuv](https://metacpan.org/pod/Alien::libuv)), William N. Braswell, Jr (willthechill,
+WBRASWELL, author of [Alien::JPCRE2](https://metacpan.org/pod/Alien::JPCRE2) and [Alien::PCRE2](https://metacpan.org/pod/Alien::PCRE2)) and Ahmad Fatoum (a3f,
+ATHREEF, author of [Alien::libudev](https://metacpan.org/pod/Alien::libudev) and [Alien::LibUSB](https://metacpan.org/pod/Alien::LibUSB)).
 
 The Alien ecosystem owes a debt to Dan Book, who goes by Grinnz on IRC, for answering
-question about how to use [Alien::Build](https://metacpan.org/pod/Alien%3A%3ABuild) and friends.
+question about how to use [Alien::Build](https://metacpan.org/pod/Alien::Build) and friends.
 
 # AUTHOR
 
