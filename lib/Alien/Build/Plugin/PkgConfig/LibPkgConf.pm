@@ -140,7 +140,7 @@ sub init
       if($atleast_version)
       {
         require PkgConfig::LibPkgConf::Util;
-        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $atleast_version) == -1)
+        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $atleast_version) < 0)
         {
           die "package $pkg_name is version @{[ $pkg->version ]}, but at least $atleast_version is required.";
         }
@@ -158,7 +158,7 @@ sub init
       if($self->max_version)
       {
         require PkgConfig::LibPkgConf::Util;
-        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->max_version) == 1)
+        if(PkgConfig::LibPkgConf::Util::compare_version($pkg->version, $self->max_version) > 0)
         {
           die "package $pkg_name is version @{[ $pkg->version ]}, but max @{[ $self->max_version ]} is required.";
         }
