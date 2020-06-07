@@ -423,8 +423,8 @@ sub mm_install
   };
 
   return
-      ".NOTPARALLEL : install\n\n"
-    . ".NO_PARALLEL : install\n\n"
+      ".NOTPARALLEL : \n\n"
+    . ".NO_PARALLEL : \n\n"
     . "install :: alien_clean_install\n\n"
     . $section;
 }
