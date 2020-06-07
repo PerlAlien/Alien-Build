@@ -57,6 +57,26 @@ $modules{$_} = $_ for qw(
 );
 
 $post_diag = sub {
+  if($] < 5.008004)
+  {
+    diag " !! WARNING WARNING WARNINGS WARNING !!";
+    diag "";
+    diag "The version of Perl you are using is very old (at least 15 years)";
+    diag "as of this writing.  The Alien-Build team plans on dropping support";
+    diag "for Perls older than 5.8.4 on or after July 1st 2020.  At that time";
+    diag "Alien-Build will refuse to install.  Please take the time to migrate";
+    diag "to a supported version of Perl ASAP.";
+    diag "";
+    diag "https://github.com/Perl5-Alien/Alien-Build/issues/200";
+    diag "";
+    diag " !! WARNING WARNING WARNINGS WARNING !!";
+    diag "";
+    diag "";
+    diag "sleep 180";
+    sleep 180;
+    diag "";
+    diag "";
+  }
   eval {
     require Alien::Build::Plugin::Core::Setup;
     require Alien::Build::Plugin::Build::Autoconf;

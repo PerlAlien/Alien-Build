@@ -26,8 +26,8 @@ if($] < 5.008004)
   print "\n";
   print " !! WARNING WARNING WARNINGS WARNING !!\n";
   print "\n\n\n";
-  print "sleep 180\n";
-  sleep 180;
+  print "sleep 45\n";
+  sleep 45;
 }
 
 { # /tmp check
