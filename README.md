@@ -857,7 +857,7 @@ Apply the given plugin with the given arguments.
 # SUPPORT
 
 The intent of the `Alien-Build` team is to support as best as possible
-all Perls from 5.8.1 to the latest production version.  So long as they
+all Perls from 5.8.4 to the latest production version.  So long as they
 are also supported by the Perl toolchain.
 
 Please feel encouraged to report issues that you encounter to the
