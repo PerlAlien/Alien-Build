@@ -11,6 +11,25 @@ use File::Spec;
 # but sometimes they are either unable or unwilling to respond, and I don't
 # want to waste my time re-diagnosing the same errors.
 
+if($] < 5.008004)
+{
+  print "\n\n\n";
+  print " !! WARNING WARNING WARNINGS WARNING !!\n";
+  print "\n";
+  print "The version of Perl you are using is very old (at least 15 years)\n";
+  print "as of this writing.  The Alien-Build team plans on dropping support\n";
+  print "for Perls older than 5.8.4 on or after July 1st 2020.  At that time\n";
+  print "Alien-Build will refuse to install.  Please take the time to migrate\n";
+  print "to a supported version of Perl ASAP.\n";
+  print "\n";
+  print "https://github.com/Perl5-Alien/Alien-Build/issues/200\n";
+  print "\n";
+  print " !! WARNING WARNING WARNINGS WARNING !!\n";
+  print "\n\n\n";
+  print "sleep 180\n";
+  sleep 180;
+}
+
 { # /tmp check
   my $dir = eval { tempdir( CLEANUP => 1 ) };
   if($@)
