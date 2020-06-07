@@ -422,7 +422,11 @@ sub mm_install
     $mm->SUPER::install(@rest);
   };
 
-  "install :: alien_clean_install\n\n$section";
+  return
+      ".NOTPARALLEL : install\n\n"
+    . ".NO_PARALLEL : install\n\n"
+    . "install :: alien_clean_install\n\n"
+    . $section;
 }
 
 sub import
