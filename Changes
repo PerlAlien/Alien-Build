@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.24_01   2020-06-07 18:13:55 -0600
+  - Disable parallel build when clean install is enabled
+    (gh#197, gh#198, shawnlaffan++)
   - Dropping support for Perl 5.8.1, 5.8.2 and 5.8.3.  For now AB will install
     on these versions of Perl, but a warning will be issued, along with a 3
     minute sleep at configure time.  Please upgrade to 5.8.4 (or preferrably
