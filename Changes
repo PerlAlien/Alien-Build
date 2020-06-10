@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.25      2020-06-10 09:18:25 -0600
+  - Fixed bug where alien library directory flags could be used in the wrong
+    order by Test::Alien, mostly a problem on NetBSD and similar platforms
+    (gh#203)
+
 2.24_01   2020-06-07 18:13:55 -0600
   - Disable parallel build when clean install is enabled
     (gh#197, gh#198, shawnlaffan++)
