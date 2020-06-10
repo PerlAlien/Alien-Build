@@ -523,7 +523,7 @@ sub xs_ok
       config => do {
         my %config = %{ $xs->{cbuilder_config} };
         my $lddlflags = join(' ', grep !/^-l/, shellwords map { _flags $_, 'libs' } @aliens) . " $Config{lddlflags}";
-        $config{lddlflags} = defined $config{lddlflags} ? "$config{lddlflags} $lddlflags" : $lddlflags;
+        $config{lddlflags} = defined $config{lddlflags} ? "$lddlflags $config{lddlflags}" : $lddlflags;
         \%config;
       },
     );
