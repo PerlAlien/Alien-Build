@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.26      2020-06-16 07:11:13 -0600
+  - Diagnostic release
+
 2.25      2020-06-10 09:18:25 -0600
   - Fixed bug where alien library directory flags could be used in the wrong
     order by Test::Alien, mostly a problem on NetBSD and similar platforms
