@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Some fixes for the unofficial `msys` fork of Perl (gh#211, gh#212)
 
 2.26      2020-06-16 07:11:13 -0600
   - Diagnostic release
