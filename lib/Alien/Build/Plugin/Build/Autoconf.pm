@@ -72,7 +72,9 @@ has config_site    => sub {
      # exec_prefix/lib64 or even worse exec_prefix/lib/64 but that messes everything
      # else up so we try to nip that in the bud.
      $config_site .= "libdir='\${prefix}/lib'\n";
-
+     if ($ENV{CONFIG_SITE}) {
+        $config_site .= "source $ENV{CONFIG_SITE}\n";
+     }
    $config_site;
 };
 
