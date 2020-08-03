@@ -967,6 +967,8 @@ Shawn Laffan (SLAFFAN)
 
 Paul Evans (leonerd, PEVANS)
 
+Håkon Hægland (hakonhagland, HAKONH)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2011-2020 by Graham Ollis.

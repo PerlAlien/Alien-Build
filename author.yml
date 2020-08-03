@@ -146,6 +146,9 @@ pod_spelling_system:
     - Grinnz
     - Vcpkg
     - macOS
+    - HAKONH
+    - hakonhagland
+    - kon
 
 pod_coverage:
   skip: 0
