@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Extract::CommandLine;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Path::Tiny ();
 use File::Which ();

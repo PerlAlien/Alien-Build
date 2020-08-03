@@ -2,6 +2,7 @@ package Alien::Role;
 
 use strict;
 use warnings;
+use 5.008004;
 
 # ABSTRACT: Extend Alien::Base with roles!
 # VERSION

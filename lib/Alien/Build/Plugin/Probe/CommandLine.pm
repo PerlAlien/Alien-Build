@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Probe::CommandLine;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Carp ();
 use Capture::Tiny qw( capture );

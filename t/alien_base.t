@@ -1,3 +1,4 @@
+use 5.008004;
 use Test2::V0 -no_srand => 1;
 use lib 'corpus/lib';
 use Env qw( @PKG_CONFIG_PATH );

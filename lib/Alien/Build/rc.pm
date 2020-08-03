@@ -2,6 +2,7 @@ package Alien::Build::rc;
 
 use strict;
 use warnings;
+use 5.008004;
 
 # ABSTRACT: Alien::Build local config
 # VERSION

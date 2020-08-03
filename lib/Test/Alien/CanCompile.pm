@@ -2,6 +2,7 @@ package Test::Alien::CanCompile;
 
 use strict;
 use warnings;
+use 5.008004;
 use Test2::API qw( context );
 
 # ABSTRACT: Skip a test file unless a C compiler is available

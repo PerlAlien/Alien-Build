@@ -2,7 +2,7 @@ package Test::Alien::Build;
 
 use strict;
 use warnings;
-use 5.008001;
+use 5.008004;
 use base qw( Exporter);
 use Path::Tiny qw( path );
 use Carp qw( croak );

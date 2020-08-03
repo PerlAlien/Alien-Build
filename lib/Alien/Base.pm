@@ -2,6 +2,7 @@ package Alien::Base;
 
 use strict;
 use warnings;
+use 5.008004;
 use Carp;
 use Path::Tiny ();
 use Scalar::Util qw/blessed/;

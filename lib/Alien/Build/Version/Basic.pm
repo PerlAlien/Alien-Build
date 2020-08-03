@@ -2,6 +2,7 @@ package Alien::Build::Version::Basic;
 
 use strict;
 use warnings;
+use 5.008004;
 use Carp ();
 use base qw( Exporter );
 use overload

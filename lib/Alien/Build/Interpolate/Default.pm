@@ -2,6 +2,7 @@ package Alien::Build::Interpolate::Default;
 
 use strict;
 use warnings;
+use 5.008004;
 use base qw( Alien::Build::Interpolate );
 use File::chdir;
 use File::Which qw( which );

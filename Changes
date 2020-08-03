@@ -3,6 +3,8 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Some fixes for the unofficial `msys` fork of Perl (gh#211, gh#212)
   - Honour user supplied `config.site` for autoconf (gh#215, gh#218, hakonhagland++)
+  - Hard drop of support for Perl 5.8.1, 5.8.2 and 5.8.3.  AB will refuse to install
+    on these elder Perls.  Please upgrade to at least 5.8.4.  (gh#200, gh#201, gh#219)
 
 2.26      2020-06-16 07:11:13 -0600
   - Diagnostic release

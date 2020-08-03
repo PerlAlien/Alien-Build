@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Test::Mock;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Carp ();
 use Path::Tiny ();

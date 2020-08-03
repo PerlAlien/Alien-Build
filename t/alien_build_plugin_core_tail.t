@@ -1,3 +1,4 @@
+use 5.008004;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Core::Tail;

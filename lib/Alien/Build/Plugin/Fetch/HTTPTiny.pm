@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Fetch::HTTPTiny;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use File::Basename ();
 use Alien::Build::Util qw( _ssl_reqs );

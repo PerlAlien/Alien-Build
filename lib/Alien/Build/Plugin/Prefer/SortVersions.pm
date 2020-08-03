@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Prefer::SortVersions;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 
 # ABSTRACT: Plugin to sort candidates by most recent first

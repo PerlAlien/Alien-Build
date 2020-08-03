@@ -1,3 +1,4 @@
+use 5.008004;
 use lib 't/lib';
 use MyTest::FauxFetchCommand;
 use Test2::V0 -no_srand => 1;

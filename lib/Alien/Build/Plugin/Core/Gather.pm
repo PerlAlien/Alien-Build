@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::Gather;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Env qw( @PATH @PKG_CONFIG_PATH );
 use Path::Tiny ();

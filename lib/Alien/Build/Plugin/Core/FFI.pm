@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::FFI;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 
 # ABSTRACT: Core FFI plugin

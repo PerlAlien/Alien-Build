@@ -1,3 +1,4 @@
+use 5.008004;
 use Test2::V0 -no_srand => 1;
 use Alien::Base::PkgConfig;
 use Capture::Tiny qw( capture_merged );

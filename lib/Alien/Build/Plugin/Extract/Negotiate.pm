@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Extract::Negotiate;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Alien::Build::Plugin::Extract::ArchiveTar;
 use Alien::Build::Plugin::Extract::ArchiveZip;

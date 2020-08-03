@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::Legacy;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 
 # ABSTRACT: Core Alien::Build plugin to maintain compatibility with legacy Alien::Base
