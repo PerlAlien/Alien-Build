@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Build::SearchDep;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Text::ParseWords qw( shellwords );
 

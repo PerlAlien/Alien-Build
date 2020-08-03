@@ -2,6 +2,7 @@ package Alien::Base::PkgConfig;
 
 use strict;
 use warnings;
+use 5.008004;
 use Carp;
 use Config;
 use Path::Tiny qw( path );

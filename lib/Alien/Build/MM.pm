@@ -2,6 +2,7 @@ package Alien::Build::MM;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build;
 use Path::Tiny ();
 use Capture::Tiny qw( capture );

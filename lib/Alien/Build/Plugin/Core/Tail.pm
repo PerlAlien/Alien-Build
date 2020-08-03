@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::Tail;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 
 # ABSTRACT: Core tail setup plugin

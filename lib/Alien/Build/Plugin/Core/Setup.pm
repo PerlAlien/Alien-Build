@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::Setup;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Config;
 use File::Which qw( which );

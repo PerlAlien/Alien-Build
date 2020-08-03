@@ -2,6 +2,7 @@ package Alien::Build::Interpolate;
 
 use strict;
 use warnings;
+use 5.008004;
 
 # ABSTRACT: Advanced interpolation engine for Alien builds
 # VERSION

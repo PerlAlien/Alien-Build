@@ -2,6 +2,7 @@ package Test::Alien::Synthetic;
 
 use strict;
 use warnings;
+use 5.008004;
 use Test2::API qw( context );
 
 # ABSTRACT: A mock alien object for testing

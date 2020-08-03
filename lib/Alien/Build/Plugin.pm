@@ -2,6 +2,7 @@ package Alien::Build::Plugin;
 
 use strict;
 use warnings;
+use 5.008004;
 use Carp ();
 
 our @CARP_NOT = qw( alienfile Alien::Build Alien::Build::Meta );

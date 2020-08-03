@@ -2,6 +2,7 @@ package Test::Alien::Diag;
 
 use strict;
 use warnings;
+use 5.008004;
 use Test2::API qw( context );
 use base qw( Exporter );
 

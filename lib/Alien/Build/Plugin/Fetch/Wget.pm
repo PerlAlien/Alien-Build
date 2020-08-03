@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Fetch::Wget;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );

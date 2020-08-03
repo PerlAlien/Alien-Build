@@ -2,6 +2,7 @@ package Alien::Build::Util;
 
 use strict;
 use warnings;
+use 5.008004;
 use base qw( Exporter );
 use Path::Tiny qw( path );
 use Config;

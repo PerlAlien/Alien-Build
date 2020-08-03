@@ -2,6 +2,7 @@ package Alien::Build::Plugin::PkgConfig::Negotiate;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Alien::Build::Plugin::PkgConfig::PP;
 use Alien::Build::Plugin::PkgConfig::LibPkgConf;

@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Extract::ArchiveTar;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use File::chdir;
 use File::Temp ();

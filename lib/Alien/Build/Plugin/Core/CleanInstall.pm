@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::CleanInstall;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Path::Tiny ();
 

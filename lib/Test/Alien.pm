@@ -2,7 +2,7 @@ package Test::Alien;
 
 use strict;
 use warnings;
-use 5.008001;
+use 5.008004;
 use Env qw( @PATH );
 use File::Which 1.10 qw( which );
 use Capture::Tiny qw( capture capture_merged );

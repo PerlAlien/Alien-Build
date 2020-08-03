@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Probe::Vcpkg;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 
 # ABSTRACT: Probe for system libraries using Vcpkg

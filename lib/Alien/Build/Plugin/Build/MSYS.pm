@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Build::MSYS;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use File::Which ();
 use Env qw( @PATH );

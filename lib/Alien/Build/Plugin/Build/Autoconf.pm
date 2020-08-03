@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Build::Autoconf;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use constant _win => $^O eq 'MSWin32';
 use Path::Tiny ();

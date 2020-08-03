@@ -2,6 +2,7 @@ package Alien::Build::Temp;
 
 use strict;
 use warnings;
+use 5.008004;
 use Carp ();
 use Path::Tiny ();
 use File::Temp ();

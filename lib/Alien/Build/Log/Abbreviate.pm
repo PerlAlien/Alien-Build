@@ -2,7 +2,7 @@ package Alien::Build::Log::Abbreviate;
 
 use strict;
 use warnings;
-use 5.008001;
+use 5.008004;
 use Term::ANSIColor ();
 use Path::Tiny qw( path );
 use File::chdir;

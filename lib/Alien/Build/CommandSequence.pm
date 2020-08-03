@@ -2,6 +2,7 @@ package Alien::Build::CommandSequence;
 
 use strict;
 use warnings;
+use 5.008004;
 use Text::ParseWords qw( shellwords );
 use Capture::Tiny qw( capture );
 

@@ -1,3 +1,4 @@
+use 5.008004;
 use Test2::V0 -no_srand => 1;
 use Alien::Build::Util qw( _dump _mirror _destdir_prefix _ssl_reqs _has_ssl );
 use Path::Tiny qw( path );

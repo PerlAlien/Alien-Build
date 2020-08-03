@@ -2,6 +2,7 @@ package Alien::Build::Plugin::Core::Download;
 
 use strict;
 use warnings;
+use 5.008004;
 use Alien::Build::Plugin;
 use Path::Tiny ();
 use Alien::Build::Util qw( _mirror );
