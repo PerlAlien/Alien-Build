@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.28      2020-08-04 21:33:19 -0600
+  - Production release identical to 2.27_01
+
 2.27_01   2020-08-03 13:47:02 -0600
   - Some fixes for the unofficial `msys` fork of Perl (gh#211, gh#212)
   - Honour user supplied `config.site` for autoconf (gh#215, gh#218, hakonhagland++)
