@@ -25,7 +25,7 @@ Joel Berger wrote the original L<Alien::Base>.  This distribution
 included the runtime code L<Alien::Base> and an installer class
 L<Alien::Base::ModuleBuild>.  The significant thing about L<Alien::Base>
 was that it provided tools to make it relatively easy for people to roll
-their own L<Alien> distributions.  Over time, the Perl5-Alien (github
+their own L<Alien> distributions.  Over time, the PerlAlien (github
 organization) or "Alien::Base team" has taken over development of
 L<Alien::Base> with myself (Graham Ollis) being responsible for
 integration and releases.  Joel Berger is still involved in the project.

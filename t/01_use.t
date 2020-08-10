@@ -1,4 +1,3 @@
-use 5.008004;
 use Test2::V0 -no_srand => 1;
 
 sub require_ok ($);
@@ -17,6 +16,7 @@ require_ok 'Alien::Build::MM';
 require_ok 'Alien::Build::Plugin';
 require_ok 'Alien::Build::Plugin::Build::Autoconf';
 require_ok 'Alien::Build::Plugin::Build::CMake';
+require_ok 'Alien::Build::Plugin::Build::Copy';
 require_ok 'Alien::Build::Plugin::Build::MSYS';
 require_ok 'Alien::Build::Plugin::Build::Make';
 require_ok 'Alien::Build::Plugin::Build::SearchDep';
@@ -56,6 +56,7 @@ require_ok 'Alien::Build::Plugin::Prefer::GoodVersion';
 require_ok 'Alien::Build::Plugin::Prefer::SortVersions';
 require_ok 'Alien::Build::Plugin::Probe::CBuilder';
 require_ok 'Alien::Build::Plugin::Probe::CommandLine';
+require_ok 'Alien::Build::Plugin::Probe::Vcpkg';
 require_ok 'Alien::Build::Plugin::Test::Mock';
 require_ok 'Alien::Build::Temp';
 require_ok 'Alien::Build::Util';
@@ -66,6 +67,7 @@ require_ok 'Test::Alien';
 require_ok 'Test::Alien::Build';
 require_ok 'Test::Alien::CanCompile';
 require_ok 'Test::Alien::CanPlatypus';
+require_ok 'Test::Alien::Diag';
 require_ok 'Test::Alien::Run';
 require_ok 'Test::Alien::Synthetic';
 require_ok 'alienfile';
@@ -83,6 +85,7 @@ ok -f 't/alien_build_mm.t',                                   'test for Alien::B
 ok -f 't/alien_build_plugin.t',                               'test for Alien::Build::Plugin';
 ok -f 't/alien_build_plugin_build_autoconf.t',                'test for Alien::Build::Plugin::Build::Autoconf';
 ok -f 't/alien_build_plugin_build_cmake.t',                   'test for Alien::Build::Plugin::Build::CMake';
+ok -f 't/alien_build_plugin_build_copy.t',                    'test for Alien::Build::Plugin::Build::Copy';
 ok -f 't/alien_build_plugin_build_msys.t',                    'test for Alien::Build::Plugin::Build::MSYS';
 ok -f 't/alien_build_plugin_build_make.t',                    'test for Alien::Build::Plugin::Build::Make';
 ok -f 't/alien_build_plugin_build_searchdep.t',               'test for Alien::Build::Plugin::Build::SearchDep';
@@ -122,6 +125,7 @@ ok -f 't/alien_build_plugin_prefer_goodversion.t',            'test for Alien::B
 ok -f 't/alien_build_plugin_prefer_sortversions.t',           'test for Alien::Build::Plugin::Prefer::SortVersions';
 ok -f 't/alien_build_plugin_probe_cbuilder.t',                'test for Alien::Build::Plugin::Probe::CBuilder';
 ok -f 't/alien_build_plugin_probe_commandline.t',             'test for Alien::Build::Plugin::Probe::CommandLine';
+ok -f 't/alien_build_plugin_probe_vcpkg.t',                   'test for Alien::Build::Plugin::Probe::Vcpkg';
 ok -f 't/alien_build_plugin_test_mock.t',                     'test for Alien::Build::Plugin::Test::Mock';
 ok -f 't/alien_build_temp.t',                                 'test for Alien::Build::Temp';
 ok -f 't/alien_build_util.t',                                 'test for Alien::Build::Util';
@@ -132,6 +136,7 @@ ok -f 't/test_alien.t',                                       'test for Test::Al
 ok -f 't/test_alien_build.t',                                 'test for Test::Alien::Build';
 ok -f 't/test_alien_cancompile.t',                            'test for Test::Alien::CanCompile';
 ok -f 't/test_alien_canplatypus.t',                           'test for Test::Alien::CanPlatypus';
+ok -f 't/test_alien_diag.t',                                  'test for Test::Alien::Diag';
 ok -f 't/test_alien_run.t',                                   'test for Test::Alien::Run';
 ok -f 't/test_alien_synthetic.t',                             'test for Test::Alien::Synthetic';
 ok -f 't/alienfile.t',                                        'test for alienfile';

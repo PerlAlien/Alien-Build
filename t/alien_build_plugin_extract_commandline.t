@@ -66,7 +66,7 @@ subtest 'archive' => sub {
             diag "[/etc/fstab   ] $_" for grep m{/tmp}, path("/etc/fstab")->lines;
           }
 
-          diag "SEE https://github.com/Perl5-Alien/Alien-Build/issues/62";
+          diag "SEE https://github.com/PerlAlien/Alien-Build/issues/62";
           diag "if you can help with this.\n";
         }
 
