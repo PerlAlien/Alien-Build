@@ -1547,7 +1547,7 @@ subtest 'network available' => sub {
     is($build->meta_prop->{network}, F());
   };
 
-  ## https://github.com/Perl5-Alien/Alien-Build/issues/23#issuecomment-341114414
+  ## https://github.com/PerlAlien/Alien-Build/issues/23#issuecomment-341114414
   # alien_subtest 'NO_NETWORK_TESTING' => sub {
   #   local $ENV{NO_NETWORK_TESTING} = 1;
   #   my $build = alienfile_ok q{ use alienfile };

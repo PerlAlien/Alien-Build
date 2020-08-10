@@ -1,4 +1,4 @@
-# Alien::Build [![Build Status](https://api.cirrus-ci.com/github/Perl5-Alien/Alien-Build.svg)](https://cirrus-ci.com/github/Perl5-Alien/Alien-Build) [![Build Status](https://travis-ci.org/Perl5-Alien/Alien-Build.svg)](http://travis-ci.org/Perl5-Alien/Alien-Build) ![windows](https://github.com/Perl5-Alien/Alien-Build/workflows/windows/badge.svg) ![macos](https://github.com/Perl5-Alien/Alien-Build/workflows/macos/badge.svg)
+# Alien::Build [![Build Status](https://api.cirrus-ci.com/github/PerlAlien/Alien-Build.svg)](https://cirrus-ci.com/github/PerlAlien/Alien-Build) [![Build Status](https://travis-ci.org/PerlAlien/Alien-Build.svg)](http://travis-ci.org/PerlAlien/Alien-Build) ![windows](https://github.com/PerlAlien/Alien-Build/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Build/workflows/macos/badge.svg)
 
 Build external dependencies for use in CPAN
 
@@ -863,12 +863,12 @@ are also supported by the Perl toolchain.
 Please feel encouraged to report issues that you encounter to the
 project GitHub Issue tracker:
 
-- [https://github.com/Perl5-Alien/Alien-Build/issues](https://github.com/Perl5-Alien/Alien-Build/issues)
+- [https://github.com/PerlAlien/Alien-Build/issues](https://github.com/PerlAlien/Alien-Build/issues)
 
 Better if you can fix the issue yourself, please feel encouraged to open
 pull-request on the project GitHub:
 
-- [https://github.com/Perl5-Alien/Alien-Build/pulls](https://github.com/Perl5-Alien/Alien-Build/pulls)
+- [https://github.com/PerlAlien/Alien-Build/pulls](https://github.com/PerlAlien/Alien-Build/pulls)
 
 If you are confounded and have questions, join us on the `#native`
 channel on irc.perl.org.  The `Alien-Build` developers frequent this
@@ -899,7 +899,7 @@ the same license as the rest of the Alien::Build and related tools distributed a
 `Alien-Build`.  Joel Berger thanked a number of people who helped in in the development
 of [Alien::Base](https://metacpan.org/pod/Alien::Base), in the documentation for that module.
 
-I would also like to acknowledge the other members of the Perl5-Alien github
+I would also like to acknowledge the other members of the PerlAlien github
 organization, Zakariyya Mughal (sivoais, ZMUGHAL) and mohawk (ETJ).  Also important
 in the early development of [Alien::Build](https://metacpan.org/pod/Alien::Build) were the early adopters Chase Whitener
 (genio, CAPOEIRAB, author of [Alien::libuv](https://metacpan.org/pod/Alien::libuv)), William N. Braswell, Jr (willthechill,

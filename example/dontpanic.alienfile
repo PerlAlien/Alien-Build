@@ -4,7 +4,7 @@ probe sub { 'share' };
 
 share {
 
-  start_url 'https://github.com/Perl5-Alien/dontpanic.git';
+  start_url 'https://github.com/PerlAlien/dontpanic.git';
 
   download [
     [ "git clone --bare %{.meta.start_url}" ]

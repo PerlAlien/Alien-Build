@@ -1070,7 +1070,7 @@ If you find a bug, please report it on the projects issue tracker on GitHub:
 
 =over 4
 
-=item L<https://github.com/Perl5-Alien/Alien-Base/issues>
+=item L<https://github.com/PerlAlien/Alien-Base/issues>
 
 =back
 
@@ -1089,7 +1089,7 @@ request.
 
 =over 4
 
-=item L<https://github.com/Perl5-Alien/Alien-Base/pulls>
+=item L<https://github.com/PerlAlien/Alien-Base/pulls>
 
 =back
 
