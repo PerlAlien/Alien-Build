@@ -29,7 +29,7 @@ Filter out any files that match the given version.
  use alienfile;
  plugin 'Prefer::BadVersion' => '1.2.3';
 
-=item as a array
+=item as an array
 
 Filter out all files that match any of the given versions.
 
