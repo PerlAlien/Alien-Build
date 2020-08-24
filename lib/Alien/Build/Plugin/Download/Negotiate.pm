@@ -298,6 +298,8 @@ sub init
 
 =head1 SEE ALSO
 
+L<Alien::Build::Plugin::Prefer::BadVersion>, L<Alien::Build::Plugin::Prefer::GoodVersion>
+
 L<Alien::Build>, L<alienfile>, L<Alien::Build::MM>, L<Alien>
 
 =cut
