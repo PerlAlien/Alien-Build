@@ -1984,7 +1984,7 @@ CPAN module.
 
 =item ALIEN_BUILD_LOG
 
-The default log class used.  See L<Alien::Build::Log> and L<Alien:Build::Log::Default>.
+The default log class used.  See L<Alien::Build::Log> and L<Alien::Build::Log::Default>.
 
 =item ALIEN_BUILD_RC
 
