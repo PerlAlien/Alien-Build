@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Documentation fixes (gh#223, #224, #225, shawnlaffan++)
 
 2.29      2020-08-10 09:16:59 -0600
   - Move to new GitHub org: https://github.com/PerlAlien
