@@ -64,7 +64,7 @@ Or if you are using L<ExtUtils::Depends>:
    $eud->get_makefile_vars
  );
 
-If you are using L<Alien:Base::ModuleBuild> instead of the recommended L<Alien::Build>
+If you are using L<Alien::Base::ModuleBuild> instead of the recommended L<Alien::Build>
 and L<alienfile>, then in your C<MyLibrary::XS> module, you may need something like
 this in your main C<.pm> file IF your library uses dynamic libraries:
 
