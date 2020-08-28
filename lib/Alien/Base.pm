@@ -883,6 +883,7 @@ sub inline_auto_include {
 
 sub Inline {
   my ($class, $language) = @_;
+  return unless defined $language;
   return if $language !~ /^(C|CPP)$/;
   my $config = {
     # INC should arguably be for -I flags only, but
