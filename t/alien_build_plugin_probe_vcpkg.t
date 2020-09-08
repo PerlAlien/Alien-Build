@@ -7,7 +7,7 @@ use Path::Tiny;
 skip_all 'Test requires Win32::Vcpkg 0.02'
   unless eval { require Win32::Vcpkg; Win32::Vcpkg->VERSION('0.02') };
 
-$ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','abpp_vcpkg', 'r1')->absolute->stringify;
+$ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','vcpkg', 'r1')->absolute->stringify;
 $ENV{PERL_WIN32_VCPKG_DEBUG} = 0;
 $ENV{VCPKG_DEFAULT_TRIPLET}  = 'x64-windows';
 
@@ -119,7 +119,7 @@ subtest 'vc' => sub {
 
   alien_subtest 'name = libffi' => sub {
 
-    local $ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','abpp_vcpkg', 'r2')->absolute->stringify;
+    local $ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','vcpkg', 'r2')->absolute->stringify;
 
     my $build = alienfile_ok q{
       use alienfile;
@@ -150,7 +150,7 @@ subtest 'vc' => sub {
 
   alien_subtest 'libffi' => sub {
 
-    local $ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','abpp_vcpkg', 'r2')->absolute->stringify;
+    local $ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','vcpkg', 'r2')->absolute->stringify;
 
     my $build = alienfile_ok q{
       use alienfile;
