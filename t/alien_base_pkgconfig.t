@@ -5,7 +5,7 @@ use Capture::Tiny qw( capture_merged );
 
 subtest 'basic' => sub {
 
-  my $file = 'corpus/alien_base_pkgconfig/test.pc';
+  my $file = 'corpus/ab_pkgconfig/test.pc';
   ok( -e $file, "Test file found" );
 
   my $pc = Alien::Base::PkgConfig->new($file);
