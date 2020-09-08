@@ -817,7 +817,7 @@ Apply the given plugin with the given arguments.
 
 - ALIEN\_BUILD\_LOG
 
-    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien::Build::Log) and [Alien:Build::Log::Default](Alien:Build::Log::Default).
+    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien::Build::Log) and [Alien::Build::Log::Default](https://metacpan.org/pod/Alien::Build::Log::Default).
 
 - ALIEN\_BUILD\_RC
 
