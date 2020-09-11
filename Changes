@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.32      2020-09-11 10:42:41 -0600
+  - Production release identical to 2.27_01
+
 2.31_01   2020-09-09 06:26:25 -0600
   - Diagnostic release
 
