@@ -37,7 +37,7 @@ alien_subtest 'basic' => sub {
   my $mycommand = $stage->child('bin', 'mycommand');
   ok(-f $mycommand, "file $mycommand exists");
   ok(-x $mycommand, "file $mycommand is executable")
-    if $^O !~ /^(MSWin32|msys)$/;
+    if $^O !~ /^(MSWin32|msys|cygwin)$/;
 
   my $inc = $stage->child('include','foo.h');
   ok(-f $inc, "file $inc exists");
