@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.33      2020-09-21 03:21:40 -0600
+  - Skip problematic test on cygwin (gh#232)
+
 2.32      2020-09-11 10:42:41 -0600
   - Production release identical to 2.27_01
 
