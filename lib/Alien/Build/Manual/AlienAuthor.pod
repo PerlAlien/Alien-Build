@@ -283,7 +283,7 @@ L<Alien::Build::Plugin::PkgConfig::Negotiate>, it may choose to use
 command line tools, a pure Perl implementation (L<PkgConfig>), or 
 libpkgconf, depending on what is available).  When using negotiation 
 plugins you may omit the C<::Negotiate> suffix.  So as you can see using 
-the plugin here is an advantage because it is more reliable that just 
+the plugin here is an advantage because it is more reliable than just 
 specifying a command which may not be installed!
 
 Next we use the download negotiation plugin.  This is also better than 
