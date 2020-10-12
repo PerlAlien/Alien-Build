@@ -547,7 +547,7 @@ alien will work with any XS modules that are going to use it:
  
  alien_ok 'Alien::Libfoo';
  
- xs_ok { local $/; <DATA> }, with_subtest {
+ xs_ok do { local $/; <DATA> }, with_subtest {
    is Foo::something(), 1, 'Foo::something() returns 1';
  };
  
