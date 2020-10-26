@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added instance_id property to Alien::Build::Plugin class.
 
 2.33      2020-09-21 03:21:40 -0600
   - Skip problematic test on cygwin (gh#232)

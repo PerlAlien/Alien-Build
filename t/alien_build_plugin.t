@@ -81,5 +81,80 @@ subtest 'subplugin' => sub {
 
 };
 
+subtest 'instance-id' => sub {
+
+  {
+    package
+      Alien::Build::Plugin::ABC::XYZ1;
+    use Alien::Build::Plugin;
+
+    has foo => undef;
+    has bar => undef;
+  }
+
+  {
+    package
+      Alien::Build::Plugin::ABC::XYZ2;
+    use Alien::Build::Plugin;
+
+    has foo => undef;
+  }
+
+  is(
+    Alien::Build::Plugin::ABC::XYZ1->new->instance_id,
+    match qr/^[a-z0-9]{40}$/,
+    'id is a 40 character hex value',
+  );
+
+  is(
+    Alien::Build::Plugin::ABC::XYZ1->new->instance_id,
+    Alien::Build::Plugin::ABC::XYZ1->new->instance_id,
+    'zero args is the consistent',
+  );
+
+  isnt(
+    Alien::Build::Plugin::ABC::XYZ1->new->instance_id,
+    Alien::Build::Plugin::ABC::XYZ2->new->instance_id,
+    'zero args different class is different',
+  );
+
+  isnt(
+    Alien::Build::Plugin::ABC::XYZ1->new(foo => 1)->instance_id,
+    Alien::Build::Plugin::ABC::XYZ2->new(foo => 1)->instance_id,
+    'same args different class is different',
+  );
+
+  isnt(
+    Alien::Build::Plugin::ABC::XYZ1->new( foo => 1, bar => 2)->instance_id,
+    Alien::Build::Plugin::ABC::XYZ1->new->instance_id,
+    'args vs no args different',
+  );
+
+  isnt(
+    Alien::Build::Plugin::ABC::XYZ1->new( foo => 1, bar => 2)->instance_id,
+    Alien::Build::Plugin::ABC::XYZ1->new( foo => 2, bar => 3)->instance_id,
+    'args vs different args different',
+  );
+
+  is(
+    Alien::Build::Plugin::ABC::XYZ1->new( foo => 1, bar => 2)->instance_id,
+    Alien::Build::Plugin::ABC::XYZ1->new( bar => 2, foo => 1)->instance_id,
+    'same args is same',
+  );
+
+  is(
+    Alien::Build::Plugin::ABC::XYZ1->new( foo => [1,2,3], bar => 2)->instance_id,
+    Alien::Build::Plugin::ABC::XYZ1->new( bar => 2, foo => [1,2,3])->instance_id,
+    'same args is same (array)',
+  );
+
+  isnt(
+    Alien::Build::Plugin::ABC::XYZ1->new( foo => [1,3,2], bar => 2)->instance_id,
+    Alien::Build::Plugin::ABC::XYZ1->new( bar => 2, foo => [1,2,3])->instance_id,
+    'different args is same (array)',
+  );
+
+};
+
 done_testing;
 
