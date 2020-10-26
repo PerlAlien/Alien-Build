@@ -20,6 +20,7 @@ $modules{$_} = $_ for qw(
   Archive::Zip
   Capture::Tiny
   Devel::Hide
+  Digest::SHA
   Env::ShellWords
   ExtUtils::CBuilder
   ExtUtils::MakeMaker

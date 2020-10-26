@@ -3,7 +3,9 @@ package Alien::Build::Plugin;
 use strict;
 use warnings;
 use 5.008004;
+use Data::Dumper ();
 use Carp ();
+use Digest::SHA ();
 
 our @CARP_NOT = qw( alienfile Alien::Build Alien::Build::Meta );
 
@@ -99,7 +101,9 @@ sub new
 {
   my $class = shift;
   my %args = @_ == 1 ? ($class->meta->default => $_[0]) : @_;
-  my $self = bless {}, $class;
+
+  my $instance_id = Digest::SHA::sha1_hex(Data::Dumper->new([$class, \%args])->Sortkeys(1)->Dump);
+  my $self = bless { instance_id => $instance_id }, $class;
 
   my $prop = $self->meta->prop;
   foreach my $name (keys %$prop)
@@ -118,6 +122,21 @@ sub new
 
   $self;
 }
+
+=head2 PROPERTIES
+
+=head2 instance_id
+
+ my $id = $plugin->instance_id;
+
+Returns an instance id for the plugin.  This is computed from the class and
+arguments that are passed into the plugin constructor, so technically two
+instances with the exact same arguments will have the same instance id, but
+in practice you should never have two instances with the exact same arguments.
+
+=cut
+
+sub instance_id { shift->{instance_id} }
 
 =head1 METHODS
 
