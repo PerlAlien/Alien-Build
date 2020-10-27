@@ -98,6 +98,7 @@ sub new
     runtime_prop => {
       alien_build_version => $Alien::Build::VERSION || 'dev',
     },
+    plugin_instance_prop => {},
     bin_dir => [],
     pkg_config_path => [],
     aclocal_path => [],
@@ -250,8 +251,9 @@ sub resume
   my(undef, $alienfile, $root) = @_;
   my $h = JSON::PP::decode_json(_path("$root/state.json")->slurp);
   my $self = Alien::Build->load("$alienfile", @{ $h->{args} });
-  $self->{install_prop} = $h->{install};
-  $self->{runtime_prop} = $h->{runtime};
+  $self->{install_prop}         = $h->{install};
+  $self->{plugin_instance_prop} = $h->{plugin_instance};
+  $self->{runtime_prop}         = $h->{runtime};
   $self;
 }
 
@@ -529,6 +531,25 @@ sub install_prop
   shift->{install_prop};
 }
 
+=head2 plugin_instance_prop
+
+ my $href = $build->plugin_instance_prop($plugin);
+
+This returns the private plugin instance properties for a given plugin.
+This method should usually only be called internally by plugins themselves
+to keep track of internal state.  Because the content can be used arbitrarily
+by the owning plugin because it is private to the plugin, and thus is not
+part of the L<Alien::Build> spec.
+
+=cut
+
+sub plugin_instance_prop
+{
+  my($self, $plugin) = @_;
+  my $instance_id = $plugin->instance_id;
+  $self->{plugin_instance_prop}->{$instance_id} ||= {};
+}
+
 =head2 runtime_prop
 
  my $href = $build->runtime_prop;
@@ -717,9 +738,10 @@ sub checkpoint
   my $root = $self->root;
   _path("$root/state.json")->spew(
     JSON::PP->new->pretty->canonical(1)->ascii->encode({
-      install => $self->install_prop,
-      runtime => $self->runtime_prop,
-      args    => $self->{args},
+      install         => $self->install_prop,
+      runtime         => $self->runtime_prop,
+      plugin_instance => $self->{plugin_instance_prop},
+      args            => $self->{args},
     })
   );
   $self;

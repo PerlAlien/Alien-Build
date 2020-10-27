@@ -328,6 +328,18 @@ based module.
     The stage directory where files will be copied.  This is usually the
     root of the blib share directory.
 
+## plugin\_instance\_prop
+
+```perl
+my $href = $build->plugin_instance_prop($plugin);
+```
+
+This returns the private plugin instance properties for a given plugin.
+This method should usually only be called internally by plugins themselves
+to keep track of internal state.  Because the content can be used arbitrarily
+by the owning plugin because it is private to the plugin, and thus is not
+part of the [Alien::Build](https://metacpan.org/pod/Alien::Build) spec.
+
 ## runtime\_prop
 
 ```perl
