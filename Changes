@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.34_01   2020-10-27 04:23:24 -0600
   - Added instance_id property to Alien::Build::Plugin class (gh#235)
   - Added plugin_instance_prop method to Alien::Build class (gh#235)
 
