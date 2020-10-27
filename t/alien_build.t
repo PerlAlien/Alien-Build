@@ -1668,6 +1668,81 @@ alien_subtest 'interpolate env overrides' => sub {
 
 };
 
+alien_subtest 'plugin instance prop' => sub {
+
+  {
+    package Alien::Build::Plugin::ABC::XYZ1;
+    use Alien::Build::Plugin;
+    has x => undef;
+    has y => undef;
+  }
+
+  {
+    my $build = alienfile_ok q{
+      use alienfile;
+    };
+
+    my $plugin1 = Alien::Build::Plugin::ABC::XYZ1->new( x => 1, y => 2 );
+    $build->plugin_instance_prop($plugin1)->{x} = 1;
+    $build->plugin_instance_prop($plugin1)->{y} = 2;
+
+    my $plugin2 = Alien::Build::Plugin::ABC::XYZ1->new( x => 3, y => 4 );
+    $build->plugin_instance_prop($plugin2)->{x} = 3;
+    $build->plugin_instance_prop($plugin2)->{y} = 4;
+
+    my $plugin3 = Alien::Build::Plugin::ABC::XYZ1->new( x => 5, y => 6 );
+
+    is(
+      $build,
+      object {
+        call [ plugin_instance_prop => $plugin1 ] => hash {
+          field x => 1;
+          field y => 2;
+          end;
+        };
+        call [ plugin_instance_prop => $plugin2 ] => hash {
+          field x => 3;
+          field y => 4;
+          end;
+        };
+        call [ plugin_instance_prop => $plugin3 ] => hash {
+          end;
+        };
+      },
+    );
+
+    alien_checkpoint_ok;
+  }
+
+  {
+    my $build = alien_resume_ok;
+
+    my $plugin1 = Alien::Build::Plugin::ABC::XYZ1->new( x => 1, y => 2 );
+    my $plugin2 = Alien::Build::Plugin::ABC::XYZ1->new( x => 3, y => 4 );
+    my $plugin3 = Alien::Build::Plugin::ABC::XYZ1->new( x => 5, y => 6 );
+
+    is(
+      $build,
+      object {
+        call [ plugin_instance_prop => $plugin1 ] => hash {
+          field x => 1;
+          field y => 2;
+          end;
+        };
+        call [ plugin_instance_prop => $plugin2 ] => hash {
+          field x => 3;
+          field y => 4;
+          end;
+        };
+        call [ plugin_instance_prop => $plugin3 ] => hash {
+          end;
+        };
+      },
+    );
+  }
+
+};
+
 done_testing;
 
 {
