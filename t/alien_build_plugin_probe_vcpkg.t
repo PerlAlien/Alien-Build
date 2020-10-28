@@ -175,6 +175,48 @@ subtest 'vc' => sub {
     note "cflags  = ", $build->runtime_prop->{cflags};
     note "libs    = ", $build->runtime_prop->{libs};
   };
+
+  alien_subtest 'multiple probes' => sub {
+
+    local $ENV{PERL_WIN32_VCPKG_ROOT}  = path('corpus','vcpkg', 'r2')->absolute->stringify;
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      plugin 'Probe::Vcpkg' => 'libffi';
+      probe sub { 'system' };
+      my $count = 0;
+      meta->around_hook(probe => sub {
+        my $orig  = shift;
+        my $build = shift;
+        my $type = $orig->($build, @_);
+        if($count++ == 0)
+        {
+          Test2::V0::note("first convert $type to share");
+          return 'share';
+        }
+        else
+        {
+          Test2::V0::note("finally return $type");
+          return $type;
+        }
+      });
+    };
+
+    alien_install_type_is 'system';
+    alien_build_ok;
+
+    is(
+      $build->runtime_prop,
+      hash {
+        field version => DNE();
+        field cflags  => DNE();
+        field libs    => DNE();
+        etc;
+      },
+    );
+
+  };
+
 };
 
 done_testing;
