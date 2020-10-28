@@ -132,6 +132,9 @@ sub init
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
+
+      $build->plugin_instance_prop($self)->{found} = 0;
+
       $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
 
       require PkgConfig;
@@ -176,12 +179,16 @@ sub init
         die "package $alt not found" if $pkg->errmsg;
       }
 
+      $build->plugin_instance_prop($self)->{found} = 1;
       'system';
     },
   );
 
   my $gather = sub {
     my($build) = @_;
+
+    return if $build->hook_prop->{name} eq 'gather_system' && !$build->plugin_instance_prop($self)->{found};
+
     require PkgConfig;
 
     foreach my $name ($pkg_name, @alt_names)
