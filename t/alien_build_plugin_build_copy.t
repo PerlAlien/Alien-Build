@@ -12,7 +12,7 @@ alien_subtest 'basic' => sub {
     probe sub { 'share' };
 
     share {
-      download sub {
+      download sub { 
         Path::Tiny->new('foo')->touch;
       };
       extract sub {

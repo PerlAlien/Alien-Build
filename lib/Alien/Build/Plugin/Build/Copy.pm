@@ -46,7 +46,7 @@ with the appropriate logic in your L<alienfile>.
    # alien dist on a platform that doesn't use it.
    requires 'Alien::Build::Plugin::Build::Copy';
  };
- 
+
  build {
    ...
    if($^O eq 'linux')
