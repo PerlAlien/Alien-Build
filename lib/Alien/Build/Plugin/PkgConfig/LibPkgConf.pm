@@ -130,6 +130,9 @@ sub init
       my($build) = @_;
       $build->runtime_prop->{legacy}->{name} ||= $pkg_name;
 
+      $build->hook_prop->{probe_class} = __PACKAGE__;
+      $build->hook_prop->{probe_instance_id} = $self->instance_id;
+
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
       my $pkg = $client->find($pkg_name);
@@ -178,6 +181,10 @@ sub init
   $meta->register_hook(
     $_ => sub {
       my($build) = @_;
+
+      return if $build->hook_prop->{name} eq 'gather_system'
+      &&        ($build->install_prop->{system_probe_instance_id} || '') ne $self->instance_id;
+
       require PkgConfig::LibPkgConf::Client;
       my $client = PkgConfig::LibPkgConf::Client->new;
 
