@@ -522,6 +522,22 @@ absolute form of C<./_alien> by default.
 The stage directory where files will be copied.  This is usually the
 root of the blib share directory.
 
+=item system_probe_class
+
+After the probe step this property may contain the plugin class that
+performed the system probe.  It shouldn't be filled in directly by
+the plugin (instead if should use the hook property C<probe_class>,
+see below).  This is optional, and not all probe plugins will provide
+this information.
+
+=item system_probe_instance_id
+
+After the probe step this property may contain the plugin instance id that
+performed the system probe.  It shouldn't be filled in directly by
+the plugin (instead if should use the hook property C<probe_instance_id>,
+see below).  This is optional, and not all probe plugins will provide
+this information.
+
 =back
 
 =cut
@@ -689,6 +705,20 @@ The name of the currently running hook.
 Probe and PkgConfig plugins I<may> set this property indicating the
 version of the alienized package.  Not all plugins and configurations
 may be able to provide this.
+
+=item probe_class (probe)
+
+Probe and PkgConfig plugins I<may> set this property indicating the
+plugin class that made the probe.  If the probe results in a system
+install this will be propagated to C<system_probe_class> for later
+use.
+
+=item probe_instance_id (probe)
+
+Probe and PkgConfig plugins I<may> set this property indicating the
+plugin instance id that made the probe.  If the probe results in a
+system install this will be propagated to C<system_probe_instance_id>
+for later use.
 
 =back
 
@@ -1035,7 +1065,23 @@ sub probe
             $CWD = $self->root;
           },
           ok       => 'system',
-          continue => sub { $_[0] ne 'system' },
+          continue => sub {
+            if($_[0] eq 'system')
+            {
+              foreach my $name (qw( probe_class probe_instance_id ))
+              {
+                if(exists $self->hook_prop->{$name} && defined $self->hook_prop->{$name})
+                {
+                  $self->install_prop->{"system_$name"} = $self->hook_prop->{$name};
+                }
+              }
+              return undef;
+            }
+            else
+            {
+              return 1;
+            }
+          },
         },
         'probe',
       );

@@ -328,6 +328,22 @@ based module.
     The stage directory where files will be copied.  This is usually the
     root of the blib share directory.
 
+- system\_probe\_class
+
+    After the probe step this property may contain the plugin class that
+    performed the system probe.  It shouldn't be filled in directly by
+    the plugin (instead if should use the hook property `probe_class`,
+    see below).  This is optional, and not all probe plugins will provide
+    this information.
+
+- system\_probe\_instance\_id
+
+    After the probe step this property may contain the plugin instance id that
+    performed the system probe.  It shouldn't be filled in directly by
+    the plugin (instead if should use the hook property `probe_instance_id`,
+    see below).  This is optional, and not all probe plugins will provide
+    this information.
+
 ## plugin\_instance\_prop
 
 ```perl
@@ -466,6 +482,20 @@ If no hook is currently running then `hook_prop` will return `undef`.
     Probe and PkgConfig plugins _may_ set this property indicating the
     version of the alienized package.  Not all plugins and configurations
     may be able to provide this.
+
+- probe\_class (probe)
+
+    Probe and PkgConfig plugins _may_ set this property indicating the
+    plugin class that made the probe.  If the probe results in a system
+    install this will be propagated to `system_probe_class` for later
+    use.
+
+- probe\_instance\_id (probe)
+
+    Probe and PkgConfig plugins _may_ set this property indicating the
+    plugin instance id that made the probe.  If the probe results in a
+    system install this will be propagated to `system_probe_instance_id`
+    for later use.
 
 # METHODS
 

@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added install properties: system_probe_class and system_probe_instance_id (gh#237)
+  - Added hook properties: probe_class and probe_instance_id (gh#237)
 
 2.34_01   2020-10-27 04:23:24 -0600
   - Added instance_id property to Alien::Build::Plugin class (gh#235)
