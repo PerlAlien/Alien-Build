@@ -446,9 +446,6 @@ alien_subtest 'multiple probes' => sub {
       };
     },
   ;
-
-  use YAML ();
-  note YAML::Dump($build);
 };
 
 done_testing;
