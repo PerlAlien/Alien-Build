@@ -115,6 +115,10 @@ sub init
     $meta->register_hook(
       probe => sub {
         my($build) = @_;
+
+        $build->hook_prop->{probe_class} = __PACKAGE__;
+        $build->hook_prop->{probe_instance_id} = $self->instance_id;
+
         eval {
           require Win32::Vcpkg;
           require Win32::Vcpkg::List;
@@ -147,13 +151,13 @@ sub init
         my $version = $package->version;
         $version = 'unknown' unless defined $version;
 
-        $build->install_prop->{plugin_probe_vcpkg} = {
+        $build->install_prop->{plugin_probe_vcpkg}->{$self->instance_id} = {
           version  => $version,
           cflags   => $package->cflags,
           libs     => $package->libs,
         };
         $build->hook_prop->{version} = $version;
-        $build->install_prop->{plugin_probe_vcpkg}->{ffi_name} = $self->ffi_name
+        $build->install_prop->{plugin_probe_vcpkg}->{$self->instance_id}->{ffi_name} = $self->ffi_name
           if defined $self->ffi_name;
         return 'system';
       },
@@ -162,7 +166,11 @@ sub init
     $meta->register_hook(
       gather_system => sub {
         my($build) = @_;
-        if(my $c = $build->install_prop->{plugin_probe_vcpkg})
+
+        return if $build->hook_prop->{name} eq 'gather_system'
+        &&        ($build->install_prop->{system_probe_instance_id} || '') ne $self->instance_id;
+
+        if(my $c = $build->install_prop->{plugin_probe_vcpkg}->{$self->instance_id})
         {
           $build->runtime_prop->{version} = $c->{version} unless defined $build->runtime_prop->{version};
           $build->runtime_prop->{$_} = $c->{$_} for grep { defined $c->{$_} } qw( cflags libs ffi_name );
