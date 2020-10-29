@@ -1,8 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Fixed a bug where PkgConfig plugins could provide compiler / linker flags when the
-    PkgConfig probe fails, but another probe succeed. (gh#238)
+  - Fixed a bug where Probe and PkgConfig plugins could provide compiler / linker flags
+    when the PkgConfig probe fails, but another probe succeed. (gh#238)
 
 2.35_01   2020-10-28 02:06:21 -0600
   - Added install properties: system_probe_class and system_probe_instance_id (gh#237)

@@ -200,13 +200,6 @@ subtest 'fail' => sub {
 
     alien_install_type_is 'system';
 
-    my($out, $err) = capture_merged {
-      eval { $build->build };
-      $@;
-    };
-
-    like $err, qr/cbuilder unable to gather;/;
-
   };
 
 };

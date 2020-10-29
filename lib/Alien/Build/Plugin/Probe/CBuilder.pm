@@ -131,6 +131,10 @@ sub init
   $meta->register_hook(
     probe => sub {
       my($build) = @_;
+
+      $build->hook_prop->{probe_class} = __PACKAGE__;
+      $build->hook_prop->{probe_instance_id} = $self->instance_id;
+
       local $CWD = File::Temp::tempdir( CLEANUP => 1, DIR => $CWD );
 
       open my $fh, '>', 'mytest.c';
@@ -179,7 +183,7 @@ sub init
       $cflags =~ s{\s*$}{ };
       $libs =~ s{\s*$}{ };
 
-      $build->install_prop->{plugin_probe_cbuilder_gather} = {
+      $build->install_prop->{plugin_probe_cbuilder_gather}->{$self->instance_id} = {
         cflags  => $cflags,
         libs    => $libs,
       };
@@ -188,7 +192,7 @@ sub init
       {
         my($version) = $out =~ $self->version;
         $build->hook_prop->{version} = $version;
-        $build->install_prop->{plugin_probe_cbuilder_gather}->{version} = $version;
+        $build->install_prop->{plugin_probe_cbuilder_gather}->{$self->instance_id}->{version} = $version;
       }
 
       'system';
@@ -198,13 +202,13 @@ sub init
   $meta->register_hook(
     gather_system => sub {
       my($build) = @_;
-      if(my $p = $build->install_prop->{plugin_probe_cbuilder_gather})
+
+      return if $build->hook_prop->{name} eq 'gather_system'
+      &&        ($build->install_prop->{system_probe_instance_id} || '') ne $self->instance_id;
+
+      if(my $p = $build->install_prop->{plugin_probe_cbuilder_gather}->{$self->instance_id})
       {
         $build->runtime_prop->{$_} = $p->{$_} for keys %$p;
-      }
-      else
-      {
-        die "cbuilder unable to gather; if you are using multiple probe steps you may need to provide your own gather.";
       }
     },
   );
