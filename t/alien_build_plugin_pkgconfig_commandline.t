@@ -558,5 +558,34 @@ alien_subtest 'set env' => sub {
 
 };
 
+alien_subtest 'multiple probes' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    plugin 'PkgConfig::CommandLine' => (
+      pkg_name => 'xor',
+      exact_version => '1.2.3',
+    );
+    probe sub { 'system' };
+  };
+
+  alien_install_type_is 'system';
+
+  alien_build_ok;
+
+  is
+    $build,
+    object {
+      call runtime_prop => hash {
+        field cflags        => DNE();
+        field libs          => DNE();
+        field cflags_static => DNE();
+        field libs_static   => DNE();
+        etc;
+      };
+    },
+  ;
+};
+
 done_testing;
 
