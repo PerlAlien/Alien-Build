@@ -5,6 +5,8 @@ use Capture::Tiny qw( capture_merged );
 use Config;
 use File::Which ();
 
+delete $ENV{ALIEN_BUILD_PKG_CONFIG};
+
 subtest 'LibPkgConf' => sub {
 
   subtest 'installed' => sub {
