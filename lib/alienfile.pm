@@ -167,7 +167,7 @@ Examples:
  plugin '=Badly::Named::Plugin::Not::In::Alien::Build::Namespace';
  
  # explicitly loads Alien::Build::Plugin::Prefer::SortVersions
- plugin 'Prefer::SortVersions => (
+ plugin 'Prefer::SortVersions' => (
    filter => qr/^gcc-.*\.tar\.gz$/,
    version => qr/([0-9\.]+)/,
  );
