@@ -218,8 +218,12 @@ sub init
   if($meta->prop->{platform}->{system_type} eq 'windows-mingw')
   {
     @gather = map {
-      my($pkgconf, @rest) = @$_;
-      [$pkgconf, '--dont-define-prefix', @rest],
+      if(ref $_ eq 'ARRAY') {
+        my($pkgconf, @rest) = @$_;
+        [$pkgconf, '--dont-define-prefix', @rest],
+      } else {
+        $_
+      }
     } @gather;
   }
 
