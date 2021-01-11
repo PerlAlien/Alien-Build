@@ -2,6 +2,12 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.38      2021-01-11 14:35:54 -0700
+  - Fixed a bug the can cause an array dereference error in pkg-config command line
+    plugin on MSYS2 / MinGW environment (gh#243)
+  - Changed the auto-generated module name for Test::Alien, in a way that works
+    around a probable bug / issue with ExtUtils::CBuilder (gh#243)
+
 2.37      2020-11-02 09:09:13 -0700
   - Tests that rely on its behavior unset ALIEN_BUILD_PKG_CONFIG (gh#239)
 
