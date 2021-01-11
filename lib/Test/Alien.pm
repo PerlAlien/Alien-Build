@@ -461,7 +461,8 @@ sub xs_ok
   {
     our $count;
     $count = 0 unless defined $count;
-    my $name = sprintf "Test::Alien::XS::Mod%s", $count++;
+    my $name = sprintf "Test::Alien::XS::Mod%s%s", $count, chr(65 + $count % 26 ) x 4;
+    $count++;
     my $code = $xs->{xs};
     $code =~ s{\bTA_MODULE\b}{$name}g;
     $xs->{xs} = $code;
