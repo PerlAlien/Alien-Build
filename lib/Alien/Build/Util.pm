@@ -65,7 +65,19 @@ sub _mirror
         { unlink "$dst" }
         my $target = readlink "$src";
         Alien::Build->log("ln -s $target $dst") if $opt->{verbose};
+        if (path($target)->is_relative) {
+          if (!$src->parent->child($target)->exists) {
+            die "cannot create symlink to nonexistent file $target on MSYS2";
+          }
+           # NOTE: On linux, it is OK to create broken symlinks, but it is not allowed on 
+           #   windows MSYS2, so make sure the target exists.
+          $dst->parent->child($target)->touchpath;
+        }
+        my $curdir = Path::Tiny->cwd;
+        # CD into the directory, such that symlink will work on MSYS2
+        chdir $dst->parent or die "could not chdir to $src->parent : $!";
         symlink($target, $dst) || die "unable to symlink $target => $dst";
+        chdir $curdir or die "could not chdir to $curdir: $!";
       }
       elsif(-d "$src")
       {
