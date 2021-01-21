@@ -332,13 +332,20 @@ subtest 'system available, okay' => sub {
       note "-f $prefix/lib/pkgconfig/foo.pc";
     }
   }
-
+  my $expected_libs = "-L$prefix/lib -lfoo ";
+  if ($^O eq "msys") {
+    # If we are running under MSYS (and not MINGW), "pkg-config --libs" returns private
+    # libraries also: See: https://github.com/msys2/MSYS2-packages/issues/328
+    if ($ENV{MSYSTEM} eq "MSYS") {
+      $expected_libs = "-L$prefix/lib -lfoo -lbar -lbaz ";
+    }
+  }
   is(
     $build->runtime_prop,
     hash {
       #field cflags      => match qr/-fPIC/;
       field cflags      => match qr/-I\Q$prefix\E\/include\/foo/;
-      field libs        => "-L$prefix/lib -lfoo ";
+      field libs        => $expected_libs;
       field libs_static => "-L$prefix/lib -lfoo -lbar -lbaz ";
       field version     => '1.2.3';
       field alt         => U();
@@ -398,17 +405,25 @@ subtest 'system multiple' => sub {
     use Alien::Build::Util qw( _dump );
     note _dump($alien->runtime_prop);
 
+    my $expected_libs = "-L$prefix/lib -lxor ";
+    if ($^O eq "msys") {
+      # If we are running under MSYS (and not MINGW), "pkg-config --libs" returns private
+      # libraries also: See: https://github.com/msys2/MSYS2-packages/issues/328
+      if ($ENV{MSYSTEM} eq "MSYS") {
+        $expected_libs = "-L$prefix/lib -lxor -lxor1 ";
+      }
+    }
     is(
       $alien->runtime_prop,
       hash {
-        field libs          => "-L$prefix/lib -lxor ";
+        field libs          => $expected_libs;
         field libs_static   => "-L$prefix/lib -lxor -lxor1 ";
         field cflags        => "-I$prefix/include/xor ";
         field cflags_static => D();
         field version       => '4.2.1';
         field alt => hash {
           field 'xor' => hash {
-            field libs          => "-L$prefix/lib -lxor ";
+            field libs          => $expected_libs;
             field libs_static   => "-L$prefix/lib -lxor -lxor1 ";
             field cflags        => "-I$prefix/include/xor ";
             field cflags_static => D();
