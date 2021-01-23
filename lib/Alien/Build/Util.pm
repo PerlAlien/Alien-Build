@@ -66,12 +66,19 @@ sub _mirror
         my $target = readlink "$src";
         Alien::Build->log("ln -s $target $dst") if $opt->{verbose};
         if (path($target)->is_relative) {
+          my $nativesymlink =
+                   (($^O eq "msys" && defined $ENV{MSYS} && $ENV{MSYS} eq "winsymlinks:nativestrict")
+                || ($^O eq "cygwin" && defined $ENV{CYGWIN} && $ENV{CYGWIN} eq "winsymlinks:nativestrict"));
           if (!$src->parent->child($target)->exists) {
-            die "cannot create symlink to nonexistent file $target on MSYS2";
+            if ($nativesymlink) {
+              # NOTE: On linux, it is OK to create broken symlinks, but it is not allowed on 
+              #   windows MSYS2/Cygwin when nativestrict is used.
+              die "cannot create native symlink to nonexistent file $target on $^O";
+            }
           }
-           # NOTE: On linux, it is OK to create broken symlinks, but it is not allowed on 
-           #   windows MSYS2, so make sure the target exists.
-          $dst->parent->child($target)->touchpath;
+          if ($nativesymlink) {
+            $dst->parent->child($target)->touchpath;
+          }
         }
         my $curdir = Path::Tiny->cwd;
         # CD into the directory, such that symlink will work on MSYS2
