@@ -19,6 +19,9 @@ jobs:
 
     runs-on: macOS-latest
 
+    strategy:
+      fail-fast: false
+
     steps:
       - uses: actions/checkout@v2
 
@@ -49,7 +52,14 @@ jobs:
           cpanm -n Dist::Zilla
           dzil authordeps --missing | cpanm -n
           dzil listdeps --missing   | cpanm -n
+
       - name: Install Dynamic Dependencies
         run: dzil run --no-build 'cpanm --installdeps .'
+
       - name: Run Tests
         run: dzil test -v
+
+      - name: CPAN log
+        if: ${{ failure() }}
+        run: |
+          cat ~/.cpanm/latest-build/build.log
