@@ -1,4 +1,4 @@
-# Alien::Build [![Build Status](https://api.cirrus-ci.com/github/PerlAlien/Alien-Build.svg)](https://cirrus-ci.com/github/PerlAlien/Alien-Build) [![Build Status](https://api.travis-ci.com/PerlAlien/Alien-Build.svg?branch=main)](https://travis-ci.com/github/PerlAlien/Alien-Build) ![linux](https://github.com/PerlAlien/Alien-Build/workflows/linux/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Build/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Build/workflows/macos/badge.svg)
+# Alien::Build [![Build Status](https://api.cirrus-ci.com/github/PerlAlien/Alien-Build.svg)](https://cirrus-ci.com/github/PerlAlien/Alien-Build) ![linux](https://github.com/PerlAlien/Alien-Build/workflows/linux/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Build/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Build/workflows/macos/badge.svg)
 
 Build external dependencies for use in CPAN
 
