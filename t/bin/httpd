@@ -2,11 +2,14 @@
 
 use strict;
 use warnings;
-use Mojolicious::Lite;
-use Mojo::URL;
 use Path::Tiny qw( path );
 use Getopt::Long qw( GetOptions );
-use Mojo::JSON qw( encode_json decode_json );
+use URI;
+use JSON::PP qw( encode_json decode_json );
+use HTTP::Server::PSGI;
+use Plack::Builder;
+use Plack::App::Directory;
+
 
 my $daemon = 0;
 my $kill   = 0;
@@ -45,7 +48,7 @@ if($daemon)
   $daemon->Init;
 }
 
-my $url = Mojo::URL->new('http://localhost/corpus/dist/');
+my $url = URI->new('http://localhost/corpus/dist/');
 $url->host($host);
 $url->port(do {
   require IO::Socket::INET;
@@ -55,20 +58,25 @@ $url->port(do {
 my %config = (
   root => $distdir->child('corpus/dist')->stringify,
   pid  => $$,
-  url => $url->to_string,
+  url => $url->as_string,
 );
 $config_file->spew(encode_json(\%config));
 
-plugin( 'Directory', root => $distdir->stringify );
-
-get '/corpus/dist/about.json' => sub {
-  shift->render(
-    json => {
-      ident   => 'AB Test HTTPd',
-    }
-  );
+my $app = builder {
+  mount '/corpus/dist/about.json' => sub {
+    my $env = shift;
+    return [
+      '200',
+      [ 'Content-Type' => 'application/json' ],
+      [ encode_json( { ident => 'AB Test HTTPd' } ) ],
+    ];
+  };
+  mount '/' => Plack::App::Directory->new({ root => $distdir->stringify })->to_app;
 };
 
-$url->path('/');
-@ARGV = ('daemon', -l => "$url");
-app->start;
+my $server = HTTP::Server::PSGI->new(
+  host => $url->host,
+  port => $url->port,
+);
+
+$server->run($app);

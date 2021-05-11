@@ -14,8 +14,9 @@ elif echo $CIP_TAG | grep -q -- -fedora ; then
   echo Fedora
   cip sudo yum install cmake libffi-devel -y
 else
+  echo Debian or Ubuntu
   cip sudo apt-get update
-  cip sudo apt-get -y install pkg-config cmake libffi-dev
+  cip sudo apt-get -y install pkg-config cmake libffi-dev wget
 fi
 
 if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
@@ -49,7 +50,13 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
     FFI::Platypus \
     Mojo::DOM58 \
     Mojolicious \
-    Win32::Vcpkg
+    Win32::Vcpkg \
+    Plack \
+    Proc::Daemon \
+    AnyEvent::FTP
+
+  cip exec t/bin/httpd -d
+  cip exec t/bin/ftpd -d
 
 fi
 
