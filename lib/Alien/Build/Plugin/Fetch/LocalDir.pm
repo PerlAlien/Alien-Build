@@ -75,7 +75,9 @@ sub init
 
   $meta->register_hook(
     fetch => sub {
-      my($build, $path) = @_;
+      my($build, $path, %options) = @_;
+
+      $build->log("plugin Fetch::LocalDir does not support http_headers option") if $options{http_headers};
 
       $path ||= $url;
 

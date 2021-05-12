@@ -55,8 +55,5 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
     Proc::Daemon \
     AnyEvent::FTP
 
-  cip exec t/bin/httpd -d
-  cip exec t/bin/ftpd -d
-
 fi
 

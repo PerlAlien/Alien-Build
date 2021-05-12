@@ -73,11 +73,19 @@ sub init
         local $CWD = tempdir( CLEANUP => 1 );
 
         my @headers;
-        if(my $headers = $options{headers})
+        if(my $headers = $options{http_headers})
         {
           if(ref $headers eq 'ARRAY')
           {
-            @headers = pairmap { "--header=$a: $b" } @$headers;
+            my @copy = @$headers;
+            my %headers;
+            while(@copy)
+            {
+              my $key = shift @copy;
+              my $value = shift @copy;
+              push @{ $headers{$key} }, $value;
+            }
+            @headers = pairmap { "--header=$a: @{[ join ', ', @$b ]}" } %headers;
           }
           else
           {

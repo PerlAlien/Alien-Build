@@ -69,8 +69,10 @@ sub init
     if $self->passive;
 
   $meta->register_hook( fetch => sub {
-    my($build, $url) = @_;
+    my($build, $url, %options) = @_;
     $url ||= $self->url;
+
+    $build->log("plugin Fetch::NetFTP does not support http_headers option") if $options{http_headers};
 
     $url = URI->new($url);
 
