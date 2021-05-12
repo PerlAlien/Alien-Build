@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add support for HTTP request headers on all appropriate core fetch plugins
+    (gh#256, gh#259)
+  - The fetch method on Alien::Build  now has a http_headers option
+    (gh#256, gh#259)
 
 2.38      2021-01-11 14:35:54 -0700
   - Fixed a bug the can cause an array dereference error in pkg-config command line

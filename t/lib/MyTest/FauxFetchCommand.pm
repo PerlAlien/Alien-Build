@@ -2,7 +2,6 @@ package MyTest::FauxFetchCommand;
 
 use strict;
 use warnings;
-use lib 't/lib';
 use MyTest::System;
 use Test2::API qw( context );
 use Path::Tiny qw( path );
@@ -10,20 +9,7 @@ use Capture::Tiny qw( tee );
 use JSON::PP qw( encode_json decode_json );
 use base qw( Exporter );
 
-our @EXPORT = qw( capture_note test_config );
-
-sub capture_note (&)
-{
-  my($code) = @_;
-  my($out, $error, @ret) = Capture::Tiny::capture_merged(sub { my @ret = eval { $code->() }; ($@, @ret) });
-
-  my $ctx = context();
-  $ctx->note($out) if $out ne '';
-  $ctx->release;
-
-  die $error if $error;
-  wantarray ? @ret : $ret[0];  ## no critic
-}
+our @EXPORT = qw( test_config );
 
 my($test_name) = $0 =~ m{[/\\](.*)\.t$};
 my $command_name = $test_name =~ /curlcommand/ ? 'curl' : 'wget';

@@ -5,6 +5,7 @@ use Alien::Build::Plugin::Fetch::HTTPTiny;
 use lib 't/lib';
 use Path::Tiny qw( path );
 use MyTest::HTTP;
+use MyTest::CaptureNote;
 use Alien::Build::Util qw( _dump );
 use JSON::PP qw( decode_json );
 
@@ -146,15 +147,16 @@ subtest 'fetch' => sub {
   subtest 'not found' => sub {
     my $furl = URI->new_abs("bogus.tar.gz", $url);
     note "url = $furl";
-    eval { $build->fetch("$furl") };
-    like $@, qr/^error fetching http:/;
+    capture_note {
+      is dies { $build->fetch("$furl") }, match qr/^error fetching http:/;
+    };
   };
 
   subtest 'headers' => sub {
     my $furl = URI->new_abs("test1/foo.txt", $url);
     note "url = $furl";
 
-    my $res = $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]);
+    my $res = capture_note { $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]) };
 
     my $content;
     is

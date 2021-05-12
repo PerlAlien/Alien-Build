@@ -1,6 +1,8 @@
 use 5.008004;
 use lib 't/lib';
 use MyTest::FauxFetchCommand;
+use MyTest::HTTP;
+use MyTest::CaptureNote;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::CurlCommand;
@@ -8,6 +10,8 @@ use Path::Tiny qw( path );
 use Capture::Tiny ();
 use JSON::PP ();
 use File::Which qw( which );
+use Alien::Build::Util qw( _dump );
+use JSON::PP qw( decode_json );
 
 $Alien::Build::Plugin::Fetch::CurlCommand::VERSION = '1.19';
 
@@ -266,6 +270,42 @@ subtest 'live test' => sub {
   is
     path($download)->basename,
     match qr/^dontpanic-.*\.tar\.gz$/;
+};
+
+subtest 'headers' => sub {
+  my $url = http_url;
+  skip_all http_error unless $url;
+
+  my $build = do {
+    my $plugin = Alien::Build::Plugin::Fetch::CurlCommand->new( url => "$url" );
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
+    $plugin->init($meta);
+    $build;
+  };
+
+  require URI;
+  my $furl = URI->new_abs("test1/foo.txt", $url);
+  note "url = $furl";
+
+  my $res = capture_note { $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]) };
+
+  note _dump($res);
+
+  my $content;
+  is
+    $content = decode_json(path($res->{path})->slurp_raw),
+    hash {
+      field headers => hash {
+        field Foo => 'Bar1, Bar2';
+        field Baz => 1;
+        etc;
+      };
+      etc;
+    },
+  ;
+
+  note _dump($content);
 };
 
 done_testing
