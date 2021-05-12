@@ -7,7 +7,9 @@ use Path::Tiny qw( path );
 use MyTest::HTTP;
 use MyTest::FTP;
 use MyTest::File;
+use MyTest::CaptureNote;
 use Alien::Build::Util qw( _dump );
+use JSON::PP qw( decode_json );
 
 subtest 'updates requires' => sub {
 
@@ -82,7 +84,6 @@ subtest 'fetch' => sub {
       };
 
       my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url" );
-
       my $build = alienfile filename => 'corpus/blank/alienfile';
       my $meta = $build->meta;
 
@@ -135,6 +136,41 @@ subtest 'fetch' => sub {
       };
     };
   }
+
+  subtest 'headers' => sub {
+    my $url = http_url;
+    skip_all http_error unless $url;
+
+    require URI;
+    my $furl = URI->new_abs("test1/foo.txt", $url);
+    note "url = $furl";
+
+    my $build = do {
+      my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url" );
+      my $build = alienfile filename => 'corpus/blank/alienfile';
+      my $meta = $build->meta;
+      $plugin->init($meta);
+      $build;
+    };
+
+    my $res = capture_note { $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]) };
+
+    my $content;
+    is
+      $content = decode_json($res->{content}),
+      hash {
+        field headers => hash {
+          field Foo => 'Bar1, Bar2';
+          field Baz => 1;
+          etc;
+        };
+        etc;
+      },
+    ;
+
+    note _dump($content);
+  };
+
 };
 
 done_testing;

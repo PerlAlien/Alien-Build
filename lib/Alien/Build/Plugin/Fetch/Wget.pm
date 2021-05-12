@@ -9,6 +9,7 @@ use Path::Tiny qw( path );
 use File::Which qw( which );
 use Capture::Tiny qw( capture );
 use File::chdir;
+use List::Util qw( pairmap );
 
 # ABSTRACT: Plugin for fetching files using wget
 # VERSION
@@ -62,7 +63,7 @@ sub init
 
   $meta->register_hook(
     fetch => sub {
-      my($build, $url) = @_;
+      my($build, $url, %options) = @_;
       $url ||= $meta->prop->{start_url};
 
       my($scheme) = $url =~ /^([a-z0-9]+):/i;
@@ -71,10 +72,24 @@ sub init
       {
         local $CWD = tempdir( CLEANUP => 1 );
 
+        my @headers;
+        if(my $headers = $options{headers})
+        {
+          if(ref $headers eq 'ARRAY')
+          {
+            @headers = pairmap { "--header=$a: $b" } @$headers;
+          }
+          else
+          {
+            $build->log("Fetch for $url with http_headers that is not an array reference");
+          }
+        }
+
         my($stdout, $stderr) = $self->_execute(
           $build,
           $self->wget_command,
           '-k', '--content-disposition', '-S',
+          @headers,
           $url,
         );
 
