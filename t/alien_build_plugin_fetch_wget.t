@@ -10,6 +10,8 @@ use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 use JSON::PP qw( decode_json );
 
+skip_all "No wget or not real wget" unless Alien::Build::Plugin::Fetch::Wget->_wget;
+
 $Alien::Build::Plugin::Fetch::Wget::VERSION = '1.19';
 
 subtest 'fetch from http' => sub {

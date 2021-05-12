@@ -7,7 +7,7 @@ use Alien::Build::Plugin;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
 use File::Which qw( which );
-use Capture::Tiny qw( capture );
+use Capture::Tiny qw( capture capture_merged );
 use File::chdir;
 use List::Util qw( pairmap );
 
@@ -46,7 +46,19 @@ Ignored by this plugin.  Provided for compatibility with some other fetch plugin
 
 =cut
 
-has wget_command => sub { defined $ENV{WGET} ? which($ENV{WGET}) : which('wget') };
+sub _wget
+{
+  my $wget = defined $ENV{WGET} ? which($ENV{WGET}) : which('wget');
+  return undef unless defined $wget;
+  my $output = capture_merged { system $wget, '--help' };
+
+  # The wget that BusyBox implements does not follow that same interface
+  # as GNU wget and may not check ssl certs which is not good.
+  return undef if $output =~ /BusyBox/;
+  return $wget;
+}
+
+has wget_command => sub { _wget() };
 has ssl => 0;
 
 # when bootstrapping we have to specify this plugin as a prereq

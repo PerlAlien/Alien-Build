@@ -9,10 +9,10 @@ if echo $CIP_TAG | grep -q -- -alpine ; then
   cip sudo apk add libffi-dev
 elif  echo $CIP_TAG | grep -q -- -centos ; then
   echo CentOS
-  cip sudo yum install libffi-devel -y
+  cip sudo yum install libffi-devel wget -y
 elif echo $CIP_TAG | grep -q -- -fedora ; then
   echo Fedora
-  cip sudo yum install cmake libffi-devel -y
+  cip sudo yum install cmake libffi-devel wget -y
 else
   echo Debian or Ubuntu
   cip sudo apt-get update
