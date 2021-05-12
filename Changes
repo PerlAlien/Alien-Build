@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Test::Alien tests will issue a diagnostic if you call them without
+    alien_ok which is probably a mistake (gh#262, gh#263)
 
 2.39_01   2021-05-12 04:14:06 -0600
   - Add support for HTTP request headers on all appropriate core fetch plugins

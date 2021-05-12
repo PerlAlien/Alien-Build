@@ -249,6 +249,8 @@ subtest 'ffi_ok' => sub {
 
   _reset();
 
+  alien_ok synthetic {};
+
   is(
     intercept { ffi_ok; },
     array {
@@ -367,6 +369,8 @@ subtest 'xs_ok' => sub {
     unless ExtUtils::CBuilder->new->have_compiler;
 
   _reset();
+
+  alien_ok synthetic {};
 
   is(
     intercept { xs_ok '' },
@@ -733,6 +737,101 @@ subtest 'with_subtest SEGV' => sub {
       end;
     },
   ) or diag _dump($e);
+
+};
+
+subtest 'alien_ok' => sub {
+
+  _reset();
+
+  my $xs = <<'EOF';
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+MODULE = TA_MODULE PACKAGE = TA_MODULE
+
+int answer();
+  CODE:
+    RETVAL = 1;
+EOF
+
+  is
+    intercept { xs_ok { xs => $xs } },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => 'xs';
+      };
+      event Diag => sub {
+        call message => 'xs_ok called without any aliens, you may want to call alien_ok';
+      };
+      end;
+    },
+    'xs_ok displays dignostic sans alien_ok',
+  ;
+
+  is
+    intercept { run_ok [$^X, -e => '1'] },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => match qr/^run/;
+      };
+      event Note => sub {};
+      event Diag => sub {
+        call message => 'run_ok called without any aliens, you may want to call alien_ok';
+      };
+      end;
+    },
+    'run_ok displays diagnostic sans alien_ok',
+  ;
+
+  is
+    intercept { ffi_ok; },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => 'ffi';
+      };
+      event Diag => sub {
+        call message => 'ffi_ok called without any aliens, you may want to call alien_ok';
+      };
+      end;
+    },
+    'ffi_ok displays diagnostic sans alien_ok',
+  ;
+
+  is
+    intercept { helper_ok 'foo' },
+    array {
+      event Ok => sub {
+        call pass => F();
+        call name => 'helper foo exists';
+      };
+      event Diag => sub {};
+      event Diag => sub {
+        call message => 'helper_ok called without any aliens, you may want to call alien_ok';
+      };
+      end;
+    },
+    'helper_ok displays diagnostic sans alien_ok',
+  ;
+
+  is
+    intercept { interpolate_template_is "foo", "foo" },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => 'template matches';
+      };
+      event Diag => sub {
+        call message => 'interpolate_template_is called without any aliens, you may want to call alien_ok';
+      };
+      end;
+    },
+    'interpolate_template_is called without any aliens, you may want to call alien_ok',
+  ;
 
 };
 

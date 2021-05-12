@@ -19,6 +19,8 @@ BEGIN {
 };
 use Test::Alien;
 
+alien_ok synthetic {};
+
 sub _prog ($)
 {
   my($code) = @_;
