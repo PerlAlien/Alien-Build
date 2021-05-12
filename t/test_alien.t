@@ -740,7 +740,7 @@ subtest 'with_subtest SEGV' => sub {
 
 };
 
-subtest 'alien_ok' => sub {
+subtest 'diagnostic when calling tools without alien_ok' => sub {
 
   _reset();
 
@@ -787,20 +787,23 @@ EOF
     'run_ok displays diagnostic sans alien_ok',
   ;
 
-  is
-    intercept { ffi_ok; },
-    array {
-      event Ok => sub {
-        call pass => T();
-        call name => 'ffi';
-      };
-      event Diag => sub {
-        call message => 'ffi_ok called without any aliens, you may want to call alien_ok';
-      };
-      end;
-    },
-    'ffi_ok displays diagnostic sans alien_ok',
-  ;
+  if(eval { require FFI::Platypus; 1 })
+  {
+    is
+      intercept { ffi_ok; },
+      array {
+        event Ok => sub {
+          call pass => T();
+          call name => 'ffi';
+        };
+        event Diag => sub {
+          call message => 'ffi_ok called without any aliens, you may want to call alien_ok';
+        };
+        end;
+      },
+      'ffi_ok displays diagnostic sans alien_ok',
+    ;
+  }
 
   is
     intercept { helper_ok 'foo' },
