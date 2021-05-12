@@ -319,6 +319,11 @@ sub run_ok
     $run->{fail} = 'command not found';
   }
 
+  unless(@aliens)
+  {
+    $ctx->diag("run_ok called without any aliens, you may want to call alien_ok");
+  }
+
   $ctx->release;
 
   $run;
@@ -517,6 +522,8 @@ sub xs_ok
       push @diag, "    $_" for split /\r?\n/, $out;
     }
   }
+
+  push @diag, "xs_ok called without any aliens, you may want to call alien_ok" unless @aliens;
 
   if($ok)
   {
@@ -814,6 +821,11 @@ sub ffi_ok
     }
   }
 
+  unless(@aliens)
+  {
+    push @diag, 'ffi_ok called without any aliens, you may want to call alien_ok';
+  }
+
   if($ok)
   {
     $ffi = FFI::Platypus->new(
@@ -911,6 +923,7 @@ sub helper_ok
 
   my $ctx = context();
   $ctx->ok($ok, $message);
+  $ctx->diag("helper_ok called without any aliens, you may want to call alien_ok") unless @aliens;
   $ctx->release;
 
   $ok;
@@ -960,6 +973,7 @@ sub interpolate_template_is
 
   my $ctx = context();
   $ctx->ok($ok, $message, [@diag]);
+  $ctx->diag('interpolate_template_is called without any aliens, you may want to call alien_ok') unless @aliens;
   $ctx->release;
 
   $ok;
