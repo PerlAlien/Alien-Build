@@ -5,6 +5,8 @@ Revision history for {{$dist->name}}
     (gh#256, gh#259)
   - The fetch method on Alien::Build  now has a http_headers option
     (gh#256, gh#259)
+  - Fix bug where symlinks to directories were incorrectly being skipped
+    (gh#255, gh#260)
 
 2.38      2021-01-11 14:35:54 -0700
   - Fixed a bug the can cause an array dereference error in pkg-config command line

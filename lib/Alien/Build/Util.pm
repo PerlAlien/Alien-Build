@@ -53,18 +53,7 @@ sub _mirror
       return if "$src" eq '.';
       my $dst = $dst_root->child("$src");
       $src = $src->absolute($src_root);
-      if(-d "$src")
-      {
-        if($opt->{empty_directory})
-        {
-          unless(-d $dst)
-          {
-            Alien::Build->log("mkdir $dst") if $opt->{verbose};
-            mkdir($dst) || die "unable to create directory $dst: $!";
-          }
-        }
-      }
-      elsif(-l "$src")
+      if(-l "$src")
       {
         unless(-d $dst->parent)
         {
@@ -77,6 +66,17 @@ sub _mirror
         my $target = readlink "$src";
         Alien::Build->log("ln -s $target $dst") if $opt->{verbose};
         symlink($target, $dst) || die "unable to symlink $target => $dst";
+      }
+      elsif(-d "$src")
+      {
+        if($opt->{empty_directory})
+        {
+          unless(-d $dst)
+          {
+            Alien::Build->log("mkdir $dst") if $opt->{verbose};
+            mkdir($dst) || die "unable to create directory $dst: $!";
+          }
+        }
       }
       elsif(-f "$src")
       {
