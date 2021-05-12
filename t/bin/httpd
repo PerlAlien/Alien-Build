@@ -5,6 +5,7 @@ use warnings;
 use Path::Tiny qw( path );
 use Getopt::Long qw( GetOptions );
 use URI;
+use URI::Escape qw( uri_unescape );
 use JSON::PP qw( encode_json decode_json );
 use HTTP::Server::PSGI;
 use Plack::Builder;
@@ -63,6 +64,33 @@ my %config = (
 $config_file->spew(encode_json(\%config));
 
 my $app = builder {
+  mount '/corpus/dist/test1/' => sub {
+    my $env = shift;
+    my %headers;
+    foreach my $key (keys %$env)
+    {
+      next unless $key =~ /^HTTP_(.*)$/;
+      my $name = join '-', map { ucfirst $_ }map { lc $_ } split /_/, $1;
+      $headers{$name} = $env->{$key};
+    }
+    my $uri = URI->new($env->{'psgi.url_scheme'} . '://' . $env->{SERVER_NAME} . uri_unescape($env->{REQUEST_URI}), $env->{'psgi.url_scheme'});
+    $uri->port($env->{SERVER_PORT});
+
+    my %query;
+    my @query = $uri->query_form;
+    while(@query)
+    {
+      my $key = shift @query;
+      my $value = shift @query;
+      push @{ $query{$key} }, $value;
+    }
+
+    return [
+      '200',
+      [ 'Content-Type' => 'text/plain; charset=UTF-8' ],
+      [ encode_json( { headers => \%headers, url => { scheme => $uri->scheme, host => $uri->host, port => $uri->port, path => $uri->path, query => \%query } } ) ],
+    ];
+  };
   mount '/corpus/dist/about.json' => sub {
     my $env = shift;
     return [
