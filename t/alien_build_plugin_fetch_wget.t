@@ -1,6 +1,7 @@
 use 5.008004;
 use lib 't/lib';
 use MyTest::FauxFetchCommand;
+use MyTest::CaptureNote;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Fetch::Wget;
