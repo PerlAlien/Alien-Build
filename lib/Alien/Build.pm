@@ -1208,17 +1208,34 @@ sub download
 =head2 fetch
 
  my $res = $build->fetch;
- my $res = $build->fetch($url);
+ my $res = $build->fetch($url, %options);
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
 described below in the hook documentation.
+
+[version 2.39]
+
+As of L<Alien::Build> 2.39, these options are supported:
+
+=over 4
+
+=item http_headers
+
+ my $res = $build->fetch($url, http_headers => [ $key1 => $value1, $key2 => $value 2, ... ]);
+
+Set the HTTP request headers on all outgoing HTTP requests.  Note that not all
+protocols or fetch plugins support setting request headers, but the ones that
+do not I<should> issue a warning if you try to set request headers and they
+are not supported.
+
+=back
 
 =cut
 
 sub fetch
 {
-  my($self, $url) = @_;
-  $self->_call_hook( 'fetch' => $url );
+  my $self = shift;
+  $self->_call_hook( 'fetch' => @_ );
 }
 
 =head2 decode
