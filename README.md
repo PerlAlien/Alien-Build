@@ -619,11 +619,26 @@ Under a `system` install this does not do anything.
 
 ```perl
 my $res = $build->fetch;
-my $res = $build->fetch($url);
+my $res = $build->fetch($url, %options);
 ```
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
 described below in the hook documentation.
+
+\[version 2.39\]
+
+As of [Alien::Build](https://metacpan.org/pod/Alien::Build) 2.39, these options are supported:
+
+- http\_headers
+
+    ```perl
+    my $res = $build->fetch($url, http_headers => [ $key1 => $value1, $key2 => $value 2, ... ]);
+    ```
+
+    Set the HTTP request headers on all outgoing HTTP requests.  Note that not all
+    protocols or fetch plugins support setting request headers, but the ones that
+    do not _should_ issue a warning if you try to set request headers and they
+    are not supported.
 
 ## decode
 

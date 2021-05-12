@@ -74,11 +74,35 @@ sub init
   }
 
   $meta->register_hook( fetch => sub {
-    my($build, $url) = @_;
+    my($build, $url, %options) = @_;
     $url ||= $self->url;
 
-    my $ua = HTTP::Tiny->new;
-    my $res = $ua->get($url);
+    my %headers;
+    if(my $headers = $options{http_headers})
+    {
+      if(ref $headers eq 'ARRAY')
+      {
+        my @headers = @$headers;
+        while(@headers)
+        {
+          my $key = shift @headers;
+          my $value = shift @headers;
+          unless(defined $key && defined $value)
+          {
+            $build->log("Fetch for $url with http_headers contains undef key or value");
+            next;
+          }
+          push @{ $headers{$key} }, $value;
+        }
+      }
+      else
+      {
+        $build->log("Fetch for $url with http_headers that is not an array reference");
+      }
+    }
+
+    my $ua = HTTP::Tiny->new( agent => "Alien-Build/@{[ $Alien::Build::VERSION || 'dev' ]} " );
+    my $res = $ua->get($url, { headers => \%headers });
 
     unless($res->{success})
     {

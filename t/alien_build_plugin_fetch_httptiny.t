@@ -6,6 +6,7 @@ use lib 't/lib';
 use Path::Tiny qw( path );
 use MyTest::HTTP;
 use Alien::Build::Util qw( _dump );
+use JSON::PP qw( decode_json );
 
 subtest 'updates requires' => sub {
 
@@ -147,6 +148,28 @@ subtest 'fetch' => sub {
     note "url = $furl";
     eval { $build->fetch("$furl") };
     like $@, qr/^error fetching http:/;
+  };
+
+  subtest 'headers' => sub {
+    my $furl = URI->new_abs("test1/foo.txt", $url);
+    note "url = $furl";
+
+    my $res = $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]);
+
+    my $content;
+    is
+      $content = decode_json($res->{content}),
+      hash {
+        field headers => hash {
+          field Foo => 'Bar1, Bar2';
+          field Baz => 1;
+          etc;
+        };
+        etc;
+      },
+    ;
+
+    note _dump($content);
   };
 };
 
