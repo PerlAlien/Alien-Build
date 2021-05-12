@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -ex
+
+if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
+
+  cip exec $CIP_DIST_DIR/t/bin/httpd -d
+  cip exec $CIP_DIST_DIR/t/bin/ftpd -d
+
+fi
+

@@ -83,7 +83,9 @@ sub init
   }
 
   $meta->register_hook( fetch => sub {
-    my(undef, $path) = @_;
+    my($build, $path, %options) = @_;
+
+    $build->log("plugin Fetch::Local does not support http_headers option") if $options{http_headers};
 
     $path ||= $self->url;
 
