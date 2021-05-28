@@ -3,7 +3,7 @@ use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Alien::Build::Plugin::Extract::CommandLine;
 
-eval { require Readonly; Readonly->VERSION('1.60') }; ## no critic (Freenode::PreferredAlternatives)
+eval { require Readonly; Readonly->VERSION('1.60') }; ## no critic (Community::PreferredAlternatives)
 skip_all 'test requires Readonly 1.60' if $@;
 
 subtest 'tar can' => sub {
