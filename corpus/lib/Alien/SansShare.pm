@@ -2,6 +2,6 @@ package Alien::SansShare;
 
 use strict;
 use warnings;
-use base qw( Alien::Base );
+use parent qw( Alien::Base );
 
 1;

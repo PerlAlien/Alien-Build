@@ -7,7 +7,7 @@ use Test2::API qw( context );
 use Path::Tiny qw( path );
 use Capture::Tiny qw( tee );
 use JSON::PP qw( encode_json decode_json );
-use base qw( Exporter );
+use Exporter qw( import );
 
 our @EXPORT = qw( test_config );
 

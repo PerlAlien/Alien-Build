@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use FFI::Platypus;
 use Alien::xz;
-use base qw( Exporter );
+use Exporter qw( import );
 
 our $VERSION = '0.01';
 our @EXPORT = qw( lzma_version_string );

@@ -3,7 +3,7 @@ package Alien::Build::Log::Default;
 use strict;
 use warnings;
 use 5.008004;
-use base qw( Alien::Build::Log );
+use parent qw( Alien::Build::Log );
 
 # ABSTRACT: Default Alien::Build log class
 # VERSION

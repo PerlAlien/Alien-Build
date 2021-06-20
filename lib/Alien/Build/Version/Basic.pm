@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.008004;
 use Carp ();
-use base qw( Exporter );
+use Exporter qw( import );
 use overload
   '<=>'    => sub { shift->cmp(@_) },
   'cmp'    => sub { shift->cmp(@_) },

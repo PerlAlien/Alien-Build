@@ -48,7 +48,7 @@ inherit from L<Alien::Base>, like so:
 
  package Alien::libfoo;
  
- use base qw( Alien::Base );
+ use parent qw( Alien::Base );
  
  1;
 

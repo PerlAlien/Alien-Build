@@ -969,7 +969,7 @@ Then in your base class:
 
  package Alien::MyLibrary;
  
- use base qw( Alien::Base );
+ use parent qw( Alien::Base );
  use Role::Tiny::With qw( with );
  
  with 'Alien::Role::Alt';

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test2::API qw( context );
 use Capture::Tiny qw( capture_merged );
-use base qw( Exporter );
+use Exporter qw( import );
 
 our @EXPORT = qw( capture_note );
 

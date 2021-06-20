@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.008004;
 use Test2::API qw( context );
-use base qw( Exporter );
+use Exporter qw( import );
 
 our @EXPORT = qw( alien_diag );
 our @EXPORT_OK = @EXPORT;

@@ -1874,11 +1874,11 @@ done_testing;
 
 {
   package MyBuild;
-  use base 'Alien::Build';
+  use parent 'Alien::Build';
 }
 
 {
   package MyBuild2;
-  use base 'Alien::Build';
+  use parent 'Alien::Build';
 }
 

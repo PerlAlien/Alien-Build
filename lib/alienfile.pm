@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.008004;
 use Alien::Build;
-use base qw( Exporter );
+use Exporter ();
 use Path::Tiny ();
 use Carp ();
 
