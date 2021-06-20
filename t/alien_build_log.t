@@ -29,7 +29,7 @@ subtest constructors => sub {
 
     { package
         Alien::Build::Log::Roger;
-      use base qw( Alien::Build::Log );
+      use parent qw( Alien::Build::Log );
       sub log {
         my (undef, %opt) = @_;
         $main::roger = \%opt;
@@ -65,7 +65,7 @@ subtest constructors => sub {
 
     { package
         Alien::Build::Log::Dodger;
-      use base qw( Alien::Build::Log );
+      use parent qw( Alien::Build::Log );
       sub log {
         my (undef, %opt) = @_;
         $main::dodger = \%opt;

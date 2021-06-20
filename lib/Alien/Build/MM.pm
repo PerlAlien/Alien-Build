@@ -39,7 +39,7 @@ In your C<Makefile.PL>:
 In your C<lib/Alien/Libfoo.pm>:
 
  package Alien::Libfoo;
- use base qw( Alien::Base );
+ use parent qw( Alien::Base );
  1;
 
 In your alienfile (needs to be named C<alienfile> and should be in the root of your dist):

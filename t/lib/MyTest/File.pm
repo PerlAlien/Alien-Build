@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Path::Tiny qw( path );
 use JSON::PP qw( decode_json );
-use base qw( Exporter );
+use Exporter qw( import );
 
 our @EXPORT = qw( file_url file_error );
 

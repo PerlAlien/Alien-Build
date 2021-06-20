@@ -3,7 +3,7 @@ package Test::Alien::Build;
 use strict;
 use warnings;
 use 5.008004;
-use base qw( Exporter);
+use Exporter qw( import );
 use Path::Tiny qw( path );
 use Carp qw( croak );
 use Test2::API qw( context run_subtest );

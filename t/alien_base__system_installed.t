@@ -35,7 +35,7 @@ subtest 'basic' => sub {
       "\n",
       "use strict;\n",
       "use warnings;\n",
-      "use base 'Alien::Base';\n",
+      "use parent 'Alien::Base';\n",
       "\n",
       "1;\n",
     );

@@ -2,7 +2,7 @@ package MyTest::System;
 
 use strict;
 use warnings;
-use base qw( Exporter );
+use Exporter qw( import );
 use Scalar::Util qw( refaddr );
 use Text::ParseWords qw( shellwords );
 use Scalar::Util qw( weaken );

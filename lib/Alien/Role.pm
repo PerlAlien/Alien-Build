@@ -11,7 +11,7 @@ use 5.008004;
 
  package Alien::libfoo;
  
- use base qw( Alien::Base );
+ use parent qw( Alien::Base );
  use Role::Tiny::With qw( with );
  
  with 'Alien::Role::Dino';

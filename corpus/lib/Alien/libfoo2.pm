@@ -2,7 +2,7 @@ package Alien::libfoo2;
 
 use strict;
 use warnings;
-use base qw( Alien::Base );
+use parent qw( Alien::Base );
 
 sub alien_helper
 {

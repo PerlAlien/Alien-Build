@@ -10,7 +10,7 @@ use Alien::Build::Temp;
 use File::Copy qw( move );
 use Text::ParseWords qw( shellwords );
 use Test2::API qw( context run_subtest );
-use base qw( Exporter );
+use Exporter qw( import );
 use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 use Config;

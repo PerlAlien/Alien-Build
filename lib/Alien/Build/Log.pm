@@ -14,7 +14,7 @@ Create your custom log class:
 
  package Alien::Build::Log::MyLog;
  
- use base qw( Alien::Build::Log );
+ use parent qw( Alien::Build::Log );
  
  sub log
  {
