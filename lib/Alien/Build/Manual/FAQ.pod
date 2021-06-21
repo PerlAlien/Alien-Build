@@ -115,7 +115,7 @@ Windows (C<nmake> and C<dmake>) are not widely supported by most open source pro
 (Thankfully recent perls and EUMM support GNU Make on windows now).
 
 You can use the C<make> plugin (L<Alien::Build::Plugin::Build::Make>) to tell the
-L<Alien::Build> system know which make the project that you are alienizing requires.
+L<Alien::Build> system which make the project that you are alienizing requires.
 
  plugin 'Build::Make' => 'umake';
  # umake makes %{make} either GNU Make or BSD Make on Unix and GNU Make on Windows.
@@ -160,7 +160,7 @@ or
  
  plugin 'PkgConfig', pkg_name => foo, exact_version => '1.2.3';
 
-=head2 How to create an Alien module for a packages that do not support pkg-config?
+=head2 How to create an Alien module for packages that do not support pkg-config?
 
 =head3 Packages that provide a configuration script
 
@@ -177,7 +177,7 @@ Something like this:
  
    build [
      '%{make} PREFIX=%{.runtime.prefix}',
-     '%{amek} install PREFIX=%{.runtime.prefix}',
+     '%{make} install PREFIX=%{.runtime.prefix}',
    ];
  };
  
@@ -190,7 +190,7 @@ Something like this:
 =head3 Packages that require a compile test
 
 Some packages just expect you do know that C<-lfoo> will work.  For those you can use
-the C<cbuilder> plugin (L<Alien::Build::Plugin::Probe::CBuilder>.
+the C<cbuilder> plugin (L<Alien::Build::Plugin::Probe::CBuilder>).
 
  use alienfile;
  plugin 'Probe::CBuilder' => (
@@ -272,7 +272,7 @@ is complete.  You can do this with the L<alienfile> C<after> directive:
 
  use alienfile;
  
- plugin 'PlgConfig' => 'libfoo';
+ plugin 'PkgConfig' => 'libfoo';
  
  share {
    ...
@@ -288,7 +288,7 @@ appropriately.
 
  use alienfile;
  
- plugin 'PlgConfig' => 'libfoo';
+ plugin 'PkgConfig' => 'libfoo';
  
  share {
    ...
@@ -449,10 +449,10 @@ L<https://groups.google.com/forum/#!forum/perl5-alien>
 
 =item Open a support ticket
 
-If you have an issue with L<Alie::Build> itself, then please open a support ticket on the project's GitHub issue 
+If you have an issue with L<Alien::Build> itself, then please open a support ticket on the project's GitHub issue 
 tracker.
 
-L<https://github.com/plicease/Alien-Build/issues>
+L<https://github.com/PerlAlien/Alien-Build/issues>
 
 =back
 
