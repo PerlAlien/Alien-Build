@@ -150,6 +150,8 @@ pod_spelling_system:
     - HAKONH
     - hakonhagland
     - kon
+    - INPHOBIA
+    - nauwelaerts
 
 pod_coverage:
   skip: 0

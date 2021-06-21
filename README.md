@@ -1026,6 +1026,8 @@ Paul Evans (leonerd, PEVANS)
 
 Håkon Hægland (hakonhagland, HAKONH)
 
+nick nauwelaerts (INPHOBIA)
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2011-2020 by Graham Ollis.
