@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.41      2021-06-21 22:50:57 -0600
   - Documentation fixes (gh#266, gh#267)
+  - Use parent instead of base in code and documentation (gh#268)
 
 2.40      2021-05-13 06:44:37 -0600
   - Test::Alien tests will issue a diagnostic if you call them without
