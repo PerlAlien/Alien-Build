@@ -17,7 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         cip:
-          - tag: "static"
           - alien_build_install_extra: 1
             tag: "5.35"
           - alien_build_install_extra: 1
