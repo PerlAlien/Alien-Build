@@ -111,6 +111,8 @@ the L<Inline> interface under the covers.
 
 =head2 FFI::Platypus
 
+Requires C<Alien::Foo> always:
+
  use FFI::Platypus;
  use Alien::Foo;
  
@@ -118,9 +120,24 @@ the L<Inline> interface under the covers.
    lib => [ Alien::Foo->dynamic_libs ],
  );
 
-Not all L<Alien>s provide dynamic libraries, but those that do can be
-used by L<FFI::Platypus>.  Unlike an XS module, these
-need to be a regular run time prerequisite.
+Use C<Alien::Foo> in fallback mode:
+
+ use FFI::Platypus;
+ use FFI::CheckLib 0.28 qw( find_lib_or_die );
+ use Alien::Foo;
+ 
+ my $ffi = FFI::Platypus->new(
+   lib => [ find_lib_or_die lib => 'foo', alien => ['Alien::Foo'] ],
+ );
+
+If you are going to always require an L<Alien> you can just call C<dynamic_libs>
+and pass it into L<FFI::Platypus>' lib method.  You should consider
+using L<FFI::CheckLib> to use the L<Alien> in fallback mode instead.
+This way you only need to install the L<Alien> if the system doesn't
+provide it.
+
+For fallback mode to work correctly you need to be using L<FFI::CheckLib>
+0.28 or better.
 
 =head2 Inline::C
 

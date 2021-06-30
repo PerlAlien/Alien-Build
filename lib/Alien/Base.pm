@@ -80,9 +80,10 @@ Or you can use it from an FFI module:
  
  use Alien::MyLibrary;
  use FFI::Platypus;
+ use FFI::CheckLib 0.28 qw( find_lib_or_die );
  
  my $ffi = FFI::Platypus->new;
- $ffi->lib(Alien::MyLibrary->dynamic_libs);
+ $ffi->lib(find_lib_or_die lib => 'mylib', alien => ['Alien::MyLibrary']);
  
  $ffi->attach( 'my_library_function' => [] => 'void' );
 
@@ -130,6 +131,24 @@ This is for the brave souls who want to write plugins that will work with
 L<Alien::Build> + L<alienfile>.
 
 =back
+
+Before using an L<Alien::Base> based L<Alien> directly, please consider the following advice:
+
+If you are wanting to use an L<Alien::Base> based L<Alien> with an XS module using L<ExtUtils::MakeMaker> or L<Module::Build>, it is highly
+recommended that you use L<Alien::Base::Wrapper>, rather than using the L<Alien> directly, because it handles a number of sharp edges and avoids
+pitfalls common when trying to use an L<Alien> directly with L<ExtUtils::MakMaker>.
+
+In the same vein, if you are wanting to use an L<Alien::Base> based L<Alien> with an XS module using L<Dist::Zilla> it is highly recommended
+that you use L<Dist::Zilla::Plugin::AlienBase::Wrapper> for the same reasons.
+
+As of version 0.28, L<FFI::CheckLib> has a good interface for working with L<Alien::Base> based L<Alien>s in fallback mode, which is
+recommended.
+
+You should typically only be using an L<Alien::Base> based L<Alien> directly, if you need to integrate it with some other system, or if it
+is a tool based L<Alien> that you don't need to link.
+
+The above synopsis and linked manual documents will lead you down the right path, but it is worth knowing before you read further in this
+document.
 
 =cut
 
