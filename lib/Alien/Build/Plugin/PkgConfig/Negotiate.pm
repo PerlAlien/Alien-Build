@@ -73,7 +73,7 @@ has minimum_version => undef;
 
 =head2 pick
 
- my $name = Alien::Build::Plugijn::PkgConfig::Negotiate->pick;
+ my $name = Alien::Build::Plugin::PkgConfig::Negotiate->pick;
 
 Returns the name of the negotiated plugin.
 
