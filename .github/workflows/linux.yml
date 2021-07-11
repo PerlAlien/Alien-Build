@@ -21,7 +21,7 @@ jobs:
             tag: "5.35"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-alpine3.9"
+            tag: "5.34-alpine3.11"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
             tag: "5.34-bionic"
@@ -33,7 +33,7 @@ jobs:
             tag: "5.34-centos7"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-fedora29"
+            tag: "5.34-fedora34"
           - alien_build_install_extra: 0
             env: ALIEN_BUILD_LIVE_TEST=0
             tag: "5.34-buster"
