@@ -123,7 +123,12 @@ a non-global instance of C<Alien::Base::Wrapper> using the OO interface.
 
 sub _join
 {
-  join ' ', map { s/(\s)/\\$1/g; $_ } map { "$_" } @_;  ## no critic (ControlStructures::ProhibitMutatingListFunctions)
+  join ' ',
+    map {
+      my $x = $_;
+      $x =~ s/(\s)/\\$1/g;
+      $x;
+    } @_;
 }
 
 sub new
