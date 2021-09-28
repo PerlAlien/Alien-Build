@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improved documentation relating to the Alien::Base alt methods and
+    the PkgConfig plugins use of pkg_name property (gh#234, gh#284)
 
 2.41      2021-06-21 22:50:57 -0600
   - Documentation fixes (gh#266, gh#267)
