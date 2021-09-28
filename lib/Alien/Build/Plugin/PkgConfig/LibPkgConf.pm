@@ -34,7 +34,10 @@ it in core.  If it is spun off it will get its own distribution some time in the
 =head2 pkg_name
 
 The package name.  If this is a list reference then .pc files with all those package
-names must be present.
+names must be present.  The first name will be the primary and used by default once
+installed.  For the subsequent C<.pc> files you can use the
+L<Alien::Base alt method|Alien::Base/alt> to retrieve the alternate configurations
+once the L<Alien> is installed.
 
 =cut
 

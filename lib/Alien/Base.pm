@@ -984,14 +984,11 @@ From your L<alienfile>
    pkg_name => [ 'libfoo', 'libbar', ],
  );
 
-Then in your base class:
+Then in your base class works like normal:
 
  package Alien::MyLibrary;
  
  use parent qw( Alien::Base );
- use Role::Tiny::With qw( with );
- 
- with 'Alien::Role::Alt';
  
  1;
 
