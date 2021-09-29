@@ -69,28 +69,28 @@ You can also modify hooks using C<before_hook>, C<around_hook> and C<after_hook>
  sub init
  {
    my($self, $meta) = @_;
-   
+ 
    $meta->before_hook(
      build => sub {
        my($build) = @_;
        $build->log('this runs before the build');
      },
    );
-
+ 
    $meta->after_hook(
      build => sub {
        my($build) = @_;
        $build->log('this runs after the build');
      },
    );
-   
+ 
    $meta->around_hook(
      build => sub {
        my $orig = shift;
-       
+ 
        # around hooks are useful for setting environment variables
        local $ENV{CPPFLAGS} = '-I/foo/include';
-       
+ 
        $orig->(@_);
      },
    );
@@ -196,11 +196,11 @@ hooks will NOT be called.
  use Carp ();
  
  has '+url' => sub { Carp::croak "url is required property" };
-
+ 
  sub init
  {
    my($self, $meta) = @_;
-   
+ 
    $meta->register_hook( fetch => sub {
      my($build, $url, %options) = @_;
      ...
@@ -220,7 +220,7 @@ The C<%options> hash may contain these options:
 
 =item http_headers
 
-HTTP request headers, if an appropriate protocol is being used.  The 
+HTTP request headers, if an appropriate protocol is being used.  The
 headers are provided as an array reference of key/value pairs, which
 allows for duplicate header keys with multiple values.
 
@@ -301,7 +301,7 @@ reference:
  sub init
  {
    my($self, $meta) = @_;
-   
+ 
    $meta->register_hook( decode => sub {
      my($build, $res) = @_;
      ...
@@ -321,7 +321,7 @@ hash references.
  sub init
  {
    my($self, $meta) = @_;
-   
+ 
    $meta->register_hook( prefer => sub {
      my($build, $res) = @_;
      return {

@@ -26,7 +26,7 @@ look for tools in the path:
 
 Probe plugins try to find existing libraries and tools
 I<already> installed on the system.  If found they can
-be used instead of downloading the source from the 
+be used instead of downloading the source from the
 internet and building.
 
 =over 4
