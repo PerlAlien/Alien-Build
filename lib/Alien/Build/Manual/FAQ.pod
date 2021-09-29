@@ -88,7 +88,7 @@ MSYS plugin and use a command sequence to do the build like this:
 =head3 CMake
 
 There is an alien L<Alien::cmake3> that provides C<cmake> 3.x or better (It is preferred to the
-older L<Alien::CMake>).  Though it is recommended that you use the C<cmake> 
+older L<Alien::CMake>).  Though it is recommended that you use the C<cmake>
 (L<Alien::Build::Plugin::Build::CMake>) plugin instead of using L<Alien::cmake3>.
 
  use alienfile;
@@ -133,7 +133,7 @@ will be pulled in on platforms that do not already have it.
  plugin 'Build::Make' => 'gmake';
  ...
 
-=head2 How do I probe for a package that uses pkg-config
+=head2 How do I probe for a package that uses pkg-config?
 
 Use the C<pkg-config> plugin (L<Alien::Build::Plugin::PkgConfig::Negotiate>):
 
@@ -152,13 +152,31 @@ fields, which have the same meaning as the C<pkg-config> command line interface:
 
  use alienfile;
  
- plugin 'PkgConfig', pkg_name => foo, atleast_version => '1.2.3';
+ plugin 'PkgConfig', pkg_name => 'foo', atleast_version => '1.2.3';
 
 or
 
  use alienfile;
  
  plugin 'PkgConfig', pkg_name => foo, exact_version => '1.2.3';
+
+=head2 How do I probe for a package that uses multiple .pc files?
+
+Each of the C<PkgConfig> plugins will take an array reference instead of a string:
+
+ use alienfile;
+ 
+ plugin 'PkgConfig' => ( pkg_name => [ 'foo', 'bar', 'baz' ] );
+
+The first C<pkg_name> given will be used by default once your alien is installed.
+To get the configuration for C<foo> and C<bar> you can use the
+L<Alien::Base alt method|Alien::Base/alt>:
+
+ use Alien::libfoo;
+ 
+ $cflags = Alien::libfoo->cflags;               # compiler flags for 'foo'
+ $cflags = Alien::libfoo->alt('bar')->cflags ;  # compiler flags for 'bar'
+ $cflags = Alien::libfoo->alt('baz')->cflags ;  # compiler flags for 'baz'
 
 =head2 How to create an Alien module for packages that do not support pkg-config?
 
@@ -304,7 +322,7 @@ appropriately.
 
 The error looks something like this:
 
- t/acme_alien_dontpanic2.t ....... 1/? 
+ t/acme_alien_dontpanic2.t ....... 1/?
  # Failed test 'xs'
  # at t/acme_alien_dontpanic2.t line 13.
  #   XSLoader failed
@@ -313,8 +331,8 @@ The error looks something like this:
  # Compilation failed in require at /home/cip/perl5/lib/perl5/Test/Alien.pm line 414.
  # BEGIN failed--compilation aborted at /home/cip/perl5/lib/perl5/Test/Alien.pm line 414.
  t/acme_alien_dontpanic2.t ....... Dubious, test returned 1 (wstat 256, 0x100)
- Failed 1/6 subtests 
- t/acme_alien_dontpanic2__ffi.t .. ok   
+ Failed 1/6 subtests
+ t/acme_alien_dontpanic2__ffi.t .. ok
 
 This error happened at test time for the Alien, but depending on your environment and Alien it might
 happen later and the actual diagnostic wording might vary.
@@ -449,7 +467,7 @@ L<https://groups.google.com/forum/#!forum/perl5-alien>
 
 =item Open a support ticket
 
-If you have an issue with L<Alien::Build> itself, then please open a support ticket on the project's GitHub issue 
+If you have an issue with L<Alien::Build> itself, then please open a support ticket on the project's GitHub issue
 tracker.
 
 L<https://github.com/PerlAlien/Alien-Build/issues>

@@ -12,7 +12,7 @@
 
 =head1 DESCRIPTION
 
-Prefer plugins sort 
+Prefer plugins sort
 
 Decode plugins decode HTML and FTP file listings.  Normally you
 will want to use the L<Alien::Build::Plugin::Download::Negotiate>
