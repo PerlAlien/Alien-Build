@@ -1,20 +1,20 @@
 use 5.008004;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
-use Alien::Build::Plugin::Decode::DirListing;
+use Alien::Build::Plugin::Decode::DirListingFtpcopy;
 use Path::Tiny;
 use Alien::Build::Util qw( _dump );
 
 subtest 'updates requires' => sub {
 
-  my $plugin = Alien::Build::Plugin::Decode::DirListing->new;
+  my $plugin = Alien::Build::Plugin::Decode::DirListingFtpcopy->new;
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
 
   $plugin->init($meta);
 
-  is( $build->requires('share')->{'File::Listing'}, 0 );
+  is( $build->requires('share')->{'File::Listing::Ftpcopy'}, 0 );
   is( $build->requires('share')->{'URI'}, 0 );
 
   note _dump $meta;
@@ -23,7 +23,7 @@ subtest 'updates requires' => sub {
 
 subtest 'decode' => sub {
 
-  my $plugin = Alien::Build::Plugin::Decode::DirListing->new;
+  my $plugin = Alien::Build::Plugin::Decode::DirListingFtpcopy->new;
 
   my $build = alienfile filename => 'corpus/blank/alienfile';
   my $meta = $build->meta;
@@ -31,7 +31,7 @@ subtest 'decode' => sub {
   $plugin->init($meta);
 
   eval { $build->load_requires('share') };
-  skip_all 'test requires File::Listing' if $@;
+  skip_all 'test requires File::Listing::Ftpcopy and URI' if $@;
 
   foreach my $file (path('corpus/dir')->children(qr/\.list$/))
   {
