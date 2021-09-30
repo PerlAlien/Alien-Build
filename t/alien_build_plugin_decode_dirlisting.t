@@ -31,7 +31,7 @@ subtest 'decode' => sub {
   $plugin->init($meta);
 
   eval { $build->load_requires('share') };
-  skip_all 'test requires File::Listing' if $@;
+  skip_all 'test requires File::Listing and URI' if $@;
 
   foreach my $file (path('corpus/dir')->children(qr/\.list$/))
   {
