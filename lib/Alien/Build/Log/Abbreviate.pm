@@ -28,7 +28,7 @@ Send single log line to stdout.
 sub _colored
 {
   my($code, @out) = @_;
-  -t STDOUT ? Term::ANSIColor::_colored($code, @out) : @out;
+  -t STDOUT ? Term::ANSIColor::colored($code, @out) : @out;
 }
 
 my $root = path("$CWD");
