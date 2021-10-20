@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.44      2021-10-20 17:51:21 -0600
+  - Fix bug in Alien::Build::Log::Abbreviate (gh#286 kiwiroy++)
+
 2.43_01   2021-09-30 10:10:07 -0600
   - Fix test for Decode::DirListingFtpCopy which was incorrectly testing
     Decode::DirListing (gh#285, gh#286)
