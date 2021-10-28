@@ -1,9 +1,12 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - On macOS / OS X the Build::Copy plugin now uses cp -pPR instead of
+    cp -aR; on modern macOS this does the same thing, on very old versions
+    of OS X the -a option is not recognized (gh#288)
 
 2.44      2021-10-20 17:51:21 -0600
-  - Fix bug in Alien::Build::Log::Abbreviate (gh#286 kiwiroy++)
+  - Fix bug in Alien::Build::Log::Abbreviate (gh#287 kiwiroy++)
 
 2.43_01   2021-09-30 10:10:07 -0600
   - Fix test for Decode::DirListingFtpCopy which was incorrectly testing
