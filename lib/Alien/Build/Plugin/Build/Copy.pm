@@ -81,11 +81,26 @@ sub init
       $build->system("xcopy . $stage /E");
     });
   }
+  elsif($^O eq 'darwin')
+  {
+    # On recent macOS -pPR is the same as -aR
+    # on older Mac OS X (10.5 at least) -a is not supported but -pPR is.
+
+    # Looks like -pPR should also work on coreutils if for some reason
+    # someone is using  coreutils on macOS, although there are semantic
+    # differences between -pPR and -aR on coreutils, that may or may not be
+    # important enough to care about.
+
+    $meta->register_hook(build => [
+      'cp -pPR * %{.install.stage}',
+    ]);
+  }
   else
   {
+    # TODO: some platforms might not support -a
+    # I think most platforms will support -r
     $meta->register_hook(build => [
-      'cp -aR * %{.install.stage}',  # TODO: some platforms might not support -a
-                                     # I think most platforms will support -r
+      'cp -aR * %{.install.stage}',
     ]);
   }
 }
