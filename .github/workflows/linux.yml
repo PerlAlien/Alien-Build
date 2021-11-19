@@ -21,13 +21,10 @@ jobs:
             tag: "5.35"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-alpine3.11"
+            tag: "5.34-alpine3.14"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
             tag: "5.34-bionic"
-          - alien_build_install_extra: 1
-            env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-centos8"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
             tag: "5.34-centos7"
