@@ -241,11 +241,23 @@ Some reasonable default flags will be provided.
 
 =over 4
 
+=item C<SITE_CONFIG>
+
+For a share install, this plugin needs to alter the behavior of autotools using C<site.config>.
+It does this by generating a C<site.config> file on the fly, and setting the C<SITE_CONFIG>
+environment variable.  In the event that you already have your own C<SITE_CONFIG> set, that
+file will be sourced from the generated one, so your local defaults should still be honored,
+unless it is one that needs to be changed for a share install.
+
+In particular, the C<lib> directory must be overridden, because on some platforms dynamic libraries
+will otherwise be placed in directories that L<Alien::Build> doesn't normally look in.  Since
+the alienized package will be installed in a share directory, and not a system directory,
+that should be fine.
+
 =item C<ALIEN_BUILD_SITE_CONFIG>
 
-This plugin needs to alter the behavior of autotools via the C<site.config> file and so sets
-and possibly overrides any existing C<SITE_CONFIG>.  Normally that is what you want but you
-can also insert your own C<site.config> in addition by using this environment variable.
+If defined, this file will be also be sourced in the generated C<site.config>.  This allows
+you to have local defaults for alien share installs only.
 
 =back
 
