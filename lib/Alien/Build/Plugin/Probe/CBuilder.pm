@@ -157,7 +157,7 @@ sub init
       {
         $build->log("compile failed: $error");
         $build->log("compile failed: $out1");
-        die $@;
+        die $error;
       }
 
       my($out2, $exe) = capture_merged { eval {
@@ -171,7 +171,7 @@ sub init
       {
         $build->log("link failed: $error");
         $build->log("link failed: $out2");
-        die $@;
+        die $error;
       }
 
       my($out, $err, $ret) = capture { system($^O eq 'MSWin32' ? $exe : "./$exe") };
