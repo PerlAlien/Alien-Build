@@ -7,7 +7,6 @@ use Alien::Build::Plugin;
 use Carp ();
 use Capture::Tiny qw( capture );
 use File::Which ();
-use Sort::Versions qw( versioncmp );
 
 # ABSTRACT: Probe for tools or commands already available
 # VERSION
@@ -136,7 +135,7 @@ sub init
       die 'Command standard error did not match' if defined $self->match_stderr && $err !~ $self->match_stderr;
       if (defined $self->version or defined $self->version_stderr)
       {
-        my $found_version = '0.0.0';
+        my $found_version = '0';
         if(defined $self->version)
         {
           if($out =~ $self->version)
@@ -156,7 +155,8 @@ sub init
         }
         if (my $atleast_version = $self->atleast_version)
         {
-          if(versioncmp ($found_version, $self->atleast_version) < 0)
+          require Alien::Base;
+          if(Alien::Base->version_cmp ($found_version, $self->atleast_version) < 0)
           {
             #  reset the versions
             $build->runtime_prop->{version} = undef;
