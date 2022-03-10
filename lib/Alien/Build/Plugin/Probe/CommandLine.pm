@@ -7,6 +7,7 @@ use Alien::Build::Plugin;
 use Carp ();
 use Capture::Tiny qw( capture );
 use File::Which ();
+use Sort::Versions qw( versioncmp );
 
 # ABSTRACT: Probe for tools or commands already available
 # VERSION
@@ -104,6 +105,15 @@ The regular expression should store the version number in C<$1>.
 
 has 'version_stderr' => undef;
 
+=head2 atleast_version
+
+The minimum required version as provided by the system.
+
+=cut
+
+has 'atleast_version' => undef;
+
+
 sub init
 {
   my($self, $meta) = @_;
@@ -124,22 +134,35 @@ sub init
       die 'Command did not return a true value' if $ret;
       die 'Command output did not match' if defined $self->match && $out !~ $self->match;
       die 'Command standard error did not match' if defined $self->match_stderr && $err !~ $self->match_stderr;
-      my $found_version;
-      if(defined $self->version)
+      if (defined ($self->version // $self->version_stderr))
       {
-        if($out =~ $self->version)
+        my $found_version = '0.0.0';
+        if(defined $self->version)
         {
-          $found_version = $1;
-          $build->runtime_prop->{version} = $found_version;
+          if($out =~ $self->version)
+          {
+            $found_version = $1;
+            $build->runtime_prop->{version} = $found_version;
+          }
         }
-      }
-      if(defined $self->version_stderr)
-      {
-        if($err =~ $self->version_stderr)
+        if(defined $self->version_stderr)
         {
-          $found_version = $1;
-          $build->hook_prop->{version} = $found_version;
-          $build->runtime_prop->{version} = $found_version;
+          if($err =~ $self->version_stderr)
+          {
+            $found_version = $1;
+            $build->hook_prop->{version} = $found_version;
+            $build->runtime_prop->{version} = $found_version;
+          }
+        }
+        if (my $atleast_version = $self->atleast_version)
+        {
+          if(versioncmp ($found_version, $self->atleast_version) < 0)
+          {
+            #  reset the versions
+            $build->runtime_prop->{version} = undef;
+            $build->hook_prop->{version} = undef;
+            die "CommandLine probe found version $found_version, but at least $atleast_version is required.";
+          }
         }
       }
     }
