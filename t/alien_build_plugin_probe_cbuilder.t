@@ -204,6 +204,102 @@ subtest 'fail' => sub {
 
 };
 
+
+subtest 'atleast_version_pass' => sub {
+
+  my $mock = mock 'ExtUtils::CBuilder';
+
+  $mock->add('new' => sub {
+    bless {}, 'ExtUtils::CBuilder';
+  });
+
+  $mock->add('compile' => sub {
+    my(undef, %args) = @_;
+    'mytest.o';
+  });
+
+  $mock->add('link_executable' => sub {
+    'mytest';
+  });
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    plugin 'Probe::CBuilder' => (
+      cflags  => '-I/usr/local/include',
+      libs    => '-L/usr/local/lib -lfoo',
+      program => 'int main() { printf("version = \'1.2.3\'\n"); return 0; }',
+      version => qr/version = '(.*?)'/,
+      atleast_version => '0.1.0',
+    );
+
+    meta->around_hook(
+      probe => sub {
+        my($orig, $build) = @_;
+        my $install_type = $build->$orig;
+        push @{ $build->install_prop->{probe_version_prop} }, $build->hook_prop->{version};
+        $install_type;
+      }
+    );
+  };
+
+  my $gard = system_fake
+    './mytest' => sub { print "version = '1.2.3'\n"; 0 },
+    'mytest'   => sub { print "version = '1.2.3'\n"; 0 },
+  ;
+
+  alien_build_ok;
+  alien_install_type_is 'system';
+
+  is( $build->runtime_prop->{version}, '1.2.3', 'version matches' );
+  is( $build->install_prop->{probe_version_prop}, ['1.2.3'], 'set probe hook prop' );
+};
+
+subtest 'atleast_version_fail' => sub {
+
+  my $mock = mock 'ExtUtils::CBuilder';
+
+  $mock->add('new' => sub {
+    bless {}, 'ExtUtils::CBuilder';
+  });
+
+  $mock->add('compile' => sub {
+    my(undef, %args) = @_;
+    'mytest.o';
+  });
+
+  $mock->add('link_executable' => sub {
+    'mytest';
+  });
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    plugin 'Probe::CBuilder' => (
+      cflags  => '-I/usr/local/include',
+      libs    => '-L/usr/local/lib -lfoo',
+      program => 'int main() { printf("version = \'1.2.3\'\n"); return 0; }',
+      version => qr/version = '(.*?)'/,
+      atleast_version => '2.1.0',
+    );
+
+    meta->around_hook(
+      probe => sub {
+        my($orig, $build) = @_;
+        my $install_type = $build->$orig;
+        push @{ $build->install_prop->{probe_version_prop} }, $build->hook_prop->{version};
+        $install_type;
+      }
+    );
+  };
+
+
+  #alien_build_ok;
+  alien_install_type_is 'share';
+
+  is( $build->runtime_prop->{version}, undef, 'version matches' );
+  is( $build->install_prop->{probe_version_prop}, undef, 'set probe hook prop' );
+};
+
+
 done_testing;
 
 package
