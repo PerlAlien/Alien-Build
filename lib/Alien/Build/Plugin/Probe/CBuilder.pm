@@ -204,7 +204,7 @@ sub init
           require Alien::Base;
           if(Alien::Base->version_cmp ($version, $self->atleast_version) < 0)
           {
-            die "CBuilder probe found version $version, but at least ${ $self->atleast_version } is required.";
+            die "CBuilder probe found version $version, but at least @{[ $self->atleast_version ]} is required.";
           }
         }
         $build->hook_prop->{version} = $version;
