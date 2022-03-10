@@ -134,7 +134,7 @@ sub init
       die 'Command did not return a true value' if $ret;
       die 'Command output did not match' if defined $self->match && $out !~ $self->match;
       die 'Command standard error did not match' if defined $self->match_stderr && $err !~ $self->match_stderr;
-      if (defined ($self->version // $self->version_stderr))
+      if (defined $self->version or defined $self->version_stderr)
       {
         my $found_version = '0.0.0';
         if(defined $self->version)
