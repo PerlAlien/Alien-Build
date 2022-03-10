@@ -201,8 +201,8 @@ sub init
         my($version) = $out =~ $self->version;
         if (defined $self->atleast_version)
         {
-          use Sort::Versions qw( versioncmp );
-          if(versioncmp ($version, $self->atleast_version) < 0)
+          require Alien::Base;
+          if(Alien::Base->version_cmp ($version, $self->atleast_version) < 0)
           {
             die "CBuilder probe found version $version, but at least ${ $self->atleast_version } is required.";
           }
