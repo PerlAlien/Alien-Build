@@ -186,13 +186,21 @@ subtest 'match + version' => sub {
   };
 
   subtest 'atleast_version satisfied' => sub {
-    my($build) = build(command => 'foo', version => qr/version ([0-9\.]+)/, atleast_version => '0.5.0');
+    my($build) = build(
+      command => 'foo',
+      version => qr/version ([0-9\.]+)/,
+      atleast_version => '0.5.0'
+    );
     is cap { $build->probe }, 'system';
     is $build->runtime_prop->{version}, '1.00';
   };
 
   subtest 'atleast_version not satisfied' => sub {
-    my($build) = build(command => 'foo', version => qr/version ([0-9\.]+)/, atleast_version => '1.5.0');
+    my($build) = build(
+      command => 'foo',
+      version => qr/version ([0-9\.]+)/,
+      atleast_version => '1.5.0'
+    );
     is cap { $build->probe }, 'share';
     is $build->runtime_prop->{version}, undef;
   };
