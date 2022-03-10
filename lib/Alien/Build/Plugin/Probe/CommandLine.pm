@@ -124,19 +124,22 @@ sub init
       die 'Command did not return a true value' if $ret;
       die 'Command output did not match' if defined $self->match && $out !~ $self->match;
       die 'Command standard error did not match' if defined $self->match_stderr && $err !~ $self->match_stderr;
+      my $found_version;
       if(defined $self->version)
       {
         if($out =~ $self->version)
         {
-          $build->runtime_prop->{version} = $1;
+          $found_version = $1;
+          $build->runtime_prop->{version} = $found_version;
         }
       }
       if(defined $self->version_stderr)
       {
         if($err =~ $self->version_stderr)
         {
-          $build->hook_prop->{version} = $1;
-          $build->runtime_prop->{version} = $1;
+          $found_version = $1;
+          $build->hook_prop->{version} = $found_version;
+          $build->runtime_prop->{version} = $found_version;
         }
       }
     }
