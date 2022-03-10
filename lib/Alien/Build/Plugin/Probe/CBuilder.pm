@@ -77,6 +77,14 @@ test program.
 
 has version => undef;
 
+=head2 atleast_version
+
+The minimum required version as provided by the system.
+
+=cut
+
+has 'atleast_version' => undef;
+
 =head2 aliens
 
 List of aliens to query fro compiler and linker flags.
@@ -191,6 +199,14 @@ sub init
       if(defined $self->version)
       {
         my($version) = $out =~ $self->version;
+        if (defined $self->atleast_version)
+        {
+          use Sort::Versions qw( versioncmp );
+          if(versioncmp ($version, $self->atleast_version) < 0)
+          {
+            die "CBuilder probe found version $version, but at least ${ $self->atleast_version } is required.";
+          }
+        }
         $build->hook_prop->{version} = $version;
         $build->install_prop->{plugin_probe_cbuilder_gather}->{$self->instance_id}->{version} = $version;
       }
