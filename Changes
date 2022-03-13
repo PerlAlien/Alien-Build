@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.48      2022-03-13 11:20:19 -0600
   - Added atleast_version to Probe::CommandLine and Probe::CBuilder plugins
     (gh#299, gh#300, shawnlaffan++)
   - Added Alien::Util module (gh#301)
