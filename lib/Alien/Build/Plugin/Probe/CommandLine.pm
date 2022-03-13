@@ -7,6 +7,7 @@ use Alien::Build::Plugin;
 use Carp ();
 use Capture::Tiny qw( capture );
 use File::Which ();
+use Alien::Util qw( version_cmp );
 
 # ABSTRACT: Probe for tools or commands already available
 # VERSION
@@ -155,8 +156,7 @@ sub init
         }
         if (my $atleast_version = $self->atleast_version)
         {
-          require Alien::Base;
-          if(Alien::Base->version_cmp ($found_version, $self->atleast_version) < 0)
+          if(version_cmp ($found_version, $self->atleast_version) < 0)
           {
             #  reset the versions
             $build->runtime_prop->{version} = undef;

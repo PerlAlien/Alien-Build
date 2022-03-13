@@ -7,6 +7,7 @@ use Alien::Build::Plugin;
 use File::chdir;
 use File::Temp ();
 use Capture::Tiny qw( capture_merged capture );
+use Alien::Util qw( version_cmp );
 
 # ABSTRACT: Probe for system libraries by guessing with ExtUtils::CBuilder
 # VERSION
@@ -201,8 +202,7 @@ sub init
         my($version) = $out =~ $self->version;
         if (defined $self->atleast_version)
         {
-          require Alien::Base;
-          if(Alien::Base->version_cmp ($version, $self->atleast_version) < 0)
+          if(version_cmp ($version, $self->atleast_version) < 0)
           {
             die "CBuilder probe found version $version, but at least @{[ $self->atleast_version ]} is required.";
           }
