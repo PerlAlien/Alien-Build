@@ -63,6 +63,7 @@ require_ok 'Alien::Build::Util';
 require_ok 'Alien::Build::Version::Basic';
 require_ok 'Alien::Build::rc';
 require_ok 'Alien::Role';
+require_ok 'Alien::Util';
 require_ok 'Test::Alien';
 require_ok 'Test::Alien::Build';
 require_ok 'Test::Alien::CanCompile';
@@ -132,6 +133,7 @@ ok -f 't/alien_build_util.t',                                 'test for Alien::B
 ok -f 't/alien_build_version_basic.t',                        'test for Alien::Build::Version::Basic';
 ok -f 't/alien_build_rc.t',                                   'test for Alien::Build::rc';
 ok -f 't/alien_role.t',                                       'test for Alien::Role';
+ok -f 't/alien_util.t',                                       'test for Alien::Util';
 ok -f 't/test_alien.t',                                       'test for Test::Alien';
 ok -f 't/test_alien_build.t',                                 'test for Test::Alien::Build';
 ok -f 't/test_alien_cancompile.t',                            'test for Test::Alien::CanCompile';
