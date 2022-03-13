@@ -8,6 +8,7 @@ use Path::Tiny ();
 use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_stdout/;
 use Text::ParseWords qw/shellwords/;
+use Alien::Util;
 
 # ABSTRACT: Base classes for Alien:: modules
 # VERSION
@@ -443,34 +444,9 @@ behaviour to the C<< <=> >> and C<cmp> operators.
 
 =cut
 
-# Sort::Versions isn't quite the same algorithm because it differs in
-# behaviour with leading zeroes.
-#   See also  https://dev.gentoo.org/~mgorny/pkg-config-spec.html#version-comparison
 sub version_cmp {
   shift;
-  my @x = (shift =~ m/([0-9]+|[a-z]+)/ig);
-  my @y = (shift =~ m/([0-9]+|[a-z]+)/ig);
-
-  while(@x and @y) {
-    my $x = shift @x; my $x_isnum = $x =~ m/[0-9]/;
-    my $y = shift @y; my $y_isnum = $y =~ m/[0-9]/;
-
-    if($x_isnum and $y_isnum) {
-      # Numerical comparison
-      return $x <=> $y if $x != $y;
-    }
-    elsif(!$x_isnum && !$y_isnum) {
-      # Alphabetic comparison
-      return $x cmp $y if $x ne $y;
-    }
-    else {
-      # Of differing types, the numeric one is newer
-      return $x_isnum - $y_isnum;
-    }
-  }
-
-  # Equal so far; the longer is newer
-  return @x <=> @y;
+  goto &Alien::Util::version_cmp;
 }
 
 =head2 install_type
@@ -1161,4 +1137,3 @@ For graciously teaching me about rpath and dynamic loading,
 =back
 
 =cut
-
