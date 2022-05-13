@@ -54,7 +54,7 @@ when you need both:
  use alienfile;
  # requires both liblzma library and xz program
  plugin 'PkgConfig' => 'liblzma';
- plugin 'Probe::CommandLine => (
+ plugin 'Probe::CommandLine' => (
    command   => 'xz',
    secondary => 1,
  );
