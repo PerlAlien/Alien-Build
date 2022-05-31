@@ -18,25 +18,27 @@ jobs:
       matrix:
         cip:
           - alien_build_install_extra: 1
-            tag: "5.35"
+            tag: "5.37"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-alpine3.14"
+            tag: "5.36-alpine3.16"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-bionic"
+            tag: "5.36-bionic"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-centos7"
+            tag: "5.36-centos7"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-fedora35"
+            tag: "5.36-fedora36"
           - alien_build_install_extra: 0
             env: ALIEN_BUILD_LIVE_TEST=0
-            tag: "5.34-bullseye"
+            tag: "5.36-bullseye"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.34-bullseye"
+            tag: "5.36-bullseye"
+          - alien_build_install_extra: 1
+            tag: "5.34"
           - alien_build_install_extra: 1
             tag: "5.32"
           - alien_build_install_extra: 1
