@@ -1,5 +1,6 @@
 use 5.008004;
 use lib 'corpus/lib';
+use lib 't/lib';
 use Test2::V0 -no_srand => 1;
 use Test::Alien;
 use Alien::Foo;
@@ -10,6 +11,7 @@ use Alien::Build::Util qw( _dump );
 use List::Util 1.33 qw( any );
 use Config;
 use Test2::API 1.302096 ();
+use MyTest::HaveCompiler qw( require_compiler );
 
 sub _reset
 {
@@ -365,9 +367,7 @@ subtest 'ffi_ok' => sub {
 
 subtest 'xs_ok' => sub {
 
-  skip_all 'test requires a compiler'
-    unless ExtUtils::CBuilder->new->have_compiler;
-
+  require_compiler();
   _reset();
 
   alien_ok synthetic {};
@@ -743,6 +743,7 @@ subtest 'with_subtest SEGV' => sub {
 subtest 'diagnostic when calling tools without alien_ok' => sub {
 
   _reset();
+  require_compiler;
 
   my $xs = <<'EOF';
 #include "EXTERN.h"
