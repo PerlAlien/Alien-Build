@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Documentation updates (gh#308, gh#310)
 
 2.49      2022-06-23 11:19:08 -0500
   - Fix tests to pass on systems that do not have a compiler (gh#309)
