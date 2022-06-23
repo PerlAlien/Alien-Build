@@ -603,7 +603,8 @@ sub meta_prop
 
  my $meta = meta;
 
-Returns the meta object for your L<alienfile>.
+Returns the meta object for your L<alienfile>.  For methods that can be used on the
+meta object, see L<Alien::Build/META-METHODS>.
 
 =head2 log
 
