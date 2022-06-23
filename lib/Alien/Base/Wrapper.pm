@@ -183,6 +183,9 @@ sub new
       $libs   = $alien->libs;
     }
 
+    $cflags = '' unless defined $cflags;
+    $libs = '' unless defined $libs;
+
     push @cflags_I,     grep  /^-I/, shellwords $cflags;
     push @cflags_other, grep !/^-I/, shellwords $cflags;
 

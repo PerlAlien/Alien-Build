@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix tests to pass on systems that do not have a compiler (gh#309)
 
 2.48      2022-03-13 11:20:19 -0600
   - Added atleast_version to Probe::CommandLine and Probe::CBuilder plugins

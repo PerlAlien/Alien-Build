@@ -2,12 +2,19 @@ use 5.008004;
 use Test2::V0 -no_srand => 1;
 use Test::Alien::CanCompile ();
 use ExtUtils::CBuilder;
+use Capture::Tiny qw( capture_merged );
 
 subtest 'unmocked' => sub {
-    is(
+
+    my($diag, $ta_cc_skip, $eucb_have_compiler) = capture_merged {
       !!Test::Alien::CanCompile->skip,
-      !ExtUtils::CBuilder->new->have_compiler,
-      'skip'
+      !!ExtUtils::CBuilder->new->have_compiler,
+    };
+    note $diag;
+
+    is(
+      $ta_cc_skip, !$eucb_have_compiler,
+      'skip computed by Test::Alien::CanCompile should match ExtUtils::CBuilder#have_compiler'
     );
 };
 
