@@ -277,6 +277,7 @@ sub _flags
 
   my $config = $class->runtime_prop;
   my $flags = $config->{$key};
+  defined($flags) or return '';
 
   my $prefix = $config->{prefix};
   $prefix =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
