@@ -427,7 +427,8 @@ sub xs_ok
   require ExtUtils::CBuilder;
   my $skip = do {
     my $have_compiler = $xs->{cbuilder_check};
-    !ExtUtils::CBuilder->new( config => $xs->{cbuilder_config} )->$have_compiler;
+    my %config = %{ $xs->{cbuilder_config} };
+    !ExtUtils::CBuilder->new( config => \%config )->$have_compiler;
   };
 
   if($skip)
