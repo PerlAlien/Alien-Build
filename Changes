@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.51      2022-08-03 09:57:08 -0600
   - Remove use of duplicate lddlfalgs in Test::Alien which could cause failures
     on AIX (gh#217, gh#316)
 
