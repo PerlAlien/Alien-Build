@@ -22,6 +22,13 @@ subtest 'basic' => sub {
   like $configure, qr{configure};
   like $configure, qr{--with-pic};
 
+  my $autoreconf = $meta->interpolator->interpolate('%{autoreconf}');
+  isnt $autoreconf, '', "\%{autoreconf} = $autoreconf";
+  is $autoreconf, 'autoreconf';
+
+  my $autoreconf_opts = $meta->interpolator->interpolate('%{autoreconf} -if --warnings=all');
+  is $autoreconf_opts, 'autoreconf -if --warnings=all';
+
   is($build->meta_prop->{destdir}, 1);
   is($meta->prop->{destdir}, 1);
 };

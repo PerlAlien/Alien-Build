@@ -224,6 +224,23 @@ Some reasonable default flags will be provided.
     },
   );
 
+=head2 autoreconf
+
+ %{autoreconf}
+
+If you don't have a C<configure> script but do have a C<configure.ac>, use this
+helper to produce a C<configure> script, and then run the C<%{configure}>
+helper.
+
+=cut
+
+  $intr->add_helper(
+    autoreconf => sub {
+        my $autoreconf = _win ? 'sh autoreconf' : 'autoreconf';
+        $autoreconf;
+    },
+  );
+
   $meta->default_hook(
     build => [
       '%{configure} --disable-shared',
