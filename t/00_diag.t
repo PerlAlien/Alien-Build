@@ -15,6 +15,7 @@ $modules{$_} = $_ for qw(
   Alien::Libbz2
   Alien::cmake3
   Alien::gzip
+  Alien::perlhelp
   Alien::xz
   Archive::Tar
   Archive::Zip
