@@ -15,7 +15,7 @@ use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 use Config;
 
-our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is );
+our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is interpolate_run_ok );
 
 # ABSTRACT: Testing tools for Alien modules
 # VERSION
@@ -975,6 +975,61 @@ sub interpolate_template_is
   my $ctx = context();
   $ctx->ok($ok, $message, [@diag]);
   $ctx->diag('interpolate_template_is called without any aliens, you may want to call alien_ok') unless @aliens;
+  $ctx->release;
+
+  $ok;
+}
+
+=head2 interpolate_run_ok
+
+ my $run = interpolate_run_ok $command;
+ my $run = interpolate_run_ok $command, $message;
+
+This is the same as L</run_ok> except it runs the command through the interpolator first.
+
+=cut
+
+sub interpolate_run_ok
+{
+  my($template, $message) = @_;
+
+  my(@template) = ref $template ? @$template : ($template);
+
+  my $intr = _interpolator;
+
+  my $ok = 1;
+  my @diag;
+  my @command;
+
+  foreach my $template (@template)
+  {
+    my $command = eval { $intr->interpolate($template) };
+    if(my $error = $@)
+    {
+      $ok = 0;
+      push @diag, "error in evaluation:";
+      push @diag, "  $error";
+    }
+    else
+    {
+      push @command, $command;
+    }
+  }
+
+  my $ctx = context();
+
+  if($ok)
+  {
+    $message ||= "run @command";
+    $ok = run_ok(\@command, $message);
+  }
+  else
+  {
+    $message ||= "run @template";
+    $ctx->ok($ok, $message, [@diag]);
+    $ctx->diag('interpolate_run_ok called without any aliens, you may want to call alien_ok') unless @aliens;
+  }
+
   $ctx->release;
 
   $ok;

@@ -1,0 +1,16 @@
+{
+   "libs" : "",
+   "install_type" : "system",
+   "version" : "1.2.3",
+   "legacy" : {
+      "finished_installing" : 1,
+      "name" : "perlhelp",
+      "version" : "1.2.3",
+      "original_prefix" : "/foo/bar/baz/auto/share/dist/Alien-perlhelp",
+      "install_type" : "system"
+   },
+   "cflags_static" : "",
+   "cflags" : "",
+   "libs_static" : "",
+   "prefix" : "/foo/bar/baz/auto/share/dist/Alien-perlhelp"
+}
