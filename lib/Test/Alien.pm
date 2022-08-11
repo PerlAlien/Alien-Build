@@ -175,7 +175,14 @@ sub alien_ok ($;$)
     if($ok)
     {
       push @aliens, $alien;
-      unshift @PATH, $alien->bin_dir;
+      if($^O eq 'MSWin32' && $alien->isa('Alien::MSYS'))
+      {
+        unshift @PATH, Alien::MSYS::msys_path();
+      }
+      else
+      {
+        unshift @PATH, $alien->bin_dir;
+      }
     }
 
     if($alien->can('alien_helper'))
@@ -1019,6 +1026,12 @@ sub plugin_ok
   eval {
     $plugin->init($build->meta);
   };
+
+  if($^O eq 'MSWin32' && ($plugin->isa('Alien::Build::Plugin::Build::MSYS') || $plugin->isa('Alien::Build::Plugin::Build::Autoconf')))
+  {
+    require Alien::MSYS;
+    unshift @PATH, Alien::MSYS::msys_path();
+  }
 
   if(my $error = $@)
   {

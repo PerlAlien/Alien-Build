@@ -164,8 +164,9 @@ subtest 'plugin_ok' => sub {
 
   _reset();
 
-  plugin_ok 'Build::Autoconf';
-  helper_ok 'configure';
+  plugin_ok 'NesAdvantage::HelperTest';
+  helper_ok 'nes';
+  interpolate_template_is '%{nes}', 'advantage';
 
 };
 
