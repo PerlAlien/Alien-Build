@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improved documentation (gh#317, gh#318)
   - Fixed bug for run_ok in Test::Alien where passing a command in scalar
     context would not work for commands with arguments (gh#320)
   - Added interpolate_run_ok and plugin_ok to Test::Alien (gh#319, gh#321, gh#322)
