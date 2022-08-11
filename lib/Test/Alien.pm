@@ -284,7 +284,15 @@ sub run_ok
 {
   my($command, $message) = @_;
 
-  my(@command) = ref $command ? @$command : (shellwords $command);
+  my(@command) = ref $command ? @$command : (do {
+    my $command = $command; # make a copy
+
+    # Double the backslashes so that when they are unescaped by shellwords(),
+    # they become a single backslash. This should be fine on Windows since
+    # backslashes are not used to escape metacharacters in cmd.exe.
+    $command =~ s/\\/\\\\/g if $^O eq 'MSWin32';
+    shellwords $command;
+  });
   $message ||= ref $command ? "run @command" : "run $command";
 
   require Test::Alien::Run;
