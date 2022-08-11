@@ -36,6 +36,12 @@ based on autoconf packages.
 This plugin supports out-of-source builds (known in autoconf terms as "VPATH" builds) via
 the meta property C<out_of_source>.
 
+B<NOTE>: by itself, this plugin is only intended for use on packages that include a
+C<configure> script.  For packages that expect you to use Autotools to generate a
+configure script before building, you can use L<Alien::Autotools> to generate the
+C<configure> script and use this plugin to run it.  For more details see the
+documentation for L<Alien::Autotools>.
+
 =head1 PROPERTIES
 
 =head2 with_pic
