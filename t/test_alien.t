@@ -160,6 +160,15 @@ subtest 'helper_ok' => sub {
   );
 };
 
+subtest 'plugin_ok' => sub {
+
+  _reset();
+
+  plugin_ok 'Build::Autoconf';
+  helper_ok 'configure';
+
+};
+
 subtest 'interpolate_template_is' => sub {
 
   _reset();

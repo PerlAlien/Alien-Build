@@ -15,7 +15,7 @@ use Path::Tiny qw( path );
 use Alien::Build::Util qw( _dump );
 use Config;
 
-our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is interpolate_run_ok );
+our @EXPORT = qw( alien_ok run_ok xs_ok ffi_ok with_subtest synthetic helper_ok interpolate_template_is interpolate_run_ok plugin_ok );
 
 # ABSTRACT: Testing tools for Alien modules
 # VERSION
@@ -176,6 +176,25 @@ sub alien_ok ($;$)
     {
       push @aliens, $alien;
       unshift @PATH, $alien->bin_dir;
+    }
+
+    if($alien->can('alien_helper'))
+    {
+      my($intr) = _interpolator();
+
+      my $help = eval { $alien->alien_helper };
+
+      if(my $error = $@)
+      {
+        $ok = 0;
+        push @diag, "  error getting helpers: $error";
+      }
+
+      foreach my $name (keys %$help)
+      {
+        my $code = $help->{$name};
+        $intr->replace_helper($name, $code);
+      }
     }
   }
   else
@@ -908,25 +927,22 @@ Tests that the given helper has been defined.
 
 =cut
 
-sub _interpolator
 {
-  require Alien::Build::Interpolate::Default;
-  my $intr = Alien::Build::Interpolate::Default->new;
+  my @ret;
 
-  foreach my $alien (@aliens)
+  sub _interpolator
   {
-    if($alien->can('alien_helper'))
-    {
-      my $help = $alien->alien_helper;
-      foreach my $name (keys %$help)
-      {
-        my $code = $help->{$name};
-        $intr->replace_helper($name, $code);
-      }
-    }
-  }
+    return @ret if @ret;
 
-  $intr;
+    require Alien::Build::Interpolate::Default;
+    my $intr = Alien::Build::Interpolate::Default->new;
+
+    require Alien::Build;
+    my $build = Alien::Build->new;
+    $build->meta->interpolator($intr);
+
+    @ret = ($intr, $build);
+  }
 }
 
 sub helper_ok
@@ -935,7 +951,7 @@ sub helper_ok
 
   $message ||= "helper $name exists";
 
-  my $intr = _interpolator;
+  my($intr) = _interpolator;
 
   my $code = $intr->has_helper($name);
 
@@ -947,6 +963,65 @@ sub helper_ok
   $ctx->release;
 
   $ok;
+}
+
+=head2 plugin_ok
+
+ plugin_ok $plugin_name, $message;
+ plugin_ok [$plugin_name, @args], $message;
+
+This applies an L<Alien::Build::Plugin> to the interpolator used by L</helper_ok>, L<interpolate_template_is>
+and L</interpolate_run_ok> so that you can test with any helpers that plugin provides.  Useful,
+for example for getting C<%{configure}> from L<Alien::Build::Plugin::Build::Autoconf>.
+
+=cut
+
+sub plugin_ok
+{
+  my($name, $message) = @_;
+
+  my @args;
+
+  ($name, @args) = @$name if ref $name;
+
+  $message ||= "plugin $name";
+
+  my($intr, $build) = _interpolator;
+
+  my $class = "Alien::Build::Plugin::$name";
+  my $pm = "$class.pm";
+  $pm =~ s/::/\//g;
+
+  my $ctx = context();
+
+  my $plugin = eval {
+    require $pm unless $class->can('new');
+    $class->new(@args);
+  };
+
+  if(my $error = $@)
+  {
+    $ctx->ok(0, $message, ['unable to create $name plugin', $error]);
+    $ctx->release;
+    return 0;
+  }
+
+  eval {
+    $plugin->init($build->meta);
+  };
+
+  if(my $error = $@)
+  {
+    $ctx->ok(0, $message, ['unable to initiate $name plugin', $error]);
+    $ctx->release;
+    return 0;
+  }
+  else
+  {
+    $ctx->ok(1, $message);
+    $ctx->release;
+    return 1;
+  }
 }
 
 =head2 interpolate_template_is
@@ -967,7 +1042,7 @@ sub interpolate_template_is
 
   $message ||= "template matches";
 
-  my $intr = _interpolator;
+  my($intr) = _interpolator;
 
   my $value = eval { $intr->interpolate($template) };
   my $error = $@;
@@ -1014,7 +1089,7 @@ sub interpolate_run_ok
 
   my(@template) = ref $template ? @$template : ($template);
 
-  my $intr = _interpolator;
+  my($intr) = _interpolator;
 
   my $ok = 1;
   my @diag;
