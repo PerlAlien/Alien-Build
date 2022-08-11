@@ -4,6 +4,7 @@ Revision history for {{$dist->name}}
   - Fixed bug for run_ok in Test::Alien where passing a command in scalar
     context would not work for commands with arguments (gh#320)
   - Added interpolate_run_ok and plugin_ok to Test::Alien (gh#319, gh#321, gh#322)
+  - Better support for Alien::MSYS + Test::Alien (gh#323)
 
 2.51      2022-08-03 09:57:08 -0600
   - Remove use of duplicate lddlfalgs in Test::Alien which could cause failures
