@@ -265,8 +265,8 @@ sub run_ok
 {
   my($command, $message) = @_;
 
-  my(@command) = ref $command ? @$command : ($command);
-  $message ||= "run @command";
+  my(@command) = ref $command ? @$command : (shellwords $command);
+  $message ||= ref $command ? "run @command" : "run $command";
 
   require Test::Alien::Run;
   my $run = bless {
@@ -281,12 +281,31 @@ sub run_ok
   my $exe = which $command[0];
   if(defined $exe)
   {
-    shift @command;
-    $run->{cmd} = [$exe, @command];
+    if(ref $command)
+    {
+      shift @command;
+      $run->{cmd} = [$exe, @command];
+    }
+    else
+    {
+      $run->{cmd} = [$command];
+    }
     my @diag;
     my $ok = 1;
     my($exit, $errno);
-    ($run->{out}, $run->{err}, $exit, $errno) = capture { system $exe, @command; ($?,$!); };
+    ($run->{out}, $run->{err}, $exit, $errno) = capture {
+
+      if(ref $command)
+      {
+        system $exe, @command;
+      }
+      else
+      {
+        system $command;
+      }
+
+      ($?,$!);
+    };
 
     if($exit == -1)
     {
