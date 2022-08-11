@@ -54,6 +54,43 @@ If you need to provide custom flags to configure, you can do that too:
 
 If your package requires GNU Make, use C<%{gmake}> instead of C<%{make}>.
 
+=head3 autoconf without configure script
+
+A number of Open Source projects are using autotools, but do not provide the
+C<configure> script.  When alienizing these types of packages you have a
+few choices:
+
+=over 4
+
+=item build configure using autotools
+
+The Alien L<Alien::Autotools> is designed to provide autotools for building
+such packages from source.  The advantage is that this is how the upstream
+developers intend on having their package built.  The downside is that it
+is also adds more prereqs to your Alien.  The silver lining is that if you
+require this Alien in the C<share> block (as you should), then these prereqs
+will only be pulled in during a share install when they are needed.
+
+Please see the L<Alien::Autotools> documentation for specifics on how it
+can be used in your L<alienfile>.
+
+=item patch the package locally before build
+
+You can use the L<alienfile/patch> directive to patch the alienized package
+locally before building.  This can sometimes be challenging because Autotools
+uses timestamps in order to decide what needs to be rebuilt, and patching
+can sometimes confuse it into thinking more needs to be rebuilt than what
+actually does.
+
+=item build configure and tarball
+
+You can also build the configure script during development of your alien,
+generate the tarball and provide it somewhere like GitHub and use that
+as the source instead of the original source.  This should usually be
+a last resort if the other two methods prove too difficult.
+
+=back
+
 =head3 autoconf-like
 
 If you see an error like this:
