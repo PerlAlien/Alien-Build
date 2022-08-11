@@ -283,7 +283,7 @@ sub _flags
   my $distdir = $config->{distdir};
   $distdir =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
 
-  if($prefix ne $distdir)
+  if(defined $flags && $prefix ne $distdir)
   {
     $flags = join ' ', map {
       my $flag = $_;
