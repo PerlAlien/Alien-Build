@@ -967,6 +967,8 @@ sub helper_ok
 
 =head2 plugin_ok
 
+[version 2.52]
+
  plugin_ok $plugin_name, $message;
  plugin_ok [$plugin_name, @args], $message;
 
@@ -1076,6 +1078,8 @@ sub interpolate_template_is
 
 =head2 interpolate_run_ok
 
+[version 2.52]
+
  my $run = interpolate_run_ok $command;
  my $run = interpolate_run_ok $command, $message;
 
@@ -1114,8 +1118,8 @@ sub interpolate_run_ok
 
   if($ok)
   {
-    $message ||= "run @command";
-    $ok = run_ok(\@command, $message);
+    my $command = ref $template ? \@command : $command[0];
+    $ok = run_ok($command, $message);
   }
   else
   {

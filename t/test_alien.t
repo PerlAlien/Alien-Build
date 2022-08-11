@@ -798,6 +798,22 @@ EOF
     'run_ok displays diagnostic sans alien_ok',
   ;
 
+  is
+    intercept { run_ok "$^X -e 1" },
+    array {
+      event Ok => sub {
+        call pass => T();
+        call name => match qr/^run/;
+      };
+      event Note => sub {};
+      event Diag => sub {
+        call message => 'run_ok called without any aliens, you may want to call alien_ok';
+      };
+      end;
+    },
+    'run_ok displays diagnostic sans alien_ok',
+  ;
+
   if(eval { require FFI::Platypus; 1 })
   {
     is
@@ -875,6 +891,7 @@ subtest 'interpolate_run_ok' => sub {
   ;
 
   interpolate_run_ok ['%{perlhelp}', -e => '1'];
+  interpolate_run_ok '%{perlhelp} -e 1';
 
 };
 
