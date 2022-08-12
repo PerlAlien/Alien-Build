@@ -330,10 +330,14 @@ L<alienfile> then it will be set to true.
 
 =item destdir
 
-Use the C<DESTDIR> environment variable to stage your install before
-copying the files into C<blib>.  This is the preferred method of
-installing libraries because it improves reliability.  This technique
-is supported by C<autoconf> and others.
+Some plugins (L<Alien::Build::Plugin::Build::Autoconf> for example) support
+installing via C<DESTDIR>.  They will set this property to true if they
+plan on doing such an install.  This helps L<Alien::Build> find the staged
+install files and how to locate them.
+
+If available, C<DESTDIR> is used to stage install files in a sub directory before
+copying the files into C<blib>.  This is generally preferred method
+if available.
 
 =item destdir_filter
 
