@@ -26,6 +26,11 @@ This class is private to L<Alien::Build>.
 # one place rather thabn alllll the places that we need
 # temp directories.
 
+# we also have a speical case for Windows, which often
+# has problems with long paths if we try to use the
+# current directory for temp files, so for those we
+# use the system tmp directory.
+
 my %root;
 
 sub _root
