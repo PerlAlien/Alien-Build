@@ -167,10 +167,14 @@ but if you do not follow this rule your recipe will likely be broken.
 
 - destdir
 
-    Use the `DESTDIR` environment variable to stage your install before
-    copying the files into `blib`.  This is the preferred method of
-    installing libraries because it improves reliability.  This technique
-    is supported by `autoconf` and others.
+    Some plugins ([Alien::Build::Plugin::Build::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Build::Autoconf) for example) support
+    installing via `DESTDIR`.  They will set this property to true if they
+    plan on doing such an install.  This helps [Alien::Build](https://metacpan.org/pod/Alien::Build) find the staged
+    install files and how to locate them.
+
+    If available, `DESTDIR` is used to stage install files in a sub directory before
+    copying the files into `blib`.  This is generally preferred method
+    if available.
 
 - destdir\_filter
 
