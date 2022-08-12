@@ -449,6 +449,12 @@ using a generated module name.
 
 If you need to test XS C++ interfaces, see L<Test::Alien::CPP>.
 
+Caveats: C<xs_ok> uses L<ExtUtils::ParseXS>, which may call C<exit>
+under certain error conditions.  While this is not really good
+thing to happen in the middle of a test, it usually indicates
+a real failure condition, and it should return a failure condition
+so the test should still fail overall.
+
 [version 2.53]
 
 As of version 2.53, C<xs_ok> will only remove temporary generated files
