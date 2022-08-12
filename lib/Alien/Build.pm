@@ -464,15 +464,17 @@ The prefix as understood by autoconf.  This is only different on Windows
 Where MSYS is used and paths like C<C:/foo> are  represented as C</C/foo>
 which are understood by the MSYS tools, but not by Perl.  You should
 only use this if you are using L<Alien::Build::Plugin::Autoconf> in
-your L<alienfile>.
+your L<alienfile>.  This is set during before the build hook is run.
 
 =item download
 
 The location of the downloaded archive (tar.gz, or similar) or directory.
+This will be undefined until the archive is actually downloaded.
 
 =item env
 
-Environment variables to override during the build stage.
+Environment variables to override during the build stage.  Plugins are
+free to set additional overrides using this hash.
 
 =item extract
 
@@ -483,6 +485,8 @@ and thus this property may change.
 
 =item old
 
+[deprecated]
+
 Hash containing information on a previously installed Alien of the same
 name, if available.  This may be useful in cases where you want to
 reuse the previous install if it is still sufficient.
@@ -491,10 +495,14 @@ reuse the previous install if it is still sufficient.
 
 =item prefix
 
+[deprecated]
+
 The prefix for the previous install.  Versions prior to 1.42 unfortunately
 had this in typo form of C<preifx>.
 
 =item runtime
+
+[deprecated]
 
 The runtime properties from the previous install.
 
@@ -502,7 +510,12 @@ The runtime properties from the previous install.
 
 =item patch
 
-Directory with patches.
+Directory with patches, if available.  This will be C<undef> if there
+are no patches.  When initially installing an alien this will usually
+be a sibling of the C<alienfile>, a directory called C<patch>.  Once
+installed this will be in the share directory called C<_alien/patch>.
+The former is useful for rebuilding an alienized package using
+L<af>.
 
 =item prefix
 
@@ -585,21 +598,25 @@ The version of L<Alien::Build> used to install the library or tool.
 
 Alternate configurations.  If the alienized package has multiple
 libraries this could be used to store the different compiler or
-linker flags for each library.
+linker flags for each library.  Typically this will be set by a
+plugin in the gather stage (for either share or system installs).
 
 =item cflags
 
-The compiler flags
+The compiler flags.  This is typically set by a plugin in the
+gather stage (for either share or system installs).
 
 =item cflags_static
 
-The static compiler flags
+The static compiler flags.  This is typically set by a plugin in the
+gather stage (for either share or system installs).
 
 =item command
 
 The command name for tools where the name my differ from platform to
 platform.  For example, the GNU version of make is usually C<make> in
-Linux and C<gmake> on FreeBSD.
+Linux and C<gmake> on FreeBSD.  This is typically set by a plugin in the
+gather stage (for either share or system installs).
 
 =item ffi_name
 
@@ -607,7 +624,8 @@ The name DLL or shared object "name" to use when searching for dynamic
 libraries at runtime.  This is passed into L<FFI::CheckLib>, so if
 your library is something like C<libarchive.so> or C<archive.dll> you
 would set this to C<archive>.  This may be a string or an array of
-strings.
+strings.  This is typically set by a plugin in the gather stage
+(for either share or system installs).
 
 =item ffi_checklib
 
@@ -634,9 +652,13 @@ flag:
 
 =back
 
+This is typically set by a plugin in the gather stage
+(for either share or system installs).
+
 =item install_type
 
-The install type.  Is one of:
+The install type.  This is set by AB core after the probe hook is
+executed.  Is one of:
 
 =over 4
 
@@ -656,11 +678,13 @@ and built.
 
 =item libs
 
-The library flags
+The library flags.  This is typically set by a plugin in the
+gather stage (for either share or system installs).
 
 =item libs_static
 
-The static library flags
+The static library flags.  This is typically set by a plugin in the
+gather stage (for either share or system installs).
 
 =item perl_module_version
 
@@ -674,7 +698,8 @@ The final install root.  This is usually they share directory.
 
 =item version
 
-The version of the library or tool
+The version of the library or tool.  This is typically set by a plugin in the
+gather stage (for either share or system installs).
 
 =back
 

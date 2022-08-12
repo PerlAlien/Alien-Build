@@ -151,6 +151,9 @@ in the event the environment variable C<ALIEN_INSTALL_TYPE> is set.
 The detection of these properties should instead be done by the
 C<gather_system> hook, below.
 
+Multiple probe hooks can be given.  These will be used in sequence,
+stopping at the first that detects a system installation.
+
 =head2 gather_system hook
 
  $meta->register_hook( gather_system => sub {

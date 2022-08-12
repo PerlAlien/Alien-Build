@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Documentation improvements (gh#298, gh#312, gh#327)
   - xs_ok in Test::Alien will now keep temporary generated files on failure
     by default.  You can override this behavior using TEST_ALIEN_ALWAYS_KEEP
     (gh#315, gh#326)

@@ -188,8 +188,10 @@ sub plugin
  probe \&code;
  probe \@commandlist;
 
-Instructions for the probe stage.  May be either a
-code reference, or a command list.
+Instructions for the probe stage.  May be either a code reference, or a command list.
+Multiple probes and probe plugins can be given.  These will be used in sequence,
+stopping at the first that detects a system installation.  L<Alien::Build> will use
+a share install if no system installation is detected by the probes.
 
 =cut
 
