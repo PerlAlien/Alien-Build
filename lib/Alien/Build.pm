@@ -659,6 +659,14 @@ flag:
 This is typically set by a plugin in the gather stage
 (for either share or system installs).
 
+=item inline_auto_include
+
+[version 2.53]
+
+This property is an array reference of C code that will be passed into
+L<Inline::C> to make sure that appropriate headers are automatically
+included.  See L<Inline::C/auto_include> for details.
+
 =item install_type
 
 The install type.  This is set by AB core after the probe hook is
