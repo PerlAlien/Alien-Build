@@ -1,6 +1,12 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - xs_ok in Test::Alien will now keep temporary generated files on failure
+    by default.  You can override this behavior using TEST_ALIEN_ALWAYS_KEEP
+    (gh#315, gh#326)
+  - Added TEST_ALIEN_ALIENS_MISSING environment variable to remove warning
+    in Test::Alien when you use some tools without first calling alien_ok
+    (gh#326)
 
 2.52      2022-08-11 15:18:46 -0600
   - Improved documentation (gh#317, gh#318)

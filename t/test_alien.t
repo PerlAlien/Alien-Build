@@ -14,6 +14,8 @@ use Config;
 use Test2::API 1.302096 ();
 use MyTest::HaveCompiler qw( require_compiler );
 
+$ENV{TEST_ALIEN_ALIENS_MISSING} = 0;
+
 sub _reset
 {
   @Test::Alien::aliens = ();
@@ -163,6 +165,8 @@ subtest 'helper_ok' => sub {
 subtest 'plugin_ok' => sub {
 
   _reset();
+
+  local $ENV{TEST_ALIEN_ALIENS_MISSING} = 1;
 
   plugin_ok 'NesAdvantage::HelperTest';
   helper_ok 'nes';
@@ -383,68 +387,74 @@ subtest 'xs_ok' => sub {
 
   alien_ok synthetic {};
 
-  is(
-    intercept { xs_ok '' },
-    array {
-      event Ok => sub {
-        call pass => F();
-        call name => 'xs';
-      };
-      event Diag => sub {};
-      event Diag => sub {
-        call message => '  XS does not have a module decleration that we could find';
-      };
-      end;
-    },
-    'xs with no module'
-  );
+  subtest 'bad' => sub {
 
-  is(
-    intercept { xs_ok '', sub { } },
-    array {
-      event Ok => sub {
-        call pass => F();
-        call name => 'xs';
-      };
-      event Diag => sub {};
-      event Diag => sub {
-        call message => '  XS does not have a module decleration that we could find';
-      };
-      event Subtest => sub {
-        call buffered  => T();
-        call subevents => array {
-          event Plan => sub {
-            call max       => 0;
-            call directive => 'SKIP';
-            call reason    => 'subtest requires xs success';
-          };
-          end;
+    local $ENV{TEST_ALIEN_ALWAYS_KEEP} = 0;
+
+    is(
+      intercept { xs_ok '' },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'xs';
         };
-      };
-      end;
-    },
-    'xs fail with subtest'
-  );
+        event Diag => sub {};
+        event Diag => sub {
+          call message => '  XS does not have a module decleration that we could find';
+        };
+        end;
+      },
+      'xs with no module'
+    );
 
-  # TODO: test that parsexs error should fail
+    is(
+      intercept { xs_ok '', sub { } },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'xs';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => '  XS does not have a module decleration that we could find';
+        };
+        event Subtest => sub {
+          call buffered  => T();
+          call subevents => array {
+            event Plan => sub {
+              call max       => 0;
+              call directive => 'SKIP';
+              call reason    => 'subtest requires xs success';
+            };
+            end;
+          };
+        };
+        end;
+      },
+      'xs fail with subtest'
+    );
 
-  is(
-    intercept { xs_ok "this should cause a compile error\nMODULE = Foo::Bar PACKAGE = Foo::Bar\n" },
-    array {
-      event Ok => sub {
-        call pass => F();
-        call name => 'xs';
-      };
-      event Diag => sub {};
-      event Diag => sub {
-        call message => '  ExtUtils::CBuilder->compile failed';
-      };
-      etc;
-    },
-    'xs with C compile error'
-  );
+    # TODO: test that parsexs error should fail
 
-  # TODO: test that link error should fail
+    is(
+      intercept { xs_ok "this should cause a compile error\nMODULE = Foo::Bar PACKAGE = Foo::Bar\n" },
+      array {
+        event Ok => sub {
+          call pass => F();
+          call name => 'xs';
+        };
+        event Diag => sub {};
+        event Diag => sub {
+          call message => '  ExtUtils::CBuilder->compile failed';
+        };
+        etc;
+      },
+      'xs with C compile error'
+    );
+
+    # TODO: test that link error should fail
+
+  };
 
   subtest 'good' => sub {
     my $xs = <<'EOF';
@@ -771,6 +781,7 @@ EOF
   is
     intercept { xs_ok { xs => $xs } },
     array {
+      event Note => {} if $ENV{TEST_ALIEN_ALWAYS_KEEP};
       event Ok => sub {
         call pass => T();
         call name => 'xs';
