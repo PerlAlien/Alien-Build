@@ -275,15 +275,17 @@ based module.
     Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
     which are understood by the MSYS tools, but not by Perl.  You should
     only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
-    your [alienfile](https://metacpan.org/pod/alienfile).
+    your [alienfile](https://metacpan.org/pod/alienfile).  This is set during before the build hook is run.
 
 - download
 
     The location of the downloaded archive (tar.gz, or similar) or directory.
+    This will be undefined until the archive is actually downloaded.
 
 - env
 
-    Environment variables to override during the build stage.
+    Environment variables to override during the build stage.  Plugins are
+    free to set additional overrides using this hash.
 
 - extract
 
@@ -294,22 +296,33 @@ based module.
 
 - old
 
+    \[deprecated\]
+
     Hash containing information on a previously installed Alien of the same
     name, if available.  This may be useful in cases where you want to
     reuse the previous install if it is still sufficient.
 
     - prefix
 
+        \[deprecated\]
+
         The prefix for the previous install.  Versions prior to 1.42 unfortunately
         had this in typo form of `preifx`.
 
     - runtime
 
+        \[deprecated\]
+
         The runtime properties from the previous install.
 
 - patch
 
-    Directory with patches.
+    Directory with patches, if available.  This will be `undef` if there
+    are no patches.  When initially installing an alien this will usually
+    be a sibling of the `alienfile`, a directory called `patch`.  Once
+    installed this will be in the share directory called `_alien/patch`.
+    The former is useful for rebuilding an alienized package using
+    [af](https://metacpan.org/pod/af).
 
 - prefix
 
@@ -376,21 +389,25 @@ relevant once the install process is complete.
 
     Alternate configurations.  If the alienized package has multiple
     libraries this could be used to store the different compiler or
-    linker flags for each library.
+    linker flags for each library.  Typically this will be set by a
+    plugin in the gather stage (for either share or system installs).
 
 - cflags
 
-    The compiler flags
+    The compiler flags.  This is typically set by a plugin in the
+    gather stage (for either share or system installs).
 
 - cflags\_static
 
-    The static compiler flags
+    The static compiler flags.  This is typically set by a plugin in the
+    gather stage (for either share or system installs).
 
 - command
 
     The command name for tools where the name my differ from platform to
     platform.  For example, the GNU version of make is usually `make` in
-    Linux and `gmake` on FreeBSD.
+    Linux and `gmake` on FreeBSD.  This is typically set by a plugin in the
+    gather stage (for either share or system installs).
 
 - ffi\_name
 
@@ -398,7 +415,8 @@ relevant once the install process is complete.
     libraries at runtime.  This is passed into [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib), so if
     your library is something like `libarchive.so` or `archive.dll` you
     would set this to `archive`.  This may be a string or an array of
-    strings.
+    strings.  This is typically set by a plugin in the gather stage
+    (for either share or system installs).
 
 - ffi\_checklib
 
@@ -425,9 +443,13 @@ relevant once the install process is complete.
         $build->runtime_prop->{ffi_checklib}->{system} = [ try_linker_script => 1 ];
         ```
 
+    This is typically set by a plugin in the gather stage
+    (for either share or system installs).
+
 - install\_type
 
-    The install type.  Is one of:
+    The install type.  This is set by AB core after the probe hook is
+    executed.  Is one of:
 
     - system
 
@@ -443,11 +465,13 @@ relevant once the install process is complete.
 
 - libs
 
-    The library flags
+    The library flags.  This is typically set by a plugin in the
+    gather stage (for either share or system installs).
 
 - libs\_static
 
-    The static library flags
+    The static library flags.  This is typically set by a plugin in the
+    gather stage (for either share or system installs).
 
 - perl\_module\_version
 
@@ -461,7 +485,8 @@ relevant once the install process is complete.
 
 - version
 
-    The version of the library or tool
+    The version of the library or tool.  This is typically set by a plugin in the
+    gather stage (for either share or system installs).
 
 ## hook\_prop
 
