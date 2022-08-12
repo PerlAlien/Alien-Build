@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.53      2022-08-12 14:02:31 -0600
   - Documentation improvements (gh#241, gh#254, gh#283, gh#298, gh#312, gh#327)
   - Added .runtime.inline_auto_include property (gh#226, gh#328)
   - xs_ok in Test::Alien will now keep temporary generated files on failure
