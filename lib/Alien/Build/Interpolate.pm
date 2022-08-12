@@ -151,6 +151,8 @@ sub has_helper
 
  my $value = $intr->execute_helper($name);
 
+This evaluates the given helper and returns the result.
+
 =cut
 
 sub execute_helper
@@ -166,6 +168,9 @@ sub execute_helper
 =head2 interpolate
 
  my $string = $intr->interpolate($template);
+
+This takes a template and fills in the appropriate values of any helpers
+used in the template.
 
 =cut
 
@@ -191,6 +196,8 @@ sub _get_prop
   }
 }
 
+# TODO: document $prop
+
 sub interpolate
 {
   my($self, $string, $prop) = @_;
@@ -206,6 +213,10 @@ sub interpolate
 
  my %requires = $intr->requires($template);
 
+This returns a hash of modules required in order to execute the given template.
+The keys are the module names and the values are the versions.  Version will be
+set to C<0> if any version is sufficient.
+
 =cut
 
 sub requires
@@ -220,6 +231,8 @@ sub requires
 =head2 clone
 
  my $intr2 = $intr->clone;
+
+This creates a clone of the interpolator.
 
 =cut
 
