@@ -31,6 +31,15 @@ and then from L<alienfile>:
    arg2 => [ 'something', 'else' ],
  );
 
+=begin html
+
+<p>flowchart</p>
+<div style="display: flex"><div style="margin: 3px; flex: 1 1 50%">
+<img src="image/PluginAuthor-flowchart.png" style="max-width: 100%">
+</div></div>
+
+=end html
+
 =head1 DESCRIPTION
 
 This document explains how to write L<Alien::Build> plugins using the
