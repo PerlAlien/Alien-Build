@@ -37,8 +37,107 @@ and then from L<alienfile>:
 <div style="display: flex"><div style="margin: 3px; flex: 1 1 50%">
 <img src="image/PluginAuthor-flowchart.png" style="max-width: 100%">
 </div></div>
+<p><b>Notes</b>: The colored blocks indicate <tt>alienfile</tt> blocks.
+Hooks are indicated as predefined process (rectangle with double struck
+vertical edges).  Hooks that can easily be implemented from an
+<tt>alienfile</tt> are indicated in blue (Note that <tt>[]</tt> is used
+to indicate passing in an array reference, but a subroutine
+reference can also be used).  For simplicity, the the flowchart does
+not include when required modules are loaded.  Except for configure
+time requirements, they are loaded when the corresponding <tt>alienfile</tt>
+blocks are entered.  It is not shown, but generally any plugin can cause
+a <b>Fail</b> by throwing an exception with <tt>die</tt>.</p>
 
 =end html
+
+Perlish pseudo code for how plugins are called:
+
+ my $probe;
+ my $override = override();
+ 
+ if($override eq 'system') {
+ 
+   $probe = probe();
+ 
+   if($probe ne 'system') {
+     die 'system tool or library not found';
+   }
+ 
+ }
+ 
+ elsif($override eq 'default') {
+   $probe = probe();
+ 
+ } else { # $override eq 'share'
+   # note that in this instance the
+   # probe hook is never called
+   $probe = 'share';
+ }
+ 
+ if($probe eq 'system') {
+   gather_system();
+ 
+ } else { # $probe eq 'share'
+ 
+   download();
+   extract();
+   patch();
+   build();
+   gather_share();
+ 
+   # Check to see if there isa build_ffi hook
+   if(defined &build_ffi) {
+     patch_ffi();
+     build_ffi();
+     gather_ffi();
+   }
+ }
+ 
+ # By default this just returns the value of $ENV{ALIEN_INSTALL_TYPE}
+ sub override {
+   return $ENV{ALIEN_INSTALL_TYPE};
+ }
+ 
+ # Default download implementation; can be
+ # replaced by specifying a different download
+ # hook.  See Alien::Build::Plugin::Core::Download
+ # for detailed implementation.
+ sub download {
+ 
+   my $response = fetch();
+ 
+   if($response->{type} eq 'html' || $response->{type} eq 'dir_listing') {
+     # decode will transform an HTML listing (html) or a FTP directory
+     # listing (dir_listing) into a regular list
+     $response = decode($response);
+   }
+ 
+   if($response->{type} eq 'list') {
+ 
+     # prefer will filter bad entries in the list
+     # and sort them so that the first one is
+     # the one that we want
+     $response = prefer($response);
+ 
+     my $first_preferred = $res->{list}->[0];
+ 
+     # prefer can sometimes infer the version from the
+     # filename.
+     if(defined $first_preferred->{version}) {
+       # not a hook
+       runtime_prop->{version} = $first_preferred->{version};
+     }
+ 
+     $response = fetch($first_preferred);
+ 
+   }
+ 
+   if($response->{type} eq 'file') {
+     # not a hook
+     write_file_to_disk $response;
+   }
+ 
+ }
 
 =head1 DESCRIPTION
 
