@@ -228,54 +228,63 @@ inline L<alienfile> in your test.
 
 =head1 HOOKS
 
-=head2 probe hook
+=head2 build hook
 
- $meta->register_hook( probe => sub {
+ $meta->register_hook( build => sub {
    my($build) = @_;
-   return 'system' if ...; # system install
-   return 'share';         # otherwise
+   ...
  });
+
+This does the main build of the alienized project and installs it into
+the staging area.  The current directory is the build root.  You need
+to run whatever tools are necessary for the project, and install them
+into C<%{.install.prefix}>.
+
+=head2 build_ffi hook
+
+ $meta->register_hook( build_ffi => sub {
+   my($build) = @_;
+   ...
+ });
+
+This is the same as C<build>, except it fires only on a FFI build.
+
+=head2 decode hook
+
+ sub init
+ {
+   my($self, $meta) = @_;
  
- $meta->register_hook( probe => [ $command ] );
+   $meta->register_hook( decode => sub {
+     my($build, $res) = @_;
+     ...
+   }
+ }
 
-This hook should return the string C<system> if the operating
-system provides the library or tool.  It should return C<share>
-otherwise.
+This hook takes a response hash reference from the C<fetch> hook above
+with a type of C<html> or C<dir_listing> and converts it into a response
+hash reference of type C<list>.  In short it takes an HTML or FTP file
+listing response from a fetch hook and converts it into a list of filenames
+and links that can be used by the prefer hook to choose the correct file to
+download.  See C<fetch> for the specification of the input and response
+hash references.
 
-You can also use a command that returns true when the tool
-or library is available.  For example for use with C<pkg-config>:
+=head2 clean_install
 
- $meta->register_hook( probe =>
-   [ '%{pkgconf} --exists libfoo' ] );
-
-Or if you needed a minimum version:
-
- $meta->register_hook( probe =>
-   [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
-
-Note that this hook SHOULD NOT gather system properties, such as
-cflags, libs, versions, etc, because the probe hook will be skipped
-in the event the environment variable C<ALIEN_INSTALL_TYPE> is set.
-The detection of these properties should instead be done by the
-C<gather_system> hook, below.
-
-Multiple probe hooks can be given.  These will be used in sequence,
-stopping at the first that detects a system installation.
-
-=head2 gather_system hook
-
- $meta->register_hook( gather_system => sub {
+ $meta->register_hook( clean_install => sub {
    my($build) = @_;
-   $build->runtime_prop->{cflags}  = ...;
-   $build->runtime_prop->{libs}    = ...;
-   $build->runtime_prop->{version} = ...;
  });
 
-This hook is called for a system install to determine the properties
-necessary for using the library or tool.  These properties should be
-stored in the C<runtime_prop> hash as shown above.  Typical properties
-that are needed for libraries are cflags and libs.  If at all possible
-you should also try to determine the version of the library or tool.
+This hook allows you to remove files from the final install location before
+the files are installed by the installer layer (examples: L<Alien::Build::MM>,
+L<Alien::Build::MB> or L<App::af>).  This hook is never called by default,
+and must be enabled via the interface to the installer layer.
+
+This hook SHOULD NOT remove the C<_alien> directory or its content from the
+install location.
+
+The default implementation removes all the files EXCEPT the C<_alien> directory
+and its content.
 
 =head2 download hook
 
@@ -296,6 +305,13 @@ at all, an exception with an appropriate diagnostic will be thrown.
 
 B<Note>: If you register this hook, then the fetch, decode and prefer
 hooks will NOT be called.
+
+=head2 extract hook
+
+ $meta->register_hook( extract => sub {
+   my($build, $archive) = @_;
+   ...
+ });
 
 =head2 fetch hook
 
@@ -407,52 +423,52 @@ reference:
    content => $content,
  };
 
-=head2 decode hook
+=head2 gather_ffi hook
 
- sub init
- {
-   my($self, $meta) = @_;
- 
-   $meta->register_hook( decode => sub {
-     my($build, $res) = @_;
-     ...
-   }
- }
-
-This hook takes a response hash reference from the C<fetch> hook above
-with a type of C<html> or C<dir_listing> and converts it into a response
-hash reference of type C<list>.  In short it takes an HTML or FTP file
-listing response from a fetch hook and converts it into a list of filenames
-and links that can be used by the prefer hook to choose the correct file to
-download.  See C<fetch> for the specification of the input and response
-hash references.
-
-=head2 prefer hook
-
- sub init
- {
-   my($self, $meta) = @_;
- 
-   $meta->register_hook( prefer => sub {
-     my($build, $res) = @_;
-     return {
-       type => 'list',
-       list => [sort @{ $res->{list} }],
-     };
-   }
- }
-
-This hook sorts candidates from a listing generated from either the C<fetch>
-or C<decode> hooks.  It should return a new list hash reference with the
-candidates sorted from best to worst.  It may also remove candidates
-that are totally unacceptable.
-
-=head2 extract hook
-
- $meta->register_hook( extract => sub {
-   my($build, $archive) = @_;
+ $meta->register_hook( gather_ffi => sub {
+   my($build) = @_;
    ...
  });
+
+This is the same as C<gather_share>, except it fires after a C<share> FFI
+install.
+
+=head2 gather_share hook
+
+ $meta->register_hook( gather_share => sub {
+   my($build) = @_;
+   ...
+ });
+
+This is the same as C<gather_system>, except it fires after a C<share>
+install.
+
+=head2 gather_system hook
+
+ $meta->register_hook( gather_system => sub {
+   my($build) = @_;
+   $build->runtime_prop->{cflags}  = ...;
+   $build->runtime_prop->{libs}    = ...;
+   $build->runtime_prop->{version} = ...;
+ });
+
+This hook is called for a system install to determine the properties
+necessary for using the library or tool.  These properties should be
+stored in the C<runtime_prop> hash as shown above.  Typical properties
+that are needed for libraries are cflags and libs.  If at all possible
+you should also try to determine the version of the library or tool.
+
+=head2 override hook
+
+ $meta->register_hook( override => sub {
+   my($build) = @_;
+ });
+
+This allows you to alter the override logic.  It should return one of
+C<share>, C<system>, C<default> or C<''>.  The default implementation is
+just this:
+
+ return $ENV{ALIEN_INSTALL_TYPE} || '';
 
 =head2 patch hook
 
@@ -475,74 +491,58 @@ modifications to the source if they are necessary.
 This hook is exactly like the C<patch> hook, except it fires only on an
 FFI build.
 
-=head2 build hook
+=head2 prefer hook
 
- $meta->register_hook( build => sub {
+ sub init
+ {
+   my($self, $meta) = @_;
+ 
+   $meta->register_hook( prefer => sub {
+     my($build, $res) = @_;
+     return {
+       type => 'list',
+       list => [sort @{ $res->{list} }],
+     };
+   }
+ }
+
+This hook sorts candidates from a listing generated from either the C<fetch>
+or C<decode> hooks.  It should return a new list hash reference with the
+candidates sorted from best to worst.  It may also remove candidates
+that are totally unacceptable.
+
+=head2 probe hook
+
+ $meta->register_hook( probe => sub {
    my($build) = @_;
-   ...
+   return 'system' if ...; # system install
+   return 'share';         # otherwise
  });
+ 
+ $meta->register_hook( probe => [ $command ] );
 
-This does the main build of the alienized project and installs it into
-the staging area.  The current directory is the build root.  You need
-to run whatever tools are necessary for the project, and install them
-into C<%{.install.prefix}>.
+This hook should return the string C<system> if the operating
+system provides the library or tool.  It should return C<share>
+otherwise.
 
-=head2 build_ffi hook
+You can also use a command that returns true when the tool
+or library is available.  For example for use with C<pkg-config>:
 
- $meta->register_hook( build_ffi => sub {
-   my($build) = @_;
-   ...
- });
+ $meta->register_hook( probe =>
+   [ '%{pkgconf} --exists libfoo' ] );
 
-This is the same as C<build>, except it fires only on a FFI build.
+Or if you needed a minimum version:
 
-=head2 gather_share hook
+ $meta->register_hook( probe =>
+   [ '%{pkgconf} --atleast-version=1.00 libfoo' ] );
 
- $meta->register_hook( gather_share => sub {
-   my($build) = @_;
-   ...
- });
+Note that this hook SHOULD NOT gather system properties, such as
+cflags, libs, versions, etc, because the probe hook will be skipped
+in the event the environment variable C<ALIEN_INSTALL_TYPE> is set.
+The detection of these properties should instead be done by the
+C<gather_system> hook, below.
 
-This is the same as C<gather_system>, except it fires after a C<share>
-install.
-
-=head2 gather_ffi hook
-
- $meta->register_hook( gather_ffi => sub {
-   my($build) = @_;
-   ...
- });
-
-This is the same as C<gather_share>, except it fires after a C<share> FFI
-install.
-
-=head2 override hook
-
- $meta->register_hook( override => sub {
-   my($build) = @_;
- });
-
-This allows you to alter the override logic.  It should return one of
-C<share>, C<system>, C<default> or C<''>.  The default implementation is
-just this:
-
- return $ENV{ALIEN_INSTALL_TYPE} || '';
-
-=head2 clean_install
-
- $meta->register_hook( clean_install => sub {
-   my($build) = @_;
- });
-
-This hook allows you to remove files from the final install location before
-the files are installed by the installer layer (examples: L<Alien::Build::MM>,
-L<Alien::Build::MB> or L<App::af>).  This hook is never called by default,
-and must be enabled via the interface to the installer layer.
-
-This hook SHOULD NOT remove the C<_alien> directory or its content from the
-install location.
-
-The default implementation removes all the files EXCEPT the C<_alien> directory
-and its content.
+Multiple probe hooks can be given.  These will be used in sequence,
+stopping at the first that detects a system installation.
 
 =cut
