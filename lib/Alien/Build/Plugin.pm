@@ -173,41 +173,6 @@ sub import
   { no strict 'refs'; *{ "${caller}::has" } = $has }
 }
 
-=head2 subplugin
-
-B<DEPRECATED>: Maybe removed, but not before 1 October 2018.
-
- my $plugin2 = $plugin1->subplugin($plugin_name, %args);
-
-Finds the given plugin and loads it (unless already loaded) and creats a
-new instance and returns it.  Most useful from a Negotiate plugin,
-like this:
-
- sub init
- {
-   my($self, $meta) = @_;
-   $self->subplugin(
-     'Foo::Bar',  # loads Alien::Build::Plugin::Foo::Bar,
-                  # or throw exception
-     foo => 1,    # these key/value pairs passsed into new
-     bar => 2,    # for the plugin instance.
-   )->init($meta);
- }
-
-=cut
-
-sub subplugin
-{
-  my(undef, $name, %args) = @_;
-  Carp::carp("subplugin method is deprecated");
-  my $class = "Alien::Build::Plugin::$name";
-  my $pm = "$class.pm";
-  $pm =~ s/::/\//g;
-  require $pm unless eval { $class->can('new') };
-  delete $args{$_} for grep { ! defined $args{$_} } keys %args;
-  $class->new(%args);
-}
-
 =head2 has
 
  has $prop_name;
