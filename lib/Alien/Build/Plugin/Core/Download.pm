@@ -42,9 +42,22 @@ sub _hook
   if($res->{type} eq 'list')
   {
     $res = $build->prefer($res);
+
+    my @exclude;
+    if($build->meta->prop->{start_url} =~ /^https:/)
+    {
+      @{ $res->{list} } = grep {
+        $_->{url} =~ /https:/ ? 1 : do {
+          push @exclude, $_->{url};
+          0;
+        }
+      } @{ $res->{list} };
+    }
+
     die "no matching files in listing" if @{ $res->{list} } == 0;
     my $version = $res->{list}->[0]->{version};
     my($pick, @other) = map { $_->{url} } @{ $res->{list} };
+
     if(@other > 8)
     {
       splice @other, 7;
@@ -52,6 +65,18 @@ sub _hook
     }
     $build->log("candidate *$pick");
     $build->log("candidate  $_") for @other;
+
+    if(@exclude)
+    {
+      if(@exclude > 8)
+      {
+        splice @exclude, 7;
+        push @exclude, '...';
+      }
+      $build->log("excluded insecure URLs:");
+      $build->log($_) for @exclude;
+    }
+
     $res = $build->fetch($pick);
 
     if($version)

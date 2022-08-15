@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Do not allow downgrading from SSL if start_url is https.  This is
+    done by filtering non-SSL URLs from the candidate listif the start_url
+    uses https (gh#190, gh#339)
 
 2.58_01   2022-08-15 12:55:07 -0600
   - Fix bug where properties could not be interpolated in environment
