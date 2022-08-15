@@ -1876,7 +1876,7 @@ subtest 'check_digest' => sub {
 
   my $build = alienfile_ok q{
     use alienfile;
-    plugin 'Digest::SHAPP';
+    plugin 'Digest::SHA';
     probe sub { 'share' };
   };
 
@@ -1978,6 +1978,81 @@ subtest 'check_digest' => sub {
           dies { $build->check_digest($file) },
           match qr/^No plugin provides digest algorithm for FOO92/,
           'no algorithm';
+
+        if($type eq 'string')
+        {
+          $file = $path->sibling('bogus.txt.gz')->stringify;
+        }
+        elsif($type eq 'path-tiny')
+        {
+          $file = $path->sibling('bogus.txt.gz');
+        }
+        elsif($type eq 'content')
+        {
+
+          $file = {
+            type => 'file',
+            filename => 'bogus.txt,gz',
+          };
+
+          note _dump($file);
+
+          is
+            dies { $build->check_digest($file) },
+            match qr/^bogus.txt.gz has no content/,
+            'error on missing file';
+
+          $file = {
+            type => 'file',
+          };
+
+          note _dump($file);
+
+          is
+            dies { $build->check_digest($file) },
+            match qr/^File has no filename/,
+            'error on missing filename';
+
+          $file = {
+            type => 'list',
+          };
+
+          note _dump($file);
+
+          is
+            dies { $build->check_digest($file) },
+            match qr/^File is wrong type/,
+            'error on wrote file type';
+
+          $file = {
+          };
+
+          note _dump($file);
+
+          is
+            dies { $build->check_digest($file) },
+            match qr/^File is wrong type/,
+            'error on wrote file type';
+
+          return;
+
+        }
+        elsif($type eq 'path')
+        {
+          $file = {
+            type     => 'file',
+            filename => 'bogus.txt.gz',
+            path     => $path->sibling('bogus.txt.gz')->stringify,
+            tmp      => 0,
+          };
+        }
+
+        note _dump($file);
+
+        is
+          dies { $build->check_digest($file) },
+          match qr/^Missing file in digest check: bogus.txt.gz/,
+          'error on missing file';
 
       }
     }

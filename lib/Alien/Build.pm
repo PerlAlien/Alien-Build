@@ -1314,17 +1314,28 @@ sub check_digest
 
   return '' unless $self->meta_prop->{check_digest};
 
-  unless(ref $file eq 'HASH')
+  unless(ref($file) eq 'HASH')
   {
-    if(-f $file) {
-      my $path = Path::Tiny->new($file);
-      $file = {
-        type     => 'file',
-        filename => $path->basename,
-        path     => "$path",
-        tmp      => 0,
-      };
-    }
+    my $path = Path::Tiny->new($file);
+    $file = {
+      type     => 'file',
+      filename => $path->basename,
+      path     => "$path",
+      tmp      => 0,
+    };
+  }
+
+  if(defined $file->{path})
+  {
+    # there is technically a race condition here
+    die "Missing file in digest check: @{[ $file->{filename} ]}" unless -f $file->{path};
+    die "Unreadable file in digest check: @{[ $file->{filename} ]}" unless -r $file->{path};
+  }
+  else
+  {
+    die "File is wrong type" unless defined $file->{type} && $file->{type} eq 'file';
+    die "File has no filename" unless defined $file->{filename};
+    die "@{[ $file->{filename} ]} has no content" unless defined $file->{content};
   }
 
   my $filename = $file->{filename};
