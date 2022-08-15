@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 
-# DESCRIPTION: Plugin negotiator for cryptographic signatures
+# ABSTRACT: Plugin negotiator for cryptographic signatures
 # VERSION
 
 =head1 SYNOPSIS

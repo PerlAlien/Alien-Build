@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Alien::Build::Plugin;
 
-# DESCRIPTION: Plugin to check SHA digest with Digest::SHA
+# ABSTRACT: Plugin to check SHA digest with Digest::SHA
 # VERSION
 
 =head1 SYNOPSIS
