@@ -5,7 +5,7 @@ use Alien::Build::Util qw( _dump );
 
 subtest 'basic' => sub {
 
-  local $Alien::Build::VERSION = 2.57;
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || 2.57;
 
   my $build = alienfile_ok q{
     use alienfile;
