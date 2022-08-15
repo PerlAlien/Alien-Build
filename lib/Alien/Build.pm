@@ -1203,6 +1203,8 @@ sub download
             my($archive) = $list[0];
             if(-d $archive)
             {
+              # TODO: this is probably a bug that we don't set
+              # download or compelte properties?
               $self->log("single dir, assuming directory");
             }
             else
@@ -1228,6 +1230,12 @@ sub download
       'download',
     );
 
+    # experimental and undocumented for now
+    if($self->meta->has_hook('check_download'))
+    {
+      $self->meta->call_hook(check_download => $self);
+    }
+
     return $self if $valid;
   }
   else
@@ -1235,7 +1243,15 @@ sub download
     # This will call the default download hook
     # defined in Core::Download since the recipe
     # does not provide a download hook
-    return $self->_call_hook('download');
+    my $ret = $self->_call_hook('download');
+
+    # experimental and undocumented for now
+    if($self->meta->has_hook('check_download'))
+    {
+      $self->meta->call_hook(check_download => $self);
+    }
+
+    return $self;
   }
 
   die "download failed";
