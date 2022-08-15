@@ -65,6 +65,18 @@ sub init
   # but stuff won't work that way so that is a corner case we
   # are not going to worry about.
   $meta->apply_plugin('Digest::SHA');
+
+  $meta->around_hook(
+    fetch => sub {
+      my($orig, $build, @rest) = @_;
+      my $res = $orig->($build, @rest);
+      if($res->{type} eq 'file')
+      {
+        $build->check_digest($res);
+      }
+      $res;
+    },
+  );
 }
 
 1;
