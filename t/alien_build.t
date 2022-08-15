@@ -1650,9 +1650,14 @@ alien_subtest 'interpolate env overrides' => sub {
 
     meta->prop->{env_interpolate} = 1;
     meta->prop->{env}->{FOO1} = '%{foo1}';
+    meta->prop->{env}->{FOO2} = '%{.install.foo.bar}';
     meta->interpolator->add_helper( foo1 => sub { 'xox' } );
 
-    probe sub { 'share' };
+    probe sub {
+      my($build) = @_;
+      $build->install_prop->{foo}->{bar} = 'baz';
+      'share';
+    };
 
     share {
 
@@ -1660,6 +1665,7 @@ alien_subtest 'interpolate env overrides' => sub {
 
       build sub {
         die 'wrong value' if $ENV{FOO1} ne 'xox';
+        die 'wrong value' if $ENV{FOO2} ne 'baz';
       };
     };
 
