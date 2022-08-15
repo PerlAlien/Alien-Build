@@ -7,7 +7,7 @@ our $cwd_url;
 
 subtest 'basic' => sub {
 
-  local $Alien::Build::VERSION = 2.57;
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || 2.57;
 
   my $build = alienfile_ok q{
     use alienfile;
@@ -89,7 +89,7 @@ subtest 'basic' => sub {
 
 subtest 'two signatures' => sub {
 
-  local $Alien::Build::VERSION = 2.57;
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || 2.57;
 
   my $build = alienfile_ok q{
     use alienfile;
@@ -199,7 +199,7 @@ subtest 'two signatures' => sub {
 
 subtest 'listing' => sub {
 
-  local $Alien::Build::VERSION = 2.57;
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || 2.57;
 
   skip_all 'test require URI::file' unless eval { require URI::file };
 
