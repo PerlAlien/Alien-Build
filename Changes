@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.57_01   2022-08-15 11:09:52 -0600
   - Added experimental plugin Digest::SHA and Digest::SHAPP for checking
     signatures (gh#332)
   - Added experimental check_digest method on Alien::Build (gh#332)
