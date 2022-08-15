@@ -178,7 +178,7 @@ in the template.
 If you pass in an L<Alien::Build> instance as the second argument, you can use
 properties as well as helpers in the template.  Example:
 
- my $patch = $intr->template("%{.install.patch}/foo-%{.runtime.version}.patch");
+ my $patch = $intr->template("%{.install.patch}/foo-%{.runtime.version}.patch", $build);
 
 =cut
 
