@@ -147,4 +147,18 @@ subtest 'requirement callback' => sub {
 
 };
 
+subtest 'property' => sub {
+
+  require Alien::Build;
+
+  my $build = Alien::Build->new;
+  $build->install_prop->{foo}->{bar} = 'baz';
+
+  is
+    $build->meta->interpolator->interpolate('%{.install.foo.bar}', $build),
+    'baz',
+    'able to fetch install.foo.bar using meta->interpolator->interpolate';
+
+};
+
 done_testing;

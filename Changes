@@ -3,6 +3,9 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Fix bug where properties could not be interpolated in environment
     variables if meta.env_interpolate is on (gh#333)
+  - Can now pass an Alien::Build instance into Alien::Build::Interpolator's
+    interpolate method to use meta, install, runtime, etc. prroperites in
+    the template (gh#312, gh#333)
 
 2.57_01   2022-08-15 11:09:52 -0600
   - Added experimental plugin Digest::SHA and Digest::SHAPP for checking
