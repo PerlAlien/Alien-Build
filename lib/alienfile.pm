@@ -78,7 +78,7 @@ libraries".
 
 =cut
 
-our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test start_url before after );
+our @EXPORT = qw( requires on plugin probe configure share sys download fetch decode prefer extract patch patch_ffi build build_ffi gather gather_ffi meta_prop ffi log test start_url before after digest );
 
 =head1 DIRECTIVES
 
@@ -293,6 +293,28 @@ sub start_url
   my $meta = $caller->meta;
   $meta->prop->{start_url} = $url;
   $meta->add_requires('configure' => 'Alien::Build' => '1.19');
+  return;
+}
+
+=head2 digest
+
+[experimental]
+
+ share {
+   digest $algorithm, $digest;
+ };
+
+Check fetched and downloaded files against the given algorithm and
+digest.  Typically you will want to use SHA256 as the algorithm.
+
+=cut
+
+sub digest
+{
+  my($algo, $digest) = @_;
+
+  my $caller = caller;
+  $caller->meta->apply_plugin('Digest', [$algo, $digest]);
   return;
 }
 

@@ -90,7 +90,7 @@ sub init
       die "Checking cryptographic signatures on download only works for single archive" unless defined $path;
       $build->check_digest($path);
     },
-  );
+  ) if $self->check_download;
 }
 
 1;

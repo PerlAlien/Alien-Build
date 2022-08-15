@@ -878,6 +878,34 @@ subtest 'after' => sub {
     like $@, qr/No such stage bogus/, 'no bogus allowed';
   };
 
+};
+
+subtest 'digest' => sub {
+
+  local $Alien::Build::VERSION = 2.57;
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    digest SHA256 => 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a';
+    plugin 'Fetch::Local';
+    probe sub { 'share' };
+  };
+
+  alienfile_skip_if_missing_prereqs;
+
+  is
+    $build->fetch('corpus/alien_build_plugin_digest_shapp/foo.txt.gz'),
+    hash {
+      field type     => 'file';
+      field filename => 'foo.txt.gz';
+      etc;
+    },
+    'fetch works with good sig';
+
+  is
+    dies { $build->fetch(__FILE__) },
+    match qr/SHA256 digest does not match/,
+    'fetch dies with bad sig';
 
 };
 
