@@ -75,41 +75,6 @@ subtest 'clone' => sub {
   like $error, qr/no helper defined for bar/;
 };
 
-subtest 'property' => sub {
-
-  my $intr = Alien::Build::Interpolate->new;
-  isa_ok $intr, 'Alien::Build::Interpolate';
-
-  is(
-    $intr->interpolate("%{foo.bar}", { foo => { bar => 'baz' } }),
-    'baz',
-  );
-
-  eval {
-    $intr->interpolate("'%{foo.bar}'", { foo => { bar1 => 'baz' } }),
-  };
-
-  like $@, qr/No property foo.bar is defined/;
-
-  is(
-    $intr->interpolate("%{foo.bar.baz}", { foo => { bar => { baz => 'starscream' } } }),
-    'starscream',
-  );
-
-};
-
-subtest 'property, default to alien' => sub {
-
-  my $intr = Alien::Build::Interpolate->new;
-  isa_ok $intr, 'Alien::Build::Interpolate';
-
-  is(
-    $intr->interpolate('%{.foo.bar}', { alien => { foo => { bar => 'baz' } } }),
-    'baz',
-  );
-
-};
-
 subtest 'has_helper' => sub {
 
   my $intr = Alien::Build::Interpolate->new;
@@ -157,7 +122,17 @@ subtest 'property' => sub {
   is
     $build->meta->interpolator->interpolate('%{.install.foo.bar}', $build),
     'baz',
-    'able to fetch install.foo.bar using meta->interpolator->interpolate';
+    'able to fetch .install.foo.bar using meta->interpolator->interpolate';
+
+  is
+    $build->meta->interpolator->interpolate('%{alien.install.foo.bar}', $build),
+    'baz',
+    'able to fetch alien.install.foo.bar using meta->interpolator->interpolate';
+
+  is
+    dies { $build->meta->interpolator->interpolate('%{.install.foo.bar1}', $build) },
+    match qr/^No property \.install\.foo\.bar1/,
+    'unable to interpolate invalid property';
 
 };
 

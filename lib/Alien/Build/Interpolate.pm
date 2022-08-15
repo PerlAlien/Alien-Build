@@ -206,16 +206,11 @@ sub _get_prop
 
 sub interpolate
 {
-  my($self, $string, $prop) = @_;
+  my($self, $string, $build) = @_;
 
-  if(eval { $prop->isa('Alien::Build') })
-  {
-    $prop = $prop->_command_prop;
-  }
-  else
-  {
-    $prop ||= {};
-  }
+  my $prop = defined $build && eval { $build->isa('Alien::Build') }
+  ? $build->_command_prop
+  : {};
 
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
   $string =~ s{(?<!\%)\%\{([a-zA-Z_\.][a-zA-Z_0-9\.]+)\}}{_get_prop($1,$prop,$1)}eg;

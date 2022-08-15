@@ -1531,8 +1531,7 @@ sub build
       {
         foreach my $key (keys %env_meta)
         {
-          my $prop = $self->_command_prop;
-          $env_meta{$key} = $self->meta->interpolator->interpolate($env_meta{$key}, $prop);
+          $env_meta{$key} = $self->meta->interpolator->interpolate($env_meta{$key}, $self);
         }
       }
 
