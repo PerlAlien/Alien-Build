@@ -677,6 +677,36 @@ As of [Alien::Build](https://metacpan.org/pod/Alien::Build) 2.39, these options 
     do not _should_ issue a warning if you try to set request headers and they
     are not supported.
 
+## check\_digest
+
+\[experimental\]
+
+```perl
+my $bool = $build->check_digest($path);
+```
+
+Checks any cryptographic signatures for the given file.  The
+file is specified by `$path` which may be one of:
+
+- string
+
+    Containing the path to the file to be checked.
+
+- [Path::Tiny](https://metacpan.org/pod/Path::Tiny)
+
+    Containing the path to the file to be checked.
+
+- `HASH`
+
+    A Hash reference containing information about a file.  See
+    [the fetch hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#fech-hook) for details
+    on the format.
+
+Returns true if the cryptographic signature matches, false if cryptographic
+signatures are disabled.  Will throw an exception if the signature does not
+match, or if no plugin provides the correct algorithm for checking the
+signature.
+
 ## decode
 
 ```perl

@@ -279,6 +279,29 @@ and links that can be used by the prefer hook to choose the correct file to
 download.  See the L<fetch hook|/"fetch hook"> for the specification of the
 input and response hash references.
 
+=head2 check_digest
+
+ # implement the well known FOO-92 digest
+ $meta->register_hook( check_digest => sub {
+   my($build, $file, $algorithm, $digest) = @_;
+   if($algorithm ne 'FOO92') {
+     return 0;
+   }
+   my $actual = foo92_hex_digest($file);
+   if($actual eq $digest) {
+     return 1;
+   } else {
+     die "Digest FOO92 does not match: got $actual, expected $digest";
+   }
+ });
+
+This hook should check the given C<$file> (the format is the same as used by
+L<the fetch hook|/"fetch hook">) matches the given C<$digest> using the
+given C<$algorithm>.  If the plugin does not support the given algorithm,
+then it should return a false value.  If the digest does not match, it
+should throw an exception.  If the digest matches, it should return a
+true value.
+
 =head2 clean_install
 
  $meta->register_hook( clean_install => sub {

@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Added experimental plugin Digest::SHAPP for checking signatures (gh#332)
+  - Added experimental check_digest method on Alien::Build (gh#332)
   - Removed long deprecated subplugin method from Alien::Build::Plugin (gh#331)
 
 2.56      2022-08-13 15:33:18 -0600

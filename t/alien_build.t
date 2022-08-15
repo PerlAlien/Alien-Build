@@ -1870,6 +1870,122 @@ subtest 'system probe plugin property' => sub {
 
 };
 
+subtest 'check_digest' => sub {
+
+  local $Alien::Build::VERSION = 2.57;
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    plugin 'Digest::SHAPP';
+    probe sub { 'share' };
+  };
+
+  alienfile_skip_if_missing_prereqs;
+
+  my $path = path('corpus/alien_build_plugin_digest_shapp/foo.txt.gz');
+
+  subtest 'digest disabled' => sub {
+
+    local $build->meta_prop->{check_digest} = 0;
+
+    is($build->check_digest('corpus/alien_build_plugin_digest_shapp/foo.txt.gz'), F());
+
+  };
+
+  subtest 'digest enabled' => sub {
+
+    local $build->meta_prop->{check_digest} = 1;
+    my $good = 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a';
+    my $bad  = 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391b';
+
+    foreach my $type (qw( string path-tiny content path ))
+    {
+
+      subtest $type => sub {
+        my $file;
+
+        local $build->meta_prop->{digest} = {};
+
+        if($type eq 'string')
+        {
+          $file = $path->stringify;
+        }
+        elsif($type eq 'path-tiny')
+        {
+          $file = $path;
+        }
+        elsif($type eq 'content')
+        {
+          $file = {
+            type     => 'file',
+            filename => $path->basename,
+            content  => $path->slurp_raw,
+          };
+        }
+        elsif($type eq 'path')
+        {
+          $file = {
+            type     => 'file',
+            filename => $path->basename,
+            path     => "$path",
+            tmp      => 0,
+          };
+        }
+        else
+        {
+          die "oops";
+        }
+
+        note _dump($file);
+
+        is
+          dies { $build->check_digest($file) },
+          match qr/^No digest for foo.txt.gz/,
+          "dies when no digest specified";
+
+        $build->meta_prop->{digest} = {
+          'foo.txt.gz' => [ SHA256 => $good ],
+        };
+
+        is
+          $build->check_digest($file),
+          1,
+          'good signature with filename';
+
+        $build->meta_prop->{digest} = {
+          'foo.txt.gz' => [ SHA256 => $bad ],
+        };
+
+        is
+          dies { $build->check_digest($file) },
+          match qr/^foo.txt.gz SHA256 digest does not match: got $good, expected $bad/,
+          'bad signature with filename';
+
+        $build->meta_prop->{digest} = {
+          '*' => [ SHA256 => $good ],
+        };
+
+        is
+          $build->check_digest($file),
+          1,
+          'good signature with glob';
+
+        $build->meta_prop->{digest} = {
+          'foo.txt.gz' => [ FOO92 => $good ],
+        };
+
+        is
+          dies { $build->check_digest($file) },
+          match qr/^No plugin provides digest algorithm for FOO92/,
+          'no algorithm';
+
+      }
+    }
+
+  };
+
+};
+
 done_testing;
 
 {
