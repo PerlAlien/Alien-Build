@@ -151,6 +151,7 @@ pod_spelling_system:
     - kon
     - INPHOBIA
     - nauwelaerts
+    - cryptographic
 
 pod_coverage:
   skip: 0

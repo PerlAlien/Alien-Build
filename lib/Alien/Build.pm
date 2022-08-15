@@ -1274,6 +1274,76 @@ sub fetch
   $self->_call_hook( 'fetch' => @_ );
 }
 
+=head2 check_digest
+
+[experimental]
+
+ my $bool = $build->check_digest($path);
+
+Checks any cryptographic signatures for the given file.  The
+file is specified by C<$path> which may be one of:
+
+=over 4
+
+=item string
+
+Containing the path to the file to be checked.
+
+=item L<Path::Tiny>
+
+Containing the path to the file to be checked.
+
+=item C<HASH>
+
+A Hash reference containing information about a file.  See
+L<the fetch hook|Alien::Build::Manual::PluginAuthor/"fech hook"> for details
+on the format.
+
+=back
+
+Returns true if the cryptographic signature matches, false if cryptographic
+signatures are disabled.  Will throw an exception if the signature does not
+match, or if no plugin provides the correct algorithm for checking the
+signature.
+
+=cut
+
+sub check_digest
+{
+  my($self, $file) = @_;
+
+  return '' unless $self->meta_prop->{check_digest};
+
+  unless(ref $file eq 'HASH')
+  {
+    if(-f $file) {
+      my $path = Path::Tiny->new($file);
+      $file = {
+        type     => 'file',
+        filename => $path->basename,
+        path     => "$path",
+        tmp      => 0,
+      };
+    }
+  }
+
+  my $filename = $file->{filename};
+  my $signature = $self->meta_prop->{digest}->{$filename} || $self->meta_prop->{digest}->{'*'};
+
+  die "No digest for $filename" unless defined $signature && ref $signature eq 'ARRAY';
+
+  my($algo, $expected) = @$signature;
+
+  if($self->meta->call_hook( check_digest => $self, $file, $algo, $expected ))
+  {
+    return 1;
+  }
+  else
+  {
+    die "No plugin provides digest algorithm for $algo";
+  }
+}
+
 =head2 decode
 
  my $decoded_res = $build->decode($res);
