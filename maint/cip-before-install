@@ -53,7 +53,8 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
     Win32::Vcpkg \
     Plack \
     Proc::Daemon \
-    AnyEvent::FTP
+    AnyEvent::FTP \
+    Digest::SHA::PurePerl
 
 fi
 
