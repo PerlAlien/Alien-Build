@@ -167,10 +167,18 @@ sub execute_helper
 
 =head2 interpolate
 
+ my $string = $intr->interpolate($template, $build);
  my $string = $intr->interpolate($template);
 
-This takes a template and fills in the appropriate values of any helpers
-used in the template.
+This takes a template and fills in the appropriate values of any helpers used
+in the template.
+
+[version 2.58]
+
+If you pass in an L<Alien::Build> instance as the second argument, you can use
+properties as well as helpers in the template.  Example:
+
+ my $patch = $intr->template("%{.install.patch}/foo-%{.runtime.version}.patch");
 
 =cut
 
@@ -196,12 +204,18 @@ sub _get_prop
   }
 }
 
-# TODO: document $prop
-
 sub interpolate
 {
   my($self, $string, $prop) = @_;
-  $prop ||= {};
+
+  if(eval { $prop->isa('Alien::Build') })
+  {
+    $prop = $prop->_command_prop;
+  }
+  else
+  {
+    $prop ||= {};
+  }
 
   $string =~ s{(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}}{$self->execute_helper($1)}eg;
   $string =~ s{(?<!\%)\%\{([a-zA-Z_\.][a-zA-Z_0-9\.]+)\}}{_get_prop($1,$prop,$1)}eg;
