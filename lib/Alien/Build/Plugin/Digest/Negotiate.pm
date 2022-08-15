@@ -30,8 +30,9 @@ This plugin is experimental.
 
 has '+sig' => sub { {} };
 
-has check_fetch => 1;
+has check_fetch    => 1;
 has check_download => 1;
+has allow_listing  => 1;
 
 sub init
 {
@@ -73,9 +74,14 @@ sub init
     fetch => sub {
       my($orig, $build, @rest) = @_;
       my $res = $orig->($build, @rest);
+      $DB::single = 1;
       if($res->{type} eq 'file')
       {
         $build->check_digest($res);
+      }
+      else
+      {
+        die "listing fetch not allowed" unless $self->allow_listing;
       }
       $res;
     },
