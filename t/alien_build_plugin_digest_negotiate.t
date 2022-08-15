@@ -3,6 +3,7 @@ use Test::Alien::Build;
 use Path::Tiny qw( path );
 
 our $download_filename;
+our $cwd_url;
 
 subtest 'basic' => sub {
 
@@ -192,6 +193,85 @@ subtest 'two signatures' => sub {
       dies { $build->download },
       match qr/SHA256 digest does not match/,
       'download dies with wrong signature';
+  };
+
+};
+
+subtest 'listing' => sub {
+
+  local $Alien::Build::VERSION = 2.57;
+
+  skip_all 'test require URI::file' unless eval { require URI::file };
+
+  my $url = URI::file->cwd;
+
+  subtest 'default' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        plugin 'Digest';
+        start_url 'file:///';
+        plugin 'Fetch::LWP';
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+
+    is
+      $build->fetch($url),
+      hash {
+        field type => 'html';
+        etc;
+      },
+      'works by default';
+
+  };
+
+  subtest 'allowed' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        plugin 'Digest', allow_listing => 1;
+        start_url 'file:///';
+        plugin 'Fetch::LWP';
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+
+    is
+      $build->fetch($url),
+      hash {
+        field type => 'html';
+        etc;
+      },
+      'works by default';
+
+  };
+
+  subtest 'not allowed' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        plugin 'Digest', allow_listing => 0;
+        start_url 'file:///';
+        plugin 'Fetch::LWP';
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+
+    is
+      dies { $build->fetch($url) },
+      match qr/^listing fetch not allowed/,
+      'works by default';
+
   };
 
 };
