@@ -3,7 +3,6 @@ package Alien::Build::Plugin::Digest::SHA;
 use strict;
 use warnings;
 use Alien::Build::Plugin;
-use Capture::Tiny qw( capture_merged );
 
 # DESCRIPTION: Plugin to check SHA digest with Digest::SHA
 # VERSION
