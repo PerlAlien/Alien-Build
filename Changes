@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.58_01   2022-08-15 12:55:07 -0600
   - Fix bug where properties could not be interpolated in environment
     variables if meta.env_interpolate is on (gh#333)
   - Can now pass an Alien::Build instance into Alien::Build::Interpolator's
