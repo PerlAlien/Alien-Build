@@ -19,11 +19,14 @@ subtest 'basic' => sub {
   foreach my $type (qw( path content ))
   {
 
+    my $good = 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a';
+    my $bad  = '032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d52';
+
     subtest "file stored as $type" => sub {
       my $file = {
         type     => 'file',
-        filename => 'foo.txt',
-        path     => path("corpus/alien_build_plugin_digest_shapp/foo.txt")->absolute->stringify,
+        filename => 'foo.txt.gz',
+        path     => path("corpus/alien_build_plugin_digest_shapp/foo.txt.gz")->absolute->stringify,
         tmp      => 0,
       };
 
@@ -36,18 +39,23 @@ subtest 'basic' => sub {
       note _dump($file);
 
       is
-        $build->meta->call_hook( check_digest => $build, $file, 13, '032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d51' ),
+        $build->meta->call_hook( check_digest => $build, $file, 'xxx', $good ),
         0,
-        'plugin returns 0 if it does not recognize the algorthim';
+        'plugin returns 0 if it does not recognize the algorthim (xxx)';
 
       is
-        $build->meta->call_hook( check_digest => $build, $file, 'SHA256', '032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d51' ),
+        $build->meta->call_hook( check_digest => $build, $file, 'SHA13', $good ),
+        0,
+        'plugin returns 0 if it does not recognize the algorthim (SHA13)';
+
+      is
+        $build->meta->call_hook( check_digest => $build, $file, 'SHA256', $good ),
         1,
         'plugin returns 1 for valid signature';
 
       is
-        dies { $build->meta->call_hook( check_digest => $build, $file, 'SHA256', '032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d52' ) },
-        match qr/^foo.txt SHA256 digest does not match: got 032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d51, expected 032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d52/,
+        dies { $build->meta->call_hook( check_digest => $build, $file, 'SHA256', $bad ) },
+        match qr/^foo.txt.gz SHA256 digest does not match: got $good, expected $bad/,
         'plugin dies on invalid signature';
     }
   }

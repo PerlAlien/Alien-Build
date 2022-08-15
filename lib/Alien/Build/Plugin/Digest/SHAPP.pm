@@ -29,6 +29,8 @@ sub init
   $meta->register_hook( check_digest => sub {
     my($build, $file, $algo, $expected_digest) = @_;
 
+    return 0 unless $algo =~ /^SHA[0-9]+$/;
+
     my $sha = Digest::SHA::PurePerl->new($algo);
     return 0 unless defined $sha;
 
