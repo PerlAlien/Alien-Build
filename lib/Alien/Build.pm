@@ -1912,8 +1912,8 @@ sub default_hook
 
 =head2 around_hook
 
- $build->meta->around_hook($hook, $code);
- Alien::Build->meta->around_hook($name, $code);
+ $build->meta->around_hook($hook_name, $code);
+ Alien::Build->meta->around_hook($hook_name, $code);
 
 Wrap the given hook with a code reference.  This is similar to a L<Moose>
 method modifier, except that it wraps around the given hook instead of
@@ -1957,6 +1957,18 @@ sub around_hook
   }
 }
 
+=head2 after_hook
+
+ $build->meta->after_hook($hook_name, sub {
+   my(@args) = @_;
+   ...
+ });
+
+Execute the given code reference after the hook.  The original
+arguments are passed into the code reference.
+
+=cut
+
 sub after_hook
 {
   my($self, $name, $code) = @_;
@@ -1969,6 +1981,18 @@ sub after_hook
     }
   );
 }
+
+=head2 before_hook
+
+ $build->meta->before_hook($hook_name, sub {
+   my(@args) = @_;
+   ...
+ });
+
+Execute the given code reference before the hook.  The original
+arguments are passed into the code reference.
+
+=cut
 
 sub before_hook
 {

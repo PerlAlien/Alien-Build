@@ -1,0 +1,36 @@
+# PODNAME: Alien::Build::Plugin::Digest
+# ABSTRACT: Fetch Alien::Digest plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ share {
+   start_url 'http://ftp.gnu.org/gnu/make/make-3.75.tar.gz';
+   plugin 'Digest' => [ SHA256 => '2bc876304905aee78abf0f7163ba55a2efcec803034f75c75d1b94650c36aba7';
+   plugin 'Download';
+ };
+
+=head1 DESCRIPTION
+
+Digest plugins checks the cryptographic signatures of downloaded files.
+Typically you will probably want to use SHA256 via the 
+L<Digest Negotiator plugin|Alien::Build::Plugin::Digest::Negotiator>.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Digest::Negotiator>
+
+=item L<Alien::Build::Plugin::Digest::SHA>
+
+=item L<Alien::Build::Plugin::Digest::SHAPP>
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

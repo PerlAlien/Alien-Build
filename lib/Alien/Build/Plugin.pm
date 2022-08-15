@@ -71,6 +71,10 @@ Methods for retrieving from the internet.
 
 Normally use Download plugins which will pick the correct Decode plugins.
 
+=item L<Alien::Build::Plugin::Digest>
+
+Check cryptographic signatures on downloaded files.
+
 =item L<Alien::Build::Plugin::Extract>
 
 Extract from archives that have been downloaded.
