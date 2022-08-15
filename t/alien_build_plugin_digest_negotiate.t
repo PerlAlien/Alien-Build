@@ -1,5 +1,8 @@
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
+use Path::Tiny qw( path );
+
+our $download_filename;
 
 subtest 'basic' => sub {
 
@@ -7,9 +10,15 @@ subtest 'basic' => sub {
 
   my $build = alienfile_ok q{
     use alienfile;
-    plugin 'Digest' => [ SHA256 => 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a' ];
-    plugin 'Fetch::Local';
     probe sub { 'share' };
+
+    share {
+      plugin 'Digest' => [ SHA256 => 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a' ];
+      plugin 'Fetch::Local';
+      download sub {
+        $main::download_filename->copy($main::download_filename->basename);
+      };
+    };
   };
 
   is
@@ -50,6 +59,31 @@ subtest 'basic' => sub {
 
   };
 
+  subtest 'download method' => sub {
+
+    local $download_filename = path('corpus/alien_build_plugin_digest_shapp/foo.txt.gz')->absolute;
+
+    is
+      $build,
+      object {
+        call download => T();
+        call install_prop => hash {
+          field download => match qr/foo.txt.gz/;
+          etc;
+        };
+      },
+      'download works with right signature';
+
+    delete $build->install_prop->{complete};
+    delete $build->install_prop->{download};
+    $download_filename = path(__FILE__)->absolute;
+
+    is
+      dies { $build->download },
+      match qr/SHA256 digest does not match/,
+      'download dies with wrong signature';
+  };
+
 };
 
 subtest 'two signatures' => sub {
@@ -58,13 +92,19 @@ subtest 'two signatures' => sub {
 
   my $build = alienfile_ok q{
     use alienfile;
-    plugin 'Fetch::Local';
-    plugin 'Digest' => {
-      'foo.txt.gz'                            => [ SHA256 => 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a' ],
-      'foo.txt'                               => [ SHA256 => '032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d51' ],
-      'alien_build_plugin_digest_negotiate.t' => [ SHA256 => 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ],
-    };
     probe sub { 'share' };
+
+    share {
+      plugin 'Digest' => {
+        'foo.txt.gz'                            => [ SHA256 => 'a7e79996a02d3dfc47f6f3ec043c67690dc06a10d091bf1d760fee7c8161391a' ],
+        'foo.txt'                               => [ SHA256 => '032772271db8f134e4914bca0e933361e1946c91c21e43610d301d39cbdb9d51' ],
+        'alien_build_plugin_digest_negotiate.t' => [ SHA256 => 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ],
+      };
+      plugin 'Fetch::Local';
+      download sub {
+        $main::download_filename->copy($main::download_filename->basename);
+      };
+    };
   };
 
   alienfile_skip_if_missing_prereqs;
@@ -112,6 +152,46 @@ subtest 'two signatures' => sub {
       match qr/SHA256 digest does not match/,
       'fetch throws exception on bad signature';
 
+  };
+
+  subtest 'download method' => sub {
+
+    local $download_filename = path('corpus/alien_build_plugin_digest_shapp/foo.txt')->absolute;
+
+    is
+      $build,
+      object {
+        call download => T();
+        call install_prop => hash {
+          field download => match qr/foo.txt/;
+          etc;
+        };
+      },
+      'download works with right signature';
+
+    delete $build->install_prop->{download};
+    delete $build->install_prop->{complete};
+    $download_filename = path('corpus/alien_build_plugin_digest_shapp/foo.txt.gz')->absolute;
+
+    is
+      $build,
+      object {
+        call download => T();
+        call install_prop => hash {
+          field download => match qr/foo.txt.gz/;
+          etc;
+        };
+      },
+      'download works with right signature';
+
+    delete $build->install_prop->{download};
+    delete $build->install_prop->{complete};
+    $download_filename = path(__FILE__)->absolute;
+
+    is
+      dies { $build->download },
+      match qr/SHA256 digest does not match/,
+      'download dies with wrong signature';
   };
 
 };

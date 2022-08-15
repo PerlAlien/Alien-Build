@@ -30,6 +30,9 @@ This plugin is experimental.
 
 has '+sig' => sub { {} };
 
+has check_fetch => 1;
+has check_download => 1;
+
 sub init
 {
   my($self, $meta) = @_;
@@ -75,6 +78,17 @@ sub init
         $build->check_digest($res);
       }
       $res;
+    },
+  ) if $self->check_fetch;
+
+  # Note that check_download hook is currently undocumented and
+  # may change in the future.
+  $meta->register_hook(
+    check_download => sub {
+      my($build) = @_;
+      my $path = $build->install_prop->{download};
+      die "Checking cryptographic signatures on download only works for single archive" unless defined $path;
+      $build->check_digest($path);
     },
   );
 }

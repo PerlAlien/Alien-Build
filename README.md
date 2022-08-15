@@ -869,8 +869,8 @@ register its own hook with that name.
 ## around\_hook
 
 ```
-$build->meta->around_hook($hook, $code);
-Alien::Build->meta->around_hook($name, $code);
+$build->meta->around_hook($hook_name, $code);
+Alien::Build->meta->around_hook($hook_name, $code);
 ```
 
 Wrap the given hook with a code reference.  This is similar to a [Moose](https://metacpan.org/pod/Moose)
@@ -896,6 +896,30 @@ $build->meta->around_hook(
   },
 );
 ```
+
+## after\_hook
+
+```perl
+$build->meta->after_hook($hook_name, sub {
+  my(@args) = @_;
+  ...
+});
+```
+
+Execute the given code reference after the hook.  The original
+arguments are passed into the code reference.
+
+## before\_hook
+
+```perl
+$build->meta->before_hook($hook_name, sub {
+  my(@args) = @_;
+  ...
+});
+```
+
+Execute the given code reference before the hook.  The original
+arguments are passed into the code reference.
 
 ## apply\_plugin
 
