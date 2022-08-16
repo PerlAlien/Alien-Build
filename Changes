@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.59      2022-08-16 09:38:14 -0600
   - Documentation improvements (gh#337, gh#341)
   - Do not allow downgrading from SSL if start_url is https.  This is
     done by filtering non-SSL URLs from the candidate listif the start_url
