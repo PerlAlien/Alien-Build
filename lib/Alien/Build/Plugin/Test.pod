@@ -1,0 +1,35 @@
+# PODNAME: Alien::Build::Plugin::Test
+# ABSTRACT: Probe Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Test::Mock' => (
+   probe    => 'share',
+   download => 1,
+   extract  => 1,
+   build    => 1,
+   gather   => 1,
+ );
+
+=head1 DESCRIPTION
+
+Test plugins are used in unit tests for L<Alien::Build> and possibly 
+its plugins.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Test::Mock>
+
+Mocks common steps in an L<alienfile>.
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

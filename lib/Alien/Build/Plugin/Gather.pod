@@ -1,0 +1,30 @@
+# PODNAME: Alien::Build::Plugin::Gather
+# ABSTRACT: Gather Alien::Build plugins
+# VERSION
+
+=head1 SYNOPSIS
+
+ use alienfile;
+ plugin 'Gather::IsolateDynamic';  # just as an example
+
+=head1 DESCRIPTION
+
+Gather plugins enhance L<alienfile> recipes at the gather stage, either
+during a C<system> or C<share> install.
+
+=over 4
+
+=item L<Alien::Build::Plugin::Gather::IsolateDynamic>
+
+Isolate dynamic libraries (C<.so>, <.DLL> or <.dylib>) so that they aren't used
+by XS.
+
+=back
+
+=cut
+
+=head1 SEE ALSO
+
+L<Alien::Build>, L<Alien::Build::Plugin>
+
+=cut

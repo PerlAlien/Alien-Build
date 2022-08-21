@@ -24,7 +24,31 @@ downloaded and extracted.
 
 =item L<Alien::Build::Plugin::Build::Autoconf>
 
+For dealing with packages that are configured using autotools,
+or an autotools-like C<configure> script.
+
+=item L<Alien::Build::Plugin::Build::CMake>
+
+For dealing with packages that are configured and built using CMake.
+
+=item L<Alien::Build::Plugin::Build::Copy>
+
+For dealing with packages that do not require any build, and can just
+be copied into their final location.
+
 =item L<Alien::Build::Plugin::Build::MSYS>
+
+For dealing with packages that require MSYS on Windows in order to
+build.  This plugin is typically a no-op on other platforms.
+
+=item L<Alien::Build::Plugin::Build::Make>
+
+For dealing with packages that require Make to build.  Several
+flavors of Make are supported, including GNU Make and BSD Make.
+
+=item L<Alien::Build::Plugin::Build::SearchDep>
+
+Add other L<Alien>s as dependencies.
 
 =back
 

@@ -20,13 +20,23 @@ Extract plugin available.
 
 =item L<Alien::Build::Plugin::Extract::ArchiveTar>
 
+Extract using C<tar>.  Typically also works with compressed tarballs like C<tar.gz>.
+
 =item L<Alien::Build::Plugin::Extract::ArchiveZip>
+
+Extract using L<Archive::Zip>.
 
 =item L<Alien::Build::Plugin::Extract::CommandLine>
 
+Extract using command line tools like C<tar> or C<unxip>.
+
 =item L<Alien::Build::Plugin::Extract::Directory>
 
+Extract a local directory.
+
 =item L<Alien::Build::Plugin::Extract::Negotiate>
+
+Pick the best extract plugin based on the extension of the package archive.
 
 =back
 
