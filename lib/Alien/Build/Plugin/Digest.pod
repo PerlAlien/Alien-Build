@@ -21,9 +21,16 @@ L<Digest Negotiator plugin|Alien::Build::Plugin::Digest::Negotiator>.
 
 =item L<Alien::Build::Plugin::Digest::Negotiator>
 
+Negotiate the most appropriate plugin to calculate digest.
+
 =item L<Alien::Build::Plugin::Digest::SHA>
 
+Use the XS based L<Digest::SHA> for computing SHA digests.  This is the default since
+L<Digest::SHA> comes with recent versions of Perl.
+
 =item L<Alien::Build::Plugin::Digest::SHAPP>
+
+Use the pure-perl based L<Digest::SHA::PurePerl> for computing SHA digests.
 
 =back
 

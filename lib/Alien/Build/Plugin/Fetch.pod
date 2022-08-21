@@ -22,13 +22,33 @@ will pick the best plugins for your given URL.
 
 =over 4
 
+=item L<Alien::Build::Plugin::Fetch::CurlCommand>
+
+Fetch using the C<curl> command.
+
 =item L<Alien::Build::Plugin::Fetch::HTTPTiny>
 
-=item L<Alien::Build::Plugin::Fetch::Local>
+Fetch using L<HTTP::Tiny>.
 
 =item L<Alien::Build::Plugin::Fetch::LWP>
 
+Fetch using L<LWP::UserAgent>.
+
+=item L<Alien::Build::Plugin::Fetch::Local>
+
+Fetch from a local file.  This is typically used to bundle packages with your L<Alien>.
+
+=item L<Alien::Build::Plugin::Fetch::LocalDir>
+
+Fetch from a local directory.  This is typically used to bundle packages with your L<Alien>.
+
 =item L<Alien::Build::Plugin::Fetch::NetFTP>
+
+Fetch using L<Net::FTP>.  Use of FTP should be discouraged as of this writing (August 2022).
+
+=item L<Alien::Build::Plugin::Fetch::Wget>
+
+Fetch using C<wget>.
 
 =back
 
