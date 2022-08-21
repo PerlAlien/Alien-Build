@@ -142,12 +142,16 @@ Perlish pseudo code for how plugins are called:
 =head1 DESCRIPTION
 
 This document explains how to write L<Alien::Build> plugins using the
-L<Alien::Build::Plugin> base class.  Plugins use L<Alien::Build::Plugin>,
-which sets the appropriate base class, and provides you with the C<has>
-property builder.  C<has> takes two arguments, the name of the property
-and the default value.  (As with L<Moose> and L<Moo>, you should use a
-code reference to specify default values for non-string defaults).  No
-B<not> set this as your plugin's base class directly:
+L<Alien::Build::Plugin> base class.
+
+=head2 Writing plugins
+
+Plugins use L<Alien::Build::Plugin>, which sets the appropriate base
+class, and provides you with the C<has> property builder.  C<has> takes
+two arguments, the name of the property and the default value.  (As
+with L<Moose> and L<Moo>, you should use a code reference to specify
+default values for non-string defaults).  No B<not> set this as your
+plugin's base class directly:
 
  use parent qw( Alien::Build::Plugin );  # wrong
  use Alien::Build::Plugin;               # right
@@ -177,6 +181,8 @@ logic removed:
 
 Hooks get the L<Alien::Build> instance as their first argument, and depending
 on the hook may get additional arguments.
+
+=head2 Modifying hooks
 
 You can also modify hooks using C<before_hook>, C<around_hook> and C<after_hook>,
 similar to L<Moose> modifiers:
@@ -211,6 +217,8 @@ similar to L<Moose> modifiers:
    );
  }
 
+=head2 Testing plugins
+
 You can and should write tests for your plugin.  The best way to do
 this is using L<Test::Alien::Build>, which allows you to write an
 inline L<alienfile> in your test.  Here is an example:
@@ -232,6 +240,49 @@ inline L<alienfile> in your test.  Here is an example:
  my $alien = alien_build_ok;
  
  # you can interrogate $alien, it is an instance of L<Alien::Base>.
+
+=head2 Negotiator plugins
+
+A Negotiator plugin doesn't itself typically implement anything on
+its own, but picks the best plugin to achieve a particular goal.
+
+The "best" plugin can in some cases vary depending on the platform
+or tools that are available.  For example The
+L<download negotiator|Alien::Build::Plugin::Download::Negotiate>
+might choose to use the fetch plugin that relies on the command line
+C<curl>, or it might choose the fetch plugin that relies on the Perl
+module L<HTTP::Tiny> depending on the platform and what is already
+installed.  (For either to be useful they have to support SSL).
+
+The Negotiator plugin is by convention named something like
+C<Alien::Build::Plugin::*::Negotiate>, but is typically invoked
+without the C<::Negotiate> suffix.  For example:
+
+ plugin 'Download'; # is short for Alien::Build::Plugin::Download::Negotiator
+
+Here is a simple example of a negotiator which picks C<curl> if already
+installed and L<HTTP::Tiny> otherwise.  (The actual download plugin
+is a lot smarter than this, but this is a good example).
+
+ package Alien::Build::Plugin::Download::Negotiate;
+
+ use strict;
+ use warnings;
+ use Alien::Build::Plugin;
+ use File::Which qw( which );
+ 
+ sub init
+ {
+   my($self, $meta) = @_;
+
+   if(which('curl')) {
+     $meta->apply_plugin('Fetch::Curl');
+   } else {
+     $meta->apply_plugin('Fetch::HTTPTiny');
+   }
+ }
+
+=head2 Hooks
 
 The remainder of this document is a reference for the hooks that you
 can register.  Generally speaking you can register any hook that you

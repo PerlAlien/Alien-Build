@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Documentation improvements (gh#334, gh#342)
+  - Documentation improvements (gh#333, gh#334, gh#342, gh#343)
 
 2.59      2022-08-16 09:38:14 -0600
   - Documentation improvements (gh#337, gh#341)
