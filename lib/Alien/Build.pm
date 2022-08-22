@@ -584,6 +584,13 @@ the plugin (instead if should use the hook property C<probe_instance_id>,
 see below).  This is optional, and not all probe plugins will provide
 this information.
 
+=item verified_digest
+
+This property contains the verified cryptographic signatures.  Once
+the digest has been verified, this property will be populated.  The key
+is the path to the file that has been verified and the value is an array
+reference containing a pair of values: the algorithm and the digest.
+
 =back
 
 =cut
@@ -1371,11 +1378,12 @@ sub check_digest
     };
   }
 
-  if(defined $file->{path})
+  my $path = $file->{path};
+  if(defined $path)
   {
     # there is technically a race condition here
-    die "Missing file in digest check: @{[ $file->{filename} ]}" unless -f $file->{path};
-    die "Unreadable file in digest check: @{[ $file->{filename} ]}" unless -r $file->{path};
+    die "Missing file in digest check: @{[ $file->{filename} ]}" unless -f $path;
+    die "Unreadable file in digest check: @{[ $file->{filename} ]}" unless -r $path;
   }
   else
   {
@@ -1393,7 +1401,9 @@ sub check_digest
 
   if($self->meta->call_hook( check_digest => $self, $file, $algo, $expected ))
   {
-    return 1;
+    # record the verification here so that we can check in the extract step that the signature
+    # was checked.
+    $self->install_prop->{verified_digest}->{$path} ||= [$algo, $expected] if defined $path; return 1;
   }
   else
   {

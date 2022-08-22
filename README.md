@@ -393,6 +393,13 @@ based module.
     see below).  This is optional, and not all probe plugins will provide
     this information.
 
+- verified\_digest
+
+    This property contains the verified cryptographic signatures.  Once
+    the digest has been verified, this property will be populated.  The key
+    is the path to the file that has been verified and the value is an array
+    reference containing a pair of values: the algorithm and the digest.
+
 ## plugin\_instance\_prop
 
 ```perl

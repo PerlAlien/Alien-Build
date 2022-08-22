@@ -1953,10 +1953,26 @@ subtest 'check_digest' => sub {
           'foo.txt.gz' => [ SHA256 => $good ],
         };
 
+        delete $build->install_prop->{verified_digest};
+
         is
           $build->check_digest($file),
           1,
           'good signature with filename';
+
+        if(ref($file) eq 'HASH' && defined $file->{path})
+        {
+          is
+            $build->install_prop,
+            hash {
+              field verified_digest => hash {
+                field $file->{path} => [ SHA256 => $good ];
+                etc;
+              };
+              etc;
+            },
+            '.install.verified_digest is populated and matches';
+        }
 
         $build->meta_prop->{digest} = {
           'foo.txt.gz' => [ SHA256 => $bad ],
