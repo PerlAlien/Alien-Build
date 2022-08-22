@@ -74,7 +74,6 @@ sub init
     fetch => sub {
       my($orig, $build, @rest) = @_;
       my $res = $orig->($build, @rest);
-      $DB::single = 1;
       if($res->{type} eq 'file')
       {
         $build->check_digest($res);

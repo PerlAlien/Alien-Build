@@ -328,6 +328,12 @@ that the library or tool contains architecture dependent files and so should
 be stored in an architecture dependent location.  If not specified by your
 L<alienfile> then it will be set to true.
 
+=item check_digest
+
+True if cryptographic digest should be checked when files are fetched
+or downloaded.  This is set by
+L<Digest negotiator plugin|Alien::Build::Plugin::Digest::Negotiate>.
+
 =item destdir
 
 Some plugins (L<Alien::Build::Plugin::Build::Autoconf> for example) support
@@ -347,6 +353,30 @@ into the stage directory.  If not defined, then all files will be copied.
 =item destdir_ffi_filter
 
 Same as C<destdir_filter> except applies to C<build_ffi> instead of C<build>.
+
+=item digest
+
+This properties contains the cryptographic digests (if any) that should
+be used when verifying any fetched and downloaded files.  It is a hash
+reference where the key is the filename and the value is an array 
+reference containing a pair of values, the first being the algorithm
+('SHA256' is recommended) and the second is the actual digest.  The
+special filename C<*> may be specified to indicate that any downloaded
+file should match that digest.  If there are both real filenames and
+the C<*> placeholder, the real filenames will be used for filenames
+that match and any other files will use the placeholder.  Example:
+
+ $build->meta_prop->{digest} = {
+   'foo-1.00.tar.gz' => [ SHA256 => '9feac593aa49a44eb837de52513a57736457f1ea70078346c60f0bfc5f24f2c1' ],
+   'foo-1.01.tar.gz' => [ SHA256 => '6bbde6a7f10ae5924cf74afc26ff5b7bc4b4f9dfd85c6b534c51bd254697b9e7' ],
+   '*'               => [ SHA256 => '33a20aae3df6ecfbe812b48082926d55391be4a57d858d35753ab1334b9fddb3' ],
+ };
+
+Cryptographic signatures will only be checked
+if the L<check_digest meta property|/check_digest> is set and if the
+L<Digest negotiator plugin|Alien::Build::Plugin::Digest::Negotiate> is loaded.
+(The Digest negotiator can be used directly, but is also loaded automatically
+if you use the L<digest directive|alienfile/digest> is used by the L<alienfile>).
 
 =item env
 
