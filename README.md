@@ -165,6 +165,12 @@ but if you do not follow this rule your recipe will likely be broken.
     be stored in an architecture dependent location.  If not specified by your
     [alienfile](https://metacpan.org/pod/alienfile) then it will be set to true.
 
+- check\_digest
+
+    True if cryptographic digest should be checked when files are fetched
+    or downloaded.  This is set by
+    [Digest negotiator plugin](https://metacpan.org/pod/Alien::Build::Plugin::Digest::Negotiate).
+
 - destdir
 
     Some plugins ([Alien::Build::Plugin::Build::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Build::Autoconf) for example) support
@@ -184,6 +190,32 @@ but if you do not follow this rule your recipe will likely be broken.
 - destdir\_ffi\_filter
 
     Same as `destdir_filter` except applies to `build_ffi` instead of `build`.
+
+- digest
+
+    This properties contains the cryptographic digests (if any) that should
+    be used when verifying any fetched and downloaded files.  It is a hash
+    reference where the key is the filename and the value is an array 
+    reference containing a pair of values, the first being the algorithm
+    ('SHA256' is recommended) and the second is the actual digest.  The
+    special filename `*` may be specified to indicate that any downloaded
+    file should match that digest.  If there are both real filenames and
+    the `*` placeholder, the real filenames will be used for filenames
+    that match and any other files will use the placeholder.  Example:
+
+    ```perl
+    $build->meta_prop->{digest} = {
+      'foo-1.00.tar.gz' => [ SHA256 => '9feac593aa49a44eb837de52513a57736457f1ea70078346c60f0bfc5f24f2c1' ],
+      'foo-1.01.tar.gz' => [ SHA256 => '6bbde6a7f10ae5924cf74afc26ff5b7bc4b4f9dfd85c6b534c51bd254697b9e7' ],
+      '*'               => [ SHA256 => '33a20aae3df6ecfbe812b48082926d55391be4a57d858d35753ab1334b9fddb3' ],
+    };
+    ```
+
+    Cryptographic signatures will only be checked
+    if the [check\_digest meta property](#check_digest) is set and if the
+    [Digest negotiator plugin](https://metacpan.org/pod/Alien::Build::Plugin::Digest::Negotiate) is loaded.
+    (The Digest negotiator can be used directly, but is also loaded automatically
+    if you use the [digest directive](https://metacpan.org/pod/alienfile#digest) is used by the [alienfile](https://metacpan.org/pod/alienfile)).
 
 - env
 
