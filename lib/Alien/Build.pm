@@ -1423,7 +1423,11 @@ hash structure described below in the hook documentation.
 sub decode
 {
   my($self, $res) = @_;
-  $self->_call_hook( decode => $res );
+  my $res2 = $self->_call_hook( decode => $res );
+  $res2->{protocol} = $res->{protocol}
+    if !defined $res2->{protocol}
+    &&  defined $res->{protocol};
+  return $res2;
 }
 
 =head2 prefer
@@ -1439,7 +1443,11 @@ below in the hook documentation.
 sub prefer
 {
   my($self, $res) = @_;
-  $self->_call_hook( prefer => $res );
+  my $res2 = $self->_call_hook( prefer => $res );
+  $res2->{protocol} = $res->{protocol}
+    if !defined $res2->{protocol}
+    &&  defined $res->{protocol};
+  return $res2;
 }
 
 =head2 extract

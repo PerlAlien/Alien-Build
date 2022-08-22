@@ -28,6 +28,7 @@ subtest 'basic' => sub {
         field filename => 'foo-1.00.tar';
         field path     => T();
         field tmp      => 0;
+        field protocol => 'file';
         end;
       },
       'response hash'
@@ -57,6 +58,8 @@ subtest 'basic' => sub {
             };
           }
         };
+        field protocol => 'file';
+        end;
       },
       'response hash',
     );
@@ -82,6 +85,7 @@ subtest 'basic' => sub {
         field filename => 'foo-1.00.tar.gz';
         field path     => T();
         field tmp      => 0;
+        field protocol => 'file';
         end;
       },
       'response hash'
@@ -170,6 +174,8 @@ subtest 'uri' => sub {
             };
           }
         };
+        field protocol => 'file';
+        end;
       },
       'response hash',
     );
@@ -194,6 +200,7 @@ subtest 'uri' => sub {
         field filename => 'foo-1.00.tar.gz';
         field path     => T();
         field tmp      => 0;
+        field protocol => 'file';
         end;
       },
       'response hash'

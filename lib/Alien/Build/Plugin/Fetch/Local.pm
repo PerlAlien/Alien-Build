@@ -102,8 +102,9 @@ sub init
     if(-d $path)
     {
       return {
-        type => 'list',
-        list => [
+        type     => 'list',
+        protocol => 'file',
+        list     => [
           map { { filename => $_->basename, url => $_->stringify } }
           sort { $a->basename cmp $b->basename } $path->children,
         ],
@@ -116,6 +117,7 @@ sub init
         filename => $path->basename,
         path     => $path->stringify,
         tmp      => 0,
+        protocol => 'file',
       };
     }
     else

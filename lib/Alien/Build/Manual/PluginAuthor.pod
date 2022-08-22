@@ -470,6 +470,7 @@ with the following keys:
    filename => $filename,
    content  => $content,
    version  => $version,  # optional, if known
+   protocol => $protocol, # AB 2.60 optional, but recommended
  };
  
  # content of file stored in the filesystem
@@ -479,6 +480,7 @@ with the following keys:
    path     => $path,     # full file system path to file
    version  => $version,  # optional, if known
    tmp      => $tmp,      # optional
+   protocol => $protocol, # AB 2.60 optional, but recommended
  };
 
 C<$tmp> if set will indicate if the file is temporary or not, and can
@@ -502,7 +504,8 @@ a hash reference containing a list of files:
      # version: OPTIONAL, may be provided by some fetch or prefer
      { filename => $filename1, url => $url1, version => $version1 },
      { filename => $filename2, url => $url2, version => $version2 },
-   ]
+   ],
+   protocol => $protocol, # AB 2.60 optional, but recommended
  };
 
 or if the listing is in HTML format as a hash reference containing the
@@ -510,19 +513,33 @@ HTML information:
 
  return {
    type => 'html',
-   charset => $charset, # optional
-   base    => $base,    # the base URL: used for computing relative URLs
-   content => $content, # the HTML content
+   charset  => $charset, # optional
+   base     => $base,    # the base URL: used for computing relative URLs
+   content  => $content, # the HTML content
+   protocol => $protocol, # optional, but recommended
  };
 
 or a directory listing (usually produced by an FTP servers) as a hash
 reference:
 
  return {
-   type    => 'dir_listing',
-   base    => $base,
-   content => $content,
+   type     => 'dir_listing',
+   base     => $base,
+   content  => $content,
+   protocol => $protocol, # AB 2.60 optional, but recommended
  };
+
+[version 2.60]
+
+For all of these responses C<$protocol> is optional, since it was not part
+of the original spec, however it is strongly recommended that you include
+this field, because future versions of L<Alien::Build> will use this to
+determine if a file was downloaded securely (that is via a secure protocol
+such as SSL).
+
+Some plugins (like L<decode plugins |Alien::Build::Plugin::Decode>) trans
+late a file hash from one type to another, they should maintain the
+C<$protocol> from the old to the new representation of the file.
 
 =head2 gather_ffi hook
 

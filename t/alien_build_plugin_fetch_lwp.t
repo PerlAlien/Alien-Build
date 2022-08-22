@@ -105,8 +105,10 @@ subtest 'fetch' => sub {
               field type    => 'html';
               field charset => E();
             }
-            field base    => match qr!^$type:/!;
-            field content => match qr!foo-1\.00\.tar\.gz!;
+            field base     => match qr!^$type:/!;
+            field content  => match qr!foo-1\.00\.tar\.gz!;
+            field protocol => $type;
+            end;
           },
          ) || diag _dump($res);
       };
@@ -124,6 +126,8 @@ subtest 'fetch' => sub {
             field type     => 'file';
             field filename => 'foo-1.00.tar.gz';
             field content  => $expected_content;
+            field protocol => $type;
+            end;
           },
         );
       };
