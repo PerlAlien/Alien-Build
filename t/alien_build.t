@@ -2083,6 +2083,129 @@ subtest 'check_digest' => sub {
 
 };
 
+subtest 'prefer' => sub {
+
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || 2.60;
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    probe sub { 'share' };
+    share {
+      start_url './corpus/dist';
+      plugin 'Download';
+
+      prefer sub {
+        my($build, $res) = @_;
+
+        return {
+          type => 'list',
+          list => [
+            sort { $b->{filename} cmp $a->{filename} } @{ $res->{list} },
+          ],
+        };
+      };
+
+    };
+  };
+
+  alienfile_skip_if_missing_prereqs;
+  alien_install_type_is 'share';
+
+  is
+    $build->prefer($build->fetch),
+    hash {
+      field type     => 'list';
+      field protocol => 'file';
+      field list     => array {
+        item hash {
+          field filename => 'foo-1.00.zip';
+          field url      => T();
+        };
+        etc;
+      };
+      end;
+    },
+    'expected result';
+
+};
+
+subtest 'decode' => sub {
+
+  my $build = alienfile_ok q{
+    use alienfile;
+    probe sub { 'share' };
+    share {
+
+      decode sub {
+        my($build, $res) = @_;
+
+        if($res->{type} eq 'html')
+        {
+          die "did not get expected content" unless $res->{content} =~ /FAUX HTML/;
+        }
+        elsif($res->{type} eq 'dir_listing')
+        {
+          die "did not get expected content" unless $res->{content} =~ /FAUX DIR LISTING/;
+        }
+        else
+        {
+          die "test does not handle @{[ $res->{type} ]}";
+        }
+
+        return {
+          type => 'list',
+          list => [
+            { filename => 'foo1.txt', url => "@{[ $res->{base} ]}/foo1.txt" },
+            { filename => 'foo2.txt', url => "@{[ $res->{base} ]}/foo2.txt" },
+          ],
+        };
+
+      };
+    
+    };
+  };
+
+  alienfile_skip_if_missing_prereqs;
+  alien_install_type_is 'share';
+
+  is
+    $build->decode({
+      type     => 'html',
+      base     => 'http://foo.com',
+      content  => 'my FAUX HTML content',
+      protocol => 'http',
+    }),
+    hash {
+      field type     => 'list';
+      field protocol => 'http';
+      field list => [
+        { filename => 'foo1.txt', url => 'http://foo.com/foo1.txt' },
+        { filename => 'foo2.txt', url => 'http://foo.com/foo2.txt' },
+      ];
+      end;
+    },
+    'decoded html';
+
+  is
+    $build->decode({
+      type     => 'dir_listing',
+      base     => 'ftp://foo.com',
+      content  => 'my FAUX DIR LISTING content',
+      protocol => 'ftp',
+    }),
+    hash {
+      field type     => 'list';
+      field protocol => 'ftp';
+      field list => [
+        { filename => 'foo1.txt', url => 'ftp://foo.com/foo1.txt' },
+        { filename => 'foo2.txt', url => 'ftp://foo.com/foo2.txt' },
+      ];
+      end;
+    },
+    'decoded dir listing';
+
+};
+
 done_testing;
 
 {
@@ -2094,4 +2217,3 @@ done_testing;
   package MyBuild2;
   use parent 'Alien::Build';
 }
-

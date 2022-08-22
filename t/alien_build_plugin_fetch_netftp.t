@@ -96,7 +96,8 @@ subtest 'fetch' => sub {
     is(
       $res,
       hash {
-        field type => 'list';
+        field type     => 'list';
+        field protocol => 'ftp';
         field list => array {
           for (qw( foo-1.00 foo-1.00.tar foo-1.00.tar.Z foo-1.00.tar.bz2 foo-1.00.tar.gz foo-1.00.tar.xz foo-1.00.zip )) {
             item hash {
@@ -118,6 +119,7 @@ subtest 'fetch' => sub {
       $res,
       hash {
         field type     => 'file';
+        field protocol => 'ftp';
         field filename => 'foo-1.00.tar.gz';
         field path     => match qr/foo-1\.00\.tar\.gz$/;
       },

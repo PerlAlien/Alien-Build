@@ -116,6 +116,7 @@ sub init
           type     => 'file',
           filename => $filename,
           path     => $path,
+          protocol => 'ftp',
         };
       }
 
@@ -146,8 +147,9 @@ sub init
     $path .= '/' unless $path =~ /\/$/;
 
     return {
-      type => 'list',
-      list => [
+      type     => 'list',
+      protocol => 'ftp',
+      list     => [
         map {
           my $filename = $_;
           my $furl = $url->clone;

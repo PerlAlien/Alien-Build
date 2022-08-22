@@ -120,9 +120,10 @@ sub init
         if($type eq 'text/html')
         {
           return {
-            type    => 'html',
-            base    => $url,
-            content => scalar $path->slurp,
+            type     => 'html',
+            base     => $url,
+            content  => scalar $path->slurp,
+            protocol => $scheme,
           };
         }
         else
@@ -131,6 +132,7 @@ sub init
             type     => 'file',
             filename => $path->basename,
             path     => $path->absolute->stringify,
+            protocol => $scheme,
           };
         }
       }

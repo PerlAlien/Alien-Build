@@ -77,6 +77,8 @@ sub init
     my($build, $url, %options) = @_;
     $url ||= $self->url;
 
+    $url = URI->new($url) unless ref($url) && $url->isa('URI');
+
     my %headers;
     if(my $headers = $options{http_headers})
     {
@@ -152,9 +154,10 @@ sub init
     if($type eq 'text/html')
     {
       return {
-        type    => 'html',
-        base    => $base->as_string,
-        content => $res->{content},
+        type     => 'html',
+        base     => $base->as_string,
+        content  => $res->{content},
+        protocol => $url->scheme,
       };
     }
     else
@@ -163,6 +166,7 @@ sub init
         type     => 'file',
         filename => $filename || 'downloadedfile',
         content  => $res->{content},
+        protocol => $url->scheme,
       };
     }
 

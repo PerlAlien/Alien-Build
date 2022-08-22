@@ -22,6 +22,9 @@ subtest 'fetch from http' => sub {
 
   my $base = $config->{url};
 
+  my($proto) = $base =~ /^([a-z]+):/;
+  like $proto, qr/^https?$/, "protocol is either http or https (url = $base)";
+
   my $build = alienfile_ok qq{
     use alienfile;
 
@@ -43,9 +46,10 @@ subtest 'fetch from http' => sub {
     is(
       $list,
       hash {
-        field type    => 'html';
-        field base    => "$base/html_test.html";
-        field content => "<html><head><title>Hello World</title></head><body><p>Hello World</p></body></html>\n";
+        field type     => 'html';
+        field base     => "$base/html_test.html";
+        field content  => "<html><head><title>Hello World</title></head><body><p>Hello World</p></body></html>\n";
+        field protocol => $proto;
         end;
       },
       'list'
@@ -63,6 +67,7 @@ subtest 'fetch from http' => sub {
         field type     => 'file';
         field filename => 'foo-1.01.tar';
         field path     => T();
+        field protocol => $proto;
         end;
       },
       'file meta',

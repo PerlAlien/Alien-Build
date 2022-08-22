@@ -44,9 +44,10 @@ subtest 'fetch from http' => sub {
     is(
       $list,
       hash {
-        field type    => 'html';
-        field base    => "$base/html_test.html";
-        field content => "<html><head><title>Hello World</title></head><body><p>Hello World</p></body></html>\n";
+        field type     => 'html';
+        field base     => "$base/html_test.html";
+        field content  => "<html><head><title>Hello World</title></head><body><p>Hello World</p></body></html>\n";
+        field protocol => 'http';
         end;
       },
       'list'
@@ -64,6 +65,7 @@ subtest 'fetch from http' => sub {
         field type     => 'file';
         field filename => 'foo-1.01.tar';
         field path     => T();
+        field protocol => 'http';
         end;
       },
       'file meta',
