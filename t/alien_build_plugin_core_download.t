@@ -121,12 +121,12 @@ alien_subtest 'protocol + digest' => sub {
       $build->install_prop,
       hash {
         field download => T();
-        field verified_digest => hash {
-          field $build->install_prop->{download} => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
-          etc;
-        };
-        field download_protocol => hash {
-          field $build->install_prop->{download} => 'test1';
+        field download_detail => hash {
+          field $build->install_prop->{download} => hash {
+            field digest => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
+            field protocol => 'test1';
+            etc;
+          };
           etc;
         };
         etc;
@@ -165,12 +165,12 @@ alien_subtest 'protocol + digest' => sub {
       $build->install_prop,
       hash {
         field download => T();
-        field verified_digest => hash {
-          field $build->install_prop->{download} => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
-          etc;
-        };
-        field download_protocol => hash {
-          field $build->install_prop->{download} => 'test2';
+        field download_detail => hash {
+          field $build->install_prop->{download} => hash {
+            field digest => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
+            field protocol => 'test2';
+            etc;
+          };
           etc;
         };
         etc;
@@ -196,7 +196,7 @@ alien_subtest 'protocol + digest' => sub {
             filename => 'foo.txt',
             path     => "$path",
             tmp      => 1,
-            protocol => 'test2',
+            protocol => 'test3',
           };
         };
       };
@@ -209,12 +209,12 @@ alien_subtest 'protocol + digest' => sub {
       $build->install_prop,
       hash {
         field download => T();
-        field verified_digest => hash {
-          field $build->install_prop->{download} => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
-          etc;
-        };
-        field download_protocol => hash {
-          field $build->install_prop->{download} => 'test2';
+        field download_detail => hash {
+          field $build->install_prop->{download} => hash {
+            field digest => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
+            field protocol => 'test3';
+            etc;
+          };
           etc;
         };
         etc;
