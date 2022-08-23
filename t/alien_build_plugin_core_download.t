@@ -92,6 +92,139 @@ alien_subtest 'https html' => sub {
 
 };
 
+alien_subtest 'protocol + digest' => sub {
+
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
+
+  subtest 'file content' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        digest SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo.txt',
+            content  => 'bar',
+            protocol => 'test1',
+          };
+        };
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_download_ok;
+
+    is
+      $build->install_prop,
+      hash {
+        field download => T();
+        field verified_digest => hash {
+          field $build->install_prop->{download} => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
+          etc;
+        };
+        field download_protocol => hash {
+          field $build->install_prop->{download} => 'test1';
+          etc;
+        };
+        etc;
+      },
+      'install properties set';
+
+  };
+
+  subtest 'filesystem no tmp' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+      use File::Temp qw( tempdir );
+      probe sub { 'share' };
+      share {
+        digest SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9';
+        fetch sub {
+          my $path = path( tempdir( CLEANUP => 1 ))->child('foo.txt')->absolute;
+          $path->spew('bar');
+          return {
+            type     => 'file',
+            filename => 'foo.txt',
+            path     => "$path",
+            tmp      => 0,
+            protocol => 'test2',
+          };
+        };
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_download_ok;
+
+    is
+      $build->install_prop,
+      hash {
+        field download => T();
+        field verified_digest => hash {
+          field $build->install_prop->{download} => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
+          etc;
+        };
+        field download_protocol => hash {
+          field $build->install_prop->{download} => 'test2';
+          etc;
+        };
+        etc;
+      },
+      'install properties set';
+
+  };
+
+  subtest 'filesystem tmp' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      use Path::Tiny qw( path );
+      use File::Temp qw( tempdir );
+      probe sub { 'share' };
+      share {
+        digest SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9';
+        fetch sub {
+          my $path = path( tempdir( CLEANUP => 1 ))->child('foo.txt')->absolute;
+          $path->spew('bar');
+          return {
+            type     => 'file',
+            filename => 'foo.txt',
+            path     => "$path",
+            tmp      => 1,
+            protocol => 'test2',
+          };
+        };
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_download_ok;
+
+    is
+      $build->install_prop,
+      hash {
+        field download => T();
+        field verified_digest => hash {
+          field $build->install_prop->{download} => [SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9'];
+          etc;
+        };
+        field download_protocol => hash {
+          field $build->install_prop->{download} => 'test2';
+          etc;
+        };
+        etc;
+      },
+      'install properties set';
+
+  };
+
+};
+
 done_testing;
 
 package
