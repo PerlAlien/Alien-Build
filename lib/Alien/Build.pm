@@ -505,6 +505,30 @@ your L<alienfile>.  This is set during before the build hook is run.
 The location of the downloaded archive (tar.gz, or similar) or directory.
 This will be undefined until the archive is actually downloaded.
 
+=item download_detail
+
+This property contains optional details about a downloaded file.  This
+property is populated by L<Alien::Build> core.  This property is a
+hash reference.  The key is the path to the file that has been downloaded
+and the value is a hash reference with additional detail.  All fields
+are optional.
+
+=over 4
+
+=item digest
+
+This, if available, with the cryptographic signature that was successfully
+matched against the downloaded file.  It is an array reference with a
+pair of values, the algorithm (typically something like C<SHA256>) and
+the digest.
+
+=item protocol
+
+This, if available, will be the URL protocol used to fetch the downloaded
+file.
+
+=back
+
 =item env
 
 Environment variables to override during the build stage.  Plugins are
@@ -583,13 +607,6 @@ performed the system probe.  It shouldn't be filled in directly by
 the plugin (instead if should use the hook property C<probe_instance_id>,
 see below).  This is optional, and not all probe plugins will provide
 this information.
-
-=item verified_digest
-
-This property contains the verified cryptographic signatures.  Once
-the digest has been verified, this property will be populated.  The key
-is the path to the file that has been verified and the value is an array
-reference containing a pair of values: the algorithm and the digest.
 
 =back
 
@@ -1403,7 +1420,7 @@ sub check_digest
   {
     # record the verification here so that we can check in the extract step that the signature
     # was checked.
-    $self->install_prop->{verified_digest}->{$path} ||= [$algo, $expected] if defined $path; return 1;
+    $self->install_prop->{download_detail}->{$path}->{digest} = [$algo, $expected] if defined $path; return 1;
   }
   else
   {

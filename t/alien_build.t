@@ -1953,7 +1953,7 @@ subtest 'check_digest' => sub {
           'foo.txt.gz' => [ SHA256 => $good ],
         };
 
-        delete $build->install_prop->{verified_digest};
+        delete $build->install_prop->{download_detail};
 
         is
           $build->check_digest($file),
@@ -1965,13 +1965,16 @@ subtest 'check_digest' => sub {
           is
             $build->install_prop,
             hash {
-              field verified_digest => hash {
-                field $file->{path} => [ SHA256 => $good ];
+              field download_detail => hash {
+                field $file->{path} => hash {
+                  field digest => [ SHA256 => $good ];
+                  etc;
+                };
                 etc;
               };
               etc;
             },
-            '.install.verified_digest is populated and matches';
+            '.install.download_detail.$download.digest is populated and matches';
         }
 
         $build->meta_prop->{digest} = {
