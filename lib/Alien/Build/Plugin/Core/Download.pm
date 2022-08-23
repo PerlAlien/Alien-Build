@@ -98,6 +98,7 @@ sub _hook
       $path->spew_raw($res->{content});
       $build->install_prop->{download} = $path->stringify;
       $build->install_prop->{complete}->{download} = 1;
+      $build->install_prop->{download_protocol}->{"$path"} = $res->{protocol} if defined $res->{protocol};
       return $build;
     }
     elsif($res->{path})
@@ -108,6 +109,7 @@ sub _hook
         {
           $build->install_prop->{download} = $res->{path};
           $build->install_prop->{complete}->{download} = 1;
+          $build->install_prop->{download_protocol}->{$res->{path}} = $res->{protocol} if defined $res->{protocol};
         }
         else
         {
@@ -136,6 +138,7 @@ sub _hook
         }
         $build->install_prop->{download} = $to->stringify;
         $build->install_prop->{complete}->{download} = 1;
+        $build->install_prop->{download_protocol}->{"$to"} = $res->{protocol} if defined $res->{protocol};
       }
       return $build;
     }
