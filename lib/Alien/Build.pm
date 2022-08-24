@@ -498,7 +498,8 @@ The prefix as understood by autoconf.  This is only different on Windows
 Where MSYS is used and paths like C<C:/foo> are  represented as C</C/foo>
 which are understood by the MSYS tools, but not by Perl.  You should
 only use this if you are using L<Alien::Build::Plugin::Build::Autoconf> in
-your L<alienfile>.  This is set during before the build hook is run.
+your L<alienfile>.  This is set during before the
+L<build hook|Alien::Build::Manual::PluginAuthor/"build hook"> is run.
 
 =item download
 
@@ -723,7 +724,8 @@ included.  See L<Inline::C/auto_include> for details.
 
 =item install_type
 
-The install type.  This is set by AB core after the probe hook is
+The install type.  This is set by AB core after the 
+L<probe hook|Alien::Build::Manual::PluginAuthor/"probe hook"> is
 executed.  Is one of:
 
 =over 4
@@ -1317,7 +1319,8 @@ sub download
  my $res = $build->fetch($url, %options);
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
-described below in the hook documentation.
+described below in the
+L<fetch hook|Alien::Build::Manual::PluginAuthor/"fetch hook"> documentation.
 
 [version 2.39]
 
@@ -1433,7 +1436,8 @@ sub check_digest
  my $decoded_res = $build->decode($res);
 
 Decode the HTML or file listing returned by C<fetch>.  Returns the same
-hash structure described below in the hook documentation.
+hash structure described below in the
+L<decode hook|Alien::Build::Manual::PluginAuthor/"decode hook"> documentation.
 
 =cut
 
@@ -1453,7 +1457,8 @@ sub decode
 
 Filter and sort candidates.  The preferred candidate will be returned first in the list.
 The worst candidate will be returned last.  Returns the same hash structure described
-below in the hook documentation.
+below in the
+L<prefer hook|Alien::Build::Manual::PluginAuthor/"prefer hook"> documentation.
 
 =cut
 
@@ -1563,7 +1568,9 @@ recipe.  If there is a C<gather_share> that will be executed last.
 
 =item system
 
-The C<gather_system> hook will be executed.
+The
+L<gather_system hook|Alien::Build::Manual::PluginAuthor/"gather_system hook">
+will be executed.
 
 =back
 

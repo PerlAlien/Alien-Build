@@ -311,7 +311,8 @@ based module.
     Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
     which are understood by the MSYS tools, but not by Perl.  You should
     only use this if you are using [Alien::Build::Plugin::Build::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Build::Autoconf) in
-    your [alienfile](https://metacpan.org/pod/alienfile).  This is set during before the build hook is run.
+    your [alienfile](https://metacpan.org/pod/alienfile).  This is set during before the
+    [build hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#build-hook) is run.
 
 - download
 
@@ -512,7 +513,8 @@ relevant once the install process is complete.
 
 - install\_type
 
-    The install type.  This is set by AB core after the probe hook is
+    The install type.  This is set by AB core after the 
+    [probe hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#probe-hook) is
     executed.  Is one of:
 
     - system
@@ -712,7 +714,8 @@ my $res = $build->fetch($url, %options);
 ```
 
 Fetch a resource using the fetch hook.  Returns the same hash structure
-described below in the hook documentation.
+described below in the
+[fetch hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#fetch-hook) documentation.
 
 \[version 2.39\]
 
@@ -766,7 +769,8 @@ my $decoded_res = $build->decode($res);
 ```
 
 Decode the HTML or file listing returned by `fetch`.  Returns the same
-hash structure described below in the hook documentation.
+hash structure described below in the
+[decode hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#decode-hook) documentation.
 
 ## prefer
 
@@ -776,7 +780,8 @@ my $sorted_res = $build->prefer($res);
 
 Filter and sort candidates.  The preferred candidate will be returned first in the list.
 The worst candidate will be returned last.  Returns the same hash structure described
-below in the hook documentation.
+below in the
+[prefer hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#prefer-hook) documentation.
 
 ## extract
 
@@ -805,7 +810,9 @@ type of install:
 
 - system
 
-    The `gather_system` hook will be executed.
+    The
+    [gather\_system hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#gather_system-hook)
+    will be executed.
 
 ## test
 
