@@ -313,7 +313,7 @@ into C<$build->install_prop->{prefix}> (C<%{.install.prefix}>).
    ...
  });
 
-This is the same as L<build/"build hook">, except it fires only on a FFI build.
+This is the same as L<build|/"build hook">, except it fires only on a FFI build.
 
 =head2 decode hook
 

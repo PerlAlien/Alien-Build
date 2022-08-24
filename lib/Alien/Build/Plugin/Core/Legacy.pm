@@ -15,7 +15,7 @@ use Alien::Build::Plugin;
 
 =head1 DESCRIPTION
 
-This plugin provides some compatibility with the legacy L<Alien::Build::ModuleBuild>
+This plugin provides some compatibility with the legacy L<Alien::Base::ModuleBuild>
 interfaces.
 
 =head1 SEE ALSO

@@ -103,7 +103,7 @@ sub _win_and_needs_msys
 
 =head1 SEE ALSO
 
-L<Alien::Build::Plugin::Autoconf>, L<Alien::Build::Plugin>, L<Alien::Build>, L<Alien::Base>, L<Alien>
+L<Alien::Build::Plugin::Build::Autoconf>, L<Alien::Build::Plugin>, L<Alien::Build>, L<Alien::Base>, L<Alien>
 
 L<http://www.mingw.org/wiki/MSYS>
 

@@ -20,11 +20,11 @@ plugin which will automatically load the appropriate Prefer plugins.
 
 =over 4
 
-=item L<Alien::Build::Plugin::Prefer::BadVersions>
+=item L<Alien::Build::Plugin::Prefer::BadVersion>
 
 Filter out known bad versions from a candidate list.
 
-=item L<Alien::Build::Plugin::Prefer::SortVersions>
+=item L<Alien::Build::Plugin::Prefer::GoodVersion>
 
 Require specific known good versions from a candidate list.
 
