@@ -262,7 +262,8 @@ without the C<::Negotiate> suffix.  For example:
 
 Here is a simple example of a negotiator which picks C<curl> if already
 installed and L<HTTP::Tiny> otherwise.  (The actual download plugin
-is a lot smarter than this, but this is a good example).
+is a lot smarter and complicated than this, but this is a good
+simplified example).
 
  package Alien::Build::Plugin::Download::Negotiate;
 
