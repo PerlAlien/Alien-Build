@@ -1013,7 +1013,7 @@ sub helper_ok
  plugin_ok $plugin_name, $message;
  plugin_ok [$plugin_name, @args], $message;
 
-This applies an L<Alien::Build::Plugin> to the interpolator used by L</helper_ok>, L<interpolate_template_is>
+This applies an L<Alien::Build::Plugin> to the interpolator used by L</helper_ok>, L</interpolate_template_is>
 and L</interpolate_run_ok> so that you can test with any helpers that plugin provides.  Useful,
 for example for getting C<%{configure}> from L<Alien::Build::Plugin::Build::Autoconf>.
 

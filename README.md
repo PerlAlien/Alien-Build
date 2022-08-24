@@ -310,7 +310,7 @@ based module.
     The prefix as understood by autoconf.  This is only different on Windows
     Where MSYS is used and paths like `C:/foo` are  represented as `/C/foo`
     which are understood by the MSYS tools, but not by Perl.  You should
-    only use this if you are using [Alien::Build::Plugin::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Autoconf) in
+    only use this if you are using [Alien::Build::Plugin::Build::Autoconf](https://metacpan.org/pod/Alien::Build::Plugin::Build::Autoconf) in
     your [alienfile](https://metacpan.org/pod/alienfile).  This is set during before the build hook is run.
 
 - download
@@ -751,7 +751,7 @@ file is specified by `$path` which may be one of:
 - `HASH`
 
     A Hash reference containing information about a file.  See
-    [the fetch hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#fech-hook) for details
+    the [fetch hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#fetch-hook) for details
     on the format.
 
 Returns true if the cryptographic signature matches, false if cryptographic
@@ -1051,7 +1051,7 @@ Apply the given plugin with the given arguments.
 - ftp\_proxy, all\_proxy
 
     If these environment variables are set, it may influence the Download negotiation
-    plugin [Alien::Build::Plugin::Downaload::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::Downaload::Negotiate).  Other proxy variables may
+    plugin [Alien::Build::Plugin::Download::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::Download::Negotiate).  Other proxy variables may
     be used by some Fetch plugins, if they support it.
 
 # SUPPORT

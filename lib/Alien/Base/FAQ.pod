@@ -10,7 +10,7 @@
 =head1 DESCRIPTION
 
 This used to answer FAQs regarding the only way to author an L<Alien::Build>
-distribution, which was with L<Aien::Base::ModuleBuild>.  You should now
+distribution, which was with L<Alien::Base::ModuleBuild>.  You should now
 seriously consider using the newer more reliable method which is via
 L<Alien::Build> and L<alienfile>.
 

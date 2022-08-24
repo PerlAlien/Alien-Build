@@ -112,7 +112,7 @@ prerequisites.
 
 =head3 interface agnostic
 
-One of the challenges with L<Alien::Buil::ModuleBuild> was that
+One of the challenges with L<Alien::Base::ModuleBuild> was that
 L<Module::Build> was pulled from the core.  In addition, there is a
 degree of hostility toward L<Module::Build> in some corners of the Perl
 community.  I agree with Joel Berger's rationale for choosing
@@ -143,7 +143,7 @@ shouldn't need to be modified.
 
 The actual logic that probes the system, downloads source and builds it
 should be as pluggable as possible.  One of the challenges with
-L<Alien::Build::ModuleBuild> was that it was designed to work well with
+L<Alien::Base::ModuleBuild> was that it was designed to work well with
 software that works with C<autoconf> and C<pkg-config>.  While you can
 build with other tools, you have to know a bit of how the installer
 logic works, and which hooks need to be tweaked.

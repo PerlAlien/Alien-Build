@@ -497,7 +497,7 @@ based module.
 The prefix as understood by autoconf.  This is only different on Windows
 Where MSYS is used and paths like C<C:/foo> are  represented as C</C/foo>
 which are understood by the MSYS tools, but not by Perl.  You should
-only use this if you are using L<Alien::Build::Plugin::Autoconf> in
+only use this if you are using L<Alien::Build::Plugin::Build::Autoconf> in
 your L<alienfile>.  This is set during before the build hook is run.
 
 =item download
@@ -1366,7 +1366,7 @@ Containing the path to the file to be checked.
 =item C<HASH>
 
 A Hash reference containing information about a file.  See
-L<the fetch hook|Alien::Build::Manual::PluginAuthor/"fech hook"> for details
+the L<fetch hook|Alien::Build::Manual::PluginAuthor/"fetch hook"> for details
 on the format.
 
 =back
@@ -2324,7 +2324,7 @@ when using the command line plugin: L<Alien::Build::Plugin::PkgConfig::CommandLi
 =item ftp_proxy, all_proxy
 
 If these environment variables are set, it may influence the Download negotiation
-plugin L<Alien::Build::Plugin::Downaload::Negotiate>.  Other proxy variables may
+plugin L<Alien::Build::Plugin::Download::Negotiate>.  Other proxy variables may
 be used by some Fetch plugins, if they support it.
 
 =back

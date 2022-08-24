@@ -100,7 +100,7 @@ You can even use it with L<Inline> (C and C++ languages are supported):
 =head1 DESCRIPTION
 
 B<NOTE>: L<Alien::Base::ModuleBuild> is no longer bundled with L<Alien::Base> and has been spun off into a separate distribution.
-L<Alien::Build::ModuleBuild> will be a prerequisite for L<Alien::Base> until October 1, 2017.  If you are using L<Alien::Base::ModuleBuild>
+L<Alien::Base::ModuleBuild> will be a prerequisite for L<Alien::Base> until October 1, 2017.  If you are using L<Alien::Base::ModuleBuild>
 you need to make sure it is declared as a C<configure_requires> in your C<Build.PL>.  You may want to also consider using L<Alien::Base> and
 L<alienfile> as a more modern alternative.
 
@@ -137,7 +137,7 @@ Before using an L<Alien::Base> based L<Alien> directly, please consider the foll
 
 If you are wanting to use an L<Alien::Base> based L<Alien> with an XS module using L<ExtUtils::MakeMaker> or L<Module::Build>, it is highly
 recommended that you use L<Alien::Base::Wrapper>, rather than using the L<Alien> directly, because it handles a number of sharp edges and avoids
-pitfalls common when trying to use an L<Alien> directly with L<ExtUtils::MakMaker>.
+pitfalls common when trying to use an L<Alien> directly with L<ExtUtils::MakeMaker>.
 
 In the same vein, if you are wanting to use an L<Alien::Base> based L<Alien> with an XS module using L<Dist::Zilla> it is highly recommended
 that you use L<Dist::Zilla::Plugin::AlienBase::Wrapper> for the same reasons.
@@ -433,8 +433,8 @@ sub max_version {
 
   $cmp = Alien::MyLibrary->version_cmp($x, $y)
 
-Comparison method used by L<atleast_version>, L<exact_version> and
-L<max_version>. May be useful to implement custom comparisons, or for
+Comparison method used by L</atleast_version>, L</exact_version> and
+L</max_version>. May be useful to implement custom comparisons, or for
 subclasses to overload to get different version comparison semantics than the
 default rules, for packages that have some other rules than the F<pkg-config>
 behaviour.
@@ -576,8 +576,8 @@ sub _pkgconfig {
  my $value = Alien::MyLibrary->config($key);
 
 Returns the configuration data as determined during the install
-of L<Alien::MyLibrary>.  For the appropriate config keys, see
-L<Alien::Base::ModuleBuild::API#CONFIG-DATA>.
+of C<Alien::MyLibrary>.  For the appropriate config keys, see
+L<Alien::Base::ModuleBuild::API/"CONFIG DATA">.
 
 This is not typically used by L<Alien::Base> and L<alienfile>,
 but a compatible interface will be provided.
@@ -1063,7 +1063,7 @@ If you find a bug, please report it on the projects issue tracker on GitHub:
 
 =over 4
 
-=item L<https://github.com/PerlAlien/Alien-Base/issues>
+=item L<https://github.com/PerlAlien/Alien-Build/issues>
 
 =back
 
@@ -1082,7 +1082,7 @@ request.
 
 =over 4
 
-=item L<https://github.com/PerlAlien/Alien-Base/pulls>
+=item L<https://github.com/PerlAlien/Alien-Build/pulls>
 
 =back
 
