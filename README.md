@@ -195,7 +195,7 @@ but if you do not follow this rule your recipe will likely be broken.
 
     This properties contains the cryptographic digests (if any) that should
     be used when verifying any fetched and downloaded files.  It is a hash
-    reference where the key is the filename and the value is an array 
+    reference where the key is the filename and the value is an array
     reference containing a pair of values, the first being the algorithm
     ('SHA256' is recommended) and the second is the actual digest.  The
     special filename `*` may be specified to indicate that any downloaded
@@ -513,7 +513,7 @@ relevant once the install process is complete.
 
 - install\_type
 
-    The install type.  This is set by AB core after the 
+    The install type.  This is set by AB core after the
     [probe hook](https://metacpan.org/pod/Alien::Build::Manual::PluginAuthor#probe-hook) is
     executed.  Is one of:
 
@@ -626,6 +626,44 @@ my $type = $build->install_type;
 This will return the install type.  (See the like named install property
 above for details).  This method will call `probe` if it has not already
 been called.
+
+## download\_rule
+
+```perl
+my $rule = $build->download_rule;
+```
+
+This returns install rule as a string.  This is determined by the environment
+and should be one of:
+
+- `warn`
+
+    Warn only if fetching via non secure source (secure sources include `https`,
+    and bundled files, may include other encrypted protocols in the future).
+
+- `digest`
+
+    Require that any downloaded source package have a cryptographic signature in
+    the [alienfile](https://metacpan.org/pod/alienfile) and that signature matches what was downloaded.
+
+- `encrypt`
+
+    Require that any downloaded source package is fetched via secure source.
+
+- `digest_or_encrypt`
+
+    Require that any downloaded source package is **either** fetched via a secure source
+    **or** has a cryptographic signature in the [alienfile](https://metacpan.org/pod/alienfile) and that signature matches
+    what was downloaded.
+
+- `digest_and_encrypt`
+
+    Require that any downloaded source package is **both** fetched via a secure source
+    **and** has a cryptographic signature in the [alienfile](https://metacpan.org/pod/alienfile) and that signature matches
+    what was downloaded.
+
+The current default is `warn`, but in the near future this will be upgraded to
+`digest_or_encrypt`.
 
 ## set\_prefix
 
@@ -992,6 +1030,11 @@ Apply the given plugin with the given arguments.
 # ENVIRONMENT
 
 [Alien::Build](https://metacpan.org/pod/Alien::Build) responds to these environment variables:
+
+- ALIEN\_DOWNLOAD\_RULE
+
+    This value determines the rules by which types of downloads are allowed.  The legal
+    values listed under ["download\_rule"](#download_rule).
 
 - ALIEN\_INSTALL\_NETWORK
 

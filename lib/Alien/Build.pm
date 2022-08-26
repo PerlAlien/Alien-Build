@@ -358,7 +358,7 @@ Same as C<destdir_filter> except applies to C<build_ffi> instead of C<build>.
 
 This properties contains the cryptographic digests (if any) that should
 be used when verifying any fetched and downloaded files.  It is a hash
-reference where the key is the filename and the value is an array 
+reference where the key is the filename and the value is an array
 reference containing a pair of values, the first being the algorithm
 ('SHA256' is recommended) and the second is the actual digest.  The
 special filename C<*> may be specified to indicate that any downloaded
@@ -724,7 +724,7 @@ included.  See L<Inline::C/auto_include> for details.
 
 =item install_type
 
-The install type.  This is set by AB core after the 
+The install type.  This is set by AB core after the
 L<probe hook|Alien::Build::Manual::PluginAuthor/"probe hook"> is
 executed.  Is one of:
 
@@ -903,6 +903,65 @@ sub install_type
 {
   my($self) = @_;
   $self->{runtime_prop}->{install_type} ||= $self->probe;
+}
+
+=head2 download_rule
+
+ my $rule = $build->download_rule;
+
+This returns install rule as a string.  This is determined by the environment
+and should be one of:
+
+=over 4
+
+=item C<warn>
+
+Warn only if fetching via non secure source (secure sources include C<https>,
+and bundled files, may include other encrypted protocols in the future).
+
+=item C<digest>
+
+Require that any downloaded source package have a cryptographic signature in
+the L<alienfile> and that signature matches what was downloaded.
+
+=item C<encrypt>
+
+Require that any downloaded source package is fetched via secure source.
+
+=item C<digest_or_encrypt>
+
+Require that any downloaded source package is B<either> fetched via a secure source
+B<or> has a cryptographic signature in the L<alienfile> and that signature matches
+what was downloaded.
+
+=item C<digest_and_encrypt>
+
+Require that any downloaded source package is B<both> fetched via a secure source
+B<and> has a cryptographic signature in the L<alienfile> and that signature matches
+what was downloaded.
+
+=back
+
+The current default is C<warn>, but in the near future this will be upgraded to
+C<digest_or_encrypt>.
+
+=cut
+
+sub download_rule
+{
+  my($self) = @_;
+
+  $self->install_prop->{download_rule} ||= do {
+    $DB::single = 1;
+    my $dr = $ENV{ALIEN_DOWNLOAD_RULE};
+    $dr = 'warn' unless defined $dr;
+    unless($dr =~ /^(warn|digest|encrypt|digest_or_encrypt|digest_and_encrypt)$/)
+    {
+      $self->log("unknown ALIEN_DOWNLOAD_RULE \"$dr\", using \"warn\" instead");
+      $dr = 'warn';
+    }
+    $dr;
+  };
 }
 
 =head2 set_prefix
@@ -2265,6 +2324,11 @@ sub DESTROY
 L<Alien::Build> responds to these environment variables:
 
 =over 4
+
+=item ALIEN_DOWNLOAD_RULE
+
+This value determines the rules by which types of downloads are allowed.  The legal
+values listed under L</download_rule>.
 
 =item ALIEN_INSTALL_NETWORK
 

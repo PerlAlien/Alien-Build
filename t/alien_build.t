@@ -2164,7 +2164,7 @@ subtest 'decode' => sub {
         };
 
       };
-    
+
     };
   };
 
@@ -2207,6 +2207,64 @@ subtest 'decode' => sub {
     },
     'decoded dir listing';
 
+};
+
+subtest 'alien_download_rule' => sub {
+
+  local $ENV{ALIEN_DOWNLOAD_RULE};
+  delete $ENV{ALIEN_DOWNLOAD_RULE};
+
+  is(
+    Alien::Build->new,
+    object {
+      call download_rule => 'warn';
+    },
+    'default');
+
+  foreach my $value ( qw( warn digest encrypt digest_or_encrypt digest_and_encrypt ) )
+  {
+
+    local $ENV{ALIEN_DOWNLOAD_RULE} = $value;
+
+    is(
+      Alien::Build->new,
+      object {
+        call download_rule => $value;
+
+        # changing the enviroment after the first call should not do anything
+        call sub {
+          $ENV{ALIEN_DOWNLOAD_RULE} = $value eq 'warn' ? 'digest' : 'warn';
+          shift->download_rule;
+       } => $value;
+
+      },
+      "override $value");
+  }
+
+  $ENV{ALIEN_DOWNLOAD_RULE} = 'bogus';
+
+  my @w;
+
+  my $mock = mock 'Alien::Build' => (
+    override => [
+      log => sub {
+        my(undef, $msg) = @_;
+        push @w, $msg if $msg =~ /^unknown ALIEN_DOWNLOAD_RULE/;
+      },
+    ]
+  );
+
+  is(
+    Alien::Build->new,
+      object {
+        call download_rule => 'warn';
+      },
+      "got correct default for bogus rule");
+
+  is(
+    \@w,
+    [ 'unknown ALIEN_DOWNLOAD_RULE "bogus", using "warn" instead' ],
+    'got correct log for bogus rule');
 };
 
 done_testing;
