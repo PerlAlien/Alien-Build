@@ -2325,6 +2325,30 @@ L<Alien::Build> responds to these environment variables:
 
 =over 4
 
+=item ALIEN_BUILD_LOG
+
+The default log class used.  See L<Alien::Build::Log> and L<Alien::Build::Log::Default>.
+
+=item ALIEN_BUILD_PKG_CONFIG
+
+Override the logic in L<Alien::Build::Plugin::PkgConfig::Negotiate> which
+chooses the best C<pkg-config> plugin.
+
+=item ALIEN_BUILD_POSTLOAD
+
+semicolon separated list of plugins to automatically load after parsing
+your L<alienfile>.
+
+=item ALIEN_BUILD_PRELOAD
+
+semicolon separated list of plugins to automatically load before parsing
+your L<alienfile>.
+
+=item ALIEN_BUILD_RC
+
+Perl source file which can override some global defaults for L<Alien::Build>,
+by, for example, setting preload and postload plugins.
+
 =item ALIEN_DOWNLOAD_RULE
 
 This value determines the rules by which types of downloads are allowed.  The legal
@@ -2358,30 +2382,6 @@ is set to any value. The rationale is that by setting this environment variable 
 user is aware that L<Alien> modules may be installed and have indicated consent.
 The actual implementation of this, by its nature would have to be in the consuming
 CPAN module.
-
-=item ALIEN_BUILD_LOG
-
-The default log class used.  See L<Alien::Build::Log> and L<Alien::Build::Log::Default>.
-
-=item ALIEN_BUILD_RC
-
-Perl source file which can override some global defaults for L<Alien::Build>,
-by, for example, setting preload and postload plugins.
-
-=item ALIEN_BUILD_PKG_CONFIG
-
-Override the logic in L<Alien::Build::Plugin::PkgConfig::Negotiate> which
-chooses the best C<pkg-config> plugin.
-
-=item ALIEN_BUILD_PRELOAD
-
-semicolon separated list of plugins to automatically load before parsing
-your L<alienfile>.
-
-=item ALIEN_BUILD_POSTLOAD
-
-semicolon separated list of plugins to automatically load after parsing
-your L<alienfile>.
 
 =item DESTDIR
 

@@ -1031,6 +1031,30 @@ Apply the given plugin with the given arguments.
 
 [Alien::Build](https://metacpan.org/pod/Alien::Build) responds to these environment variables:
 
+- ALIEN\_BUILD\_LOG
+
+    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien::Build::Log) and [Alien::Build::Log::Default](https://metacpan.org/pod/Alien::Build::Log::Default).
+
+- ALIEN\_BUILD\_PKG\_CONFIG
+
+    Override the logic in [Alien::Build::Plugin::PkgConfig::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig::Negotiate) which
+    chooses the best `pkg-config` plugin.
+
+- ALIEN\_BUILD\_POSTLOAD
+
+    semicolon separated list of plugins to automatically load after parsing
+    your [alienfile](https://metacpan.org/pod/alienfile).
+
+- ALIEN\_BUILD\_PRELOAD
+
+    semicolon separated list of plugins to automatically load before parsing
+    your [alienfile](https://metacpan.org/pod/alienfile).
+
+- ALIEN\_BUILD\_RC
+
+    Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien::Build),
+    by, for example, setting preload and postload plugins.
+
 - ALIEN\_DOWNLOAD\_RULE
 
     This value determines the rules by which types of downloads are allowed.  The legal
@@ -1064,30 +1088,6 @@ Apply the given plugin with the given arguments.
     user is aware that [Alien](https://metacpan.org/pod/Alien) modules may be installed and have indicated consent.
     The actual implementation of this, by its nature would have to be in the consuming
     CPAN module.
-
-- ALIEN\_BUILD\_LOG
-
-    The default log class used.  See [Alien::Build::Log](https://metacpan.org/pod/Alien::Build::Log) and [Alien::Build::Log::Default](https://metacpan.org/pod/Alien::Build::Log::Default).
-
-- ALIEN\_BUILD\_RC
-
-    Perl source file which can override some global defaults for [Alien::Build](https://metacpan.org/pod/Alien::Build),
-    by, for example, setting preload and postload plugins.
-
-- ALIEN\_BUILD\_PKG\_CONFIG
-
-    Override the logic in [Alien::Build::Plugin::PkgConfig::Negotiate](https://metacpan.org/pod/Alien::Build::Plugin::PkgConfig::Negotiate) which
-    chooses the best `pkg-config` plugin.
-
-- ALIEN\_BUILD\_PRELOAD
-
-    semicolon separated list of plugins to automatically load before parsing
-    your [alienfile](https://metacpan.org/pod/alienfile).
-
-- ALIEN\_BUILD\_POSTLOAD
-
-    semicolon separated list of plugins to automatically load after parsing
-    your [alienfile](https://metacpan.org/pod/alienfile).
 
 - DESTDIR
 
