@@ -15,7 +15,7 @@
 
 =head1 DESCRIPTION
 
-Test plugins are used in unit tests for L<Alien::Build> and possibly 
+Test plugins are used in unit tests for L<Alien::Build> and possibly
 its plugins.
 
 =over 4

@@ -14,7 +14,7 @@
 =head1 DESCRIPTION
 
 Digest plugins checks the cryptographic signatures of downloaded files.
-Typically you will probably want to use SHA256 via the 
+Typically you will probably want to use SHA256 via the
 L<Digest Negotiator plugin|Alien::Build::Plugin::Digest::Negotiate>.
 
 =over 4

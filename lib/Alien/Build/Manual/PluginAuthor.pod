@@ -266,7 +266,7 @@ is a lot smarter and complicated than this, but this is a good
 simplified example).
 
  package Alien::Build::Plugin::Download::Negotiate;
-
+ 
  use strict;
  use warnings;
  use Alien::Build::Plugin;
@@ -275,7 +275,7 @@ simplified example).
  sub init
  {
    my($self, $meta) = @_;
-
+ 
    if(which('curl')) {
      $meta->apply_plugin('Fetch::Curl');
    } else {
@@ -553,7 +553,7 @@ C<$protocol> from the old to the new representation of the file.
 
 This hook is called for a FFI build to determine the properties
 necessary for using the library or tool.  These properties should be
-stored in the L<runtime_prop|Alien::Build/runtime_prop> hash as shown above. 
+stored in the L<runtime_prop|Alien::Build/runtime_prop> hash as shown above.
 Typical properties that are needed for libraries are cflags and libs.
 If at all possible you should also try to determine the version of the
 library or tool.
@@ -569,7 +569,7 @@ library or tool.
 
 This hook is called for a share install to determine the properties
 necessary for using the library or tool.  These properties should be
-stored in the L<runtime_prop|Alien::Build/runtime_prop> hash as shown above. 
+stored in the L<runtime_prop|Alien::Build/runtime_prop> hash as shown above.
 Typical properties that are needed for libraries are cflags and libs.
 If at all possible you should also try to determine the version of the
 library or tool.
@@ -585,7 +585,7 @@ library or tool.
 
 This hook is called for a system install to determine the properties
 necessary for using the library or tool.  These properties should be
-stored in the L<runtime_prop|Alien::Build/runtime_prop> hash as shown above. 
+stored in the L<runtime_prop|Alien::Build/runtime_prop> hash as shown above.
 Typical properties that are needed for libraries are cflags and libs.
 If at all possible you should also try to determine the version of the
 library or tool.
