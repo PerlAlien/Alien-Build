@@ -255,10 +255,90 @@ alien_subtest 'encrypt' => sub {
   local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
   local $ENV{ALIEN_DOWNLOAD_RULE} = 'encrypt';
 
-  my $todo = todo 'todo';
   is(Alien::Build->new->download_rule, 'encrypt');
 
-  ok 0;
+  subtest 'with tls' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+    alien_extract_ok;
+
+  };
+
+  subtest 'without tls' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'http://foo.bar.baz';
+        fetch sub { die 'not here' };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+
+    my($out, $exception) = capture_merged {
+      dies { $build->download }
+    };
+
+    like $exception, qr/^insecure fetch is not allowed/;
+
+  };
+
+  subtest 'no tls response' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'http',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+
+    my($out, $exception) = capture_merged {
+      dies { $build->download }
+    };
+
+    like $exception, qr/^insecure fetch is not allowed/;
+
+  };
+
+
 };
 
 alien_subtest 'digest_or_encrypt' => sub {
@@ -351,7 +431,7 @@ alien_subtest 'digest_or_encrypt' => sub {
 
   };
 
-  subtest 'just tls' => sub {
+  subtest 'no tls' => sub {
 
     my $build = alienfile_ok q{
       use alienfile;

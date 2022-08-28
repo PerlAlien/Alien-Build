@@ -952,7 +952,6 @@ sub download_rule
   my($self) = @_;
 
   $self->install_prop->{download_rule} ||= do {
-    $DB::single = 1;
     my $dr = $ENV{ALIEN_DOWNLOAD_RULE};
     $dr = 'warn' unless defined $dr;
     unless($dr =~ /^(warn|digest|encrypt|digest_or_encrypt|digest_and_encrypt)$/)
@@ -1405,9 +1404,12 @@ sub fetch
   my $self = shift;
   my $url = $_[0] || $self->meta_prop->{start_url};
 
+  my $secure = 0;
+
   if(defined $url && $url =~ /^https:/ || $url !~ /:/)
   {
     # considered secure when either https or a local file
+    $secure = 1;
   }
   elsif(!defined $url)
   {
@@ -1418,7 +1420,11 @@ sub fetch
     $self->log("warning: attempting to fetch a non-TLS or bundled URL: @{[ $url ]}");
   }
 
+  die "insecure fetch is not allowed" if $self->download_rule eq 'encrypt' && !$secure;
+
   my $file = $self->_call_hook( 'fetch' => @_ );
+
+  $secure = 0;
 
   if(ref($file) ne 'HASH')
   {
@@ -1432,6 +1438,12 @@ sub fetch
   {
     $self->log("warning: fetch did not use a secure protocol: @{[ $file->{protocol} ]}");
   }
+  else
+  {
+    $secure = 1;
+  }
+
+  die "insecure fetch is not allowed" if $self->download_rule eq 'encrypt' && !$secure;
 
   $file;
 }
