@@ -1420,7 +1420,7 @@ sub fetch
     $self->log("warning: attempting to fetch a non-TLS or bundled URL: @{[ $url ]}");
   }
 
-  die "insecure fetch is not allowed" if $self->download_rule eq 'encrypt' && !$secure;
+  die "insecure fetch is not allowed" if $self->download_rule =~ /^(encrypt|digest_and_encrypt)$/ && !$secure;
 
   my $file = $self->_call_hook( 'fetch' => @_ );
 
@@ -1443,7 +1443,7 @@ sub fetch
     $secure = 1;
   }
 
-  die "insecure fetch is not allowed" if $self->download_rule eq 'encrypt' && !$secure;
+  die "insecure fetch is not allowed" if $self->download_rule =~ /^(encrypt|digest_and_encrypt)$/ && !$secure;
 
   $file;
 }
@@ -1633,9 +1633,27 @@ sub extract
     {
       die "required digest missing for $archive" unless $checked_digest;
     }
+    elsif($self->download_rule eq 'encrypt')
+    {
+      die "file was fetched insecurely for $archive" unless $encrypted_fetch;
+    }
     elsif($self->download_rule eq 'digest_or_encrypt')
     {
       die "file was fetched insecurely and required digest missing for $archive" unless $checked_digest || $encrypted_fetch;
+    }
+    elsif($self->download_rule eq 'digest_and_encrypt')
+    {
+      die "file was fetched insecurely and required digest missing for $archive" unless $checked_digest || $encrypted_fetch;
+      die "required digest missing for $archive" unless $checked_digest;
+      die "file was fetched insecurely for $archive" unless $encrypted_fetch;
+    }
+    elsif($self->download_rule eq 'warn')
+    {
+      # warns done prior to this point
+    }
+    else
+    {
+      die "internal error, unknown download rule: @{[ $self->download_rule ]}";
     }
 
   }
