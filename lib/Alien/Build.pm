@@ -1621,6 +1621,10 @@ sub extract
     {
       die "required digest missing for $archive" unless $checked_digest;
     }
+    elsif($self->download_rule eq 'digest_or_encrypt')
+    {
+      die "file was fetched insecurely and required digest missing for $archive" unless $checked_digest || $encrypted_fetch;
+    }
 
   }
 
