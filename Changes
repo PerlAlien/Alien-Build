@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.60_01   2022-08-28 10:37:01 -0600
   - Documentation improvements (gh#333, gh#334, gh#342, gh#343, gh#344)
   - Fixed a number of broken links in POD (gh#344)
   - Added download_detail install property (gh#190, gh#344)
