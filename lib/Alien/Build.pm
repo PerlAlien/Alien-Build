@@ -1403,7 +1403,37 @@ are not supported.
 sub fetch
 {
   my $self = shift;
-  $self->_call_hook( 'fetch' => @_ );
+  my $url = $_[0] || $self->meta_prop->{start_url};
+
+  if(defined $url && $url =~ /^https:/ || $url !~ /:/)
+  {
+    # considered secure when either https or a local file
+  }
+  elsif(!defined $url)
+  {
+    $self->log("warning: undefined url in fetch");
+  }
+  else
+  {
+    $self->log("warning: attempting to fetch a non-TLS or bundled URL: @{[ $url ]}");
+  }
+
+  my $file = $self->_call_hook( 'fetch' => @_ );
+
+  if(ref($file) ne 'HASH')
+  {
+    $self->log("warning: fetch returned non-hash reference");
+  }
+  elsif(!defined $file->{protocol})
+  {
+    $self->log("warning: fetch did not return a protocol");
+  }
+  elsif($file->{protocol} !~ /^(https|file)$/)
+  {
+    $self->log("warning: fetch did not use a secure protocol: @{[ $file->{protocol} ]}");
+  }
+
+  $file;
 }
 
 =head2 check_digest
@@ -1550,6 +1580,42 @@ sub extract
   unless(defined $archive)
   {
     die "tried to call extract before download";
+  }
+
+  {
+    my $checked_digest  = 0;
+    my $encrypted_fetch = 0;
+    my $detail = $self->install_prop->{download_detail}->{$archive};
+    if(defined $detail)
+    {
+      if(defined $detail->{digest})
+      {
+        my($algo, $expected) = @{ $detail->{digest} };
+        my $file = {
+          type     => 'file',
+          filename => Path::Tiny->new($archive)->basename,
+          path     => $archive,
+          tmp      => 0,
+        };
+        $checked_digest = $self->meta->call_hook( check_digest => $self, $file, $algo, $expected )
+      }
+      if(!defined $detail->{protocol})
+      {
+        $self->log("warning: extract did not receive protocol details for $archive") unless $checked_digest;
+      }
+      elsif($detail->{protocol} !~ /^(https|file)$/)
+      {
+        $self->log("warning: extracting from a file that was fetched via insecure protocol @{[ $detail->{protocol} ]}") unless $checked_digest ;
+      }
+      else
+      {
+        $encrypted_fetch = 1;
+      }
+    }
+    else
+    {
+      $self->log("warning: extract received no download details for $archive");
+    }
   }
 
   my $nick_name = 'build';

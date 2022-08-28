@@ -436,6 +436,7 @@ sub alien_extract_ok
   my $ok;
   my $dir;
   my @diag;
+  my @note;
 
   if($build)
   {
@@ -460,6 +461,7 @@ sub alien_extract_ok
       if(-d $dir)
       {
         $ok = 1;
+        push @note, $out if defined $out;
       }
       else
       {
@@ -476,6 +478,7 @@ sub alien_extract_ok
 
   my $ctx = context();
   $ctx->ok($ok, $name);
+  $ctx->note($_) for @note;
   $ctx->diag($_) for @diag;
   $ctx->release;
 
