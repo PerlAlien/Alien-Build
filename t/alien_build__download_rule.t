@@ -1,6 +1,7 @@
 use Test2::V0 -no_srand => 1;
 use Test::Alien::Build;
 use Path::Tiny qw( path );
+use Capture::Tiny qw( capture_merged );
 
 our $tarball = path('corpus/dist/foo-1.00.tar')->slurp_raw;
 
@@ -179,8 +180,70 @@ alien_subtest 'warn' => sub {
 };
 
 alien_subtest 'digest' => sub {
-  my $todo = todo 'todo';
-  ok 0;
+
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest';
+
+  subtest 'with digest' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        digest SHA256 => '0478cc6e29f934f87ae457c66a05891aef93179e0674d99fc2e73463b8810817';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+    alien_extract_ok;
+
+  };
+
+  subtest 'without digest' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+
+    my($out, $exception) = capture_merged {
+      dies { $build->extract }
+    };
+
+    like $exception, qr/^required digest missing for/;
+
+  };
+
 };
 
 alien_subtest 'encrypt' => sub {

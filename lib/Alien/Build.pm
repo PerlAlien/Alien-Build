@@ -1616,6 +1616,12 @@ sub extract
     {
       $self->log("warning: extract received no download details for $archive");
     }
+
+    if($self->download_rule eq 'digest')
+    {
+      die "required digest missing for $archive" unless $checked_digest;
+    }
+
   }
 
   my $nick_name = 'build';
