@@ -1,36 +1,13 @@
 use 5.008004;
 use Test2::V0 -no_srand => 1;
-use Alien::Build;
 use Test::Alien::Build;
-
-subtest 'basic' => sub {
-
-  local $ENV{ALIEN_BUILD_RC} = 'corpus/rc/basic.pl';
-
-  my $in_foobar;
-  my $in_bazfrooble;
-
-  my $foobar = mock 'Alien::Build::Plugin::Foo::Bar' => (
-    override => [ init => sub { $in_foobar++ }],
-  );
-
-  my $frooble = mock 'Alien::Build::Plugin::Baz::Frooble' => (
-    override => [ init => sub { $in_bazfrooble++ }],
-  );
-
-  my $build = alienfile_ok q{
-    use alienfile;
-  };
-
-  is $in_foobar, 1;
-  is $in_bazfrooble, 1;
-
-};
 
 subtest 'preload code ref' => sub {
 
   my $meta1;
   my $meta2;
+
+  no warnings 'once';
 
   local @Alien::Build::rc::PRELOAD = (sub {
     ($meta1) = @_;
@@ -50,9 +27,3 @@ subtest 'preload code ref' => sub {
 };
 
 done_testing;
-
-package Alien::Build::Plugin::Foo::Bar;
-use Alien::Build::Plugin;
-package Alien::Build::Plugin::Baz::Frooble;
-use Alien::Build::Plugin;
-

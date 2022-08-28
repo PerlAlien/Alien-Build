@@ -38,7 +38,41 @@ sub logx ($)
   goto &Alien::Build::log;
 }
 
+=head2 preload_plugin
+
+ preload_plugin $plugin, @args;
+
+Preload the given plugin, with arguments.
+
+=cut
+
+sub preload_plugin
+{
+  my(@args) = @_;
+  push @Alien::Build::rc::PRELOAD, sub {
+    shift->apply_plugin(@args);
+  };
+}
+
+=head2 postload_plugin
+
+ postload_plugin $plugin, @args;
+
+Postload the given plugin, with arguments.
+
+=cut
+
+sub postload_plugin
+{
+  my(@args) = @_;
+  push @Alien::Build::rc::POSTLOAD, sub {
+    shift->apply_plugin(@args);
+  };
+}
+
 =head2 preload
+
+[deprecated]
 
  preload $plugin;
 
@@ -52,6 +86,8 @@ sub preload ($)
 }
 
 =head2 postload
+
+[deprecated]
 
  postload $plugin;
 
