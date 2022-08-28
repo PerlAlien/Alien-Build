@@ -1,0 +1,59 @@
+# PODNAME: Alien::Build::Manual
+# ABSTRACT: The Alien::Build Manual
+# VERSION
+
+=head1 SYNOPSIS
+
+ perldoc Alien::Build::Manual::Alien
+ perldoc Alien::Build::Manual::AlienAuthor
+ perldoc Alien::Build::Manual::AlienUser
+ perldoc Alien::Build::Manual::Contributing
+ perldoc Alien::Build::Manual::FAQ
+ perldoc Alien::Build::Manual::PluginAuthor
+
+=head1 DESCRIPTION
+
+L<Alien::Build> comes with a number of manuals that are useful depending on how you
+are using L<Alien>.
+
+=over 4
+
+=item L<Alien::Build::Manual::Alien>
+
+General alien author documentation.
+
+=item L<Alien::Build::Manual::AlienAuthor>
+
+Alien author documentation.
+
+=item L<Alien::Build::Manual::AlienUser>
+
+Alien user documentation.
+
+=item L<Alien::Build::Manual::Contributing>
+
+Overly-detailed contributing guide.
+
+=item L<Alien::Build::Manual::FAQ>
+
+Frequently Asked Questions about L<Alien::Build>.
+
+=item L<Alien::Build::Manual::PluginAuthor>
+
+L<Alien::Build> plugin author documentation — or how to extend L<Alien::Build> with the plugin system.
+
+=back
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Alien::Base>
+
+=item L<Alien::Build>
+
+=item L<alienfile>
+
+=back
+
+=cut
