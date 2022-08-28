@@ -12,6 +12,8 @@ alien_subtest 'warn' => sub {
 
   require Alien::Build;
 
+  is(Alien::Build->new->download_rule, 'warn');
+
   my @warnings;
   my $mock = mock 'Alien::Build' => (
     around => [
@@ -184,6 +186,8 @@ alien_subtest 'digest' => sub {
   local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
   local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest';
 
+  is(Alien::Build->new->download_rule, 'digest');
+
   subtest 'with digest' => sub {
 
     alienfile_ok q{
@@ -247,17 +251,147 @@ alien_subtest 'digest' => sub {
 };
 
 alien_subtest 'encrypt' => sub {
+
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'encrypt';
+
   my $todo = todo 'todo';
+  is(Alien::Build->new->download_rule, 'encrypt');
+
   ok 0;
 };
 
 alien_subtest 'digest_or_encrypt' => sub {
-  my $todo = todo 'todo';
-  ok 0;
+
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_or_encrypt';
+
+  is(Alien::Build->new->download_rule, 'digest_or_encrypt');
+
+  subtest 'with digest' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        digest SHA256 => '0478cc6e29f934f87ae457c66a05891aef93179e0674d99fc2e73463b8810817';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+    alien_extract_ok;
+
+  };
+
+  subtest 'just digest' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'http://foo.bar.baz';
+        digest SHA256 => '0478cc6e29f934f87ae457c66a05891aef93179e0674d99fc2e73463b8810817';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'http',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+    alien_extract_ok;
+
+  };
+
+  subtest 'just tls' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+    alien_extract_ok;
+
+  };
+
+  subtest 'just tls' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'http://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'http',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+
+    my($out, $exception) = capture_merged {
+      dies { $build->extract }
+    };
+
+    like $exception, qr/^file was fetched insecurely and required digest missing for/;
+
+  };
+
 };
 
 alien_subtest 'digest_and_encrypt' => sub {
+
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_and_encrypt';
+
   my $todo = todo 'todo';
+  is(Alien::Build->new->download_rule, 'digest_and_encrypt');
   ok 0;
 };
 
