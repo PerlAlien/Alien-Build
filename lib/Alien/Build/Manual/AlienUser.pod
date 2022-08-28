@@ -196,5 +196,14 @@ variable.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
+=over 4
+
+=item L<Alien::Build::Manual>
+
+Other L<Alien::Build> manuals.
+
+=back
+
+=cut

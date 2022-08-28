@@ -668,4 +668,14 @@ See the plugin documentation for additional details.
 Once you have installed you can use your Alien.  See
 L<Alien::Build::Manual::AlienUser> for guidance on that.
 
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Alien::Build::Manual>
+
+Other L<Alien::Build> manuals.
+
+=back
+
 =cut

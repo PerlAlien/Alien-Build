@@ -177,6 +177,12 @@ L<https://metacpan.org/pod/Alien::Base#CONTRIBUTORS>
 
 =head1 SEE ALSO
 
-L<alienfile>, L<Alien::Build::MM>, L<Alien::Build::Plugin>, L<Alien::Base>, L<Alien>
+=over 4
+
+=item L<Alien::Build::Manual>
+
+Other L<Alien::Build> manuals.
+
+=back
 
 =cut
