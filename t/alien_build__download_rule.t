@@ -348,7 +348,7 @@ alien_subtest 'digest_or_encrypt' => sub {
 
   is(Alien::Build->new->download_rule, 'digest_or_encrypt');
 
-  subtest 'with digest' => sub {
+  subtest 'with digest and tls' => sub {
 
     alienfile_ok q{
       use alienfile;
@@ -431,7 +431,7 @@ alien_subtest 'digest_or_encrypt' => sub {
 
   };
 
-  subtest 'no tls' => sub {
+  subtest 'no tls or digest' => sub {
 
     my $build = alienfile_ok q{
       use alienfile;
@@ -470,9 +470,131 @@ alien_subtest 'digest_and_encrypt' => sub {
   local $Alien::Build::VERSION = $Alien::Build::VERSION || '2.60';
   local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_and_encrypt';
 
-  my $todo = todo 'todo';
   is(Alien::Build->new->download_rule, 'digest_and_encrypt');
-  ok 0;
+
+  subtest 'with digest and tls' => sub {
+
+    alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        digest SHA256 => '0478cc6e29f934f87ae457c66a05891aef93179e0674d99fc2e73463b8810817';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+    alien_extract_ok;
+
+  };
+
+  subtest 'just digest' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'http://foo.bar.baz';
+        digest SHA256 => '0478cc6e29f934f87ae457c66a05891aef93179e0674d99fc2e73463b8810817';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'http',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+
+    my($out, $exception) = capture_merged {
+      dies { $build->download }
+    };
+
+    like $exception, qr/^insecure fetch is not allowed/;
+
+  };
+
+  subtest 'just tls' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'https://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'https',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+    alien_download_ok;
+
+    my($out, $exception) = capture_merged {
+      dies { $build->extract }
+    };
+
+    like $exception, qr/^required digest missing for/;
+
+  };
+
+  subtest 'no tls or digest' => sub {
+
+    my $build = alienfile_ok q{
+      use alienfile;
+      probe sub { 'share' };
+      share {
+        start_url 'http://foo.bar.baz';
+        fetch sub {
+          return {
+            type     => 'file',
+            filename => 'foo-1.00.tar',
+            content  => $main::tarball,
+            version  => '1.00',
+            protocol => 'http',
+          };
+        };
+        plugin 'Extract::ArchiveTar' => (format => 'tar');
+      };
+    };
+
+    alienfile_skip_if_missing_prereqs;
+    alien_install_type_is 'share';
+
+    my($out, $exception) = capture_merged {
+      dies { $build->download }
+    };
+
+    like $exception, qr/^insecure fetch is not allowed/;
+
+  };
+
 };
 
 done_testing;
