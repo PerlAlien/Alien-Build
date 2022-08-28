@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.61_01   2022-08-28 15:49:06 -0600
   - Added preload_plugin and postload_plugin to Alien::Build::rc
     (gh#348, gh#349)
 
