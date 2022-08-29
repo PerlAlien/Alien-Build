@@ -9,17 +9,20 @@ subtest 'basic' => sub {
 
   local $Alien::Build::Plugin::Fetch::LocalDir::VERSION = $Alien::Build::Plugin::Fetch::LocalDir::VERSION || 2.57;
 
+  # This test "downloads" a directory which isn't uspported
+  # by check_digest
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
+
   my $build = alienfile_ok q{
     use alienfile;
 
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe        => 'share';
 
     share {
-
       meta->prop->{start_url} = 'corpus/dist/foo-1.00/';
       plugin 'Fetch::LocalDir';
       plugin 'Extract' => format => 'd';
-
     };
   };
 

@@ -14,10 +14,14 @@ subtest basic => sub {
 
     use alienfile;
 
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe        => 'share',
+      check_digest => 1;
 
     share {
 
+      meta->prop->{check_digest} = 1;
+      meta->prop->{digest} = { '*' => [ FAKE => 'deadbeaf' ] };
       plugin 'Download' => 'corpus/dist/foo-1.00.tar';
       plugin 'Extract';
 

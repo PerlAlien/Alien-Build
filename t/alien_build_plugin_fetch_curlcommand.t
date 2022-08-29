@@ -15,6 +15,9 @@ use JSON::PP qw( decode_json );
 
 $Alien::Build::Plugin::Fetch::CurlCommand::VERSION = '1.19';
 
+# This test makes real http request against localhost only
+$ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
+
 subtest 'fetch from http' => sub {
 
   my $config = test_config 'httpd';

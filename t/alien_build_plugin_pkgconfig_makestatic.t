@@ -13,15 +13,14 @@ subtest 'recursive' => sub {
     use alienfile;
     use Path::Tiny qw( path );
 
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
     plugin 'PkgConfig::MakeStatic';
-
-    probe sub { 'share' };
     plugin 'PkgConfig::PP' => 'foo1';
 
     share {
-
-      download sub { path('file1')->touch };
-      extract sub  { path('file2')->touch };
       build sub {
         my($build) = @_;
         my $dir = path($build->install_prop->{prefix}, 'lib', 'pkgconfig');

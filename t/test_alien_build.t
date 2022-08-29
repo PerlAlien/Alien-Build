@@ -159,15 +159,12 @@ subtest alien_build_ok => sub {
 
     alienfile_ok q{
       use alienfile;
-      use Path::Tiny qw( path );
-      probe sub { 'share' };
       share {
-        download sub { path('file1')->touch };
-        extract sub { path('file2')->touch };
-        build sub {
-          my($build) = @_;
-          path($build->install_prop->{stage})->child('file3')->touch;
-        };
+        plugin 'Test::Mock',
+          probe    => 'share',
+          download => 1,
+          extract  => 1,
+          build    => 1;
         gather sub {
           my($build) = @_;
           my $prefix = $build->runtime_prop->{prefix};
@@ -186,7 +183,7 @@ subtest alien_build_ok => sub {
     is $alien->cflags, "-I$prefix/include -DFOO=1";
     is $alien->libs,   "-L$prefix/lib -lfoo";
 
-    ok -f path($prefix)->child('file3');
+    ok -f path($prefix)->child('lib/libfoo.a');
   };
 
 };
@@ -367,12 +364,9 @@ subtest 'alien_extract_ok' => sub {
       use Path::Tiny qw( path );
       probe sub { 'share' };
       share {
-        download sub {
-          path('file1')->touch;
-        };
-        extract sub {
-          path($_)->touch for qw( file2 file3 );
-        };
+        plugin 'Test::Mock',
+          download => 1,
+          extract  => { file2 => '', file3 => '' };
       };
     };
 

@@ -23,6 +23,7 @@ sub init
           type     => 'file',
           filename => $filename,
           content  => "data:$filename",
+          protocol => 'file',
         };
       }
       else
@@ -32,6 +33,7 @@ sub init
           list => [
             map { { filename => "foo-$_.tar.gz", url => "file://localhost/foo-$_.tar.gz" } } @{ $self->versions },
           ],
+          protocol => 'file',
         }
       }
     },
