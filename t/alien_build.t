@@ -2221,7 +2221,14 @@ subtest 'alien_download_rule' => sub {
     object {
       call download_rule => 'warn';
     },
-    'default');
+    'implicit default');
+
+  is(
+    do { $ENV{ALIEN_DOWNLOAD_RULE} = 'default'; Alien::Build->new },
+    object {
+      call download_rule => 'warn';
+    },
+    'explicit default');
 
   foreach my $value ( qw( warn digest encrypt digest_or_encrypt digest_and_encrypt ) )
   {

@@ -35,7 +35,11 @@ my @mods = qw(
 
 foreach my $mod (@mods)
 {
-  run 'cpanm', '--installdeps', '-n', $mod;
+  {
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'default';
+    local $ENV{ALIEN_INSTALL_TYPE} = 'default';
+    run 'cpanm', '--installdeps', '-n', $mod;
+  }
   run 'cpanm', '--reinstall', '-v', $mod;
 }
 
