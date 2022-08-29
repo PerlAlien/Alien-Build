@@ -38,7 +38,6 @@ $modules{$_} = $_ for qw(
   IO::Uncompress::Bunzip2
   IO::Zlib
   JSON::PP
-  LPW::UserAgent
   LWP
   LWP::Protocol::https
   List::Util

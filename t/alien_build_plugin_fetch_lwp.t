@@ -70,7 +70,7 @@ subtest 'use start_url' => sub {
 
 subtest 'fetch' => sub {
 
-  skip_all 'test requires LWP::UserAgent' unless eval { require LPW::UserAgent; 1 };
+  skip_all 'test requires LWP::UserAgent' unless eval { require LWP::UserAgent; 1 };
 
   foreach my $type (qw( http ftp file ))
   {
