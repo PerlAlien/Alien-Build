@@ -333,7 +333,7 @@ sub _fs
     elsif(ref $val eq 'CODE')
     {
       my $path = Path::Tiny->new($key)->absolute;
-      $path->spew($val->($build));
+      $path->spew_raw($val->($build));
       if($download)
       {
         $build->install_prop->{download_detail}->{"$path"}->{protocol} = 'file';
@@ -343,7 +343,7 @@ sub _fs
     elsif(defined $val)
     {
       my $path = Path::Tiny->new($key)->absolute;
-      $path->spew($val);
+      $path->spew_raw($val);
       if($download)
       {
         $build->install_prop->{download_detail}->{"$path"}->{protocol} = 'file';
