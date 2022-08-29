@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.62_01   2022-08-29 15:03:53 -0600
   - Fixed bug introduced in 2.60_01 where file URLs were not considered
     safe (gh#351, gh#355)
 
