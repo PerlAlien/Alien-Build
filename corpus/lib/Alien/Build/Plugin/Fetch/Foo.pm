@@ -12,6 +12,7 @@ sub init
   $meta->register_hook(
     probe => sub { 'share' },
   );
+  $meta->prop->{start_url} = 'file://localhost/';
   $meta->register_hook(
     fetch => sub {
       my($build, $url) = @_;

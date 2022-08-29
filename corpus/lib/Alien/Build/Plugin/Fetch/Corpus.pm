@@ -35,6 +35,8 @@ sub init
     ],
   };
 
+  $meta->prop->{start_url} = 'https://test1.test/foo/bar/baz/';
+
   $meta->register_hook(
     fetch => sub {
       my(undef, $url) = @_;
