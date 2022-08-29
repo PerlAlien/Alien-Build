@@ -112,6 +112,7 @@ alien_subtest 'protocol + digest' => sub {
       use alienfile;
       probe sub { 'share' };
       share {
+        start_url 'file://localhost/';
         digest SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9';
         fetch sub {
           return {
@@ -153,6 +154,7 @@ alien_subtest 'protocol + digest' => sub {
       use File::Temp qw( tempdir );
       probe sub { 'share' };
       share {
+        start_url 'file://localhost/';
         digest SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9';
         fetch sub {
           my $path = path( tempdir( CLEANUP => 1 ))->child('foo.txt')->absolute;
@@ -197,6 +199,7 @@ alien_subtest 'protocol + digest' => sub {
       use File::Temp qw( tempdir );
       probe sub { 'share' };
       share {
+        start_url 'file://localhost/';
         digest SHA256 => 'fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9';
         fetch sub {
           my $path = path( tempdir( CLEANUP => 1 ))->child('foo.txt')->absolute;
