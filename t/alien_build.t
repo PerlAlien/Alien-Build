@@ -1199,7 +1199,11 @@ subtest 'out-of-source build' => sub {
 
   alien_subtest 'from bundled source' => sub {
 
-    local $Alien::Build::Plugin::Fetch::LocalDir::VERSION = '1.07';
+    local $Alien::Build::Plugin::Fetch::LocalDir::VERSION = $Alien::Build::Plugin::Fetch::LocalDir::VERSION || '1.07';
+
+    # this test extracts a local directory, which is not supported
+    # by check_digest and does not connect to the internet
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
 
     my $build = alienfile_ok q{
       use alienfile;
@@ -1235,28 +1239,29 @@ subtest 'out-of-source build' => sub {
 
 subtest 'test' => sub {
 
-  local $Alien::Build::VERSION = $Alien::Build::VERSION;
-  $Alien::Build::VERSION ||= '1.14';
-
+  local $Alien::Build::VERSION = $Alien::Build::VERSION || '1.14';
 
   alien_subtest 'good' => sub {
 
     alienfile_ok q{
       use alienfile;
-      use Path::Tiny qw( path );
 
-      probe sub { 'share' };
+      plugin 'Test::Mock',
+        probe    => 'share',
+        download => 1,
+        extract  => {
+          file2 => '',
+          file3 => '',
+        };
 
       share {
-        download sub { path('file1')->touch };
-        extract sub { path($_)->touch for qw( file2 file3 ) };
         build sub {
           log("the build");
-          path('file4')->spew('content of file4')
+          Path::Tiny->new('file4')->spew('content of file4')
         };
         test sub {
           log("the test");
-          my $x = path('file4')->slurp;
+          my $x = Path::Tiny->new('file4')->slurp;
           die "hrm" unless $x eq 'content of file4';
         };
       };
@@ -1284,14 +1289,14 @@ subtest 'test' => sub {
 
     alienfile_ok q{
       use alienfile;
-      use Path::Tiny qw( path );
 
-      probe sub { 'share' };
+      plugin 'Test::Mock',
+        probe => 'share',
+        download => 1,
+        extract  => 1,
+        build    => 1;
 
       share {
-        download sub { path('file1')->touch };
-        extract sub { path($_)->touch for qw( file2 file3 ) };
-        build sub { };
         test sub {
           log("the test");
           die "bogus!";
@@ -1323,11 +1328,15 @@ subtest 'test' => sub {
       use alienfile;
       use Path::Tiny qw( path );
 
-      probe sub { 'share' };
+      plugin 'Test::Mock',
+        probe    => 'share',
+        download => 1,
+        extract  => {
+          file2 => '',
+          file3 => '',
+        };
 
       share {
-        download sub { path('file1')->touch };
-        extract sub { path($_)->touch for qw( file2 file3 ) };
         build sub {
           log("the build");
           path('file4')->spew('content of file4')
@@ -1373,11 +1382,12 @@ subtest 'test' => sub {
       use alienfile;
       use Path::Tiny qw( path );
 
-      probe sub { 'share' };
+      plugin 'Test::Mock',
+        probe    => 'share',
+        download => 1,
+        extract  => 1;
 
       share {
-        download sub { path('file1')->touch };
-        extract sub { path($_)->touch for qw( file2 file3 ) };
         build sub {
           log("the build");
           path('file4')->spew('content of file4')
@@ -1490,13 +1500,14 @@ alien_subtest 'pkg-config path during build' => sub {
     use Path::Tiny qw( path );
     use Env qw( @PKG_CONFIG_PATH );
 
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
 
     share {
 
       requires 'Alien::libfoo2';
-      download sub { path('file1')->touch };
-      extract sub { path('file2')->touch };
       build sub {
         my($build) = @_;
         $build->runtime_prop->{my_pkg_config_path} = [@PKG_CONFIG_PATH];
