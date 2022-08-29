@@ -1406,7 +1406,7 @@ sub fetch
 
   my $secure = 0;
 
-  if(defined $url && $url =~ /^https:/ || $url !~ /:/)
+  if(defined $url && $url =~ /^(https|file):/ || $url !~ /:/)
   {
     # considered secure when either https or a local file
     $secure = 1;

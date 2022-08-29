@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug introduced in 2.60_01 where file URLs were not considered
+    safe (gh#351)
 
 2.61_01   2022-08-28 15:49:06 -0600
   - Added preload_plugin and postload_plugin to Alien::Build::rc
