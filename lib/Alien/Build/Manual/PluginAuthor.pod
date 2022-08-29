@@ -331,7 +331,7 @@ and links that can be used by the prefer hook to choose the correct file to
 download.  See the L<fetch hook|/"fetch hook"> for the specification of the
 input and response hash references.
 
-=head2 check_digest
+=head2 check_digest hook
 
  # implement the well known FOO-92 digest
  $meta->register_hook( check_digest => sub {
