@@ -9,12 +9,11 @@ alien_subtest 'basic' => sub {
   my $build = alienfile_ok q{
     use alienfile;
 
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1;
 
     share {
-      download sub {
-        Path::Tiny->new('foo')->touch;
-      };
       extract sub {
         my $bin = Path::Tiny->new('.')->absolute->child('bin')->child('mycommand');
         log "bin=$bin";

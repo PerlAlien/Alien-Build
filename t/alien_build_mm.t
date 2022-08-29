@@ -216,14 +216,21 @@ subtest 'download + build' => sub {
 
   alienfile q{
     use alienfile;
+    plugin 'Test::Mock',
+      probe        => 'share',
+      check_digest => 1;
 
     use Path::Tiny qw( path );
 
-    probe sub { 'share' };
-
     share {
       download sub {
-        path('foo.tar.gz')->spew('foo');
+        my($build) = @_;
+        my $path = path('foo.tar.gz');
+        $path->spew('foo');
+        $build->install_prop->{download_detail}->{"$path"} = {
+          protocol => 'file',
+          digest   => [ FAKE => 'deadbeaf' ],
+        };
         print " + IN DOWNLOAD +\n";
         $main::call_download = 1;
       };

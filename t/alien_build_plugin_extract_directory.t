@@ -44,7 +44,7 @@ subtest 'basic' => sub {
     use Path::Tiny qw( path );
     plugin 'Extract::Directory';
   };
-  
+
   $build->install_prop->{download} = path('corpus/dist/foo-1.00')->absolute->stringify;
 
   my($out, $dir) = capture_merged { $build->extract };

@@ -11,14 +11,15 @@ subtest basic => sub {
     use Path::Tiny qw( path );
     use Alien::Build::Util qw( _destdir_prefix );
 
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
 
     meta_prop->{destdir} = 1;
 
     share {
 
-      download sub { path('foo-1.00.tar.gz')->touch };
-      extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
         my($build) = @_;
         print "in build\n";
@@ -77,14 +78,15 @@ subtest deprecated => sub {
     use Path::Tiny qw( path );
     use Alien::Build::Util qw( _destdir_prefix );
 
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
 
     meta_prop->{destdir} = 1;
 
     share {
 
-      download sub { path('foo-1.00.tar.gz')->touch };
-      extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
         my($build) = @_;
         print "in build\n";

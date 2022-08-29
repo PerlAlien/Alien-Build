@@ -22,6 +22,10 @@ foreach my $type (qw( basic out-of-source ))
 
   subtest $type => sub {
 
+    # This test uses extract directory, which is unsupported by check_digest.
+    # It uses local corpus data and does not connect to internet.
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
+
     my $build = alienfile_ok q{
       use alienfile;
       use Path::Tiny qw( path );
