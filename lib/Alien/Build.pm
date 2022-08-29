@@ -954,6 +954,7 @@ sub download_rule
   $self->install_prop->{download_rule} ||= do {
     my $dr = $ENV{ALIEN_DOWNLOAD_RULE};
     $dr = 'warn' unless defined $dr;
+    $dr = 'warn' if $dr eq 'default';
     unless($dr =~ /^(warn|digest|encrypt|digest_or_encrypt|digest_and_encrypt)$/)
     {
       $self->log("unknown ALIEN_DOWNLOAD_RULE \"$dr\", using \"warn\" instead");
@@ -2459,7 +2460,8 @@ by, for example, setting preload and postload plugins.
 =item ALIEN_DOWNLOAD_RULE
 
 This value determines the rules by which types of downloads are allowed.  The legal
-values listed under L</download_rule>.
+values listed under L</download_rule>, plus C<default> which will be the default for
+the current version of L<Alien::Build>.  For this version that default is C<warn>.
 
 =item ALIEN_INSTALL_NETWORK
 

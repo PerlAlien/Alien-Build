@@ -1058,7 +1058,8 @@ Apply the given plugin with the given arguments.
 - ALIEN\_DOWNLOAD\_RULE
 
     This value determines the rules by which types of downloads are allowed.  The legal
-    values listed under ["download\_rule"](#download_rule).
+    values listed under ["download\_rule"](#download_rule), plus `default` which will be the default for
+    the current version of [Alien::Build](https://metacpan.org/pod/Alien::Build).  For this version that default is `warn`.
 
 - ALIEN\_INSTALL\_NETWORK
 
