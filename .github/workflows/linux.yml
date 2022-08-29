@@ -39,16 +39,16 @@ jobs:
             tag: "5.36-bullseye"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest
-            tag: "5.34"
+            tag: "5.36"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=encrypt
-            tag: "5.34"
+            tag: "5.36"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest_or_encrypt
-            tag: "5.34"
+            tag: "5.36"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest_and_encrypt
-            tag: "5.34"
+            tag: "5.36"
           - alien_build_install_extra: 1
             tag: "5.36"
           - alien_build_install_extra: 1
