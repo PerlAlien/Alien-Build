@@ -7,27 +7,21 @@ if echo $CIP_TAG | grep -q -- -alpine ; then
   cip sudo apk add cmake
   cip sudo apk add pkgconf-dev
   cip sudo apk add libffi-dev
-elif  echo $CIP_TAG | grep -q -- -centos ; then
-  echo CentOS
-  cip sudo yum install libffi-devel wget -y
+  # needed for plugin tests later
+  cip sudo apk add git
+  cip sudo apk add g++
 elif echo $CIP_TAG | grep -q -- -fedora ; then
   echo Fedora
-  cip sudo yum install cmake libffi-devel wget -y
+  cip sudo yum install cmake libffi-devel wget git g++ -y
 else
   echo Debian or Ubuntu
   cip sudo apt-get update
-  cip sudo apt-get -y install pkg-config cmake libffi-dev wget
+  cip sudo apt-get -y install pkg-config cmake libffi-dev wget git g++
 fi
 
 if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
 
-  if echo $CIP_TAG | grep -q -- -centos ; then
-    echo 'skipping cmake3 on CentOS 7'
-    # CentOS 7 comes with a 2.x cmake, which doesn't fools Alt::Alien::cmake3::System
-    # and doesn't work with our test suite
-  else
-    cip exec env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::cmake3::System
-  fi
+  cip exec env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::cmake3::System
 
   cip exec cpanm -n \
     Test2::Harness \

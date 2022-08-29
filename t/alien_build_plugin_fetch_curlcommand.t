@@ -226,23 +226,11 @@ subtest 'fetch from http' => sub {
 subtest 'live test' => sub {
   skip_all 'set ALIEN_BUILD_LIVE_TEST=1 to enable test' unless $ENV{ALIEN_BUILD_LIVE_TEST};
 
-  if(defined $ENV{CIPDIST} && $ENV{CIPDIST} eq 'centos6')
-  {
-    my $curl = which('curl');
-    is $curl, T();
-    note "curl = $curl";
-    my $pok = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https');
-    is $pok, F();
-    return;
-  }
-  else
-  {
-    my $curl = which('curl');
-    is $curl, T();
-    note "curl = $curl";
-    my $pok = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https');
-    is $pok, T();
-  }
+  my $curl = which('curl');
+  is $curl, T();
+  note "curl = $curl";
+  my $pok = Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https');
+  is $pok, T();
 
   require Alien::Build::Plugin::Download::Negotiate;
   my $mock = mock 'Alien::Build::Plugin::Download::Negotiate' => (
