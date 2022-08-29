@@ -6,6 +6,7 @@ use File::chdir;
 use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
 use Capture::Tiny qw( capture_merged );
+use Alien::Build::Util qw( _dump );
 
 sub alienfile
 {
@@ -13,6 +14,12 @@ sub alienfile
   my(undef, $filename, $line) = caller;
   $str = '# line '. $line . ' "' . $filename . qq("\n) . $str;
   path('alienfile')->spew($str);
+}
+
+sub get_build
+{
+  my($build) = _args();
+  $build;
 }
 
 @INC = map { ref $_ ? $_ : path($_)->absolute->stringify } @INC;
@@ -225,7 +232,7 @@ subtest 'download + build' => sub {
     share {
       download sub {
         my($build) = @_;
-        my $path = path('foo.tar.gz');
+        my $path = path('foo.tar.gz')->absolute;
         $path->spew('foo');
         $build->install_prop->{download_detail}->{"$path"} = {
           protocol => 'file',
@@ -257,18 +264,34 @@ subtest 'download + build' => sub {
     prefix();
   };
 
-  note capture_merged {
+  my($out, $error) = capture_merged {
     local @ARGV = ();
-    download();
+    eval { download() };
+    $@;
   };
+  note $out if $out ne '';
+
+  is($error, '', 'no error in download') || do {
+    diag _dump(get_build()->install_prop);
+    return;
+  };
+  note _dump(get_build()->install_prop);
 
   ok( -f '_alien/mm/download', 'touched download' );
   is $main::call_download, 1, 'download';
 
-  note capture_merged {
+  ($out, $error) = capture_merged {
     local @ARGV = ();
-    build();
+    eval { build() };
+    $@;
   };
+  note $out if $out ne '';
+
+  is($error, '', 'no error in build') || do {
+    diag _dump(get_build()->install_prop);
+    return;
+  };
+  note _dump(get_build()->install_prop);
 
   ok( -f '_alien/mm/build', 'touched build' );
   is $main::call_build, 1, 'build';

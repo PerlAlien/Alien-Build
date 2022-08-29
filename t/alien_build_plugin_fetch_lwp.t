@@ -70,7 +70,7 @@ subtest 'use start_url' => sub {
 
 subtest 'fetch' => sub {
 
-  skip_all 'test requires HTTP::Tiny' unless eval { require HTTP::Tiny; HTTP::Tiny->VERSION(0.044); 1 };
+  skip_all 'test requires LWP::UserAgent' unless eval { require LPW::UserAgent; 1 };
 
   foreach my $type (qw( http ftp file ))
   {
@@ -82,6 +82,11 @@ subtest 'fetch' => sub {
         my $url = $get_url->();
         skip_all $error->() unless $url;
       };
+
+      # This test runs against a real http or ftp server, usually only in CI
+      # the server is running on localhost
+      local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
+      $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $url =~ /^(http|ftp):/;
 
       my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url" );
       my $build = alienfile filename => 'corpus/blank/alienfile';
