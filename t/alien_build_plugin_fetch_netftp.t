@@ -81,6 +81,10 @@ subtest 'fetch' => sub {
 
   note "url = $url";
 
+  # FTP is inherently insecure.  This test usually only runs in CI
+  # against a ftp server running on localhost
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
+
   my $plugin = Alien::Build::Plugin::Fetch::NetFTP->new( url => $url );
 
   my $build = alienfile filename => 'corpus/blank/alienfile';

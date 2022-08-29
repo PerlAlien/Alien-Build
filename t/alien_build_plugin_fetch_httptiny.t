@@ -107,6 +107,11 @@ subtest 'fetch' => sub {
   skip_all http_error unless $url;
 
   my($proto) = $url =~ /^([a-z]+):/;
+
+  # tests usually in CI only against a real http server on localhost
+  local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
+  $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $proto ne 'https';
+
   like $proto, qr/^https?$/, "protocol is either http or https (url = $url)";
 
   my $plugin = Alien::Build::Plugin::Fetch::HTTPTiny->new( url => "$url" );
