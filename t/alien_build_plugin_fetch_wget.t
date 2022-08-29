@@ -28,7 +28,7 @@ subtest 'fetch from http' => sub {
   # This test runs against a real http or ftp server, usually only in CI
   # the server is running on localhost
   local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
-  $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $url ne 'https';
+  $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $proto ne 'https';
 
   my $build = alienfile_ok qq{
     use alienfile;
