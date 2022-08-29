@@ -154,6 +154,11 @@ subtest 'fetch' => sub {
     my $furl = URI->new_abs("test1/foo.txt", $url);
     note "url = $furl";
 
+    # This test runs against a real http or ftp server, usually only in CI
+    # the server is running on localhost
+    local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
+    $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $url ne 'https';
+
     my $build = do {
       my $plugin = Alien::Build::Plugin::Fetch::LWP->new( url => "$url" );
       my $build = alienfile filename => 'corpus/blank/alienfile';

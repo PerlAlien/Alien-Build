@@ -25,6 +25,11 @@ subtest 'fetch from http' => sub {
   my($proto) = $base =~ /^([a-z]+):/;
   like $proto, qr/^https?$/, "protocol is either http or https (url = $base)";
 
+  # This test runs against a real http or ftp server, usually only in CI
+  # the server is running on localhost
+  local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
+  $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $url ne 'https';
+
   my $build = alienfile_ok qq{
     use alienfile;
 
@@ -112,6 +117,11 @@ subtest 'headers' => sub {
   require URI;
   my $furl = URI->new_abs("test1/foo.txt", $url);
   note "url = $furl";
+
+  # This test runs against a real http or ftp server, usually only in CI
+  # the server is running on localhost
+  local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
+  $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $url ne 'https';
 
   my $res = capture_note { $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]) };
 
