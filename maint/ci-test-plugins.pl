@@ -24,17 +24,37 @@ die "not exactly one tarball: @tarball" if @tarball != 1;
 my $tarball = shift @tarball;
 run 'cpanm', '-n', $tarball;
 
+my %min = (
+  'Alien::Build::Plugin::Extract::Libarchive' => 5.020
+);
+
+# TODO: Alien::Build::Plugin::Download::GitHub
+
 my @mods = qw(
   Alien::Build::MB
+  Alien::Build::Git
+  Alien::Role::Dino
   Alien::Build::Plugin::Build::Premake5
   Alien::Build::Plugin::Decode::SourceForge
-  Alien::Build::Plugin::Probe::Override
+  Alien::Build::Plugin::Cleanse::BuildDir
+  Alien::Build::Plugin::Extract::Libarchive
+  Alien::Build::Plugin::Fetch::Cache
+  Alien::Build::Plugin::Fetch::HostAllowList
+  Alien::Build::Plugin::Fetch::HostBlockList
   Alien::Build::Plugin::Fetch::Prompt
+  Alien::Build::Plugin::PkgConfig::PPWrapper
+  Alien::Build::Plugin::Probe::GnuWin32
+  Alien::Build::Plugin::Probe::Override
   Alien::Build::Plugin::Fetch::Rewrite
 );
 
 foreach my $mod (@mods)
 {
+  my $min = $min{$mod};
+  if(defined $min)
+  {
+    next unless $] >= $min;
+  }
   {
     local $ENV{ALIEN_DOWNLOAD_RULE} = 'default';
     local $ENV{ALIEN_INSTALL_TYPE} = 'default';

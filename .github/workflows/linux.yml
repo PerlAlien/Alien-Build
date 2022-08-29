@@ -27,9 +27,6 @@ jobs:
             tag: "5.36-bionic"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.36-centos7"
-          - alien_build_install_extra: 1
-            env: ALIEN_BUILD_LIVE_TEST=1
             tag: "5.36-fedora36"
           - alien_build_install_extra: 0
             env: ALIEN_BUILD_LIVE_TEST=0
@@ -37,6 +34,9 @@ jobs:
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
             tag: "5.36-bullseye"
+          - alien_build_install_extra: 1
+            env: ALIEN_DOWNLOAD_RULE=warn
+            tag: "5.36"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest
             tag: "5.36"
