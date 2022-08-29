@@ -100,7 +100,11 @@ subtest 'archive' => sub {
   {
     subtest "with extension $ext" => sub {
 
-      my $build = alienfile filename => 'corpus/blank/alienfile';
+      my $build = alienfile_ok q{
+        use alienfile;
+        plugin 'Test::Mock',
+          check_digest => 1;
+      };
       my $meta = $build->meta;
 
       my $plugin = Alien::Build::Plugin::Extract::ArchiveTar->new;
@@ -123,6 +127,10 @@ subtest 'archive' => sub {
       my $archive = path("corpus/dist/foo-1.00.$ext")->absolute;
 
       my($out, $dir, $error) = capture_merged {
+        local $build->install_prop->{download_detail}->{"$archive"} = {
+          protocol => 'file',
+          digest => [ FAKE => 'deadbeaf' ],
+        };
         my $dir = eval { $build->extract("$archive") };
         ($dir, $@);
       };
@@ -169,15 +177,14 @@ subtest 'archive with pax_global_header' => sub {
     unless eval { require Archive::Tar };
 
   my $build = alienfile_ok q{
-
     use alienfile;
     use Path::Tiny qw( path );
-    probe sub { 'share' };
-    share {
-      download sub {
-        my($build) = @_;
-        path(__FILE__)->parent->parent->child('corpus/dist2/foo.tar')->absolute->copy('foo.tar');
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => {
+        'foo.tar' => path(__FILE__)->parent->parent->child('corpus/dist2/foo.tar')->slurp_raw,
       };
+    share {
       plugin 'Extract::ArchiveTar';
     };
 

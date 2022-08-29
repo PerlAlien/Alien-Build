@@ -9,12 +9,12 @@ subtest 'basic' => sub {
 
   my $build = alienfile q{
     use alienfile;
-    use Path::Tiny qw( path );
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1,
+      build    => 1,
     share {
-      download sub { path('foo-1.00.tar.gz')->touch };
-      extract  sub { path($_)->touch for qw( file1 file 2 ) };
-      build sub {};
       gather sub {
         my($build) = @_;
         $build->runtime_prop->{cflags}  = '-DFOO=1';

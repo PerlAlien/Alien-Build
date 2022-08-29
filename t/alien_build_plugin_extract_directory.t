@@ -35,12 +35,16 @@ subtest 'available' => sub {
 
 subtest 'basic' => sub {
 
-  my $build = alienfile filename => 'corpus/blank/alienfile';
-  my $meta = $build->meta;
+  # Test uses download directory, which is unsupported by
+  # digest checks
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
 
-  my $plugin = Alien::Build::Plugin::Extract::Directory->new;
-  $plugin->init($meta);
-
+  my $build = alienfile_ok q{
+    use alienfile;
+    use Path::Tiny qw( path );
+    plugin 'Extract::Directory';
+  };
+  
   $build->install_prop->{download} = path('corpus/dist/foo-1.00')->absolute->stringify;
 
   my($out, $dir) = capture_merged { $build->extract };

@@ -33,23 +33,19 @@ subtest 'basic' => sub {
       use alienfile;
       use Path::Tiny qw( path );
 
-      probe sub { 'share' };
+      plugin 'Test::Mock',
+        probe    => 'share',
+        download => 1,
+        extract  => 1;
 
       share {
-        download sub { path('foo-1.00.tar.gz')->touch };
-        extract  sub { path($_)->touch for qw( file1 file2 ) };
-
         build sub {
-
           my($build) = @_;
-          print "in build\n";
-
           my $dir = path($build->install_prop->{stage});
           $dir->child('lib')->mkpath;
           $dir->child('lib', $_)->touch for qw( libfoo.a libfoo.dylib libfoo.bundle libfoo.la foo.dll.a );
           $dir->child('bin')->mkpath;
           $dir->child('bin', $_)->touch for qw( foo foo.exe foo.dll );
-
         };
 
         plugin 'Gather::IsolateDynamic';
@@ -68,7 +64,10 @@ subtest 'basic' => sub {
       use Path::Tiny qw( path );
       use Alien::Build::Util qw( _destdir_prefix );
 
-      probe sub { 'share' };
+      plugin 'Test::Mock',
+        probe    => 'share',
+        download => 1,
+        extract  => 1;
 
       meta_prop->{destdir} = 1;
 

@@ -8,7 +8,12 @@ use File::Temp qw( tempdir );
 
 subtest 'archive' => sub {
 
-  my $build = alienfile filename => 'corpus/blank/alienfile';
+  my $build = alienfile_ok q{
+    use alienfile;
+    plugin 'Test::Mock',
+      check_digest => 1;
+  };
+
   my $meta = $build->meta;
 
   my $plugin = Alien::Build::Plugin::Extract::CommandLine->new;
@@ -41,6 +46,10 @@ subtest 'archive' => sub {
       };
 
       note "archive = $archive";
+      $build->install_prop->{download_detail}->{$archive} = {
+        protocol => 'file',
+        digest   => [ FAKE => 'deadbeaf' ],
+      };
 
       my($out, $dir, $error) = capture_merged {
         my $dir = eval { $build->extract($archive) };
@@ -96,15 +105,14 @@ subtest 'archive with pax_global_header' => sub {
   skip_all "system does not support tar" unless Alien::Build::Plugin::Extract::CommandLine->new->handles('tar');
 
   my $build = alienfile_ok q{
-
     use alienfile;
     use Path::Tiny qw( path );
-    probe sub { 'share' };
-    share {
-      download sub {
-        my($build) = @_;
-        path(__FILE__)->parent->parent->child('corpus/dist2/foo.tar')->absolute->copy('foo.tar');
+    plugin 'Test::Mock',
+      probe => 'share',
+      download => {
+        'foo.tar' => path(__FILE__)->parent->parent->child('corpus/dist2/foo.tar')->slurp_raw,
       };
+    share {
       plugin 'Extract::CommandLine';
     };
 

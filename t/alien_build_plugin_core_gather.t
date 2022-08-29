@@ -13,12 +13,13 @@ subtest 'destdir filter' => sub {
   my $build = alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
     meta_prop->{destdir} = 1;
     meta_prop->{destdir_filter} = qr/^(bin|lib)\/.*$/;
-    probe sub { 'share' };
     share {
-      download sub { path('foo-1.00.tar.gz')->touch };
-      extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
         my($build) = @_;
         my $prefix = $build->install_prop->{prefix};
@@ -57,10 +58,11 @@ subtest 'patch' => sub {
   my $build = alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
     share {
-      download sub { path('foo-1.00.tar.gz')->touch };
-      extract  sub { path($_)->touch for qw( file1 file2 ) };
       build sub {
         my($build) = @_;
         my $prefix = path($build->install_prop->{prefix});
@@ -99,11 +101,12 @@ subtest 'pkg-config path during gather' => sub {
   my $build = alienfile_ok q{
     use alienfile;
     use Path::Tiny qw( path );
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
     use Env qw( @PKG_CONFIG_PATH );
-    probe sub { 'share' };
     share {
-      download sub { path('file1')->touch };
-      extract  sub { path('file2')->touch };
       build    sub {
         my($build) = @_;
         my $prefix = path($build->install_prop->{prefix});

@@ -142,6 +142,31 @@ if a true non-hash value is provided, some reasonable runtime properties for tes
 
 has 'gather';
 
+=head2 check_digest
+
+ plugin 'Test::Mock' => (
+   check_digest => 1,  # the default
+ );
+
+This adds a check_digest hook that uses fake algorithm FAKE that hashes everything to C<deadbeaf>.
+The mock download above will set the digest for download_details so that this will pass the
+signature check.
+
+ plugin 'Test::Mock' => (
+   check_digest => sub {
+     my($build, $file, $algo, $digest) = @_;
+     ...
+   },
+ );
+
+If you give it a code reference then you can write your own faux digest.  See the
+L<check_digest hook|Alien::Build::Manual::PluginAuthor/"check_digest hook"> in
+L<Alien::Build::Manual::PluginAuthor> for details.
+
+=cut
+
+has check_digest => 1;
+
 sub init
 {
   my($self, $meta) = @_;
@@ -176,7 +201,7 @@ sub init
     $meta->register_hook(
       download => sub {
         my($build) = @_;
-        _fs($build, $download);
+        _fs($build, $download, 1);
       },
     );
   }
@@ -259,11 +284,42 @@ sub init
       },
     ) for qw( gather_share gather_system );
   }
+
+  if(my $cd = $self->check_digest)
+  {
+    $meta->register_hook(
+      check_digest => ref($cd) eq 'CODE' ? $cd : sub {
+        my($build, $file, $algorithm, $digest) = @_;
+        if($algorithm ne 'FOO92')
+        {
+          return 'FAKE';
+        }
+        if($digest eq 'deadbeaf')
+        {
+          return 1;
+        }
+        else
+        {
+          die "Digest FAKE does not match: got deadbeaf, expected $digest";
+        }
+      }
+    );
+    $meta->register_hook(
+      check_download => sub {
+        my($build) = @_;
+        my $path = $build->install_prop->{download};
+        if(defined $path)
+        {
+          $build->check_digest($path);
+        }
+      },
+    );
+  }
 }
 
 sub _fs
 {
-  my($build, $hash) = @_;
+  my($build, $hash, $download) = @_;
 
   foreach my $key (sort keys %$hash)
   {
@@ -276,11 +332,23 @@ sub _fs
     }
     elsif(ref $val eq 'CODE')
     {
-      Path::Tiny->new($key)->spew($val->($build));
+      my $path = Path::Tiny->new($key)->absolute;
+      $path->spew($val->($build));
+      if($download)
+      {
+        $build->install_prop->{download_detail}->{"$path"}->{protocol} = 'file';
+        $build->install_prop->{download_detail}->{"$path"}->{digest}   = [ FAKE => 'deadbeaf' ];
+      }
     }
     elsif(defined $val)
     {
-      Path::Tiny->new($key)->spew($val);
+      my $path = Path::Tiny->new($key)->absolute;
+      $path->spew($val);
+      if($download)
+      {
+        $build->install_prop->{download_detail}->{"$path"}->{protocol} = 'file';
+        $build->install_prop->{download_detail}->{"$path"}->{digest}   = [ FAKE => 'deadbeaf' ];
+      }
     }
   }
 }

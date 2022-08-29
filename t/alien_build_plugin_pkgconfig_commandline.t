@@ -445,8 +445,9 @@ subtest 'system rewrite' => sub {
     );
 
     share {
-      download sub { path('file1')->touch };
-      extract sub { path('file1')->touch };
+      plugin 'Test::Mock',
+        download => 1,
+        extract  => 1;
       build sub {
         my($build) = @_;
         my $stage = path($ENV{DESTDIR});
