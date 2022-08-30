@@ -28,7 +28,6 @@ my %min = (
   'Alien::Build::Plugin::Extract::Libarchive' => 5.020
 );
 
-# TODO: Alien::Build::Plugin::Download::GitHub
 # TODO: Alien::Build::Plugin::Build::Premake5
 
 my @mods = qw(
@@ -36,6 +35,8 @@ my @mods = qw(
   Alien::Build::Git
   Alien::Role::Dino
   Alien::Build::Plugin::Decode::SourceForge
+  Alien::Build::Plugin::Download::GitHub
+  Alien::Build::Plugin::Download::GitLab
   Alien::Build::Plugin::Cleanse::BuildDir
   Alien::Build::Plugin::Extract::Libarchive
   Alien::Build::Plugin::Fetch::Cache
