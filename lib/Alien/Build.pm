@@ -1661,7 +1661,12 @@ sub extract
     }
     elsif($self->download_rule eq 'warn')
     {
-      # warns done prior to this point
+      unless($checked_digest || $encrypted_fetch)
+      {
+        $self->log("!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!");
+        $self->log("a future version of Alien::Build will die here by default with this exception: file was fetched insecurely and required digest missing for $archive");
+        $self->log("!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!");
+      }
     }
     else
     {

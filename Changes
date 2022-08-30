@@ -6,6 +6,7 @@ Revision history for {{$dist->name}}
   - ALIEN_DOWNLOAD_RULE=default is now a legal value.  It is currently
     the same as 'warn' but will probably become 'digest_or_encrypt' in
     the future (gh#356)
+  - Added notice in change of behavior (gh#190, gh#359)
 
 2.62_01   2022-08-29 15:03:53 -0600
   - Fixed bug introduced in 2.60_01 where file URLs were not considered
