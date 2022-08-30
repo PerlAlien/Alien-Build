@@ -42,6 +42,10 @@ Frequently Asked Questions about L<Alien::Build>.
 
 L<Alien::Build> plugin author documentation — or how to extend L<Alien::Build> with the plugin system.
 
+=item L<Alien::Build::Manual::Security>
+
+Documents some of the challenges and configuration tools related to security of L<Alien>s.
+
 =back
 
 =head1 SEE ALSO

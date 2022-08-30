@@ -50,6 +50,13 @@ If you are starting out you probably want to do so from one of these documents:
     This is for the brave souls who want to write plugins that will work with
     [Alien::Build](https://metacpan.org/pod/Alien::Build) + [alienfile](https://metacpan.org/pod/alienfile).
 
+- [Alien::Build::Manual::Security](https://metacpan.org/pod/Alien::Build::Manual::Security)
+
+    If you are concerned that [Alien](https://metacpan.org/pod/Alien)s might be downloading tarballs off
+    the internet, then this is the place for you.  This will discuss some
+    of the risks of downloading (really any) software off the internet
+    and will give you some tools to remediate these risks.
+
 Note that you will not usually create a [Alien::Build](https://metacpan.org/pod/Alien::Build) instance
 directly, but rather be using a thin installer layer, such as
 [Alien::Build::MM](https://metacpan.org/pod/Alien::Build::MM) (for use with [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker)) or
