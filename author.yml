@@ -152,6 +152,8 @@ pod_spelling_system:
     - INPHOBIA
     - nauwelaerts
     - cryptographic
+    - TLS
+    - aggresive
 
 pod_coverage:
   skip: 0

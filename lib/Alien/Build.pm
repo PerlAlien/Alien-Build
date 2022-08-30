@@ -62,6 +62,13 @@ If you have a common question that has already been answered, like
 This is for the brave souls who want to write plugins that will work with
 L<Alien::Build> + L<alienfile>.
 
+=item L<Alien::Build::Manual::Security>
+
+If you are concerned that L<Alien>s might be downloading tarballs off
+the internet, then this is the place for you.  This will discuss some
+of the risks of downloading (really any) software off the internet
+and will give you some tools to remediate these risks.
+
 =back
 
 Note that you will not usually create a L<Alien::Build> instance
