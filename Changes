@@ -2,6 +2,23 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.64      2022-08-30 10:09:42 -0600
+  - Production release identical to 2.63.01
+  - !!! Notice of Change of Behavior !!!
+
+    In the near future, AB will require by default one of:
+
+     1. Secure https connection
+     2. Bundled pacakge (ie file:// URL)
+     3. Cryptographic signature
+
+    before extracting archives fetched off the internet.  You can test
+    the new behavior yourself by setting
+    ALIEN_DOWNLOAD_RULE to `digest_or_encrypt`.  More details can
+    be found in the Alien::Build::Manual::Security POD
+
+    !!! Notice of Change of Behavior !!!
+
 2.63_01   2022-08-30 00:44:54 -0600
   - New documentation Alien::Build::Manual::Security (gh#357)
   - Compute $build->donwload_rule as soon as possible (gh#190, gh#358)
