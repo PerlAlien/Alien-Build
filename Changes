@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.63_01   2022-08-30 00:44:54 -0600
   - New documentation Alien::Build::Manual::Security (gh#357)
   - Compute $build->donwload_rule as soon as possible (gh#190, gh#358)
   - ALIEN_DOWNLOAD_RULE=default is now a legal value.  It is currently
