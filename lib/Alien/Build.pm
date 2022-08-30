@@ -110,6 +110,9 @@ sub new
     aclocal_path => [],
   }, $class;
 
+  # force computing this as soon as possible
+  $self->download_rule;
+
   $self->meta->filename(
     $args{filename} || do {
       my(undef, $filename) = caller;

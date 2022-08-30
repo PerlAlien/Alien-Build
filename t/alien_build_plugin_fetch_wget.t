@@ -106,14 +106,6 @@ subtest 'headers' => sub {
   my $url = http_url;
   skip_all http_error unless $url;
 
-  my $build = do {
-    my $plugin = Alien::Build::Plugin::Fetch::Wget->new;
-    my $build = alienfile filename => 'corpus/blank/alienfile';
-    my $meta = $build->meta;
-    $plugin->init($meta);
-    $build;
-  };
-
   require URI;
   my $furl = URI->new_abs("test1/foo.txt", $url);
   note "url = $furl";
@@ -122,6 +114,14 @@ subtest 'headers' => sub {
   # the server is running on localhost
   local $ENV{ALIEN_DOWNLOAD_RULE} = $ENV{ALIEN_DOWNLOAD_RULE};
   $ENV{ALIEN_DOWNLOAD_RULE} = 'warn' if $url ne 'https';
+
+  my $build = do {
+    my $plugin = Alien::Build::Plugin::Fetch::Wget->new;
+    my $build = alienfile filename => 'corpus/blank/alienfile';
+    my $meta = $build->meta;
+    $plugin->init($meta);
+    $build;
+  };
 
   my $res = capture_note { $build->fetch("$furl", http_headers => [ Foo => 'Bar1', Foo => 'Bar2', Baz => 1 ]) };
 
