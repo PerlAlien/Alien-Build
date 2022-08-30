@@ -1,4 +1,4 @@
-# PODNAME: Alien::Build::Manual::Alien
+# PODNAME: Alien::Build::Manual::Security
 # ABSTRACT: General alien author documentation
 # VERSION
 
