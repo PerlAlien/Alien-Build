@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - New documentation Alien::Build::Manual::Security (gh#357)
+  - Compute $build->donwload_rule as soon as possible (gh#190, gh#358)
   - ALIEN_DOWNLOAD_RULE=default is now a legal value.  It is currently
     the same as 'warn' but will probably become 'digest_or_encrypt' in
     the future (gh#356)
