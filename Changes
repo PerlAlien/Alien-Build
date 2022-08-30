@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.65      2022-08-30 11:17:41 -0600
   - Fix POD name for Alien::Build::Manual::Security (gh#360)
 
 2.64      2022-08-30 10:09:42 -0600
