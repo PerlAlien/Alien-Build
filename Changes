@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Validate SSL certificates for Fetch::HTTPTiny plugin if
+    ALIEN_DOWNLOAD_RULE is one of encrypt, digest_or_encrypt
+    or digest_and_encrypt (gh#362)
 
 2.65      2022-08-30 11:17:41 -0600
   - Fix POD name for Alien::Build::Manual::Security (gh#360)
