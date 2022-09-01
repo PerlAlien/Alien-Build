@@ -57,8 +57,9 @@ sub init
 {
   my($self, $meta) = @_;
 
-  $meta->add_requires('share' => 'HTTP::Tiny' => '0.044' );
-  $meta->add_requires('share' => 'URI' => 0 );
+  $meta->add_requires('share' => 'HTTP::Tiny'  => '0.044' );
+  $meta->add_requires('share' => 'URI'         => '0'     );
+  $meta->add_requires('share' => 'Mozilla::CA' => '0'     );
 
   $meta->prop->{start_url} ||= $self->url;
   $self->url($meta->prop->{start_url});
@@ -103,7 +104,10 @@ sub init
       }
     }
 
-    my $ua = HTTP::Tiny->new( agent => "Alien-Build/@{[ $Alien::Build::VERSION || 'dev' ]} " );
+    my $ua = HTTP::Tiny->new(
+      agent      => "Alien-Build/@{[ $Alien::Build::VERSION || 'dev' ]} ",
+      verify_SSL => $build->download_rule =~ /encrypt/ ? 1 : 0,
+    );
     my $res = $ua->get($url, { headers => \%headers });
 
     unless($res->{success})
