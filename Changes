@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.66      2022-09-01 13:29:15 -0600
   - Validate SSL certificates for Fetch::HTTPTiny plugin if
     ALIEN_DOWNLOAD_RULE is one of encrypt, digest_or_encrypt
     or digest_and_encrypt (gh#362)
