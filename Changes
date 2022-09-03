@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.67      2022-09-03 17:07:40 -0600
   - Test::Alien::Diag should now handle undef fields more
     gracefully (gh#363, gh#364)
 
