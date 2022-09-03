@@ -681,11 +681,14 @@ sub dynamic_libs {
     }
 
     my @libpath;
-    foreach my $flag ($class->split_flags($class->libs))
+    if(defined $class->libs)
     {
-      if($flag =~ /^-L(.*)$/)
+      foreach my $flag ($class->split_flags($class->libs))
       {
-        push @libpath, $1;
+        if($flag =~ /^-L(.*)$/)
+        {
+          push @libpath, $1;
+        }
       }
     }
 

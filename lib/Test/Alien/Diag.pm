@@ -20,7 +20,7 @@ our @EXPORT_OK = @EXPORT;
 =head1 DESCRIPTION
 
 This module provides an C<alien_diag> method that prints out diagnostics useful for
-cpantesters for other bug reports that gives a quick summary of the important settings
+cpantesters and other bug reports that gives a quick summary of the important settings
 like C<clfags> and C<libs>.
 
 =head1 FUNCTIONS
@@ -62,7 +62,9 @@ sub alien_diag ($@)
       if(eval { $alien->can($name) })
       {
         $found++;
-        $ctx->diag(sprintf "%-${max}s = %s", "$alien->$name", $alien->$name);
+        my $value = $alien->$name;
+        $value = '[undef]' unless defined $value;
+        $ctx->diag(sprintf "%-${max}s = %s", "$alien->$name", $value);
       }
     }
 

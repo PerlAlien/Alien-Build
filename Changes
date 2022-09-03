@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Test::Alien::Diag should not handle undef fields more
+    gracefully (gh#363, gh#364)
 
 2.66      2022-09-01 13:29:15 -0600
   - Validate SSL certificates for Fetch::HTTPTiny plugin if
