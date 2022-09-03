@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Test::Alien::Diag should not handle undef fields more
+  - Test::Alien::Diag should now handle undef fields more
     gracefully (gh#363, gh#364)
 
 2.66      2022-09-01 13:29:15 -0600
