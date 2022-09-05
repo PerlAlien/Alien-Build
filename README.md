@@ -247,7 +247,7 @@ but if you do not follow this rule your recipe will likely be broken.
 
     Hash reference.  Contains information about the platform beyond just `$^O`.
 
-    - compiler\_type
+    - platform.compiler\_type
 
         Refers to the type of flags that the compiler accepts.  May be expanded in the
         future, but for now, will be one of:
@@ -263,7 +263,7 @@ but if you do not follow this rule your recipe will likely be broken.
         The main difference is that with Visual C++ `-LIBPATH` should be used instead
         of `-L`, and static libraries should have the `.LIB` suffix instead of `.a`.
 
-    - system\_type
+    - platform.system\_type
 
         `$^O` is frequently good enough to make platform specific logic in your
         [alienfile](https://metacpan.org/pod/alienfile), this handles the case when $^O can cover platforms that provide
@@ -334,14 +334,14 @@ based module.
     and the value is a hash reference with additional detail.  All fields
     are optional.
 
-    - digest
+    - download\_detail.digest
 
         This, if available, with the cryptographic signature that was successfully
         matched against the downloaded file.  It is an array reference with a
         pair of values, the algorithm (typically something like `SHA256`) and
         the digest.
 
-    - protocol
+    - download\_detail.protocol
 
         This, if available, will be the URL protocol used to fetch the downloaded
         file.
@@ -366,14 +366,14 @@ based module.
     name, if available.  This may be useful in cases where you want to
     reuse the previous install if it is still sufficient.
 
-    - prefix
+    - old.prefix
 
         \[deprecated\]
 
         The prefix for the previous install.  Versions prior to 1.42 unfortunately
         had this in typo form of `preifx`.
 
-    - runtime
+    - old.runtime
 
         \[deprecated\]
 
@@ -486,7 +486,7 @@ relevant once the install process is complete.
 
     This property contains two sub properties:
 
-    - share
+    - ffi\_checklib.share
 
         ```
         $build->runtime_prop->{ffi_checklib}->{share} = [ ... ];
@@ -495,7 +495,7 @@ relevant once the install process is complete.
         Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
         for a `share` install.
 
-    - system
+    - ffi\_checklib.system
 
         Array of additional [FFI::CheckLib](https://metacpan.org/pod/FFI::CheckLib) flags to pass in to `find_lib`
         for a `system` install.
