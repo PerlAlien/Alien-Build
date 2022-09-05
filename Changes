@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.68      2022-09-05 09:05:18 -0600
   - Documentation improvements (gh#367)
   - alien_diag from Test::Alien::Diag now can optionaly take a
     hash reference as its last argument (gh#365, gh#366)
