@@ -1,6 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - alien_diag from Test::Alien::Diag now can optionaly take a
+    hash reference as its last argument (gh#365, gh#366)
+  - alien_diag supports two new options properties and
+    list_properties (gh#365, gh#366)
+  - Document that alien_diag may take more than one alien as
+    an argument (this has always been the case, but never
+    documented (gh#366)
 
 2.67      2022-09-03 17:07:40 -0600
   - Test::Alien::Diag should now handle undef fields more
