@@ -150,7 +150,7 @@ way to call C<pkg-config> would be from Perl:
 
 The Perl code should return 'system' if the library is installed, and
 'share' if not.  (Other directives should return a true value on
-success, and a false value).  You can also throw an exception with
+success, and a false value on failure).  You can also throw an exception with
 C<die> to indicate a failure.
 
 The next part of the L<alienfile> is the C<share> block, which is used
