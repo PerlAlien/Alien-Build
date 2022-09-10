@@ -58,8 +58,6 @@ ones.
 
 =head2 Restricting L<Alien::Build> by environment
 
-=head2 ALIEN_INSTALL_NETWORK
-
 Okay, granted you need to audit software for security regardless of
 if it is L<Alien>, you still don't like the idea of downloading external
 dependencies and you can't firewall just the L<CPAN> module installs.
