@@ -420,8 +420,8 @@ sub import
 =head2 WriteMakefile
 
  use Alien::Base::Wrapper qw( WriteMakefile );
- WriteMakefile(%args, alien_requires => %aliens);
- WriteMakefile(%args, alien_requires => @aliens);
+ WriteMakefile(%args, alien_requires => \%aliens);
+ WriteMakefile(%args, alien_requires => \@aliens);
 
 This is a thin wrapper around C<WriteMakefile> from L<ExtUtils::MakeMaker>, which adds the
 given aliens to the configure requirements and sets the appropriate compiler and linker
