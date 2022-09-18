@@ -154,6 +154,7 @@ pod_spelling_system:
     - cryptographic
     - TLS
     - aggresive
+    - CPUs
 
 pod_coverage:
   skip: 0

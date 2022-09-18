@@ -459,6 +459,12 @@ but others may be added in the future.
 Note that C<cygwin> and C<msys> are considered C<unix> even though they run
 on windows!
 
+=item platform.cpu.count
+
+Contains a non-negative integer of available (possibly virtual) CPUs on the
+system. This can be used by build plugins to build in parallel. The environment
+variable C<ALIEN_CPU_COUNT> can be set to override the CPU count.
+
 =back
 
 =item out_of_source
