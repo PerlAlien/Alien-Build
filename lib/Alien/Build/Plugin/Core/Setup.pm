@@ -88,6 +88,8 @@ sub _platform
     exists $ENV{ALIEN_CPU_COUNT} && $ENV{ALIEN_CPU_COUNT} > 0
     ? $ENV{ALIEN_CPU_COUNT}
     : _cpu_count();
+
+  $hash->{cpu}{arch} = _cpu_arch(\%Config);
 }
 
 # Retrieve number of available CPU cores. Adopted from
@@ -188,6 +190,61 @@ sub _cpu_count {
   $ncpu = 1 if (!$ncpu || $ncpu < 1);
 
   $ncpu;
+}
+
+sub _cpu_arch {
+  my ($my_config) = @_;
+
+  my $arch = {};
+
+  my %Config = %$my_config;
+
+  die "Config missing archname" unless exists $Config{archname};
+
+  if( $Config{archname} =~ m/
+      \b x64    \b # MSWin32-x64
+    | \b x86_64 \b # x86_64-linux
+    | \b amd64  \b # amd64-freebsd
+    /ix) {
+    $arch = { name => 'x86_64' };
+  } elsif( $Config{archname} =~ m/
+      \b x86  \b   # MSWin32-x86
+    | \b i386 \b   # freebsd-i386
+    | \b i486 \b   # i486-linux
+    | \b i686 \b   # i686-cygwin
+    /ix ) {
+    $arch = { name => 'x86' };
+  } elsif( $Config{archname} =~ m/
+      \b darwin \b
+    /ix ) {
+    my $cpu_brand = `sysctl -n machdep.cpu.brand_string`;
+    if( $cpu_brand =~ /Apple/ ) {
+      $arch = { name => 'aarch64' }; # Apple Silicon
+    } elsif( $cpu_brand =~ /Intel/ ) {
+      $arch = { name => 'x86_64' };  # Intel
+    }
+  } elsif( $Config{archname} =~ /
+      \b aarch64 \b
+    /ix ) {
+    $arch = { name => 'aarch64' };   # ARM64
+  } elsif( $Config{archname} =~ m/
+      \b arm-linux-gnueabi \b
+    /ix ) {
+    # 32-bit ARM soft-float
+    $arch = { name => 'armel' };
+  } elsif( $Config{archname} =~ m/
+      \b arm-linux-gnueabihf \b
+    /ix ) {
+    # 32-bit ARM hard-float
+    $arch = { name => 'armhf' };
+  }
+
+  unless(exists $arch->{name}) {
+    warn "Architecture detection: Unknown archname '$Config{archname}'.";
+    $arch->{name} = 'unknown';
+  }
+
+  return $arch;
 }
 
 1;

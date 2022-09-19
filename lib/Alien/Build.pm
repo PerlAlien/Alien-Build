@@ -465,6 +465,41 @@ Contains a non-negative integer of available (possibly virtual) CPUs on the
 system. This can be used by build plugins to build in parallel. The environment
 variable C<ALIEN_CPU_COUNT> can be set to override the CPU count.
 
+=item platform.cpu.arch.name
+
+Contains a normalized name for the architecture of the current Perl. This can
+be used by fetch plugins to determine which binary packages to download.
+The value may be one of the following, but this list will be expanded as
+needed.
+
+=over 4
+
+=item C<armel>
+
+32-bit ARM soft-float
+
+=item C<armhf>
+
+32-bit ARM hard-float
+
+=item C<aarch64>
+
+64-bit ARM
+
+=item C<x86>
+
+32-bit Intel (i386, i486, i686)
+
+=item C<x86_64>
+
+64-bit Intel (AMD64)
+
+=item C<unknown>
+
+Unable to detect architecture. Please report this if needed.
+
+=back
+
 =back
 
 =item out_of_source
