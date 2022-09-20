@@ -486,6 +486,14 @@ needed.
 
 64-bit ARM
 
+=item C<ppc>
+
+32-bit PowerPC (big-endian)
+
+=item C<ppc64>
+
+64-bit PowerPC (big-endian)
+
 =item C<x86>
 
 32-bit Intel (i386, i486, i686)

@@ -200,6 +200,7 @@ sub _cpu_arch {
   my %Config = %$my_config;
 
   die "Config missing archname" unless exists $Config{archname};
+  die "Config missing ptrsize"  unless exists $Config{ptrsize};
 
   if( $Config{archname} =~ m/
       \b x64    \b # MSWin32-x64
@@ -217,11 +218,28 @@ sub _cpu_arch {
   } elsif( $Config{archname} =~ m/
       \b darwin \b
     /ix ) {
-    my $cpu_brand = `sysctl -n machdep.cpu.brand_string`;
-    if( $cpu_brand =~ /Apple/ ) {
-      $arch = { name => 'aarch64' }; # Apple Silicon
-    } elsif( $cpu_brand =~ /Intel/ ) {
-      $arch = { name => 'x86_64' };  # Intel
+    chomp( my $hw_machine = `sysctl -n hw.machine 2>/dev/null` );
+    HW_MACHINE:
+    for($hw_machine) {
+      $_ eq 'arm64' && do {
+        $arch = { name => 'aarch64' };
+        last HW_MACHINE;
+      };
+      $_ eq 'x86_64' && do {
+        $arch = { name => $Config{ptrsize} == 8 ? 'x86_64' : 'x86' };
+        last HW_MACHINE;
+      };
+      $_ eq 'i386' && do {
+        $arch = { name => 'x86' };
+        last HW_MACHINE;
+      };
+      $_ eq 'Power Macintosh' && do {
+        $arch = { name => $Config{ptrsize} == 8 ? 'ppc64' : 'ppc' };
+        last HW_MACHINE;
+      };
+
+      warn "Architecture detection: unknown macOS arch hw.machine = $_, ptrsize = $Config{ptrsize}";
+      $arch = { name => 'unknown' };
     }
   } elsif( $Config{archname} =~ /
       \b aarch64 \b
