@@ -29,12 +29,12 @@ my %min = (
 );
 
 # TODO: Alien::Build::Plugin::Download::GitHub
+# TODO: Alien::Build::Plugin::Build::Premake5
 
 my @mods = qw(
   Alien::Build::MB
   Alien::Build::Git
   Alien::Role::Dino
-  Alien::Build::Plugin::Build::Premake5
   Alien::Build::Plugin::Decode::SourceForge
   Alien::Build::Plugin::Cleanse::BuildDir
   Alien::Build::Plugin::Extract::Libarchive
