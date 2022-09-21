@@ -281,6 +281,51 @@ but if you do not follow this rule your recipe will likely be broken.
         Note that `cygwin` and `msys` are considered `unix` even though they run
         on windows!
 
+    - platform.cpu.count
+
+        Contains a non-negative integer of available (possibly virtual) CPUs on the
+        system. This can be used by build plugins to build in parallel. The environment
+        variable `ALIEN_CPU_COUNT` can be set to override the CPU count.
+
+    - platform.cpu.arch.name
+
+        Contains a normalized name for the architecture of the current Perl. This can
+        be used by fetch plugins to determine which binary packages to download.
+        The value may be one of the following, but this list will be expanded as
+        needed.
+
+        - `armel`
+
+            32-bit ARM soft-float
+
+        - `armhf`
+
+            32-bit ARM hard-float
+
+        - `aarch64`
+
+            64-bit ARM
+
+        - `ppc`
+
+            32-bit PowerPC (big-endian)
+
+        - `ppc64`
+
+            64-bit PowerPC (big-endian)
+
+        - `x86`
+
+            32-bit Intel (i386, i486, i686)
+
+        - `x86_64`
+
+            64-bit Intel (AMD64)
+
+        - `unknown`
+
+            Unable to detect architecture. Please report this if needed.
+
 - out\_of\_source
 
     Build in a different directory from the where the source code is stored.

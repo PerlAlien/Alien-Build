@@ -1,7 +1,12 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.69_01   2022-09-20 18:00:17 -0600
   - Documentation improvements (gh#370)
+  - Added meta.platform.cpu.count and meta.platform.cpu.arch.name
+    properties (gh#371 zmughal++)
+
 
 2.68      2022-09-05 09:05:18 -0600
   - Documentation improvements (gh#367)
