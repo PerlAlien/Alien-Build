@@ -100,6 +100,10 @@ sub pick
   {
     return 'Extract::Directory';
   }
+  elsif($format eq 'f')
+  {
+    return 'Extract::File';
+  }
   else
   {
     die "do not know how to handle format: $format";

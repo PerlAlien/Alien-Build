@@ -466,6 +466,7 @@ sub alien_extract_ok
       else
       {
         $ok = 0;
+        push @diag, $out if defined $out;
         push @diag, 'no directory';
       }
     }
