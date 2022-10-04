@@ -34,6 +34,10 @@ Extract using command line tools like C<tar> or C<unxip>.
 
 Extract a local directory.
 
+=item L<Alien::Build::Plugin::Extract::File>
+
+"Extract" a single file.
+
 =item L<Alien::Build::Plugin::Extract::Negotiate>
 
 Pick the best extract plugin based on the extension of the package archive.
