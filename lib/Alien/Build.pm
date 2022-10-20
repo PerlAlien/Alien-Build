@@ -1466,7 +1466,6 @@ sub fetch
 
   my $secure = 0;
 
-  $DB::single = 1;
   if(defined $url && ($url =~ /^(https|file):/ || $url !~ /:/))
   {
     # considered secure when either https or a local file
