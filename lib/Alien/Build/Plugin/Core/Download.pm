@@ -41,6 +41,7 @@ sub _hook
 
   if($res->{type} eq 'list')
   {
+    my $orig = $res;
     $res = $build->prefer($res);
 
     my @exclude;
@@ -54,7 +55,25 @@ sub _hook
       } @{ $res->{list} };
     }
 
-    die "no matching files in listing" if @{ $res->{list} } == 0;
+    if(@{ $res->{list} } == 0)
+    {
+      my @excluded = map { $_->{url} } @{ $orig->{list} };
+      if(@excluded)
+      {
+        if(@excluded > 15)
+        {
+          splice @excluded , 14;
+          push @excluded, '...';
+        }
+        $build->log("These files were excluded by the filter stage:");
+        $build->log("excluded $_") for @excluded;
+      }
+      else
+      {
+        $build->log("No files found prior to the filter stage");
+      }
+      die "no matching files in listing";
+    }
     my $version = $res->{list}->[0]->{version};
     my($pick, @other) = map { $_->{url} } @{ $res->{list} };
 
