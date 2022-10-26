@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Improved diagnostic when all links are excluded by the filter
+    stage (gh#380)
 
 2.71      2022-10-04 11:18:14 -0600
   - Added Alien::Build::Plugin::Extract::File (gh#375)
