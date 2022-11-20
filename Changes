@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix Extract::ArchiveZip test when ALIEN_DOWNLOAD_RULE set to
+    digest_or_encrypt (gh#382)
 
 2.72      2022-10-26 06:28:00 -0600
   - Improved diagnostic when all links are excluded by the filter
