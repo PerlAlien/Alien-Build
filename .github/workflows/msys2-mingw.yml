@@ -75,7 +75,7 @@ jobs:
       - name: Install Dynamic Dependencies
         run: |
           export PATH="/c/cx/bin:$PATH"
-          perl -S dzil run --no-build 'perl -S cpanm --installdeps .'
+          perl -S dzil run --no-build 'perl -S cpanm -n --installdeps .'
 
       - name: Run Tests
         run: |
