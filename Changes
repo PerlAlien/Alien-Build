@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.73      2022-11-20 07:23:46 -0700
   - Fix Extract::ArchiveZip test when ALIEN_DOWNLOAD_RULE set to
     digest_or_encrypt (gh#382)
 
