@@ -49,33 +49,31 @@ subtest 'archive' => sub {
   {
     subtest "with extension $ext" => sub {
 
-      my $build = alienfile '';
-      my $meta = $build->meta;
-
-      my $plugin = Alien::Build::Plugin::Extract::ArchiveZip->new;
-      $plugin->init($meta);
-      eval { $build->load_requires('share') };
-
-      skip_all "configuration does not support $ext" if $@;
-
-      my $archive = path("corpus/dist/foo-1.00.$ext")->absolute;
-
-      my($out, $dir, $error) = capture_merged {
-        (eval { $build->extract("$archive") }, $@);
+      my $build = alienfile_ok q{
+        use alienfile;
+        use Path::Tiny qw( path );
+        plugin 'Test::Mock',
+          probe    => 'share',
+          download => {
+            'foo.zip' => path(__FILE__)->parent->parent->child('corpus/dist/foo-1.00.zip')->slurp_raw,
+          };
+        share {
+          plugin 'Extract::ArchiveZip';
+        };
       };
 
-      note $out if $out ne '';
-      note $error if $error;
+      alienfile_skip_if_missing_prereqs;
 
-      $dir = path($dir);
+      my $dir = alien_extract_ok;
 
-      ok( defined $dir && -d $dir, "directory created"   );
-      note "dir = $dir";
-
-      foreach my $name (qw( configure foo.c ))
+      if(defined $dir)
       {
-        my $file = $dir->child($name);
-        ok -f $file, "$name exists";
+        $dir = path($dir);
+        foreach my $name (qw( configure foo.c ))
+        {
+          my $file = $dir->child($name);
+          ok -f $file, "$name exists";
+        }
       }
     }
   }
