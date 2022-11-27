@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.74      2022-11-27 08:26:06 -0700
   - Patches to Test::Alien to make it safe for C99
     (gh#383, Florian Weimer++)
 
