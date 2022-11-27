@@ -437,7 +437,15 @@ subtest 'xs_ok' => sub {
     # TODO: test that parsexs error should fail
 
     is(
-      intercept { xs_ok "this should cause a compile error\nMODULE = Foo::Bar PACKAGE = Foo::Bar\n" },
+      intercept { xs_ok q{
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#error "this should cause a compile error"
+
+MODULE = Foo::Bar PACKAGE = Foo::Bar
+} },
       array {
         event Ok => sub {
           call pass => F();
