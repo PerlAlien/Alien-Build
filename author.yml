@@ -155,6 +155,8 @@ pod_spelling_system:
     - TLS
     - aggresive
     - CPUs
+    - Florian
+    - Weimer
 
 pod_coverage:
   skip: 0

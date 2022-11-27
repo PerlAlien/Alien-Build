@@ -1274,6 +1274,8 @@ Håkon Hægland (hakonhagland, HAKONH)
 
 nick nauwelaerts (INPHOBIA)
 
+Florian Weimer
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2011-2022 by Graham Ollis.
