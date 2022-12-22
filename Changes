@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.75      2022-12-21 21:03:27 -0700
   - The Download::Negotiate plugin will no longer pick the
     Fetch::CurlCommand plugin (unless bootstrap_ssl option is
     chosen), because it relies on the -J option which is
