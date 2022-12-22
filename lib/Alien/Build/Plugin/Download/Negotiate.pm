@@ -195,10 +195,10 @@ sub _pick
     {
       return ('Fetch::HTTPTiny', __PACKAGE__->_pick_decoder);
     }
-    elsif(do { require Alien::Build::Plugin::Fetch::CurlCommand; Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https') })
-    {
-      return ('Fetch::CurlCommand', __PACKAGE__->_pick_decoder);
-    }
+    #elsif(do { require Alien::Build::Plugin::Fetch::CurlCommand; Alien::Build::Plugin::Fetch::CurlCommand->protocol_ok('https') })
+    #{
+    #  return ('Fetch::CurlCommand', __PACKAGE__->_pick_decoder);
+    #}
     else
     {
       return ('Fetch::HTTPTiny', __PACKAGE__->_pick_decoder);

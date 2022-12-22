@@ -1,6 +1,12 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - The Download::Negotiate plugin will no longer pick the
+    Fetch::CurlCommand plugin (unless bootstrap_ssl option is
+    chosen), because it relies on the -J option which is
+    unfortunately not reliable.  When a more reliable method
+    can be used by Fetch::CurlCommand we will likely go back
+    to preferring it (gh#384, gh#385)
 
 2.74      2022-11-27 08:26:06 -0700
   - Patches to Test::Alien to make it safe for C99
