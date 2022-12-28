@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix inline_auto_include so that it gives priority to
+    the .runtime.inline_auto_include property
 
 2.75      2022-12-21 21:03:27 -0700
   - The Download::Negotiate plugin will no longer pick the
