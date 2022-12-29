@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.76      2022-12-28 18:30:39 -0700
   - Fix inline_auto_include so that it gives priority to
     the .runtime.inline_auto_include property
 
