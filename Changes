@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Additional noisy diagnostic when trying to use the regular
+    download negotiator plugin with a GitHub releases page
+    (gh#388, gh#390)
 
 2.76      2022-12-28 18:30:39 -0700
   - Fix inline_auto_include so that it gives priority to
