@@ -130,6 +130,8 @@ jobs:
       - name: Test Plugins
         run: |
           ./maint/cip-test-plugins
+        env:
+          CIP_ENV: ${{ matrix.cip.env }} ALIEN_BUILD_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
       - name: CPAN log
         if: ${{ failure() }}
