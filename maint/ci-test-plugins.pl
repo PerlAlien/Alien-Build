@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use File::Glob qw( bsd_glob );
 
-exit if $] < 5.010001;
+exit if $] < 5.012;
 
 my $exit = 0;
 
