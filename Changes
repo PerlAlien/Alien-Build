@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Documentation improvements (gh#389, #gh#390)
   - Additional noisy diagnostic when trying to use the regular
     download negotiator plugin with a GitHub releases page
     (gh#388, gh#390)
