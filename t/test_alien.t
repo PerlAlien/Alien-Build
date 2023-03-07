@@ -819,7 +819,7 @@ EOF
   ;
 
   is
-    intercept { run_ok "$^X -e 1" },
+    intercept { run_ok qq{"$^X" -e 1} },
     array {
       event Ok => sub {
         call pass => T();
@@ -911,7 +911,7 @@ subtest 'interpolate_run_ok' => sub {
   ;
 
   interpolate_run_ok ['%{perlhelp}', -e => '1'];
-  interpolate_run_ok '%{perlhelp} -e 1';
+  interpolate_run_ok '"%{perlhelp}" -e 1';
 
 };
 
