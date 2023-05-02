@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Documentation improvements (gh#399, gh#400)
+  - Do not generate .../Install/Files.pm if one is provided by the
+    Alien (gh#393, gh#397)
 
 2.79      2023-05-05 15:08:46 -0600
   - Updated non-binding support for Perls to match the policy
