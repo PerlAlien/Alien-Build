@@ -530,7 +530,7 @@ sub import
             "  Inline\n",
             "\n",
             "=cut\n",
-          );
+          ) unless -f "$install_files_pm";
         }
 
         $build->checkpoint;
