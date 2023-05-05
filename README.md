@@ -1159,9 +1159,9 @@ Apply the given plugin with the given arguments.
 
 # SUPPORT
 
-The intent of the `Alien-Build` team is to support as best as possible
-all Perls from 5.8.4 to the latest production version.  So long as they
-are also supported by the Perl toolchain.
+The intent of the `Alien-Build` team is to support the same versions of
+Perl that are supported by the Perl toolchain.  As of this writing that
+means 5.16 and better.
 
 Please feel encouraged to report issues that you encounter to the
 project GitHub Issue tracker:

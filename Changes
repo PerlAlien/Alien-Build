@@ -2,6 +2,15 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.79      2023-05-05 15:08:46 -0600
+  - Updated non-binding support for Perls to match the policy
+    of the Perl toolchain (Perls older than 10 years old are
+    unsupported, with a one-time exception of Perl 5.16).  The
+    intent is not to suddenly drop support for older Perls, but
+    the Alien-Build team may take advantage of features in
+    supported Perls that will effectively remove compatability
+    with unsupported Perls.
+
 2.78      2023-03-07 11:49:27 -0700
   - Test fix to handle Perls with space in the path (gh#391, mohawk++)
 
