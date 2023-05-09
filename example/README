@@ -3,12 +3,12 @@
 In this directory are some example L<alienfile>s.  You can test them with
 the L<af> command if you have L<App::af> installed.  For example:
 
- % af install --prefix=/tmp/foo xz.alienfile
+ % af install --prefix=/tmp/foo -f xz.alienfile
 
 If you want to force a C<share> install you can use the C<--type> 
 option:
 
- % af install --type=share --prefix=/tmp/foo xz.alienfile
+ % af install --type=share --prefix=/tmp/foo -f xz.alienfile
 
 For more details on what you can do with the L<af> command, please see 
 its documentation.
