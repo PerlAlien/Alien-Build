@@ -10,7 +10,7 @@ use Exporter qw( import );
 our $VERSION = '0.01';
 our @EXPORT = qw( lzma_version_string );
 
-unshift @ENV, Alien::xz->bin_dir;
+unshift @PATH, Alien::xz->bin_dir;
 
 sub lzma_version_string
 {

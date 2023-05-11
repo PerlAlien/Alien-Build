@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - Documentation improvements (gh#399, gh#400)
+  - Documentation improvements (gh#399, gh#400, gh#401, gh#402)
   - Do not generate .../Install/Files.pm if one is provided by the
     Alien (gh#393, gh#397)
 
