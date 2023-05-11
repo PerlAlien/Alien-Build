@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.80      2023-05-11 16:31:46 -0600
   - Documentation improvements (gh#399, gh#400, gh#401, gh#402)
   - Do not generate .../Install/Files.pm if one is provided by the
     Alien (gh#393, gh#397)
