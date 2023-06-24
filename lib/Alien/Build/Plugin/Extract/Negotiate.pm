@@ -66,7 +66,7 @@ sub pick
 {
   my(undef, $format) = @_;
 
-  if($format =~ /^tar(\.(gz|bz2))?$/)
+  if($format =~ /^tar(\.(gz|bz2|xz))?$/)
   {
     if(Alien::Build::Plugin::Extract::ArchiveTar->available($format))
     {
@@ -92,7 +92,7 @@ sub pick
       return 'Extract::CommandLine';
     }
   }
-  elsif($format eq 'tar.xz' || $format eq 'tar.Z')
+  elsif($format eq 'tar.Z')
   {
     return 'Extract::CommandLine';
   }

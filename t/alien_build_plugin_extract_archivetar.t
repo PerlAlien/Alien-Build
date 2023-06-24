@@ -92,11 +92,44 @@ subtest 'available' => sub {
 
   };
 
+  subtest 'tar.xz' => sub {
+
+    my $has_it;
+
+    skip_all 'test requires Archive::Tar with has_xz_support' unless eval { require Archive::Tar; Archive::Tar->can('has_xz_support') };
+
+    my $mock = mock 'Archive::Tar' => (
+      override => [
+        has_xz_support => sub {
+          note "has_it = $has_it";
+          $has_it;
+        },
+      ],
+    );
+
+    subtest 'has it' => sub {
+
+      $has_it = 1;
+
+      is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.xz'), T());
+
+    };
+
+    subtest 'does not' => sub {
+
+      $has_it = 0;
+
+      is(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.xz'), F());
+
+    };
+
+  };
+
 };
 
 subtest 'archive' => sub {
 
-  foreach my $ext (qw( tar tar.bz2 tar.gz ))
+  foreach my $ext (qw( tar tar.bz2 tar.gz tar.xz ))
   {
     subtest "with extension $ext" => sub {
 
@@ -122,6 +155,11 @@ subtest 'archive' => sub {
       {
         skip_all 'Test requires Bzip2 support in Archive::Tar'
           unless eval { Archive::Tar->has_bzip2_support };
+      }
+      elsif($ext eq 'tar.xz')
+      {
+        skip_all 'Test requires XZ support in Archive::Tar'
+          unless eval { Archive::Tar->has_xz_support };
       }
 
       my $archive = path("corpus/dist/foo-1.00.$ext")->absolute;
