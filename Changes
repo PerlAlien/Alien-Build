@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.81_01   2023-06-24 09:54:28 -0600
   - Added support for xz compression with
     Alien::Build::Plugin::Extract::ArchiveTar (gh#404)
   - Extract negotiator (Alien::Build::Plugin::Extract::Negotiate)
