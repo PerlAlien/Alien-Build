@@ -66,7 +66,7 @@ sub pick
 {
   my(undef, $format) = @_;
 
-  if($format =~ /^tar(\.(gz|bz2|xz))?$/)
+  if($format =~ /^tar(\.(gz|bz2))?$/)
   {
     if(Alien::Build::Plugin::Extract::ArchiveTar->available($format))
     {
@@ -87,6 +87,22 @@ sub pick
 
     # If it isn't available, then use the command-line unzip.  Alien::unzip will be used
     # as necessary in environments where it isn't already installed.
+    else
+    {
+      return 'Extract::CommandLine';
+    }
+  }
+  elsif($format eq 'tar.xz')
+  {
+    # The windows version of tar.exe (which is based on BSD tar) will try to use external
+    # program xz to decompress tar.xz files if it is available.  The default windows
+    # install does not have this in the PATH, but if it IS in the PATH then it often
+    # or always can hang, so the pure Perl Archive::Tar is more reliable on that platform,
+    # but will require a newer version of Archive::Tar and IO::Uncompress::UnXz
+    if(Alien::Build::Plugin::Extract::ArchiveTar->available('tar.xz') || $^O eq 'MSWin32')
+    {
+      return 'Extract::ArchiveTar';
+    }
     else
     {
       return 'Extract::CommandLine';
