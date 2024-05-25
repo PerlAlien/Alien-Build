@@ -18,37 +18,39 @@ jobs:
       matrix:
         cip:
           - alien_build_install_extra: 1
-            tag: "5.37"
+            tag: "5.39"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.36-alpine3.16"
+            tag: "5.38-alpine3.16"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.36-bionic"
+            tag: "5.38-bionic"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.36-fedora36"
+            tag: "5.38-fedora36"
           - alien_build_install_extra: 0
             env: ALIEN_BUILD_LIVE_TEST=0
-            tag: "5.36-bullseye"
+            tag: "5.38-bullseye"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.36-bullseye"
+            tag: "5.38-bullseye"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=warn
-            tag: "5.36"
+            tag: "5.38"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest
-            tag: "5.36"
+            tag: "5.38"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=encrypt
-            tag: "5.36"
+            tag: "5.38"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest_or_encrypt
-            tag: "5.36"
+            tag: "5.38"
           - alien_build_install_extra: 1
             env: ALIEN_DOWNLOAD_RULE=digest_and_encrypt
-            tag: "5.36"
+            tag: "5.38"
+          - alien_build_install_extra: 1
+            tag: "5.38"
           - alien_build_install_extra: 1
             tag: "5.36"
           - alien_build_install_extra: 1
