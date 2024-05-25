@@ -243,6 +243,7 @@ sub _cpu_arch {
     }
   } elsif( $Config{archname} =~ /
       \b aarch64 \b
+    | \b arm64 \b    # arm64-freebsd (FreeBSD can have either aarch64 or arm64)
     /ix ) {
     $arch = { name => 'aarch64' };   # ARM64
   } elsif( $Config{archname} =~ m/

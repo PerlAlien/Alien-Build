@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - CPU detection with archname arm64- prefix (gh#411, gh#412)
 
 2.81_01   2023-06-24 09:54:28 -0600
   - Added support for xz compression with
