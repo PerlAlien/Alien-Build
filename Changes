@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.83      2024-06-05 15:06:15 -0600
+  - Production release identical to 2.82_01
+
 2.82_01   2024-05-25 01:49:23 -0600
   - CPU detection with archname arm64- prefix (gh#411, gh#412)
 
