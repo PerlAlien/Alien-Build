@@ -14,6 +14,7 @@ env:
   PERL_MB_OPT: --install_base C:/cx
   PERL_MM_OPT: INSTALL_BASE=C:/cx
   ALIEN_BUILD_PLUGIN_PKGCONFIG_COMMANDLINE_TEST: 1 # Test Alien::Build::Plugin::PkgConfig::CommandLine
+  LC_ALL: C
 
 jobs:
   perl:
