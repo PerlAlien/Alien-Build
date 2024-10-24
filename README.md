@@ -679,6 +679,22 @@ This will return the install type.  (See the like named install property
 above for details).  This method will call `probe` if it has not already
 been called.
 
+## is\_system\_install
+
+```perl
+my $boolean = $build->is_system_install;
+```
+
+Returns true if the alien is a system install type.  
+
+## is\_share\_install
+
+```perl
+my $boolean = $build->is_share_install;
+```
+
+Returns true if the alien is a share install type.  
+
 ## download\_rule
 
 ```perl

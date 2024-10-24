@@ -948,6 +948,8 @@ sub root
   $root;
 }
 
+=cut
+
 =head2 install_type
 
  my $type = $build->install_type;
@@ -963,6 +965,35 @@ sub install_type
   my($self) = @_;
   $self->{runtime_prop}->{install_type} ||= $self->probe;
 }
+
+=head2 is_system_install
+
+ my $boolean = $build->is_system_install;
+
+Returns true if the alien is a system install type.  
+
+=cut
+
+sub is_system_install
+{
+  my($self) = @_;
+  $self->install_type eq 'system';
+}
+
+=head2 is_share_install
+
+ my $boolean = $build->is_share_install;
+
+Returns true if the alien is a share install type.
+
+=cut
+
+sub is_share_install
+{
+  my($self) = @_;
+  $self->install_type eq 'share';
+}
+
 
 =head2 download_rule
 
