@@ -114,6 +114,8 @@ subtest 'Alien::Build system' => sub {
     is( Alien::libfoo1->install_type, 'system' );
     is( Alien::libfoo1->install_type('system'), T() );
     is( Alien::libfoo1->install_type('share'), F() );
+    is( Alien::libfoo1->is_system_install, T() );
+    is( Alien::libfoo1->is_share_install, F() );
   };
 
   is( Alien::libfoo1->config('name'), 'foo', 'config.name' );
@@ -253,6 +255,8 @@ subtest 'Alien::Build share' => sub {
     is( Alien::libfoo2->install_type, 'share' );
     is( Alien::libfoo2->install_type('system'), F() );
     is( Alien::libfoo2->install_type('share'), T() );
+    is( Alien::libfoo2->is_system_install, F() );
+    is( Alien::libfoo2->is_share_install, T() );
   };
 
   is( Alien::libfoo2->config('name'), 'foo', 'config.name' );
