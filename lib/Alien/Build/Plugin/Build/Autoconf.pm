@@ -120,7 +120,7 @@ sub init
     $meta->add_requires('configure', 'Alien::Build::Plugin::Build::Autoconf' => '0.41');
     $meta->default_hook(
       build_ffi => [
-        '%{configure} --enable-shared --disable-static --libdir=%{.install.autoconf_prefix}/dynamic',
+        '%{configure} --enable-shared --disable-static "--libdir=%{.install.autoconf_prefix}/dynamic"',
         '%{make}',
         '%{make} install',
       ]
@@ -174,13 +174,14 @@ sub init
           if($build->meta_prop->{out_of_source})
           {
             my $extract = $build->install_prop->{extract};
-            $configure = _win ? "sh $extract/configure" : "$extract/configure";
+            $configure = _win ? qq{sh "$extract/configure"} : "$extract/configure";
           }
           else
           {
             $configure = _win ? 'sh ./configure' : './configure';
           }
-          $configure .= ' --prefix=' . $prefix;
+          $configure .= qq{ "--prefix=$prefix"};
+          $configure .= ' --disable-dependency-tracking';
           $configure .= ' --with-pic' if $self->with_pic;
           $configure;
         }
