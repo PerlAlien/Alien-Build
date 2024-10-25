@@ -137,6 +137,7 @@ subtest 'archive' => sub {
         use alienfile;
         plugin 'Test::Mock',
           check_digest => 1;
+        meta->around_hook(check_digest => sub { die "FAIL" });
       };
       my $meta = $build->meta;
 
