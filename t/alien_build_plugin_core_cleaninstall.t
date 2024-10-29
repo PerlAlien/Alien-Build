@@ -30,7 +30,7 @@ subtest 'basic' => sub {
   ok !-e "$dir/lib/libfoo.a";
 };
 
-subtest 'do not remove on system install' => sub {
+subtest 'do remove on system install' => sub {
 
   my $build = alienfile_ok q{
     use alienfile;
@@ -50,10 +50,10 @@ subtest 'do not remove on system install' => sub {
 
   ok  -d "$dir/_alien";
   ok  -f "$dir/_alien/alienfile";
-  ok  -f "$dir/foo.txt";
-  ok  -f "$dir/bin/myexe";
-  ok  -f "$dir/include/myheader.h";
-  ok  -f "$dir/lib/libfoo.a";
+  ok  !-e "$dir/foo.txt";
+  ok  !-e "$dir/bin/myexe";
+  ok  !-e "$dir/include/myheader.h";
+  ok  !-e "$dir/lib/libfoo.a";
 };
 
 subtest 'do not try to remove when it isn\'t there' => sub {
