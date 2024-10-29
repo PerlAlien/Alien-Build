@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.84      2024-10-28 18:51:39 -0600
+  - Added is_system_install and is_share_install methods to
+    Alien::Build (gh#418, gh#420, shawnlaffan++)
+  - Some comment and documentation spelling fixes (gh#250)
+
 2.83      2024-06-05 15:06:15 -0600
   - Production release identical to 2.82_01
 

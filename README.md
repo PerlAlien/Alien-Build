@@ -693,7 +693,7 @@ Returns true if the alien is a system install type.
 my $boolean = $build->is_share_install;
 ```
 
-Returns true if the alien is a share install type.  
+Returns true if the alien is a share install type.
 
 ## download\_rule
 
