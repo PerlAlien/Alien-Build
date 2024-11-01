@@ -94,7 +94,7 @@ subtest 'out-of-source' => sub {
     my $configure = $build->meta->interpolator->interpolate('%{configure}');
     note "%{configure} = $configure";
 
-    my $regex = $^O eq 'MSWin32' ? qr/^sh (.*?)\s/ : qr/^(.*)\s/;
+    my $regex = $^O eq 'MSWin32' ? qr/^sh "(.*?)"\s/ : qr/^(.*?)\s/;
     like $configure, $regex, 'matches';
 
     if($configure =~ $regex)
