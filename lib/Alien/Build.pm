@@ -1734,7 +1734,7 @@ sub extract
     }
     elsif($self->download_rule eq 'digest_and_encrypt')
     {
-      die "file was fetched insecurely and required digest missing for $archive" unless $checked_digest && $encrypted_fetch;
+      die "file was fetched insecurely and required digest missing for $archive" unless $checked_digest || $encrypted_fetch;
       die "required digest missing for $archive" unless $checked_digest;
       die "file was fetched insecurely for $archive" unless $encrypted_fetch;
     }
