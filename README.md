@@ -1,4 +1,4 @@
-# Alien::Build ![static](https://github.com/PerlAlien/Alien-Build/workflows/static/badge.svg) ![linux](https://github.com/PerlAlien/Alien-Build/workflows/linux/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Build/workflows/macos/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Build/workflows/windows/badge.svg) ![msys2-mingw](https://github.com/PerlAlien/Alien-Build/workflows/msys2-mingw/badge.svg)
+# Alien::Build ![static](https://github.com/PerlAlien/Alien-Build/workflows/static/badge.svg) ![linux](https://github.com/PerlAlien/Alien-Build/workflows/linux/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Build/workflows/macos/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Build/workflows/windows/badge.svg)
 
 Build external dependencies for use in CPAN
 
@@ -1294,7 +1294,7 @@ Florian Weimer
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011-2022 by Graham Ollis.
+This software is copyright (c) 2011-2024 by Graham Ollis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
