@@ -58,7 +58,7 @@ jobs:
           ls perlversion.txt
 
       - name: Cache CPAN modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: c:\cx
           key: ${{ runner.os }}-build-msys2-${{ hashFiles('perlversion.txt') }}
