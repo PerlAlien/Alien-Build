@@ -156,6 +156,12 @@ pod_spelling_system:
     - CPUs
     - Florian
     - Weimer
+    - Fandiño
+    - Guervós
+    - Håkon
+    - Hægland
+    - Joaquín
+    - José
 
 pod_coverage:
   skip: 0
