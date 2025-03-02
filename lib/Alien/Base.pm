@@ -350,6 +350,20 @@ sub libs {
   return $class->runtime_prop ? $class->_flags('libs') : $class->_pkgconfig_keyword('Libs');
 }
 
+sub libs_dynamic {
+  my $class = shift;
+
+  my $libs = $class->libs;
+  return $libs if !$class->install_type("share");
+  my $dyndir = $class->dynamic_dir;
+  return $libs if !$dyndir;
+  my $d_basename = Path::Tiny->new($dyndir)->basename;
+  my $l_dirname = $class->dist_dir;
+  my $l_basename = 'lib';
+  $libs =~ s<-L${l_dirname}/\K$l_basename><$d_basename>;
+  return $libs;
+}
+
 =head2 libs_static
 
  my $libs = Alien::MyLibrary->libs_static;
