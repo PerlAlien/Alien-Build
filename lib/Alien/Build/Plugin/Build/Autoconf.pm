@@ -202,7 +202,9 @@ sub init
             {
               foreach my $pc_file ($pkgconf_dir->children)
               {
-                $pc_file->edit(sub {s/\Q$prefix\E/$real_prefix->stringify/eg;});
+                my $pc_data = $pc_file->slurp;
+                $pc_data =~ s/\Q$prefix\E/$real_prefix->stringify/eg;
+                $pc_file->append({truncate => 1}, $pc_data);
               }
             }
         }
