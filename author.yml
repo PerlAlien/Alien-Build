@@ -162,6 +162,8 @@ pod_spelling_system:
     - Hægland
     - Joaquín
     - José
+    - Telka
+    - mtelka
 
 pod_coverage:
   skip: 0

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added CPU arch detection support for illumos (Marcel Telka++ gh#427)
 
 2.84      2024-10-28 18:51:39 -0600
   - Added is_system_install and is_share_install methods to

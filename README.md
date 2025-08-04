@@ -938,8 +938,6 @@ Clean files from the final install location.  The default implementation removes
 files recursively except for the `_alien` directory.  This is helpful when you have
 an old install with files that may break the new build.
 
-For a non-share install this doesn't do anything.
-
 ## system
 
 ```
@@ -1291,6 +1289,8 @@ Håkon Hægland (hakonhagland, HAKONH)
 nick nauwelaerts (INPHOBIA)
 
 Florian Weimer
+
+Marcel Telka (mtelka)
 
 # COPYRIGHT AND LICENSE
 
