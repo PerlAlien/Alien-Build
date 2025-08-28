@@ -1700,6 +1700,7 @@ sub extract
           path     => $archive,
           tmp      => 0,
         };
+        local $self->meta->{around}{check_digest};
         $checked_digest = $self->meta->call_hook( check_digest => $self, $file, $algo, $expected )
       }
       if(!defined $detail->{protocol})
