@@ -74,12 +74,12 @@ jobs:
       - name: Install Author Dependencies
         run: |
           export PATH="/c/cx/bin:$PATH"
-          perl -S dzil authordeps --missing | perl -S cpanm -n
+          perl -S dzil authordeps --missing | perl -S cpanm -n -v
 
       - name: Install Static Dependencies
         run: |
           export PATH="/c/cx/bin:$PATH"
-          perl -S dzil listdeps --missing   | perl -S cpanm -n
+          perl -S dzil listdeps --missing   | perl -S cpanm -n -v
 
       - name: Install Dynamic Dependencies
         run: |
