@@ -2132,6 +2132,28 @@ sub add_requires
   $self;
 }
 
+=head2 has_requires
+
+ if (Alien::Build->meta->has_requires($phase, $module_pat, ...)) {...}
+
+Tests to see if the given phase has any of the given substrings as
+a requirement. Phase as L</add_requires>.
+
+=cut
+
+sub has_requires
+{
+  my $self = shift;
+  my $phase = shift;
+  my @has = keys %{ $self->{require}->{$phase} };
+  while(@_)
+  {
+    my $pattern = shift;
+    return 1 if grep index($_, $pattern) != -1, @has;
+  }
+  return;
+}
+
 =head2 interpolator
 
  my $interpolator = $build->meta->interpolator;

@@ -991,6 +991,15 @@ Add the requirement to the given phase.  Phase should be one of:
 - share
 - system
 
+## has\_requires
+
+```
+if (Alien::Build->meta->has_requires($phase, $module_pat, ...)) {...}
+```
+
+Tests to see if the given phase has any of the given substrings as
+a requirement. Phase as ["add\_requires"](#add_requires).
+
 ## interpolator
 
 ```perl
