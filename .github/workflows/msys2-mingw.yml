@@ -69,22 +69,22 @@ jobs:
         run: |
           export PATH="/c/cx/bin:$PATH"
           yes | cpan App::cpanminus || true
-          cpanm -n Dist::Zilla
+          cpanm -n -v Dist::Zilla
 
       - name: Install Author Dependencies
         run: |
           export PATH="/c/cx/bin:$PATH"
-          perl -S dzil authordeps --missing | perl -S cpanm -n
+          perl -S dzil authordeps --missing | perl -S cpanm -n -v
 
       - name: Install Static Dependencies
         run: |
           export PATH="/c/cx/bin:$PATH"
-          perl -S dzil listdeps --missing   | perl -S cpanm -n
+          perl -S dzil listdeps --missing   | perl -S cpanm -n -v
 
       - name: Install Dynamic Dependencies
         run: |
           export PATH="/c/cx/bin:$PATH"
-          perl -S dzil run --no-build 'perl -S cpanm -n --installdeps .'
+          perl -S dzil run --no-build 'perl -S cpanm -n -v --installdeps .'
 
       - name: Run Tests
         run: |
