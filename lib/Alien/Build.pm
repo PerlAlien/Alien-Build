@@ -2149,9 +2149,9 @@ sub has_requires
   while(@_)
   {
     my $pattern = shift;
-    return 1 if grep index($_, $pattern) != -1, @has;
+    for (@has) { return 1 if index($_, $pattern) != -1; }
   }
-  return;
+  return ();
 }
 
 =head2 interpolator

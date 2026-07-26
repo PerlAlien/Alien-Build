@@ -247,7 +247,7 @@ sub init
     }
   }
 
-  if($self->url =~ /^http.*github.com.*releases$/)
+  if($self->url =~ /^http.*github.com.*releases$/ && !$meta->has_requires('configure', 'Download::GitHub'))
   {
     Alien::Build->log('!! WARNING !! WARNING !!');
     Alien::Build->log('!! WARNING !! It looks like this alien is using the regular download negotiator');
