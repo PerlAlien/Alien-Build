@@ -65,12 +65,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-msys2-${{ hashFiles('perlversion.txt') }}
 
-      - name: Install Static Dependencies
+      - name: Install cpanm and Dist::Zilla
         run: |
           export PATH="/c/cx/bin:$PATH"
           yes | cpan App::cpanminus || true
           cpanm -n Dist::Zilla
+
+      - name: Install Author Dependencies
+        run: |
+          export PATH="/c/cx/bin:$PATH"
           perl -S dzil authordeps --missing | perl -S cpanm -n
+
+      - name: Install Static Dependencies
+        run: |
+          export PATH="/c/cx/bin:$PATH"
           perl -S dzil listdeps --missing   | perl -S cpanm -n
 
       - name: Install Dynamic Dependencies
