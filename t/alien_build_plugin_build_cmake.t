@@ -5,8 +5,8 @@ use Test::Alien::Build;
 use Alien::Build::Plugin::Build::CMake;
 use Path::Tiny ();
 
-eval { require Alien::cmake3 };
-skip_all 'test requires Alien::cmake3' if $@;
+eval { require Alien::cmake4 };
+skip_all 'test requires Alien::cmake4' if $@;
 
 # To see the actual commands being executed
 $ENV{VERBOSE} = 1;
@@ -15,11 +15,11 @@ $Alien::Build::Plugin::Fetch::LocalDir::VERSION        ||= '0.99';
 $Alien::Build::Plugin::Build::CMake::VERSION           ||= '0.99';
 $Alien::Build::Plugin::Gather::IsolateDynamic::VERSION ||= '0.99';
 
-diag "Alien::cmake3::VERSION = $Alien::cmake3::VERSION";
-diag "Alien::cmake3->bin_dir = ", my @bin_dir = Alien::cmake3->bin_dir;
-diag "Alien::cmake3->exe = ", my $exe = Alien::cmake3->exe;
+diag "Alien::cmake4::VERSION = $Alien::cmake4::VERSION";
+diag "Alien::cmake4->bin_dir = ", my @bin_dir = Alien::cmake4->bin_dir;
+diag "Alien::cmake4->exe = ", my $exe = Alien::cmake4->exe;
 my $full_exe = @bin_dir ? Path::Tiny::path(@bin_dir)->child($exe) : $exe;
-diag "Alien::cmake3 full exe = $full_exe";
+diag "Alien::cmake4 full exe = $full_exe";
 diag "cmake --version:\n", `$full_exe --version`;
 
 my $xs = do { local $/; <DATA> };
