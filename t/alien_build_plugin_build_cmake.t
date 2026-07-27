@@ -5,8 +5,8 @@ use Test::Alien::Build;
 use Alien::Build::Plugin::Build::CMake;
 use Path::Tiny ();
 
-eval { require Alien::cmake3 };
-skip_all 'test requires Alien::cmake3' if $@;
+eval { require Alien::cmake4 };
+skip_all 'test requires Alien::cmake4' if $@;
 
 # To see the actual commands being executed
 $ENV{VERBOSE} = 1;
