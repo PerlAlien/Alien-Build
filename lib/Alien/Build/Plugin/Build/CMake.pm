@@ -59,7 +59,7 @@ Returns true if your Perls C<make> appears to be C<dmake>.
 
 =head2 cmake
 
-This plugin replaces the default C<cmake> helper with the one that comes from L<Alien::cmake3>.
+This plugin replaces the default C<cmake> helper with the one that comes from L<Alien::cmake4>.
 
 =head2 cmake_generator
 
@@ -119,7 +119,7 @@ sub init
   $meta->prop->{destdir} = $^O eq 'MSWin32' ? 0 : 1;
 
   $meta->add_requires('configure' => 'Alien::Build::Plugin::Build::CMake' => '0.99');
-  $meta->add_requires('share'     => 'Alien::cmake3' => '0.02');
+  $meta->add_requires('share'     => 'Alien::cmake4' => '0');
 
   if(is_dmake())
   {
@@ -147,7 +147,7 @@ sub init
     }
   }
 
-  $meta->interpolator->replace_helper('cmake' => sub { require Alien::cmake3; Alien::cmake3->exe });
+  $meta->interpolator->replace_helper('cmake' => sub { require Alien::cmake4; Alien::cmake4->exe });
   $meta->interpolator->add_helper('cmake_generator' => \&cmake_generator);
 
   my @args = (
