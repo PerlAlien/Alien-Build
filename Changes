@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - fix t/alien_build_plugin_build_cmake.t diag to work on pre-5.22 Perl
 
 2.86_02   2026-08-23
   - test fix for t/alien_build_util.t to tolerate filesystem not handling symlinks
