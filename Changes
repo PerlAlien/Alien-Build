@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.86_02   2026-08-23
   - test fix for t/alien_build_util.t to tolerate filesystem not handling symlinks
 
 2.86_01   2026-07-31 11:47:12 -0600
