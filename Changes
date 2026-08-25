@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.86_04   2026-08-24 19:58:22 -0600
+  - Re-release with normal tooling
+
 2.86_03   2026-08-24
   - fix t/alien_build_plugin_build_cmake.t diag to work on pre-5.22 Perl
 
