@@ -21,8 +21,6 @@ fi
 
 if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
 
-  cip exec env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::cmake3::System
-
   cip exec cpanm -n \
     Test2::Harness \
     File::Listing \

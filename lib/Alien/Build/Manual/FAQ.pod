@@ -124,9 +124,9 @@ MSYS plugin and use a command sequence to do the build like this:
 
 =head3 CMake
 
-There is an alien L<Alien::cmake3> that provides C<cmake> 3.x or better (It is preferred to the
+There is an alien L<Alien::cmake4> that provides C<cmake> 4.x or better (It is preferred to the
 older L<Alien::CMake>).  Though it is recommended that you use the C<cmake>
-(L<Alien::Build::Plugin::Build::CMake>) plugin instead of using L<Alien::cmake3>.
+(L<Alien::Build::Plugin::Build::CMake>) plugin instead of using L<Alien::cmake4>.
 
  use alienfile;
  

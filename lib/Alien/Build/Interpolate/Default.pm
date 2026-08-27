@@ -100,7 +100,7 @@ The C Compiler used to build Perl
 Requires: L<Alien::CMake> 0.07 if cmake is not already in C<PATH>.
 
 Deprecated: Use the L<Alien::Build::Plugin::Build::CMake> plugin instead (which will replace
-this helper with one that works with L<Alien::cmake3> that works better).
+this helper with one that works with L<Alien::cmake4> that works better).
 
 =cut
 
