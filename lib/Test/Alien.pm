@@ -661,6 +661,7 @@ sub xs_ok
       }
 
       unshift @{ $link_options{extra_linker_flags} }, grep /^-l/, shellwords map { _flags $_, 'libs' } @aliens;
+      push @{ $link_options{extra_linker_flags} }, _rpath( map { _flags $_, 'libs' } @aliens);
 
       my($out, $lib, $err) = capture_merged {
         my $lib = eval {
@@ -788,6 +789,22 @@ sub xs_ok
   }
 
   $ok;
+}
+
+sub _rpath(@)
+{
+  my(@libs) = @_;
+
+  @libs = map { shellwords $_ } @libs;
+  my @rpath;
+  foreach my $lib (@libs)
+  {
+    if($lib =~ /^-L(.*)/)
+    {
+      push @rpath, "-Wl,-rpath,$1";
+    }
+  }
+  @rpath;
 }
 
 sub with_subtest (&)
