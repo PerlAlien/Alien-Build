@@ -20,13 +20,7 @@ diag "Alien::cmake3->bin_dir = ", my @bin_dir = Alien::cmake3->bin_dir;
 diag "Alien::cmake3->exe = ", my $exe = Alien::cmake3->exe;
 my $full_exe = @bin_dir ? Path::Tiny::path(@bin_dir)->child($exe) : $exe;
 diag "Alien::cmake3 full exe = $full_exe";
-if ($^O eq 'Win32' and $] < 5.022) {
-  diag `$full_exe --version`; # no list open on old Win32 Perl
-} else {
-  open(my $child, "-|", $full_exe, '--version')
-     or die("Can't launch \"$full_exe\": $!\n");
-  diag "cmake --version:\n", <$child>;
-}
+diag "cmake --version:\n", `$full_exe --version`;
 
 my $xs = do { local $/; <DATA> };
 
