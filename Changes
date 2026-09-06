@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+2.86_05   2026-09-06 12:42:08 -0600
+  - additional t/alien_build_plugin_build_cmake.t diagnostic fixes.
+
 2.86_04   2026-08-24 19:58:22 -0600
   - Re-release with normal tooling
 
