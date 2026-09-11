@@ -389,6 +389,8 @@ Returns arguments that you can pass into C<WriteMakefile> to compile/link agains
 a little differently from C<mm_args> above in that you can pass in arguments.  It also adds
 the appropriate C<CONFIGURE_REQUIRES> for you so you do not have to do that explicitly.
 
+[version 2.87]
+
 If you pass in your own C<CONFIGURE_REQUIRES> with a version for a module that this class
 also requires (currently L<ExtUtils::MakeMaker> and C<Alien::Base::Wrapper> itself, plus any
 Alien that you specify a minimum version for), then the newer of the two version numbers
