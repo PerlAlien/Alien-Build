@@ -26,6 +26,19 @@ sub exec_arrayref (&)
   \@answer;
 }
 
+subtest '_version_max' => sub {
+
+  is Alien::Base::Wrapper::_version_max(undef, undef),    U(),     'undef, undef';
+  is Alien::Base::Wrapper::_version_max(undef, '1.97'),   '1.97',  'undef, defined';
+  is Alien::Base::Wrapper::_version_max('1.97', undef),   '1.97',  'defined, undef';
+  is Alien::Base::Wrapper::_version_max('6.52', '7.12'),  '7.12',  'decimal: newer wins';
+  is Alien::Base::Wrapper::_version_max('1.97', '0'),     '1.97',  'decimal: zero loses to nonzero';
+  is Alien::Base::Wrapper::_version_max('6.52', '6.10'),  '6.52',  'decimal: 6.10 is numerically 6.1, older than 6.52';
+  is Alien::Base::Wrapper::_version_max('1.2.3', '1.10.0'), '1.10.0', 'dotted-decimal: compared part by part';
+  is Alien::Base::Wrapper::_version_max('1.00', '1.2.3'), '1.2.3', 'decimal vs dotted-decimal';
+
+};
+
 subtest 'export' => sub {
 
   {
@@ -259,6 +272,31 @@ subtest 'combine aliens' => sub {
           field 'Alien::Foo5'          => '0';
         };
       },
+    );
+
+  };
+
+  subtest 'mm_args2 CONFIGURE_REQUIRES keeps the newer version' => sub {
+
+    my %mm_args = Alien::Base::Wrapper->mm_args2(
+      CONFIGURE_REQUIRES => {
+        'ExtUtils::MakeMaker'  => '7.12',  # newer than the 6.52 we require
+        'Alien::Base::Wrapper' => '0',     # older ("any version") than the 1.97 we require
+        'Alien::Bar5'          => '1.10',  # older than the 1.23 we require
+      },
+    );
+
+    note _dump(\%mm_args);
+
+    is(
+      $mm_args{CONFIGURE_REQUIRES},
+      hash {
+        field 'ExtUtils::MakeMaker'  => '7.12';
+        field 'Alien::Base::Wrapper' => '1.97';
+        field 'Alien::Bar5'          => '1.23';
+        field 'Alien::Foo5'          => '0';
+      },
+      'the newer of the two versions wins in each case',
     );
 
   };
