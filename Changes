@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Alien::Base::Wrapper->mm_args2 no longer overwrites a caller-specified
+    CONFIGURE_REQUIRES version with its own, lower, requirement.  Instead
+    the newer of the two version numbers is used (gh#428, gh#429,
+    johannessen++)
 
 2.86_05   2026-09-06 12:42:08 -0600
   - additional t/alien_build_plugin_build_cmake.t diagnostic fixes.

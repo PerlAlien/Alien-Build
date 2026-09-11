@@ -121,6 +121,53 @@ a non-global instance of C<Alien::Base::Wrapper> using the OO interface.
 
 =cut
 
+sub _version_parts
+{
+  my($version) = @_;
+  $version = '0' unless defined $version;
+
+  # dotted-decimal style, e.g. 1.2.3 or v1.2.3: compare each part
+  # separately, as integers.
+  if($version =~ /^v?[0-9]+(\.[0-9]+){2,}$/)
+  {
+    $version =~ s/^v//;
+    return [ split /\./, $version ];
+  }
+
+  # plain decimal style, e.g. 1.00 or 6.52: compare numerically as
+  # a single number, so that (say) 6.6 is newer than 6.52.
+  my($number) = $version =~ /^([0-9]+(?:\.[0-9]+)?)/;
+  $number = 0 unless defined $number;
+  return [ $number ];
+}
+
+sub _version_cmp
+{
+  my($v1, $v2) = @_;
+  my $p1 = _version_parts($v1);
+  my $p2 = _version_parts($v2);
+
+  for my $i (0 .. (@$p1 > @$p2 ? $#$p1 : $#$p2))
+  {
+    my $n1 = defined $p1->[$i] ? $p1->[$i] : 0;
+    my $n2 = defined $p2->[$i] ? $p2->[$i] : 0;
+    my $cmp = $n1 <=> $n2;
+    return $cmp if $cmp;
+  }
+
+  return 0;
+}
+
+# returns whichever of the two version numbers is newer (either may
+# be undef, in which case the other, possibly also undef, is returned).
+sub _version_max
+{
+  my($v1, $v2) = @_;
+  return $v2 unless defined $v1;
+  return $v1 unless defined $v2;
+  return _version_cmp($v1, $v2) >= 0 ? $v1 : $v2;
+}
+
 sub _join
 {
   join ' ',
@@ -342,6 +389,12 @@ Returns arguments that you can pass into C<WriteMakefile> to compile/link agains
 a little differently from C<mm_args> above in that you can pass in arguments.  It also adds
 the appropriate C<CONFIGURE_REQUIRES> for you so you do not have to do that explicitly.
 
+If you pass in your own C<CONFIGURE_REQUIRES> with a version for a module that this class
+also requires (currently L<ExtUtils::MakeMaker> and C<Alien::Base::Wrapper> itself, plus any
+Alien that you specify a minimum version for), then the newer of the two version numbers
+will be used, so that neither requirement is weakened.  Version numbers may be given in
+either decimal (C<1.23>) or dotted-decimal (C<1.2.3>) form.
+
 =cut
 
 sub mm_args2
@@ -377,7 +430,10 @@ sub mm_args2
 
   foreach my $module (keys %{ $self->{requires} })
   {
-    $args{CONFIGURE_REQUIRES}->{$module} = $self->{requires}->{$module};
+    $args{CONFIGURE_REQUIRES}->{$module} = _version_max(
+      $args{CONFIGURE_REQUIRES}->{$module},
+      $self->{requires}->{$module},
+    );
   }
 
   %args;
