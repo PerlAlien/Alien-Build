@@ -261,6 +261,16 @@ subtest 'combine aliens' => sub {
       },
     );
 
+    %mm_args = Alien::Base::Wrapper->mm_args2(
+      CONFIGURE_REQUIRES => {
+        'ExtUtils::MakeMaker'  => '7.12',
+        'Alien::Base::Wrapper' => '0',
+      },
+    );
+
+    is $mm_args{CONFIGURE_REQUIRES}{'ExtUtils::MakeMaker'},  '7.12';
+    is $mm_args{CONFIGURE_REQUIRES}{'Alien::Base::Wrapper'}, '1.97';
+
   };
 
   subtest 'WriteMakefile' => sub {

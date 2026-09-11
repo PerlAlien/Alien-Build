@@ -377,7 +377,7 @@ sub mm_args2
 
   foreach my $module (keys %{ $self->{requires} })
   {
-    $args{CONFIGURE_REQUIRES}->{$module} = $self->{requires}->{$module};
+    $args{CONFIGURE_REQUIRES}->{$module} ||= $self->{requires}->{$module};
   }
 
   %args;
