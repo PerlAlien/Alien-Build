@@ -55,6 +55,13 @@ sub _wget
   # The wget that BusyBox implements does not follow that same interface
   # as GNU wget and may not check ssl certs which is not good.
   return undef if $output =~ /BusyBox/;
+
+  # Wget2 (which some newer Linux distributions ship as /usr/bin/wget in
+  # place of GNU Wget) does not follow the same interface as GNU Wget either
+  # (in particular its -S output cannot be relied on to include the
+  # Content-Type header), so treat it as not found, same as BusyBox.
+  return undef if $output =~ /GNU Wget2/;
+
   return $wget;
 }
 
