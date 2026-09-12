@@ -441,6 +441,77 @@ sub mm_args2
   %args;
 }
 
+=head2 checklib_args2
+
+ my %args = $abw->checklib_args2(%args);
+ my %args = Alien::Base::Wrapper->checklib_args2(%args);
+
+Returns arguments that you can pass into C<assert_lib>, C<check_lib> or C<check_lib_or_exit> from
+L<Devel::CheckLib> in order to compile/link against the Aliens specified.  It works a little like
+C<mm_args2> above, except that instead of being applied to a hash of L<ExtUtils::MakeMaker>
+arguments, it is applied to a hash of L<Devel::CheckLib> arguments.
+
+ use Devel::CheckLib qw( check_lib_or_exit );
+ use Alien::Base::Wrapper ();
+
+ check_lib_or_exit(
+   Alien::Base::Wrapper->new('Alien::Foo')->checklib_args2(
+     lib    => 'foo',
+     header => 'foo.h',
+   ),
+ );
+
+The Alien's include paths are merged into C<incpath>, its other compiler flags (such as
+C<-D> defines) are merged into C<ccflags>, its library paths are merged into C<libpath>, and
+its libraries and other linker flags are merged into C<ldflags>, so that the C<lib> and
+C<header> that you are checking for can be found using the environment provided by the Alien.
+
+Since L<Devel::CheckLib> also allows you to specify C<INC> and C<LIBS> in the
+L<ExtUtils::MakeMaker> style, and merging those styles with the Alien flags is ambiguous,
+C<checklib_args2> will throw an exception if you attempt to specify either of those.  Use
+C<incpath> / C<ccflags> and C<libpath> / C<ldflags> instead.
+
+=cut
+
+sub checklib_args2
+{
+  my $self = shift;
+  $self = $default_abw unless ref $self;
+  my %args = @_;
+
+  if(defined $args{LIBS} || defined $args{INC})
+  {
+    require Carp;
+    Carp::croak("please do not specify your own LIBS or INC key with checklib_args2");
+  }
+
+  if(@{ $self->{cflags_I} })
+  {
+    my @old = defined $args{incpath} ? (ref $args{incpath} ? @{ $args{incpath} } : ($args{incpath})) : ();
+    my @new = map { (my $x = $_) =~ s/^-I//; $x } @{ $self->{cflags_I} };
+    $args{incpath} = [ @new, @old ];
+  }
+
+  if(@{ $self->{cflags_other} })
+  {
+    $args{ccflags} = join ' ', @{ $self->{cflags_other} }, (defined $args{ccflags} ? $args{ccflags} : ());
+  }
+
+  if(@{ $self->{ldflags_L} })
+  {
+    my @old = defined $args{libpath} ? (ref $args{libpath} ? @{ $args{libpath} } : ($args{libpath})) : ();
+    my @new = map { (my $x = $_) =~ s/^-L//; $x } @{ $self->{ldflags_L} };
+    $args{libpath} = [ @new, @old ];
+  }
+
+  if(@{ $self->{ldflags_l} } || @{ $self->{ldflags_other} })
+  {
+    $args{ldflags} = join ' ', @{ $self->{ldflags_l} }, @{ $self->{ldflags_other} }, (defined $args{ldflags} ? $args{ldflags} : ());
+  }
+
+  %args;
+}
+
 =head2 mb_args
 
  my %args = $abw->mb_args;
