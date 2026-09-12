@@ -5,6 +5,10 @@ Revision history for {{$dist->name}}
     CONFIGURE_REQUIRES version with its own, lower, requirement.  Instead
     the newer of the two version numbers is used (gh#428, gh#429, gh#439,
     johannessen++)
+  - Fetch::Wget plugin now treats Wget2 (which some newer Linux
+    distributions ship as /usr/bin/wget in place of GNU Wget) as not
+    found, the same as it already does for the BusyBox wget, since it
+    does not follow the same interface as GNU Wget. (gh#439)
 
 2.86_05   2026-09-06 12:42:08 -0600
   - additional t/alien_build_plugin_build_cmake.t diagnostic fixes.
