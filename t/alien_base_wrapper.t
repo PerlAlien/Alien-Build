@@ -376,6 +376,47 @@ subtest 'combine aliens' => sub {
 
   };
 
+  subtest 'checklib_args2' => sub {
+
+    my %cl_args = Alien::Base::Wrapper->checklib_args2(
+      lib     => 'baz',
+      header  => 'baz.h',
+      incpath => '/baz/include',
+      libpath => '/baz/lib',
+    );
+
+    note _dump(\%cl_args);
+
+    is(
+      \%cl_args,
+      hash {
+        field lib     => 'baz';
+        field header  => 'baz.h';
+        field incpath => [ '/foo/include', '/bar/include', '/baz/include' ];
+        field ccflags => '-DFOO5=1 -DBAR5=1';
+        field libpath => [ '/foo/lib', '/foo/lib', '/baz/lib' ];
+        field ldflags => '-lfoo -lbar --ld-foo --ld-bar';
+      },
+    );
+
+  };
+
+  subtest 'checklib_args2 refuses LIBS/INC' => sub {
+
+    like(
+      dies { Alien::Base::Wrapper->checklib_args2( LIBS => '-lbaz' ) },
+      qr{please do not specify your own LIBS or INC key},
+      'LIBS',
+    );
+
+    like(
+      dies { Alien::Base::Wrapper->checklib_args2( INC => '-I/baz/include' ) },
+      qr{please do not specify your own LIBS or INC key},
+      'INC',
+    );
+
+  };
+
   subtest 'mb_args' => sub {
 
     my %mb_args = Alien::Base::Wrapper->mb_args;
