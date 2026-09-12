@@ -2,6 +2,8 @@
 
 set -ex
 
+SKIP_LIBPKGCONF=0
+
 if echo $CIP_TAG | grep -q -- -alpine ; then
   echo alpine
   cip sudo apk add cmake
@@ -10,6 +12,10 @@ if echo $CIP_TAG | grep -q -- -alpine ; then
   # needed for plugin tests later
   cip sudo apk add git
   cip sudo apk add g++
+  # pkgconf-dev on alpine3.20.1 is pkgconf 2.2.0, whose libpkgconf changed
+  # the pkgconf_pkg_new_from_file signature, breaking the XS build of
+  # PkgConfig::LibPkgConf 0.11 (gh#439)
+  SKIP_LIBPKGCONF=1
 elif echo $CIP_TAG | grep -q -- -fedora ; then
   echo Fedora
   cip sudo yum install cmake libffi-devel wget git g++ -y
@@ -23,32 +29,38 @@ if [ "x$ALIEN_BUILD_INSTALL_EXTRA" == "x1" ]; then
 
   cip exec env PERL_ALT_INSTALL=OVERWRITE cpanm -n Alt::Alien::cmake3::System
 
-  cip exec cpanm -n \
-    Test2::Harness \
-    File::Listing \
-    File::Listing::Ftpcopy \
-    HTML::LinkExtor \
-    HTTP::Tiny \
-    LWP \
-    PkgConfig \
-    PkgConfig::LibPkgConf \
-    Sort::Versions \
-    URI \
-    YAML \
-    Env::ShellWords \
-    Archive::Tar \
-    Archive::Zip \
-    Devel::Hide \
-    Readonly \
-    Alien::Base::ModuleBuild \
-    FFI::Platypus \
-    Mojo::DOM58 \
-    Mojolicious \
-    Win32::Vcpkg \
-    Plack \
-    Proc::Daemon \
-    AnyEvent::FTP \
+  MODULES="
+    Test2::Harness
+    File::Listing
+    File::Listing::Ftpcopy
+    HTML::LinkExtor
+    HTTP::Tiny
+    LWP
+    PkgConfig
+    Sort::Versions
+    URI
+    YAML
+    Env::ShellWords
+    Archive::Tar
+    Archive::Zip
+    Devel::Hide
+    Readonly
+    Alien::Base::ModuleBuild
+    FFI::Platypus
+    Mojo::DOM58
+    Mojolicious
+    Win32::Vcpkg
+    Plack
+    Proc::Daemon
+    AnyEvent::FTP
     Digest::SHA::PurePerl
+  "
+
+  if [ "x$SKIP_LIBPKGCONF" != "x1" ]; then
+    MODULES="$MODULES PkgConfig::LibPkgConf"
+  fi
+
+  cip exec cpanm -n $MODULES
 
 fi
 
