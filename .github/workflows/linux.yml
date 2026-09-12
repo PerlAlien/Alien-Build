@@ -27,7 +27,7 @@ jobs:
             tag: "5.44-bionic"
           - alien_build_install_extra: 1
             env: ALIEN_BUILD_LIVE_TEST=1
-            tag: "5.44-fedora36"
+            tag: "5.44.0-fedora40"
           - alien_build_install_extra: 0
             env: ALIEN_BUILD_LIVE_TEST=0
             tag: "5.44-bookworm"
