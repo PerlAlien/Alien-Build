@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixes for Solaris (gh#442)
+  - Added checklib_args2 method to Alien::Build::Wrapper (gh#440)
 
 2.87      2026-09-11 20:31:38 -0600
   - Alien::Base::Wrapper->mm_args2 no longer overwrites a caller-specified
