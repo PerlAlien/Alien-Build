@@ -88,6 +88,15 @@ subtest 'CommandLine' => sub {
     ],
   );
 
+  # these tests are about the which()-based negotiation logic, not
+  # about whether the (fake, non-existent) binaries actually support
+  # --static, so pretend they all do.
+  my $mock_static = mock 'Alien::Build::Plugin::PkgConfig::CommandLine' => (
+    override => [
+      _supports_static => sub { 1 },
+    ],
+  );
+
   my $mock2 = mock 'Alien::Build::Plugin::PkgConfig::Negotiate';
 
   if($^O =~ /^(solaris|MSWin32)$/) {
