@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.88      2026-09-19 03:03:10 -0600
   - Fixes for Solaris (gh#442)
   - Added checklib_args2 method to Alien::Build::Wrapper (gh#440)
 
