@@ -915,17 +915,39 @@ sub inline_auto_include {
   $class->runtime_prop->{inline_auto_include} || $class->config('inline_auto_include') || []
 }
 
+sub _called_from_extutils_depends {
+  my $i = 0;
+  while(my $package = caller($i++)) {
+    return 1 if $package eq 'ExtUtils::Depends';
+  }
+  0;
+}
+
 sub Inline {
   my ($class, $language) = @_;
   return unless defined $language;
   return if $language !~ /^(C|CPP)$/;
   my $config = {
-    # INC should arguably be for -I flags only, but
-    # this improves compat with ExtUtils::Depends.
-    # see gh#107, gh#108
-    INC          => $class->cflags,
     LIBS         => $class->libs,
   };
+
+  if(_called_from_extutils_depends()) {
+    # ExtUtils::Depends piggybacks on this interface, but only
+    # looks at INC, LIBS and TYPEMAPS, so it needs all of the
+    # compiler flags in INC.  see gh#107, gh#108
+    $config->{INC} = $class->cflags;
+  } else {
+    # Inline::C quotes the whole of INC as a single argument if it
+    # contains spaces and anything other than -I flags.  see gh#430
+    # keep mode is used so that quotes and escapes survive the round trip.
+    my $cflags = $class->cflags;
+    $cflags = '' unless defined $cflags;
+    $cflags =~ s/^\s+//;
+    my @cflags = grep { defined $_ && length $_ } Text::ParseWords::parse_line('\s+', 1, $cflags);
+    $config->{INC} = join ' ', grep /^["']?-I/, @cflags;
+    my $ccflagsex  = join ' ', grep !/^["']?-I/, @cflags;
+    $config->{CCFLAGSEX} = $ccflagsex if length $ccflagsex;
+  }
 
   if (@{ $class->inline_auto_include } > 0) {
     $config->{AUTO_INCLUDE} = join "\n", map { "#include \"$_\"" } @{ $class->inline_auto_include };

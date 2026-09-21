@@ -1,6 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Alien::Base's Inline method once again returns only -I flags in
+    INC, with other compiler flags in CCFLAGSEX.  Inline::C was quoting
+    the combined flags as a single argument, which broke Aliens that have
+    non -I flags in their cflags.  ExtUtils::Depends, which only looks at
+    INC, still gets all of the compiler flags there (gh#430)
 
 2.88      2026-09-19 03:03:10 -0600
   - Fixes for Solaris (gh#442)
