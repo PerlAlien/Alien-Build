@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+2.89_01   2026-09-21 07:43:42 -0600
   - Alien::Base's Inline method once again returns only -I flags in
     INC, with other compiler flags in CCFLAGSEX.  Inline::C was quoting
     the combined flags as a single argument, which broke Aliens that have
