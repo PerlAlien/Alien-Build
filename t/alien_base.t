@@ -325,6 +325,67 @@ subtest 'build flags' => sub {
 
 };
 
+subtest 'Inline' => sub {
+
+  our $cflags;
+
+  {
+    package Alien::InlineTest;
+    our @ISA = ('Alien::Base');
+    sub cflags { $cflags }
+    sub libs   { '-L/foo/lib -lfoo' }
+    sub inline_auto_include { [] }
+  }
+
+  {
+    package ExtUtils::Depends;
+    sub alien_base_test_load { Alien::InlineTest->Inline('C') }
+  }
+
+  is( Alien::InlineTest->Inline('Perl'), U(), 'unsupported language' );
+
+  subtest 'include flags only' => sub {
+    local $cflags = '-I/foo/include';
+    is(
+      Alien::InlineTest->Inline('C'),
+      { INC => '-I/foo/include', LIBS => '-L/foo/lib -lfoo' },
+    );
+  };
+
+  subtest 'mixed flags' => sub {
+    local $cflags = ' -I/foo/include -DBAR=1 -I/baz/include -O2 ';
+    is(
+      Alien::InlineTest->Inline('C'),
+      { INC => '-I/foo/include -I/baz/include', CCFLAGSEX => '-DBAR=1 -O2', LIBS => '-L/foo/lib -lfoo' },
+    );
+    is(
+      Alien::InlineTest->Inline('CPP'),
+      { INC => '-I/foo/include -I/baz/include', CCFLAGSEX => '-DBAR=1 -O2', LIBS => '-L/foo/lib -lfoo' },
+    );
+  };
+
+  subtest 'quotes and escapes are preserved' => sub {
+    local $cflags = q{-I"/foo bar/include" "-I/baz qux/include" -DSTR=\"x\" -IC:\foo\include};
+    is(
+      Alien::InlineTest->Inline('C'),
+      {
+        INC       => q{-I"/foo bar/include" "-I/baz qux/include" -IC:\foo\include},
+        CCFLAGSEX => q{-DSTR=\"x\"},
+        LIBS      => '-L/foo/lib -lfoo',
+      },
+    );
+  };
+
+  subtest 'called from ExtUtils::Depends' => sub {
+    local $cflags = '-I/foo/include -DBAR=1';
+    is(
+      ExtUtils::Depends::alien_base_test_load(),
+      { INC => '-I/foo/include -DBAR=1', LIBS => '-L/foo/lib -lfoo' },
+    );
+  };
+
+};
+
 subtest 'ffi_name' => sub {
 
   require Alien::libfoo1;
