@@ -331,7 +331,7 @@ subtest 'Inline' => sub {
 
   {
     package Alien::InlineTest;
-    our @ISA = ('Alien::Base');
+    use parent 'Alien::Base';
     sub cflags { $cflags }
     sub libs   { '-L/foo/lib -lfoo' }
     sub inline_auto_include { [] }
